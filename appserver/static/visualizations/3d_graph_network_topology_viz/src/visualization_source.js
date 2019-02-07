@@ -1,0 +1,297 @@
+/*
+ * Visualization source
+ */
+define([
+            'jquery',
+            'underscore',
+            'vizapi/SplunkVisualizationBase',
+            'vizapi/SplunkVisualizationUtils',
+            '3d-force-graph',
+            'force-graph'
+            // Add required assets to this list
+        ],
+        function(
+            $,
+            _,
+            SplunkVisualizationBase,
+            SplunkVisualizationUtils,
+            ForceGraph3D,
+            ForceGraph
+        ) {
+
+    // Extend from SplunkVisualizationBase
+    return SplunkVisualizationBase.extend({
+
+        initialize: function() {
+            this.logging = true;
+            if(this.logging) console.log('initialize() - Entered');
+
+            SplunkVisualizationBase.prototype.initialize.apply(this, arguments);
+            this.$el = $(this.el);
+            // this.$el.css('id','viz_base')
+            // this.$el.append('<div id="graphvizdiv" style="width: 100% !important; height: 100% !important"></div>');
+            this.$el.append('<div class="graphviz-container"></div>');
+            this.$el.append('<div style="position: absolute; top: 5px; right: 5px;">' +
+              '<a id="btnPlayAnimation" style="margin: 8px;" href="#" class="btn btn-primary">' +
+                '<i class="icon-play"></i></a>' +
+              '<a id="btnPauseAnimation" style="margin: 8px;" href="#" class="btn btn-primary">' +
+                '<i class="icon-pause"></i></a>' +
+              '</div>');
+
+            this.graph3d = ForceGraph3D();
+            this.graph = ForceGraph();
+
+            var that = this;
+
+            setTimeout(() => {
+              $('#btnPlayAnimation').on('click', event => {
+                event.preventDefault(); // to avoid re-direction
+                that._toggleAnimation(1);
+              });
+
+              $('#btnPauseAnimation').on('click', event => {
+                event.preventDefault(); // to avoid re-direction
+                that._toggleAnimation(0);
+              });
+            }, 100);
+        },
+
+        onConfigChange: function(config) {
+            if(this.logging) console.log('onConfigChange() - Entered');
+
+            // Re-rendering the viz to apply config changes
+            // this.reflow();
+            this.invalidateReflow();
+        },
+
+        // Optionally implement to format data returned from search.
+        // The returned object will be passed to updateView as 'data'
+        formatData: function(data) {
+            if(this.logging) console.log('formatData() - Entered');
+
+            // Expects:
+            // <search> | stats count by src dst
+
+            var fields = data.fields;
+            var rows = data.rows;
+            var config = this._getConfig();
+
+            if (rows.length < 1 && fields.length < 1) {
+                return false;
+            }
+
+            console.log(rows); // ["/opt/splunk/var/log/splunk/btool.log", "splunk_btool", "235"],[]
+            console.log(fields); // [{name: "source"}, {name: "sourcetype"},{name: "count"}]
+
+            var nodes = [],
+                links = [];
+
+            // Avoid duplicates!
+            let node_ids = new Set();
+
+            _.each(rows, function(row) {
+                // Iterating over 0-1 to get row columns
+                _.each([...Array(2).keys()], function(ix) {
+                  var id = row[ix],
+                      name = id;
+                      // TODO which name??
+                      // name = fields[ix].name + ": " + id;
+
+                  if (!node_ids.has(id)){
+                    var new_node = {
+                      "id": id,
+                      "name": name,
+                      "val": 1,
+                    };
+                    nodes.push(new_node);
+                    node_ids.add(id);
+                  }
+                });
+
+                var new_link = {
+                  "source": row[0],
+                  "target": row[1]
+                };
+                links.push(new_link);
+            });
+
+            var data = {
+              "nodes": nodes,
+              "links": links
+            };
+
+            // console.log(data);
+            return {
+              "fields": fields,
+              "data": data
+            };
+        },
+
+        // Implement updateView to render a visualization.
+        //  'data' will be the data object returned from formatData or from the search
+        //  'config' will be the configuration property object
+        updateView: function(data, config) {
+
+            var data = data.data;
+            
+            // check for data
+            if (!data || data.length < 1) {
+                if(this.logging) console.log('updateView() - Error: no data');
+                return;
+            }
+
+            var dataRows = data.rows;
+            var that = this;
+            var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
+            var cameraController = this._getEscapedProperty('cameraController', config) || 'trackball';
+
+            this.useDrilldown = this._isEnabledDrilldown(config);
+
+            // Random HARDCODED tree
+            // data = this._getData();
+
+            var $this = $("div.graphviz-container");
+            var elem = $this.get(0);
+
+            if (enable3D) {
+                // Camera Controller update
+                this.graph3d = ForceGraph3D({ controlType: cameraController });
+
+                const distance = 1000;
+
+                // Render graph
+                this.graph3d(elem)
+                  .cameraPosition({ z: distance })
+                  .onNodeHover(node => {
+                    // Change cursor when hovering on nodes (if drilldown enabled)
+                    elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
+                  })
+                  .onNodeClick(that._drilldown.bind(that))
+                  .graphData(data);
+                  // .onNodeClick(node => {
+                  //   console.log("node clicked");
+                  //   console.log(node); // { id: "ex11-auth-scripted-input", name: "ex11-auth-scripted-input", val: 1, index: 16, …}
+                  //   that._drilldown.bind(that);
+                  // })
+
+                  // if (cameraController == 'orbit') {
+                  //   let angle = 0;
+                  //   setInterval(() => {
+                  //     if (this.isRotationActive) {
+                  //       this.graph3d.cameraPosition({
+                  //         x: distance * Math.sin(angle),
+                  //         z: distance * Math.cos(angle)
+                  //       });
+                  //       angle += Math.PI / 300;
+                  //     }
+                  //   }, 10);
+                  // }
+            } else {
+                // Render graph
+                this.graph(elem)
+                  .onNodeHover(node => {
+                    // Change cursor when hovering on nodes (if drilldown enabled)
+                    elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
+                  })
+                  .onNodeClick(node => {
+                    console.log(node); // { id: "ex11-auth-scripted-input", name: "ex11-auth-scripted-input", val: 1, index: 16, …}
+                    that._drilldown.bind(that);
+                  })
+                  .graphData(data);
+            }
+
+            // TODO careful at animation in 'fly' mode. It has to be paused somehow.
+        },
+
+        // Search data params
+        getInitialDataParams: function() {
+            return ({
+                outputMode: SplunkVisualizationBase.ROW_MAJOR_OUTPUT_MODE,
+                count: 0
+            });
+        },
+
+        _getConfig: function() {
+            return this._config;
+        },
+
+        _getData: function() {
+          const N = 300;
+          return {
+            nodes: [...Array(N).keys()].map(i => ({ id: i })),
+            links: [...Array(N).keys()]
+              .filter(id => id)
+              .map(id => ({
+                source: id,
+                target: Math.round(Math.random() * (id-1))
+              }))
+          };
+          // return {
+          //     "nodes": [
+          //         { "id": "id1", "name": "name1", "val": 1 },
+          //         { "id": "id2", "name": "name2", "val": 30 },
+          //         { "id": "id3", "name": "name3", "val": 10 }
+          //     ],
+          //     "links": [
+          //         { "source": "id1", "target": "id2", "value": 10 },
+          //         { "source": "id1", "target": "id3", "value": 3 }
+          //     ]
+          // };
+        },
+
+        _isEnabledDrilldown: function(config) {
+          return (config['display.visualizations.custom.drilldown']
+                  && config['display.visualizations.custom.drilldown'] === 'all');
+        },
+
+        _drilldown: function(d, i) {
+            if(this.logging) console.log("drilldown() - Entered");
+            console.log(d);
+            var fields = this.getCurrentData().fields;
+            var drilldownDescription = {
+                action: SplunkVisualizationBase.FIELD_VALUE_DRILLDOWN,
+                data: {}
+            };
+
+            console.log(fields);
+            console.log(d.data);
+            // drilldownDescription.data[fields[0].name] = d.data.name;
+            // drilldownDescription.data[fields[1].name] = d.parent.data.usecase;
+
+            // this.drilldown(drilldownDescription, d3.event);
+        },
+
+        _getEscapedProperty: function(name, config) {
+            var propertyValue = config[this.getPropertyNamespaceInfo().propertyNamespace + name];
+            return SplunkVisualizationUtils.escapeHtml(propertyValue);
+        },
+
+        _toggleAnimation: function(value) {
+            var resumeAnimation = SplunkVisualizationUtils.normalizeBoolean(value);
+            if(this.logging) console.log('_toggleAnimation() - Resuming Animation ? ' + resumeAnimation);
+
+            var elem = $("div.graphviz-container").get(0);
+            var config = this._getConfig();
+            var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
+            var graph = enable3D ? this.graph3d(elem) : this.graph(elem);
+
+            resumeAnimation ? graph.resumeAnimation() : graph.pauseAnimation();
+        },
+
+        // Override to respond to re-sizing events
+        reflow: function() {
+            if(this.logging) console.log('reflow() - size this.el ('+this.$el.width()+','+this.$el.height()+')');
+
+            var elem = $("div.graphviz-container").get(0);
+            var config = this._getConfig();
+            var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
+
+            // Get data and re-render in a smaller/bigger canvas
+            let { nodes, links } = this.graph3d.graphData();
+            var graph = enable3D ? this.graph3d(elem) : this.graph(elem);
+            graph.width(this.$el.width())
+                .height(this.$el.height())
+                .graphData({ nodes, links });
+        }
+    });
+});

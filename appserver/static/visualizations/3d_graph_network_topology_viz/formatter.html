@@ -1,0 +1,16 @@
+<form class="splunk-formatter-section" section-label="General">
+    <!-- Add html here to create formatter options -->
+    <splunk-control-group label="3D Canvas">
+        <splunk-radio-input name="{{VIZ_NAMESPACE}}.enable3D" value="1">
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+        </splunk-radio-input>
+    </splunk-control-group>
+    <splunk-control-group label="Camera Controller">
+        <splunk-select name="{{VIZ_NAMESPACE}}.cameraController" value="trackball">
+            <option value="trackball">trackball</option>
+            <option value="orbit">orbit</option>
+            <option value="fly">fly</option>
+        </splunk-select>
+    </splunk-control-group>
+</form>
