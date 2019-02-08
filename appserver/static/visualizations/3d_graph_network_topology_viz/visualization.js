@@ -213,11 +213,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	                  })
 	                  .onNodeClick(that._drilldown.bind(that))
 	                  .graphData(data);
-	                  // .onNodeClick(node => {
-	                  //   console.log("node clicked");
-	                  //   console.log(node); // { id: "ex11-auth-scripted-input", name: "ex11-auth-scripted-input", val: 1, index: 16, …}
-	                  //   that._drilldown.bind(that);
-	                  // })
 
 	                  // if (cameraController == 'orbit') {
 	                  //   let angle = 0;
@@ -238,10 +233,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	                    // Change cursor when hovering on nodes (if drilldown enabled)
 	                    elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
 	                  })
-	                  .onNodeClick(node => {
-	                    console.log(node); // { id: "ex11-auth-scripted-input", name: "ex11-auth-scripted-input", val: 1, index: 16, …}
-	                    that._drilldown.bind(that);
-	                  })
+	                  .onNodeClick(that._drilldown.bind(that))
 	                  .graphData(data);
 	            }
 
