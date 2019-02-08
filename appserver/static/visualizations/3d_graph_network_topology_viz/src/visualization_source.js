@@ -6,6 +6,7 @@ define([
             'underscore',
             'vizapi/SplunkVisualizationBase',
             'vizapi/SplunkVisualizationUtils',
+            'd3',
             '3d-force-graph',
             'force-graph'
             // Add required assets to this list
@@ -15,6 +16,7 @@ define([
             _,
             SplunkVisualizationBase,
             SplunkVisualizationUtils,
+            d3,
             ForceGraph3D,
             ForceGraph
         ) {
@@ -60,7 +62,6 @@ define([
             if(this.logging) console.log('onConfigChange() - Entered');
 
             // Re-rendering the viz to apply config changes
-            // this.reflow();
             this.invalidateReflow();
         },
 
@@ -68,23 +69,20 @@ define([
         // The returned object will be passed to updateView as 'data'
         formatData: function(data) {
             if(this.logging) console.log('formatData() - Entered');
-
             // Expects:
             // <search> | stats count by src dst
 
             var fields = data.fields;
             var rows = data.rows;
-            var config = this._getConfig();
+            var nodes = [],
+                links = [];
 
             if (rows.length < 1 && fields.length < 1) {
                 return false;
             }
 
-            console.log(rows); // ["/opt/splunk/var/log/splunk/btool.log", "splunk_btool", "235"],[]
-            console.log(fields); // [{name: "source"}, {name: "sourcetype"},{name: "count"}]
-
-            var nodes = [],
-                links = [];
+            // console.log(rows);
+            // console.log(fields);
 
             // Avoid duplicates!
             let node_ids = new Set();
@@ -115,15 +113,12 @@ define([
                 links.push(new_link);
             });
 
-            var data = {
-              "nodes": nodes,
-              "links": links
-            };
-
-            // console.log(data);
             return {
               "fields": fields,
-              "data": data
+              "content": {
+                "nodes": nodes,
+                "links": links
+              }
             };
         },
 
@@ -131,19 +126,18 @@ define([
         //  'data' will be the data object returned from formatData or from the search
         //  'config' will be the configuration property object
         updateView: function(data, config) {
+            if (this.logging) console.log("updateView() - Entering");
 
-            var data = data.data;
-            
             // check for data
-            if (!data || data.length < 1) {
+            if (!data || data.content.nodes.length < 1) {
                 if(this.logging) console.log('updateView() - Error: no data');
                 return;
             }
 
-            var dataRows = data.rows;
             var that = this;
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
             var cameraController = this._getEscapedProperty('cameraController', config) || 'trackball';
+            var bgColor = this._getEscapedProperty('bgColor', config) || '#000011';
 
             this.useDrilldown = this._isEnabledDrilldown(config);
 
@@ -167,7 +161,8 @@ define([
                     elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
                   })
                   .onNodeClick(that._drilldown.bind(that))
-                  .graphData(data);
+                  .backgroundColor(bgColor)
+                  .graphData(data.content);
 
                   // if (cameraController == 'orbit') {
                   //   let angle = 0;
@@ -189,9 +184,10 @@ define([
                     elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
                   })
                   .onNodeClick(that._drilldown.bind(that))
-                  .graphData(data);
-            }
+                  .backgroundColor(bgColor)
+                  .graphData(data.content);
 
+            }
             // TODO careful at animation in 'fly' mode. It has to be paused somehow.
         },
 
@@ -238,19 +234,20 @@ define([
 
         _drilldown: function(d, i) {
             if(this.logging) console.log("drilldown() - Entered");
-            console.log(d);
+
             var fields = this.getCurrentData().fields;
             var drilldownDescription = {
                 action: SplunkVisualizationBase.FIELD_VALUE_DRILLDOWN,
                 data: {}
             };
 
-            console.log(fields);
-            console.log(d.data);
+            // console.log(d);
+            // console.log(fields);
+            drilldownDescription.data[fields[0].name] = d.id;
             // drilldownDescription.data[fields[0].name] = d.data.name;
             // drilldownDescription.data[fields[1].name] = d.parent.data.usecase;
 
-            // this.drilldown(drilldownDescription, d3.event);
+            this.drilldown(drilldownDescription, d3.event);
         },
 
         _getEscapedProperty: function(name, config) {
@@ -259,12 +256,12 @@ define([
         },
 
         _toggleAnimation: function(value) {
-            var resumeAnimation = SplunkVisualizationUtils.normalizeBoolean(value);
             if(this.logging) console.log('_toggleAnimation() - Resuming Animation ? ' + resumeAnimation);
 
             var elem = $("div.graphviz-container").get(0);
             var config = this._getConfig();
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
+            var resumeAnimation = SplunkVisualizationUtils.normalizeBoolean(value);
             var graph = enable3D ? this.graph3d(elem) : this.graph(elem);
 
             resumeAnimation ? graph.resumeAnimation() : graph.pauseAnimation();
@@ -274,15 +271,17 @@ define([
         reflow: function() {
             if(this.logging) console.log('reflow() - size this.el ('+this.$el.width()+','+this.$el.height()+')');
 
-            var elem = $("div.graphviz-container").get(0);
             var config = this._getConfig();
+            var elem = $("div.graphviz-container").get(0);
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
+            var bgColor = this._getEscapedProperty('bgColor', config) || '#000011';
 
             // Get data and re-render in a smaller/bigger canvas
             let { nodes, links } = this.graph3d.graphData();
             var graph = enable3D ? this.graph3d(elem) : this.graph(elem);
             graph.width(this.$el.width())
                 .height(this.$el.height())
+                .backgroundColor(bgColor)
                 .graphData({ nodes, links });
         }
     });
