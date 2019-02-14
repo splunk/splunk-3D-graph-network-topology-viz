@@ -74,6 +74,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	            if(this.logging) console.log('initialize() - Entered');
 
 	            SplunkVisualizationBase.prototype.initialize.apply(this, arguments);
+	            this.graph3d = null;
+	            this.graph = null;
+
 	            this.$el = $(this.el);
 	            this.uuid = this._get_uuid();
 	            // this.$el.css('id','viz_base')
@@ -85,9 +88,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	                                        '<i class="icon-pause"></i></a>' +
 	                                '</div>';
 	            this.$el.append(controllerbar);
-
-	            this.graph3d = ForceGraph3D();
-	            this.graph = ForceGraph();
 
 	            var that = this;
 
@@ -285,13 +285,15 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	            var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
 	            var bgColor = this._getEscapedProperty('bgColor', config) || '#000011';
 
-	            // Get data and re-render in a smaller/bigger canvas
-	            let { nodes, links } = this.graph3d.graphData();
-	            var graph = enable3D ? this.graph3d(elem) : this.graph(elem);
-	            graph.width(this.$el.width())
-	                .height(this.$el.height())
-	                .backgroundColor(bgColor)
-	                .graphData({ nodes, links });
+	            if (this.graph3d || this.graph){
+	                // Re-render in a smaller/bigger canvas
+	                let { nodes, links } = enable3D ? this.graph3d.graphData() : this.graph.graphData();
+	                var graph = enable3D ? this.graph3d(elem) : this.graph(elem);
+	                graph.width(this.$el.width())
+	                    .height(this.$el.height())
+	                    .backgroundColor(bgColor)
+	                    .graphData({ nodes, links });
+	            }
 	        }
 	    });
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
