@@ -107,9 +107,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        onConfigChange: function(config) {
 	            if(this.logging) console.log('onConfigChange() - Entered');
 
-	            // console.log(this.getCurrentConfig());
-	            // Re-rendering the viz to apply config changes
-	            this.invalidateReflow();
+	            var elem = $('div[name=cntl'+this.uuid+']');
+	            var showAnimationBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showAnimationBar', config));
+
+	            if (showAnimationBar && !elem.hasClass("show")) {
+	                elem.toggleClass("show");
+	            } else if (!showAnimationBar && elem.hasClass("show")) {
+	                elem.toggleClass("show");
+	            } else {
+	              // Re-rendering the viz to apply config changes
+	              this.invalidateReflow();
+	            }
 	        },
 
 	        // Optionally implement to format data returned from search.

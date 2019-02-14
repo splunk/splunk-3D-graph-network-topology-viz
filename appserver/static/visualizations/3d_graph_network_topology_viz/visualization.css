@@ -7,4 +7,9 @@ div.graphviz-controllers {
     position: absolute;
     top: 5px;
     right: 5px;
+    display: none;
+}
+
+div.graphviz-controllers.show {
+  display: block;
 }
