@@ -107,6 +107,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        onConfigChange: function(config) {
 	            if(this.logging) console.log('onConfigChange() - Entered');
 
+	            // console.log(this.getCurrentConfig());
 	            // Re-rendering the viz to apply config changes
 	            this.invalidateReflow();
 	        },
@@ -182,43 +183,29 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	            var that = this;
 	            var elem = $('div[name=' + this.uuid + ']').get(0);
-	            var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
-	            var cameraController = this._getEscapedProperty('cameraController', config) || 'trackball';
-	            var bgColor = this._getEscapedProperty('bgColor', config) || '#000011';
 
+	            this.enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
+	            this.bgColor = this._getEscapedProperty('bgColor', config) || '#000011';
+	            this.cameraController = this._getEscapedProperty('cameraController', config) || 'trackball';
 	            this.useDrilldown = this._isEnabledDrilldown(config);
 
-	            if (enable3D) {
-	                // Camera Controller update
-	                this.graph3d = ForceGraph3D({ controlType: cameraController });
-
-	                const distance = 1000;
-
-	                // Render graph
-	                this.graph3d(elem)
-	                  .cameraPosition({ z: distance })
-	                  .onNodeHover(node => {
-	                    // Change cursor when hovering on nodes (if drilldown enabled)
-	                    elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
-	                  })
-	                  .onNodeClick(that._drilldown.bind(that))
-	                  .backgroundColor(bgColor)
-	                  .graphData(data.content);
+	            // Rendering graphs
+	            if (this.enable3D) {
+	                this._load_3d_graph(elem, data.content);
+	                this.graph = ForceGraph();
 
 	            } else {
+	                this.graph = ForceGraph()(elem)
+	                    .onNodeHover(node => {
+	                      // Change cursor when hovering on nodes (if drilldown enabled)
+	                      elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
+	                    })
+	                    .onNodeClick(that._drilldown.bind(that))
+	                    .backgroundColor(this.bgColor)
+	                    .graphData(data.content);
 
-	                // Render graph
-	                this.graph(elem)
-	                  .onNodeHover(node => {
-	                    // Change cursor when hovering on nodes (if drilldown enabled)
-	                    elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
-	                  })
-	                  .onNodeClick(that._drilldown.bind(that))
-	                  .backgroundColor(bgColor)
-	                  .graphData(data.content);
-
+	                this.graph3d = ForceGraph3D({ controlType: this.cameraController });
 	            }
-	            // TODO careful at animation in 'fly' mode. It has to be paused somehow.
 	        },
 
 	        // Search data params
@@ -227,6 +214,21 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	                outputMode: SplunkVisualizationBase.ROW_MAJOR_OUTPUT_MODE,
 	                count: 0
 	            });
+	        },
+
+	        _load_3d_graph: function(elem, data){
+	            const distance = 1000;
+	            var that = this;
+
+	            this.graph3d = ForceGraph3D({ controlType: this.cameraController })(elem)
+	              .cameraPosition({ z: distance })
+	              .onNodeHover(node => {
+	                // Change cursor when hovering on nodes (if drilldown enabled)
+	                elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
+	              })
+	              .onNodeClick(that._drilldown.bind(that))
+	              .backgroundColor(this.bgColor)
+	              .graphData(data);
 	        },
 
 	        _getConfig: function() {
@@ -282,14 +284,29 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	            var config = this._getConfig();
 	            var elem = $('div[name=' + this.uuid + ']').get(0);
+	            var cameraController = this._getEscapedProperty('cameraController', config);
 	            var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
 	            var bgColor = this._getEscapedProperty('bgColor', config) || '#000011';
 
+	            // Re-render canvas opportunely
 	            if (this.graph3d || this.graph){
-	                // Re-render in a smaller/bigger canvas
-	                let { nodes, links } = enable3D ? this.graph3d.graphData() : this.graph.graphData();
-	                var graph = enable3D ? this.graph3d(elem) : this.graph(elem);
-	                graph.width(this.$el.width())
+	              var hasCanvasChanged = this.enable3D != enable3D;
+	              this.enable3D = enable3D;
+
+	              // Get data stored in graph
+	              let { nodes, links } = hasCanvasChanged ?
+	                    (enable3D ? this.graph.graphData() : this.graph3d.graphData()) : 
+	                        (enable3D ? this.graph3d.graphData() : this.graph.graphData());
+
+	              if (enable3D && this.cameraController != cameraController) {
+	                  // Rebuild graph w/ different camera type
+	                  this.cameraController = cameraController;
+	                  this._load_3d_graph(elem, {nodes, links});
+	              }
+
+	              // Reload in resized canvas
+	              var graph = enable3D ? this.graph3d(elem) : this.graph(elem);
+	              graph.width(this.$el.width())
 	                    .height(this.$el.height())
 	                    .backgroundColor(bgColor)
 	                    .graphData({ nodes, links });
