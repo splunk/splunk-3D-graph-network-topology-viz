@@ -2,3 +2,9 @@
  * CSS rules for visualization.
  * Class namespacing is good practice.
  */
+
+div.graphviz-controllers {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}

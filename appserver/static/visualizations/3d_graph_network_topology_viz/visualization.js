@@ -75,15 +75,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	            SplunkVisualizationBase.prototype.initialize.apply(this, arguments);
 	            this.$el = $(this.el);
+	            this.uuid = this._get_uuid();
 	            // this.$el.css('id','viz_base')
-	            // this.$el.append('<div id="graphvizdiv" style="width: 100% !important; height: 100% !important"></div>');
-	            this.$el.append('<div class="graphviz-container"></div>');
-	            this.$el.append('<div style="position: absolute; top: 5px; right: 5px;">' +
-	              '<a id="btnPlayAnimation" style="margin: 8px;" href="#" class="btn btn-primary">' +
-	                '<i class="icon-play"></i></a>' +
-	              '<a id="btnPauseAnimation" style="margin: 8px;" href="#" class="btn btn-primary">' +
-	                '<i class="icon-pause"></i></a>' +
-	              '</div>');
+	            this.$el.append('<div class="graphviz-container" name="' + this.uuid + '"></div>');
+	            var controllerbar = '<div class="graphviz-controllers" name="cntl' + this.uuid + '">' +
+	                                    '<a id="btnPlayAnimation" style="margin: 8px;" href="#" class="btn btn-primary">' +
+	                                        '<i class="icon-play"></i></a>' +
+	                                    '<a id="btnPauseAnimation" style="margin: 8px;" href="#" class="btn btn-primary">' +
+	                                        '<i class="icon-pause"></i></a>' +
+	                                '</div>';
+	            this.$el.append(controllerbar);
 
 	            this.graph3d = ForceGraph3D();
 	            this.graph = ForceGraph();
@@ -91,12 +92,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	            var that = this;
 
 	            setTimeout(() => {
-	              $('#btnPlayAnimation').on('click', event => {
+	              $('div[name=cntl'+that.uuid+'] > a#btnPlayAnimation').on('click', event => {
 	                event.preventDefault(); // to avoid re-direction
 	                that._toggleAnimation(1);
 	              });
 
-	              $('#btnPauseAnimation').on('click', event => {
+	              $('div[name=cntl'+that.uuid+'] > a#btnPauseAnimation').on('click', event => {
 	                event.preventDefault(); // to avoid re-direction
 	                that._toggleAnimation(0);
 	              });
@@ -180,17 +181,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	            }
 
 	            var that = this;
+	            var elem = $('div[name=' + this.uuid + ']').get(0);
 	            var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
 	            var cameraController = this._getEscapedProperty('cameraController', config) || 'trackball';
 	            var bgColor = this._getEscapedProperty('bgColor', config) || '#000011';
 
 	            this.useDrilldown = this._isEnabledDrilldown(config);
-
-	            // Random HARDCODED tree
-	            // data = this._getData();
-
-	            var $this = $("div.graphviz-container");
-	            var elem = $this.get(0);
 
 	            if (enable3D) {
 	                // Camera Controller update
@@ -209,19 +205,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	                  .backgroundColor(bgColor)
 	                  .graphData(data.content);
 
-	                  // if (cameraController == 'orbit') {
-	                  //   let angle = 0;
-	                  //   setInterval(() => {
-	                  //     if (this.isRotationActive) {
-	                  //       this.graph3d.cameraPosition({
-	                  //         x: distance * Math.sin(angle),
-	                  //         z: distance * Math.cos(angle)
-	                  //       });
-	                  //       angle += Math.PI / 300;
-	                  //     }
-	                  //   }, 10);
-	                  // }
 	            } else {
+
 	                // Render graph
 	                this.graph(elem)
 	                  .onNodeHover(node => {
@@ -248,28 +233,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	            return this._config;
 	        },
 
-	        _getData: function() {
-	          const N = 300;
-	          return {
-	            nodes: [...Array(N).keys()].map(i => ({ id: i })),
-	            links: [...Array(N).keys()]
-	              .filter(id => id)
-	              .map(id => ({
-	                source: id,
-	                target: Math.round(Math.random() * (id-1))
-	              }))
-	          };
-	          // return {
-	          //     "nodes": [
-	          //         { "id": "id1", "name": "name1", "val": 1 },
-	          //         { "id": "id2", "name": "name2", "val": 30 },
-	          //         { "id": "id3", "name": "name3", "val": 10 }
-	          //     ],
-	          //     "links": [
-	          //         { "source": "id1", "target": "id2", "value": 10 },
-	          //         { "source": "id1", "target": "id3", "value": 3 }
-	          //     ]
-	          // };
+	        _get_uuid: function () {
+	          // Math.random should be unique because of its seeding algorithm.
+	          // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+	          // after the decimal.
+	          return '_' + Math.random().toString(36).substr(2, 9);
 	        },
 
 	        _isEnabledDrilldown: function(config) {
@@ -286,11 +254,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	                data: {}
 	            };
 
-	            // console.log(d);
-	            // console.log(fields);
 	            drilldownDescription.data[fields[0].name] = d.id;
-	            // drilldownDescription.data[fields[0].name] = d.data.name;
-	            // drilldownDescription.data[fields[1].name] = d.parent.data.usecase;
 
 	            this.drilldown(drilldownDescription, d3.event);
 	        },
@@ -301,9 +265,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        },
 
 	        _toggleAnimation: function(value) {
-	            if(this.logging) console.log('_toggleAnimation() - Resuming Animation ? ' + resumeAnimation);
+	            if(this.logging) console.log('_toggleAnimation() - Resuming Animation ? ' + value);
 
-	            var elem = $("div.graphviz-container").get(0);
+	            var elem = $('div[name=' + this.uuid + ']').get(0);
 	            var config = this._getConfig();
 	            var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
 	            var resumeAnimation = SplunkVisualizationUtils.normalizeBoolean(value);
@@ -317,7 +281,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	            if(this.logging) console.log('reflow() - size this.el ('+this.$el.width()+','+this.$el.height()+')');
 
 	            var config = this._getConfig();
-	            var elem = $("div.graphviz-container").get(0);
+	            var elem = $('div[name=' + this.uuid + ']').get(0);
 	            var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
 	            var bgColor = this._getEscapedProperty('bgColor', config) || '#000011';
 
