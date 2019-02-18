@@ -137,14 +137,37 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	            var fields = data.fields;
 	            var rows = data.rows;
 	            var nodes = [],
-	                links = [];
+	                links = [],
+	                indexColor = -1,
+	                indexSize = -1;
 
 	            if (rows.length < 1 && fields.length < 1) {
 	                return false;
 	            }
 
-	            // console.log(rows);
-	            // console.log(fields);
+	            // Extra customisation fields given
+	            if (fields.length > 3) {
+	                if(this.logging) console.log('formatData() - Got extra customisation fields');
+	  
+	                // Assumption: colors are consecutive as well as size/weight
+	                indexColor = fields.findIndex(obj => obj.name === "color");
+	                var indexColorDst = indexColor +1;
+	  
+	                if (indexColor < 0) {
+	                  throw new SplunkVisualizationBase.VisualizationError(
+	                    'Check the Statistics tab. To assign custom colors to nodes, the results must include a column representing <color>.'
+	                  );
+	                };
+	  
+	                indexSize = fields.findIndex(obj => obj.name === "weight");
+	                var indexSizeDst = indexSize +1;
+	  
+	                if (indexSize < 0) {
+	                  throw new SplunkVisualizationBase.VisualizationError(
+	                    'Check the Statistics tab. To assign custom weights to nodes, the results must include a column representing <weight>.'
+	                  );
+	                };
+	            }
 
 	            // Avoid duplicates!
 	            let node_ids = new Set();
@@ -154,7 +177,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	                _.each([...Array(2).keys()], function(ix) {
 	                  var id = row[ix],
 	                      name = id;
-	                      // TODO which name??
 	                      // name = fields[ix].name + ": " + id;
 
 	                  if (!node_ids.has(id)){
@@ -163,6 +185,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	                      "name": name,
 	                      "val": 1,
 	                    };
+	                    if (indexColor > 0) new_node["color"] = (ix < 1) ? row[indexColor] : row[indexColorDst];
+	                    if (indexSize > 0) new_node["val"] = (ix < 1) ? row[indexSize] : row[indexSizeDst];
+
 	                    nodes.push(new_node);
 	                    node_ids.add(id);
 	                  }
