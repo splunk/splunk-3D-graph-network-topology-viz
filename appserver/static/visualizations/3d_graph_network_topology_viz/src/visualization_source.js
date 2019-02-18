@@ -29,7 +29,6 @@ define([
             if(this.logging) console.log('initialize() - Entered');
 
             SplunkVisualizationBase.prototype.initialize.apply(this, arguments);
-            this.graph3d = null;
             this.graph = null;
 
             this.$el = $(this.el);
@@ -59,16 +58,24 @@ define([
             }, 100);
         },
 
+        // Called at every change to visualization format
+        // config contains only the change to the viz configuration
         onConfigChange: function(config) {
             if(this.logging) console.log('onConfigChange() - Entered');
 
             var elem = $('div[name=cntl'+this.uuid+']');
-            var showAnimationBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showAnimationBar', config));
+            var curr_config = this.getCurrentConfig();
+            var key_tokens = Object.keys(config)[0].split(/[\s.]+/);
 
-            if (showAnimationBar && !elem.hasClass("show")) {
-                elem.toggleClass("show");
-            } else if (!showAnimationBar && elem.hasClass("show")) {
-                elem.toggleClass("show");
+            if ('showAnimationBar' === key_tokens[key_tokens.length-1]){
+                var showAnimationBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showAnimationBar', config));
+
+                if (showAnimationBar && !elem.hasClass("show")) {
+                    elem.toggleClass("show");
+                } else if (!showAnimationBar && elem.hasClass("show")) {
+                    elem.toggleClass("show");
+                }
+
             } else {
               // Re-rendering the viz to apply config changes
               this.invalidateReflow();
@@ -147,28 +154,23 @@ define([
             var that = this;
             var elem = $('div[name=' + this.uuid + ']').get(0);
 
-            this.enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
-            this.bgColor = this._getEscapedProperty('bgColor', config) || '#000011';
-            this.cameraController = this._getEscapedProperty('cameraController', config) || 'trackball';
+            var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
+            var params = {
+              "bgColor": this._getEscapedProperty('bgColor', config) || '#000011',
+              "dagMode": this._getEscapedProperty('dagMode', config) || 'null',
+              "cameraController": this._getEscapedProperty('cameraController', config) || 'trackball'
+            };
             this.useDrilldown = this._isEnabledDrilldown(config);
 
-            // Rendering graphs
-            if (this.enable3D) {
-                this._load_3d_graph(elem, data.content);
-                this.graph = ForceGraph();
-
+            // Load graph
+            if (enable3D) {
+                this._load_3d_graph(elem, params);
             } else {
-                this.graph = ForceGraph()(elem)
-                    .onNodeHover(node => {
-                      // Change cursor when hovering on nodes (if drilldown enabled)
-                      elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
-                    })
-                    .onNodeClick(that._drilldown.bind(that))
-                    .backgroundColor(this.bgColor)
-                    .graphData(data.content);
-
-                this.graph3d = ForceGraph3D({ controlType: this.cameraController });
+                this._load_2d_graph(elem, params);
             }
+
+            // Render graph
+            this.graph(elem).graphData(data.content);
         },
 
         // Search data params
@@ -179,23 +181,32 @@ define([
             });
         },
 
-        _load_3d_graph: function(elem, data){
+        _load_2d_graph: function(elem, params){
+          var that = this;
+
+          this.graph = ForceGraph()(elem)
+              .onNodeHover(node => {
+                // Change cursor when hovering on nodes (if drilldown enabled)
+                elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
+              })
+              .onNodeClick(that._drilldown.bind(that))
+              .backgroundColor(params['bgColor'])
+              .dagMode(params['dagMode']);
+        },
+
+        _load_3d_graph: function(elem, params){
             const distance = 1000;
             var that = this;
 
-            this.graph3d = ForceGraph3D({ controlType: this.cameraController })(elem)
+            this.graph = ForceGraph3D({ controlType: params['cameraController'] })(elem)
               .cameraPosition({ z: distance })
               .onNodeHover(node => {
                 // Change cursor when hovering on nodes (if drilldown enabled)
                 elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
               })
               .onNodeClick(that._drilldown.bind(that))
-              .backgroundColor(this.bgColor)
-              .graphData(data);
-        },
-
-        _getConfig: function() {
-            return this._config;
+              .backgroundColor(params['bgColor'])
+              .dagMode(params['dagMode']);
         },
 
         _get_uuid: function () {
@@ -233,7 +244,8 @@ define([
             if(this.logging) console.log('_toggleAnimation() - Resuming Animation ? ' + value);
 
             var elem = $('div[name=' + this.uuid + ']').get(0);
-            var config = this._getConfig();
+            var config = this.getCurrentConfig();
+
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
             var resumeAnimation = SplunkVisualizationUtils.normalizeBoolean(value);
             var graph = enable3D ? this.graph3d(elem) : this.graph(elem);
@@ -245,33 +257,33 @@ define([
         reflow: function() {
             if(this.logging) console.log('reflow() - size this.el ('+this.$el.width()+','+this.$el.height()+')');
 
-            var config = this._getConfig();
+            var config = this.getCurrentConfig();
             var elem = $('div[name=' + this.uuid + ']').get(0);
-            var cameraController = this._getEscapedProperty('cameraController', config);
+
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
-            var bgColor = this._getEscapedProperty('bgColor', config) || '#000011';
+            var params = {
+              "bgColor": this._getEscapedProperty('bgColor', config) || '#000011',
+              "dagMode": this._getEscapedProperty('dagMode', config) || 'null',
+              "cameraController": this._getEscapedProperty('cameraController', config)
+            }
 
-            // Re-render canvas opportunely
-            if (this.graph3d || this.graph){
-              var hasCanvasChanged = this.enable3D != enable3D;
-              this.enable3D = enable3D;
-
+            if (this.graph) {
               // Get data stored in graph
-              let { nodes, links } = hasCanvasChanged ?
-                    (enable3D ? this.graph.graphData() : this.graph3d.graphData()) : 
-                        (enable3D ? this.graph3d.graphData() : this.graph.graphData());
+              let { nodes, links } = this.graph.graphData();
 
-              if (enable3D && this.cameraController != cameraController) {
-                  // Rebuild graph w/ different camera type
-                  this.cameraController = cameraController;
-                  this._load_3d_graph(elem, {nodes, links});
+              if (enable3D) {
+                  if(this.logging) console.log("reflow() - 3D graph");
+                  this._load_3d_graph(elem, params);
+
+              } else {
+                  if(this.logging) console.log("reflow() - 2D graph");
+                  this._load_2d_graph(elem, params);
               }
 
-              // Reload in resized canvas
-              var graph = enable3D ? this.graph3d(elem) : this.graph(elem);
+              // Re-render in re-sized canvas
+              var graph = this.graph(elem);
               graph.width(this.$el.width())
                     .height(this.$el.height())
-                    .backgroundColor(bgColor)
                     .graphData({ nodes, links });
             }
         }

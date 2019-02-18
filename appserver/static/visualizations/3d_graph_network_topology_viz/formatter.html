@@ -1,28 +1,46 @@
 <form class="splunk-formatter-section" section-label="General">
     <!-- Add html here to create formatter options -->
-    <splunk-control-group label="3D Canvas">
-        <splunk-radio-input name="{{VIZ_NAMESPACE}}.enable3D" value="1">
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-        </splunk-radio-input>
-    </splunk-control-group>
     <splunk-control-group label="Show Animation Controls">
       <splunk-radio-input name="{{VIZ_NAMESPACE}}.showAnimationBar" value="0">
           <option value="1">Yes</option>
           <option value="0">No</option>
       </splunk-radio-input>
     </splunk-control-group>
-    <splunk-control-group label="Camera Controller">
-        <splunk-select name="{{VIZ_NAMESPACE}}.cameraController" value="trackball">
-            <option value="trackball">trackball</option>
-            <option value="orbit">orbit</option>
-            <option value="fly">fly</option>
-        </splunk-select>
-    </splunk-control-group>
-</form>
-<form class="splunk-formatter-section" section-label="Colors">
     <splunk-control-group label="Background Color">
       <splunk-color-picker name="{{VIZ_NAMESPACE}}.bgColor" value="#000011">
       </splunk-color-picker>
     </splunk-control-group>
+</form>
+<form class="splunk-formatter-section" section-label="Canvas Format">
+  <splunk-control-group label="Use 3D">
+      <splunk-radio-input name="{{VIZ_NAMESPACE}}.enable3D" value="1">
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+      </splunk-radio-input>
+  </splunk-control-group>
+  <splunk-control-group label="DAG Orientation">
+    <splunk-select name="{{VIZ_NAMESPACE}}.dagMode" value="null">
+      <option value="null">disabled</option>
+      <option value="td">top-down</option>
+      <option value="bu">bottom-up</option>
+      <option value="lr">left-to-right</option>
+      <option value="rl">right-to-left</option>
+      <option value="zout">near-to-far (3D only)</option>
+      <option value="zin">far-to-near (3D only)</option>
+      <option value="radialout">outwards-radially</option>
+      <option value="radialin">inwards-radially</option>
+    </splunk-select>
+  </splunk-control-group>
+  <div>
+    <span style="display:block; margin: 15px 0px 15px 20px; font-size: 85%; color: #999;">
+      3D Settings
+    </span>
+  </div>
+  <splunk-control-group label="Camera Controller">
+      <splunk-select name="{{VIZ_NAMESPACE}}.cameraController" value="trackball">
+          <option value="trackball">trackball</option>
+          <option value="orbit">orbit</option>
+          <option value="fly">fly</option>
+      </splunk-select>
+  </splunk-control-group>
 </form>
