@@ -3,11 +3,27 @@
  * Class namespacing is good practice.
  */
 
+ div.graphviz-container[name^='3d_'] {
+  display: block;
+}
+
+div.graphviz-container[name^='3d_'].hide {
+  display: none;
+}
+
+div.graphviz-container[name^='_'] {
+  display: block;
+}
+
+div.graphviz-container[name^='_'].hide {
+  display: none;
+}
+
 div.graphviz-controllers {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    display: none;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: none;
 }
 
 div.graphviz-controllers.show {
