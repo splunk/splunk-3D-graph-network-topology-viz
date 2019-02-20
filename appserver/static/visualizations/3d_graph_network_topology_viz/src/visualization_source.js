@@ -257,6 +257,7 @@ define([
 
         _getEscapedProperty: function(name, config) {
             var propertyValue = config[this.getPropertyNamespaceInfo().propertyNamespace + name];
+            if (propertyValue !== undefined ) propertyValue = propertyValue.replace(/"/g, '');
             return SplunkVisualizationUtils.escapeHtml(propertyValue);
         },
 
