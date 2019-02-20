@@ -299,6 +299,7 @@ define([
 
             graph.pauseAnimation();
             graph.resumeAnimation();
+            graph.enableZoomPanInteraction(true);
         },
 
         _toggleAnimationBar: function(value) {

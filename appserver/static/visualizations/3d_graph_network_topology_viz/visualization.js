@@ -344,6 +344,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	            graph.pauseAnimation();
 	            graph.resumeAnimation();
+	            graph.enableZoomPanInteraction(true);
 	        },
 
 	        _toggleAnimationBar: function(value) {
