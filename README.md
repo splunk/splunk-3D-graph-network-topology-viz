@@ -14,7 +14,32 @@ Splunk-3d-graph-network-topology-viz can be downloaded from **github** and insta
 - Restart splunk to apply changes `$SPLUNK_HOME/bin/splunk restart`
 
 ## Usage
-TODO 
+`<search> | stats count by src dest`
+
+Replace `src` and `dest` with your fields to start.
+
+### Customise Nodes
+If you want to assign specific **colors** and/or **weights** to each single node, make sure to pass these fields **after the transforming command** in the search!
+
+> **Valid fields syntax**: `color [<color_2>]` and `weight [<weight_2>]`
+
+Optional fields refer to destination nodes, default values will be used if not given.
+
+#### Example
+* Add a lookup table defining these additional values to your Splunk instance. An example below:
+
+    ```
+    $~ cat <your_lookup_table>.csv
+    source,color,weight
+    A,#010101,50
+    B,#ff0101,10
+    ...
+    ```
+
+* Execute your SPL
+    `<search> | stats count by src dest | lookup <your_lookup_table> source AS src | lookup <your_lookup_table> source AS dest OUTPUTNEW color AS color_dest, weight AS weight_dest`
+
+
 
 ## EOF 
 * **:heart: it?** Tweet here : [`@splunk`](https://twitter.com/splunk) or email us at [`fdse [@] s p l u n k {.} C O M`](mailto:fdse@splunk.com?subject=[Splunk-3D-Graph-Network-Topology-Viz]%20Hi%20there!)
