@@ -284,7 +284,21 @@ define([
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
             var graph = (enable3D) ? this.graph3d : this.graph;
 
-            resumeAnimation ? graph.resumeAnimation() : graph.pauseAnimation();
+            if (enable3D) {
+                resumeAnimation ? graph.resumeAnimation() : graph.pauseAnimation();
+                return;
+            }
+
+            // Handle Animation for 2D Graph
+            // - FIXING library misbehaviour
+            if (!resumeAnimation) {
+                graph.pauseAnimation();
+                graph.enableZoomPanInteraction(false);
+                return;
+            }
+
+            graph.pauseAnimation();
+            graph.resumeAnimation();
         },
 
         _toggleAnimationBar: function(value) {
