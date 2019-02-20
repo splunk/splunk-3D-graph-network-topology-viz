@@ -25,7 +25,7 @@ define([
     return SplunkVisualizationBase.extend({
 
         initialize: function() {
-            this.logging = true;
+            this.logging = false;
             if(this.logging) console.log('initialize() - Entered');
 
             SplunkVisualizationBase.prototype.initialize.apply(this, arguments);
@@ -66,7 +66,6 @@ define([
         onConfigChange: function(config) {
             if(this.logging) console.log('onConfigChange() - Entered');
 
-            var $elem = $('div[name=cntl'+this.uuid+']');
             var curr_config = this.getCurrentConfig();
             var key_tokens = Object.keys(config)[0].split(/[\s.]+/);
 
@@ -75,11 +74,7 @@ define([
             if ('showAnimationBar' === key_tokens[key_tokens.length-1]){
                 var showAnimationBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showAnimationBar', config));
 
-                if (showAnimationBar && !$elem.hasClass("show")) {
-                    $elem.toggleClass("show");
-                } else if (!showAnimationBar && $elem.hasClass("show")) {
-                    $elem.toggleClass("show");
-                }
+                this._toggleAnimationBar(showAnimationBar);
 
             } else {
               // Re-rendering the viz to apply config changes
@@ -106,28 +101,15 @@ define([
             }
 
             // Extra customisation fields given
-            // TODO improve this detection
             if (fields.length > 3) {
-              if(this.logging) console.log('formatData() - Got extra customisation fields');
+                if(this.logging) console.log('formatData() - Got extra customisation fields');
 
-              // Assumption: colors are consecutive as well as size/weight
-              indexColor = fields.findIndex(obj => obj.name === "color");
-              var indexColorDst = indexColor +1;
+                // Assumption: colors are consecutive as well as size/weight
+                indexColor = fields.findIndex(obj => obj.name === "color");
+                var indexColorDst = indexColor +1;
 
-              if (indexColor < 0) {
-                throw new SplunkVisualizationBase.VisualizationError(
-                  'Check the Statistics tab. To assign custom colors to nodes, the results must include a column representing <color>.'
-                );
-              };
-
-              indexSize = fields.findIndex(obj => obj.name === "weight");
-              var indexSizeDst = indexSize +1;
-
-              if (indexSize < 0) {
-                throw new SplunkVisualizationBase.VisualizationError(
-                  'Check the Statistics tab. To assign custom weights to nodes, the results must include a column representing <weight>.'
-                );
-              };
+                indexSize = fields.findIndex(obj => obj.name === "weight");
+                var indexSizeDst = indexSize +1;
             }
 
             // Avoid duplicates!
@@ -187,12 +169,16 @@ define([
 
             var that = this;
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
+            var showAnimationBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showAnimationBar', config));
             var params = {
               "bgColor": this._getEscapedProperty('bgColor', config) || '#000011',
               "dagMode": this._getEscapedProperty('dagMode', config) || 'null',
               "cameraController": this._getEscapedProperty('cameraController', config) || 'trackball'
             };
             this.useDrilldown = this._isEnabledDrilldown(config);
+
+            // Show/Hide Animation Bar
+            this._toggleAnimationBar(showAnimationBar);
 
             // Load graphs
             this._load3DGraph($elem3d.get(0), params);
@@ -286,6 +272,18 @@ define([
             resumeAnimation ? graph.resumeAnimation() : graph.pauseAnimation();
         },
 
+        _toggleAnimationBar: function(value) {
+            if (this.logging) console.log("_toggleAnimationBar() - Entered {"+value+"}");
+
+            var $elem = $('div.graphviz-controllers[name=cntl'+this.uuid+']');
+            
+            if (value && !$elem.hasClass("show")) {
+                $elem.toggleClass("show");
+            } else if (!value && $elem.hasClass("show")) {
+                $elem.toggleClass("show");
+            }
+        },
+
         // Override to respond to re-sizing events
         reflow: function() {
             if(this.logging) console.log('reflow() - size this.el ('+this.$el.width()+','+this.$el.height()+')');
@@ -312,6 +310,7 @@ define([
 
             if (enable3D){
                 if(this.logging) console.log("reflow() - updating 3D graph");
+
                 this._load3DGraph($elem3d.get(0), params);
                 this.graph3d.width(width)
                     .height(height)
@@ -319,6 +318,7 @@ define([
 
             } else {
                 if(this.logging) console.log("reflow() - updating 2D graph");
+
                 // No need to re-load the graph w/ 2D Canvas
                 this.graph.width(width)
                     .height(height)
