@@ -176,6 +176,20 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	                    if (indexColor > 0) new_node["color"] = (ix < 1) ? row[indexColor] : row[indexColorDst];
 	                    if (indexSize > 0) new_node["val"] = (ix < 1) ? row[indexSize] : row[indexSizeDst];
 
+	                    // Sanity checks
+	                    if (new_node.hasOwnProperty('color')) {
+	                        if (new_node['color'] && !new_node['color'].match("^#")) {
+	                          throw new SplunkVisualizationBase.VisualizationError(
+	                              'Check the Statistics tab. To assign custom colors to nodes, valid hex codes shall be returned.'
+	                          );
+	                        }
+	                    }
+	                    if (new_node['val'] && new_node['val'] != parseInt(new_node['val'])) {
+	                        throw new SplunkVisualizationBase.VisualizationError(
+	                            'Check the Statistics tab. To assign custom weights to nodes, valid numbers shall be returned.'
+	                        );
+	                    }
+
 	                    nodes.push(new_node);
 	                    node_ids.add(id);
 	                  }
