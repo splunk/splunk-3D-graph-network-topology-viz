@@ -186,7 +186,7 @@ define([
             var showAnimationBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showAnimationBar', config));
             var params = {
               "bgColor": this._getEscapedProperty('bgColor', config) || '#000011',
-              "dagMode": this._getEscapedProperty('dagMode', config) || 'null',
+              "dagMode": this._normalizeNull(this._getEscapedProperty('dagMode', config) || 'null'),
               "cameraController": this._getEscapedProperty('cameraController', config) || 'trackball'
             };
             this.useDrilldown = this._isEnabledDrilldown(config);
@@ -314,6 +314,10 @@ define([
             }
         },
 
+        _normalizeNull: function(value) {
+            return value === "null" ? null : value;
+        },
+
         // Override to respond to re-sizing events
         reflow: function() {
             if(this.logging) console.log('reflow() - size this.el ('+this.$el.width()+','+this.$el.height()+')');
@@ -334,7 +338,7 @@ define([
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
             var params = {
               "bgColor": this._getEscapedProperty('bgColor', config) || '#000011',
-              "dagMode": this._getEscapedProperty('dagMode', config) || 'null',
+              "dagMode": this._normalizeNull(this._getEscapedProperty('dagMode', config) || 'null'),
               "cameraController": this._getEscapedProperty('cameraController', config) || 'trackball'
             }
 
