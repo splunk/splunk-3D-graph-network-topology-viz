@@ -362,13 +362,25 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	            }
 
 	            // Handle Animation for 2D Graph
-	            // - FIXING library misbehaviour
 	            if (!resumeAnimation) {
 	                graph.pauseAnimation();
 	                graph.enableZoomPanInteraction(false);
+
+	                // Work-around a library misbehaviour
+	                var max = 2,
+	                    cnt = 0,
+	                    id = setInterval(() => {
+	                      while(cnt < max) {
+	                        graph.resumeAnimation();
+	                        graph.pauseAnimation();
+	                        cnt = cnt + 1;
+	                      }
+	                      clearInterval(id);
+	                    }, 50);
 	                return;
 	            }
 
+	            // Work-around a library misbehaviour
 	            graph.pauseAnimation();
 	            graph.resumeAnimation();
 	            graph.enableZoomPanInteraction(true);
