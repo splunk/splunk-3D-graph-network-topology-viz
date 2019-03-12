@@ -112,7 +112,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        onConfigChange: function(config) {
 	            if(this.logging) console.log('onConfigChange() - Entered');
 
-	            var curr_config = this.getCurrentConfig();
 	            var key_tokens = Object.keys(config)[0].split(/[\s.]+/);
 
 	            this.hasCanvasChanged = ('enable3D') === key_tokens[key_tokens.length-1];
@@ -448,6 +447,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	            if (this.hasCanvasChanged) {
 	                $elem.toggleClass("hide");
 	                $elem3d.toggleClass("hide");
+	                // Resetting flag to prevent errors
+	                this.hasCanvasChanged = false;
 	            }
 	        }
 	    });
