@@ -77,6 +77,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	            this.graph = null;
 	            this.graph3d = null;
 	            this.hasCanvasChanged = false;
+	            this.disableDagMode = false;
 
 	            this.$el = $(this.el);
 	            this.uuid = this._getUUID();
@@ -116,6 +117,28 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	            this.hasCanvasChanged = ('enable3D') === key_tokens[key_tokens.length-1];
 
+	            if (this.disableDagMode && ('dagMode') === key_tokens[key_tokens.length-1]) {
+	                var dagMode = this._normalizeNull(this._getEscapedProperty('dagMode', config) || 'null');
+
+	                if (dagMode !== null) {
+	                    // Show error
+	                    $('splunk-select[name$=dagMode] > a').css("border", "2px solid red");
+	                    var errMsg = "DAG mode must be disabled as current data contains cycle nodes",
+	                        errMsgHtml = '<div class="error-msg">' +
+	                                        '<span>' + errMsg + '</span>' +
+	                                     '</div>';
+
+	                    if ($('div.error-msg').length < 1)
+	                        $('splunk-select[name$=dagMode]').parents('splunk-control-group').append(errMsgHtml);
+
+	                    return;
+	                }
+
+	                // Remove error message and restore style
+	                $('splunk-select[name$=dagMode] > a').css("border", "1px solid rgb(195, 203, 212)");
+	                $('div.error-msg').remove();
+	            }
+
 	            if ('showAnimationBar' === key_tokens[key_tokens.length-1]){
 	                var showAnimationBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showAnimationBar', config));
 
@@ -136,6 +159,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	            var fields = data.fields;
 	            var rows = data.rows;
+	            var that = this;
 	            var nodes = [],
 	                links = [],
 	                indexColor = -1,
@@ -194,6 +218,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	                    node_ids.add(id);
 	                  }
 	                });
+
+	                // Check for loops in data > DAG mode limited
+	                if (row[0] === row[1]) that.disableDagMode = true;
 
 	                var new_link = {
 	                  "source": row[0],
