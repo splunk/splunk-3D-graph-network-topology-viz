@@ -21,6 +21,15 @@ define([
             ForceGraph
         ) {
 
+    var MAX_EDGE_SZ = 18; // 18px
+
+    var COLOR_SRC_NODE_FIELDNAME = "color_src";
+    var COLOR_DEST_NODE_FIELDNAME = "color_dest";
+    var SZ_SRC_NODE_FIELDNAME = "weight_src";
+    var SZ_DEST_NODE_FIELDNAME = "weight_dest";
+    var COLOR_EDGE_FIELDNAME = "edge_color";
+    var SZ_EDGE_FIELDNAME = "edge_weight";
+
     // Extend from SplunkVisualizationBase
     return SplunkVisualizationBase.extend({
 
@@ -111,13 +120,18 @@ define([
             // Expects:
             // <search> | stats count by src dst
 
+            var config = this.getCurrentConfig();
             var fields = data.fields;
             var rows = data.rows;
             var that = this;
             var nodes = [],
                 links = [],
-                indexColor = -1,
-                indexSize = -1;
+                idxLkColor = -1,
+                idxLkWidth = fields.findIndex(obj => obj.name === SZ_EDGE_FIELDNAME),
+                idxNdColor = -1,
+                idxNdSize = -1,
+                idxNdColorDst = -1,
+                idxNdSizeDst = -1;
 
             if (rows.length < 1 && fields.length < 1) {
                 return false;
@@ -127,16 +141,19 @@ define([
             if (fields.length > 3) {
                 if(this.logging) console.log('formatData() - Got extra customisation fields');
 
-                // Assumption: colors are consecutive as well as size/weight
-                indexColor = fields.findIndex(obj => obj.name === "color");
-                var indexColorDst = indexColor +1;
-
-                indexSize = fields.findIndex(obj => obj.name === "weight");
-                var indexSizeDst = indexSize +1;
+                idxNdColor = fields.findIndex(obj => obj.name === COLOR_SRC_NODE_FIELDNAME);
+                idxNdSize = fields.findIndex(obj => obj.name === SZ_SRC_NODE_FIELDNAME);
+                idxNdColorDst = fields.findIndex(obj => obj.name === COLOR_DEST_NODE_FIELDNAME);
+                idxNdSizeDst = fields.findIndex(obj => obj.name === SZ_DEST_NODE_FIELDNAME);
+                idxLkColor = fields.findIndex(obj => obj.name === COLOR_EDGE_FIELDNAME);
             }
 
             // Avoid duplicates!
             let node_ids = new Set();
+            var default_colors = {
+                "node": this._getEscapedProperty('ndColor', config) || '#EDCBB1',
+                "link": this._getEscapedProperty('lkColor', config) || '#ffffff'
+            };
 
             _.each(rows, function(row) {
                 // Iterating over 0-1 to get row columns
@@ -147,12 +164,26 @@ define([
 
                   if (!node_ids.has(id)){
                     var new_node = {
-                      "id": id,
-                      "name": name,
-                      "val": 1,
+                        "id": id,
+                        "name": name,
+                        "val": 1,
+                        "has_custom_color": 0,
+                        "color": default_colors['node']
                     };
-                    if (indexColor > 0) new_node["color"] = (ix < 1) ? row[indexColor] : row[indexColorDst];
-                    if (indexSize > 0) new_node["val"] = (ix < 1) ? row[indexSize] : row[indexSizeDst];
+                    // Setting custom weigth and colors
+                    if (ix < 1) {
+                        if (idxNdColor > 0) {
+                          new_node['color'] = row[idxNdColor];
+                          new_node['has_custom_color'] = 1;
+                        }
+                        if (idxNdSize > 0) new_node['val'] = row[idxNdSize];
+                    } else {
+                        if (idxNdColorDst > 0) {
+                          new_node['color'] = row[idxNdColorDst];
+                          new_node['has_custom_color'] = 1;
+                        }
+                        if (idxNdSizeDst > 0) new_node['val'] = row[idxNdSizeDst];
+                    }
 
                     // Sanity checks
                     if (new_node.hasOwnProperty('color')) {
@@ -162,7 +193,7 @@ define([
                           );
                         }
                     }
-                    if (new_node['val'] && new_node['val'] != parseInt(new_node['val'])) {
+                    if (new_node['val'] && new_node['val'] != parseFloat(new_node['val'])) {
                         throw new SplunkVisualizationBase.VisualizationError(
                             'Check the Statistics tab. To assign custom weights to nodes, valid numbers shall be returned.'
                         );
@@ -177,9 +208,25 @@ define([
                 if (row[0] === row[1]) that.disableDagMode = true;
 
                 var new_link = {
-                  "source": row[0],
-                  "target": row[1]
+                    "source": row[0],
+                    "target": row[1],
+                    "width": idxLkWidth > 0 ? row[idxLkWidth] : 0,
+                    "has_custom_color": 0,
+                    "color": default_colors['link']
                 };
+
+                // Setting custom color to link
+                if (idxLkColor > 0 && row[idxLkColor].length > 0) {
+                    // Sanity checks
+                    if (!row[idxLkColor].match("^#")) {
+                        throw new SplunkVisualizationBase.VisualizationError(
+                            'Check the Statistics tab. To assign custom colors to edges, valid hex codes shall be returned.'
+                        );
+                    }
+                    new_link["color"] = row[idxLkColor];
+                    new_link["has_custom_color"] = 1;
+                }
+
                 links.push(new_link);
             });
 
@@ -249,6 +296,7 @@ define([
 
           this.graph = ForceGraph()(elem)
               .backgroundColor(params['bgColor'])
+              .linkWidth(link => link.width > MAX_EDGE_SZ ? MAX_EDGE_SZ : link.width)
               .dagMode(params['dagMode'])
               .onNodeHover(node => {
                 // Change cursor when hovering on nodes (if drilldown enabled)
@@ -269,6 +317,7 @@ define([
               })
               .onNodeClick(that._drilldown.bind(that))
               .backgroundColor(params['bgColor'])
+              .linkWidth(link => link.width > MAX_EDGE_SZ ? MAX_EDGE_SZ : link.width)
               .dagMode(params['dagMode']);
         },
 
@@ -352,6 +401,14 @@ define([
             }
         },
 
+        _hexToRgb: function(hex) {
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+
+            return "rgb(" + parseInt(result[1], 16)
+                    + "," + parseInt(result[2], 16)
+                    + "," + parseInt(result[3], 16) + ")";
+        },
+
         _normalizeNull: function(value) {
             return value === "null" ? null : value;
         },
@@ -376,6 +433,8 @@ define([
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
             var params = {
               "bgColor": this._getEscapedProperty('bgColor', config) || '#000011',
+              "lkColor": this._getEscapedProperty('lkColor', config) || '#ffffff',
+              "ndColor": this._getEscapedProperty('ndColor', config) || '#EDCBB1',
               "dagMode": this._normalizeNull(this._getEscapedProperty('dagMode', config) || 'null'),
               "cameraController": this._getEscapedProperty('cameraController', config) || 'trackball'
             }
@@ -386,6 +445,10 @@ define([
                 this._load3DGraph($elem3d.get(0), params);
                 this.graph3d.width(width)
                     .height(height)
+                    .linkColor(link => link.color =
+                        link.has_custom_color < 1 ? params['lkColor'] : link.color)
+                    .nodeColor(node => node.color =
+                        node.has_custom_color < 1 ? params['ndColor'] : node.color)
                     .graphData(this.getCurrentData().content);
 
             } else {
@@ -394,6 +457,10 @@ define([
                 // No need to re-load the graph w/ 2D Canvas
                 this.graph.width(width)
                     .height(height)
+                    .linkColor(link => link.color =
+                        link.has_custom_color < 1 ? link_color : link.color)
+                    .nodeColor(node => node.color =
+                        node.has_custom_color < 1 ? node_color : node.color)
                     .backgroundColor(params["bgColor"])
                     .dagMode(params["dagMode"]);
             }
