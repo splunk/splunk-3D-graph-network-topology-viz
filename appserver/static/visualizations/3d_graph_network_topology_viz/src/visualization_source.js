@@ -458,9 +458,9 @@ define([
                 this.graph.width(width)
                     .height(height)
                     .linkColor(link => link.color =
-                        link.has_custom_color < 1 ? link_color : link.color)
+                        link.has_custom_color < 1 ? params['lkColor'] : link.color)
                     .nodeColor(node => node.color =
-                        node.has_custom_color < 1 ? node_color : node.color)
+                        node.has_custom_color < 1 ? params['ndColor'] : node.color)
                     .backgroundColor(params["bgColor"])
                     .dagMode(params["dagMode"]);
             }

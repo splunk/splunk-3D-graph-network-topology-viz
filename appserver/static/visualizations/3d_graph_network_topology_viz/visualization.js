@@ -1,4 +1,4 @@
-define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__) { return /******/ (function(modules) { // webpackBootstrap
+define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], function(__WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__) { return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -42,7 +42,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
 	 * Visualization source
@@ -50,11 +50,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 	            __webpack_require__(1),
 	            __webpack_require__(2),
-	            __webpack_require__(3),
 	            __webpack_require__(4),
 	            __webpack_require__(5),
-	            __webpack_require__(37),
-	            __webpack_require__(174)
+	            __webpack_require__(6),
+	            __webpack_require__(41),
+	            __webpack_require__(192)
 	            // Add required assets to this list
 	        ], __WEBPACK_AMD_DEFINE_RESULT__ = function(
 	            $,
@@ -503,9 +503,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	                this.graph.width(width)
 	                    .height(height)
 	                    .linkColor(link => link.color =
-	                        link.has_custom_color < 1 ? link_color : link.color)
+	                        link.has_custom_color < 1 ? params['lkColor'] : link.color)
 	                    .nodeColor(node => node.color =
-	                        node.has_custom_color < 1 ? node_color : node.color)
+	                        node.has_custom_color < 1 ? params['ndColor'] : node.color)
 	                    .backgroundColor(params["bgColor"])
 	                    .dagMode(params["dagMode"]);
 	            }
@@ -522,9 +522,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 	 * jQuery JavaScript Library v2.2.4
@@ -10342,13 +10342,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}));
 
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global, module) {//     Underscore.js 1.9.1
 	//     http://underscorejs.org
-	//     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	//     (c) 2009-2018 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	//     Underscore may be freely distributed under the MIT license.
 
 	(function() {
@@ -10356,29 +10356,32 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  // Baseline setup
 	  // --------------
 
-	  // Establish the root object, `window` in the browser, or `exports` on the server.
-	  var root = this;
+	  // Establish the root object, `window` (`self`) in the browser, `global`
+	  // on the server, or `this` in some virtual machines. We use `self`
+	  // instead of `window` for `WebWorker` support.
+	  var root = typeof self == 'object' && self.self === self && self ||
+	            typeof global == 'object' && global.global === global && global ||
+	            this ||
+	            {};
 
 	  // Save the previous value of the `_` variable.
 	  var previousUnderscore = root._;
 
 	  // Save bytes in the minified (but not gzipped) version:
-	  var ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;
+	  var ArrayProto = Array.prototype, ObjProto = Object.prototype;
+	  var SymbolProto = typeof Symbol !== 'undefined' ? Symbol.prototype : null;
 
 	  // Create quick reference variables for speed access to core prototypes.
-	  var
-	    push             = ArrayProto.push,
-	    slice            = ArrayProto.slice,
-	    toString         = ObjProto.toString,
-	    hasOwnProperty   = ObjProto.hasOwnProperty;
+	  var push = ArrayProto.push,
+	      slice = ArrayProto.slice,
+	      toString = ObjProto.toString,
+	      hasOwnProperty = ObjProto.hasOwnProperty;
 
 	  // All **ECMAScript 5** native function implementations that we hope to use
 	  // are declared here.
-	  var
-	    nativeIsArray      = Array.isArray,
-	    nativeKeys         = Object.keys,
-	    nativeBind         = FuncProto.bind,
-	    nativeCreate       = Object.create;
+	  var nativeIsArray = Array.isArray,
+	      nativeKeys = Object.keys,
+	      nativeCreate = Object.create;
 
 	  // Naked function reference for surrogate-prototype-swapping.
 	  var Ctor = function(){};
@@ -10391,10 +10394,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 
 	  // Export the Underscore object for **Node.js**, with
-	  // backwards-compatibility for the old `require()` API. If we're in
+	  // backwards-compatibility for their old module API. If we're in
 	  // the browser, add `_` as a global object.
-	  if (true) {
-	    if (typeof module !== 'undefined' && module.exports) {
+	  // (`nodeType` is checked to ensure that `module`
+	  // and `exports` are not HTML elements.)
+	  if (typeof exports != 'undefined' && !exports.nodeType) {
+	    if (typeof module != 'undefined' && !module.nodeType && module.exports) {
 	      exports = module.exports = _;
 	    }
 	    exports._ = _;
@@ -10403,7 +10408,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  }
 
 	  // Current version.
-	  _.VERSION = '1.8.3';
+	  _.VERSION = '1.9.1';
 
 	  // Internal function that returns an efficient (for current engines) version
 	  // of the passed-in callback, to be repeatedly applied in other Underscore
@@ -10414,9 +10419,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      case 1: return function(value) {
 	        return func.call(context, value);
 	      };
-	      case 2: return function(value, other) {
-	        return func.call(context, value, other);
-	      };
+	      // The 2-argument case is omitted because we’re not using it.
 	      case 3: return function(value, index, collection) {
 	        return func.call(context, value, index, collection);
 	      };
@@ -10429,34 +10432,51 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    };
 	  };
 
-	  // A mostly-internal function to generate callbacks that can be applied
-	  // to each element in a collection, returning the desired result — either
-	  // identity, an arbitrary callback, a property matcher, or a property accessor.
+	  var builtinIteratee;
+
+	  // An internal function to generate callbacks that can be applied to each
+	  // element in a collection, returning the desired result — either `identity`,
+	  // an arbitrary callback, a property matcher, or a property accessor.
 	  var cb = function(value, context, argCount) {
+	    if (_.iteratee !== builtinIteratee) return _.iteratee(value, context);
 	    if (value == null) return _.identity;
 	    if (_.isFunction(value)) return optimizeCb(value, context, argCount);
-	    if (_.isObject(value)) return _.matcher(value);
+	    if (_.isObject(value) && !_.isArray(value)) return _.matcher(value);
 	    return _.property(value);
 	  };
-	  _.iteratee = function(value, context) {
+
+	  // External wrapper for our callback generator. Users may customize
+	  // `_.iteratee` if they want additional predicate/iteratee shorthand styles.
+	  // This abstraction hides the internal-only argCount argument.
+	  _.iteratee = builtinIteratee = function(value, context) {
 	    return cb(value, context, Infinity);
 	  };
 
-	  // An internal function for creating assigner functions.
-	  var createAssigner = function(keysFunc, undefinedOnly) {
-	    return function(obj) {
-	      var length = arguments.length;
-	      if (length < 2 || obj == null) return obj;
-	      for (var index = 1; index < length; index++) {
-	        var source = arguments[index],
-	            keys = keysFunc(source),
-	            l = keys.length;
-	        for (var i = 0; i < l; i++) {
-	          var key = keys[i];
-	          if (!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
-	        }
+	  // Some functions take a variable number of arguments, or a few expected
+	  // arguments at the beginning and then a variable number of values to operate
+	  // on. This helper accumulates all remaining arguments past the function’s
+	  // argument length (or an explicit `startIndex`), into an array that becomes
+	  // the last argument. Similar to ES6’s "rest parameter".
+	  var restArguments = function(func, startIndex) {
+	    startIndex = startIndex == null ? func.length - 1 : +startIndex;
+	    return function() {
+	      var length = Math.max(arguments.length - startIndex, 0),
+	          rest = Array(length),
+	          index = 0;
+	      for (; index < length; index++) {
+	        rest[index] = arguments[index + startIndex];
 	      }
-	      return obj;
+	      switch (startIndex) {
+	        case 0: return func.call(this, rest);
+	        case 1: return func.call(this, arguments[0], rest);
+	        case 2: return func.call(this, arguments[0], arguments[1], rest);
+	      }
+	      var args = Array(startIndex + 1);
+	      for (index = 0; index < startIndex; index++) {
+	        args[index] = arguments[index];
+	      }
+	      args[startIndex] = rest;
+	      return func.apply(this, args);
 	    };
 	  };
 
@@ -10470,18 +10490,31 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    return result;
 	  };
 
-	  var property = function(key) {
+	  var shallowProperty = function(key) {
 	    return function(obj) {
 	      return obj == null ? void 0 : obj[key];
 	    };
 	  };
 
+	  var has = function(obj, path) {
+	    return obj != null && hasOwnProperty.call(obj, path);
+	  }
+
+	  var deepGet = function(obj, path) {
+	    var length = path.length;
+	    for (var i = 0; i < length; i++) {
+	      if (obj == null) return void 0;
+	      obj = obj[path[i]];
+	    }
+	    return length ? obj : void 0;
+	  };
+
 	  // Helper for collection methods to determine whether a collection
-	  // should be iterated as an array or as an object
+	  // should be iterated as an array or as an object.
 	  // Related: http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength
 	  // Avoids a very nasty iOS 8 JIT bug on ARM-64. #2094
 	  var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
-	  var getLength = property('length');
+	  var getLength = shallowProperty('length');
 	  var isArrayLike = function(collection) {
 	    var length = getLength(collection);
 	    return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
@@ -10523,30 +10556,29 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 
 	  // Create a reducing function iterating left or right.
-	  function createReduce(dir) {
-	    // Optimized iterator function as using arguments.length
-	    // in the main function will deoptimize the, see #1991.
-	    function iterator(obj, iteratee, memo, keys, index, length) {
+	  var createReduce = function(dir) {
+	    // Wrap code that reassigns argument variables in a separate function than
+	    // the one that accesses `arguments.length` to avoid a perf hit. (#1991)
+	    var reducer = function(obj, iteratee, memo, initial) {
+	      var keys = !isArrayLike(obj) && _.keys(obj),
+	          length = (keys || obj).length,
+	          index = dir > 0 ? 0 : length - 1;
+	      if (!initial) {
+	        memo = obj[keys ? keys[index] : index];
+	        index += dir;
+	      }
 	      for (; index >= 0 && index < length; index += dir) {
 	        var currentKey = keys ? keys[index] : index;
 	        memo = iteratee(memo, obj[currentKey], currentKey, obj);
 	      }
 	      return memo;
-	    }
+	    };
 
 	    return function(obj, iteratee, memo, context) {
-	      iteratee = optimizeCb(iteratee, context, 4);
-	      var keys = !isArrayLike(obj) && _.keys(obj),
-	          length = (keys || obj).length,
-	          index = dir > 0 ? 0 : length - 1;
-	      // Determine the initial value if none is provided.
-	      if (arguments.length < 3) {
-	        memo = obj[keys ? keys[index] : index];
-	        index += dir;
-	      }
-	      return iterator(obj, iteratee, memo, keys, index, length);
+	      var initial = arguments.length >= 3;
+	      return reducer(obj, optimizeCb(iteratee, context, 4), memo, initial);
 	    };
-	  }
+	  };
 
 	  // **Reduce** builds up a single result from a list of values, aka `inject`,
 	  // or `foldl`.
@@ -10557,12 +10589,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	  // Return the first value which passes a truth test. Aliased as `detect`.
 	  _.find = _.detect = function(obj, predicate, context) {
-	    var key;
-	    if (isArrayLike(obj)) {
-	      key = _.findIndex(obj, predicate, context);
-	    } else {
-	      key = _.findKey(obj, predicate, context);
-	    }
+	    var keyFinder = isArrayLike(obj) ? _.findIndex : _.findKey;
+	    var key = keyFinder(obj, predicate, context);
 	    if (key !== void 0 && key !== -1) return obj[key];
 	  };
 
@@ -10617,14 +10645,26 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 
 	  // Invoke a method (with arguments) on every item in a collection.
-	  _.invoke = function(obj, method) {
-	    var args = slice.call(arguments, 2);
-	    var isFunc = _.isFunction(method);
-	    return _.map(obj, function(value) {
-	      var func = isFunc ? method : value[method];
-	      return func == null ? func : func.apply(value, args);
+	  _.invoke = restArguments(function(obj, path, args) {
+	    var contextPath, func;
+	    if (_.isFunction(path)) {
+	      func = path;
+	    } else if (_.isArray(path)) {
+	      contextPath = path.slice(0, -1);
+	      path = path[path.length - 1];
+	    }
+	    return _.map(obj, function(context) {
+	      var method = func;
+	      if (!method) {
+	        if (contextPath && contextPath.length) {
+	          context = deepGet(context, contextPath);
+	        }
+	        if (context == null) return void 0;
+	        method = context[path];
+	      }
+	      return method == null ? method : method.apply(context, args);
 	    });
-	  };
+	  });
 
 	  // Convenience version of a common use case of `map`: fetching a property.
 	  _.pluck = function(obj, key) {
@@ -10647,20 +10687,20 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  _.max = function(obj, iteratee, context) {
 	    var result = -Infinity, lastComputed = -Infinity,
 	        value, computed;
-	    if (iteratee == null && obj != null) {
+	    if (iteratee == null || typeof iteratee == 'number' && typeof obj[0] != 'object' && obj != null) {
 	      obj = isArrayLike(obj) ? obj : _.values(obj);
 	      for (var i = 0, length = obj.length; i < length; i++) {
 	        value = obj[i];
-	        if (value > result) {
+	        if (value != null && value > result) {
 	          result = value;
 	        }
 	      }
 	    } else {
 	      iteratee = cb(iteratee, context);
-	      _.each(obj, function(value, index, list) {
-	        computed = iteratee(value, index, list);
+	      _.each(obj, function(v, index, list) {
+	        computed = iteratee(v, index, list);
 	        if (computed > lastComputed || computed === -Infinity && result === -Infinity) {
-	          result = value;
+	          result = v;
 	          lastComputed = computed;
 	        }
 	      });
@@ -10672,20 +10712,20 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  _.min = function(obj, iteratee, context) {
 	    var result = Infinity, lastComputed = Infinity,
 	        value, computed;
-	    if (iteratee == null && obj != null) {
+	    if (iteratee == null || typeof iteratee == 'number' && typeof obj[0] != 'object' && obj != null) {
 	      obj = isArrayLike(obj) ? obj : _.values(obj);
 	      for (var i = 0, length = obj.length; i < length; i++) {
 	        value = obj[i];
-	        if (value < result) {
+	        if (value != null && value < result) {
 	          result = value;
 	        }
 	      }
 	    } else {
 	      iteratee = cb(iteratee, context);
-	      _.each(obj, function(value, index, list) {
-	        computed = iteratee(value, index, list);
+	      _.each(obj, function(v, index, list) {
+	        computed = iteratee(v, index, list);
 	        if (computed < lastComputed || computed === Infinity && result === Infinity) {
-	          result = value;
+	          result = v;
 	          lastComputed = computed;
 	        }
 	      });
@@ -10693,21 +10733,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    return result;
 	  };
 
-	  // Shuffle a collection, using the modern version of the
-	  // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
+	  // Shuffle a collection.
 	  _.shuffle = function(obj) {
-	    var set = isArrayLike(obj) ? obj : _.values(obj);
-	    var length = set.length;
-	    var shuffled = Array(length);
-	    for (var index = 0, rand; index < length; index++) {
-	      rand = _.random(0, index);
-	      if (rand !== index) shuffled[index] = shuffled[rand];
-	      shuffled[rand] = set[index];
-	    }
-	    return shuffled;
+	    return _.sample(obj, Infinity);
 	  };
 
-	  // Sample **n** random values from a collection.
+	  // Sample **n** random values from a collection using the modern version of the
+	  // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
 	  // If **n** is not specified, returns a single random element.
 	  // The internal `guard` argument allows it to work with `map`.
 	  _.sample = function(obj, n, guard) {
@@ -10715,17 +10747,28 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      if (!isArrayLike(obj)) obj = _.values(obj);
 	      return obj[_.random(obj.length - 1)];
 	    }
-	    return _.shuffle(obj).slice(0, Math.max(0, n));
+	    var sample = isArrayLike(obj) ? _.clone(obj) : _.values(obj);
+	    var length = getLength(sample);
+	    n = Math.max(Math.min(n, length), 0);
+	    var last = length - 1;
+	    for (var index = 0; index < n; index++) {
+	      var rand = _.random(index, last);
+	      var temp = sample[index];
+	      sample[index] = sample[rand];
+	      sample[rand] = temp;
+	    }
+	    return sample.slice(0, n);
 	  };
 
 	  // Sort the object's values by a criterion produced by an iteratee.
 	  _.sortBy = function(obj, iteratee, context) {
+	    var index = 0;
 	    iteratee = cb(iteratee, context);
-	    return _.pluck(_.map(obj, function(value, index, list) {
+	    return _.pluck(_.map(obj, function(value, key, list) {
 	      return {
 	        value: value,
-	        index: index,
-	        criteria: iteratee(value, index, list)
+	        index: index++,
+	        criteria: iteratee(value, key, list)
 	      };
 	    }).sort(function(left, right) {
 	      var a = left.criteria;
@@ -10739,9 +10782,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 
 	  // An internal function used for aggregate "group by" operations.
-	  var group = function(behavior) {
+	  var group = function(behavior, partition) {
 	    return function(obj, iteratee, context) {
-	      var result = {};
+	      var result = partition ? [[], []] : {};
 	      iteratee = cb(iteratee, context);
 	      _.each(obj, function(value, index) {
 	        var key = iteratee(value, index, obj);
@@ -10754,7 +10797,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  // Groups the object's values by a criterion. Pass either a string attribute
 	  // to group by, or a function that returns the criterion.
 	  _.groupBy = group(function(result, value, key) {
-	    if (_.has(result, key)) result[key].push(value); else result[key] = [value];
+	    if (has(result, key)) result[key].push(value); else result[key] = [value];
 	  });
 
 	  // Indexes the object's values by a criterion, similar to `groupBy`, but for
@@ -10767,13 +10810,18 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  // either a string attribute to count by, or a function that returns the
 	  // criterion.
 	  _.countBy = group(function(result, value, key) {
-	    if (_.has(result, key)) result[key]++; else result[key] = 1;
+	    if (has(result, key)) result[key]++; else result[key] = 1;
 	  });
 
+	  var reStrSymbol = /[^\ud800-\udfff]|[\ud800-\udbff][\udc00-\udfff]|[\ud800-\udfff]/g;
 	  // Safely create a real, live array from anything iterable.
 	  _.toArray = function(obj) {
 	    if (!obj) return [];
 	    if (_.isArray(obj)) return slice.call(obj);
+	    if (_.isString(obj)) {
+	      // Keep surrogate pair characters together
+	      return obj.match(reStrSymbol);
+	    }
 	    if (isArrayLike(obj)) return _.map(obj, _.identity);
 	    return _.values(obj);
 	  };
@@ -10786,14 +10834,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	  // Split a collection into two arrays: one whose elements all satisfy the given
 	  // predicate, and one whose elements all do not satisfy the predicate.
-	  _.partition = function(obj, predicate, context) {
-	    predicate = cb(predicate, context);
-	    var pass = [], fail = [];
-	    _.each(obj, function(value, key, obj) {
-	      (predicate(value, key, obj) ? pass : fail).push(value);
-	    });
-	    return [pass, fail];
-	  };
+	  _.partition = group(function(result, value, pass) {
+	    result[pass ? 0 : 1].push(value);
+	  }, true);
 
 	  // Array Functions
 	  // ---------------
@@ -10802,7 +10845,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  // values in the array. Aliased as `head` and `take`. The **guard** check
 	  // allows it to work with `_.map`.
 	  _.first = _.head = _.take = function(array, n, guard) {
-	    if (array == null) return void 0;
+	    if (array == null || array.length < 1) return n == null ? void 0 : [];
 	    if (n == null || guard) return array[0];
 	    return _.initial(array, array.length - n);
 	  };
@@ -10817,7 +10860,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  // Get the last element of an array. Passing **n** will return the last N
 	  // values in the array.
 	  _.last = function(array, n, guard) {
-	    if (array == null) return void 0;
+	    if (array == null || array.length < 1) return n == null ? void 0 : [];
 	    if (n == null || guard) return array[array.length - 1];
 	    return _.rest(array, Math.max(0, array.length - n));
 	  };
@@ -10831,21 +10874,23 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	  // Trim out all falsy values from an array.
 	  _.compact = function(array) {
-	    return _.filter(array, _.identity);
+	    return _.filter(array, Boolean);
 	  };
 
 	  // Internal implementation of a recursive `flatten` function.
-	  var flatten = function(input, shallow, strict, startIndex) {
-	    var output = [], idx = 0;
-	    for (var i = startIndex || 0, length = getLength(input); i < length; i++) {
+	  var flatten = function(input, shallow, strict, output) {
+	    output = output || [];
+	    var idx = output.length;
+	    for (var i = 0, length = getLength(input); i < length; i++) {
 	      var value = input[i];
 	      if (isArrayLike(value) && (_.isArray(value) || _.isArguments(value))) {
-	        //flatten current level of array or arguments object
-	        if (!shallow) value = flatten(value, shallow, strict);
-	        var j = 0, len = value.length;
-	        output.length += len;
-	        while (j < len) {
-	          output[idx++] = value[j++];
+	        // Flatten current level of array or arguments object.
+	        if (shallow) {
+	          var j = 0, len = value.length;
+	          while (j < len) output[idx++] = value[j++];
+	        } else {
+	          flatten(value, shallow, strict, output);
+	          idx = output.length;
 	        }
 	      } else if (!strict) {
 	        output[idx++] = value;
@@ -10860,12 +10905,15 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 
 	  // Return a version of the array that does not contain the specified value(s).
-	  _.without = function(array) {
-	    return _.difference(array, slice.call(arguments, 1));
-	  };
+	  _.without = restArguments(function(array, otherArrays) {
+	    return _.difference(array, otherArrays);
+	  });
 
 	  // Produce a duplicate-free version of the array. If the array has already
 	  // been sorted, you have the option of using a faster algorithm.
+	  // The faster algorithm will not work with an iteratee if the iteratee
+	  // is not a one-to-one function, so providing an iteratee will disable
+	  // the faster algorithm.
 	  // Aliased as `unique`.
 	  _.uniq = _.unique = function(array, isSorted, iteratee, context) {
 	    if (!_.isBoolean(isSorted)) {
@@ -10879,7 +10927,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    for (var i = 0, length = getLength(array); i < length; i++) {
 	      var value = array[i],
 	          computed = iteratee ? iteratee(value, i, array) : value;
-	      if (isSorted) {
+	      if (isSorted && !iteratee) {
 	        if (!i || seen !== computed) result.push(value);
 	        seen = computed;
 	      } else if (iteratee) {
@@ -10896,9 +10944,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	  // Produce an array that contains the union: each distinct element from all of
 	  // the passed-in arrays.
-	  _.union = function() {
-	    return _.uniq(flatten(arguments, true, true));
-	  };
+	  _.union = restArguments(function(arrays) {
+	    return _.uniq(flatten(arrays, true, true));
+	  });
 
 	  // Produce an array that contains every item shared between all the
 	  // passed-in arrays.
@@ -10908,7 +10956,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    for (var i = 0, length = getLength(array); i < length; i++) {
 	      var item = array[i];
 	      if (_.contains(result, item)) continue;
-	      for (var j = 1; j < argsLength; j++) {
+	      var j;
+	      for (j = 1; j < argsLength; j++) {
 	        if (!_.contains(arguments[j], item)) break;
 	      }
 	      if (j === argsLength) result.push(item);
@@ -10918,21 +10967,15 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	  // Take the difference between one array and a number of other arrays.
 	  // Only the elements present in just the first array will remain.
-	  _.difference = function(array) {
-	    var rest = flatten(arguments, true, true, 1);
+	  _.difference = restArguments(function(array, rest) {
+	    rest = flatten(rest, true, true);
 	    return _.filter(array, function(value){
 	      return !_.contains(rest, value);
 	    });
-	  };
-
-	  // Zip together multiple lists into a single array -- elements that share
-	  // an index go together.
-	  _.zip = function() {
-	    return _.unzip(arguments);
-	  };
+	  });
 
 	  // Complement of _.zip. Unzip accepts an array of arrays and groups
-	  // each array's elements on shared indices
+	  // each array's elements on shared indices.
 	  _.unzip = function(array) {
 	    var length = array && _.max(array, getLength).length || 0;
 	    var result = Array(length);
@@ -10943,9 +10986,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    return result;
 	  };
 
+	  // Zip together multiple lists into a single array -- elements that share
+	  // an index go together.
+	  _.zip = restArguments(_.unzip);
+
 	  // Converts lists into objects. Pass either a single array of `[key, value]`
 	  // pairs, or two parallel arrays of the same length -- one of keys, and one of
-	  // the corresponding values.
+	  // the corresponding values. Passing by pairs is the reverse of _.pairs.
 	  _.object = function(list, values) {
 	    var result = {};
 	    for (var i = 0, length = getLength(list); i < length; i++) {
@@ -10958,8 +11005,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    return result;
 	  };
 
-	  // Generator function to create the findIndex and findLastIndex functions
-	  function createPredicateIndexFinder(dir) {
+	  // Generator function to create the findIndex and findLastIndex functions.
+	  var createPredicateIndexFinder = function(dir) {
 	    return function(array, predicate, context) {
 	      predicate = cb(predicate, context);
 	      var length = getLength(array);
@@ -10969,9 +11016,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      }
 	      return -1;
 	    };
-	  }
+	  };
 
-	  // Returns the first index on an array-like that passes a predicate test
+	  // Returns the first index on an array-like that passes a predicate test.
 	  _.findIndex = createPredicateIndexFinder(1);
 	  _.findLastIndex = createPredicateIndexFinder(-1);
 
@@ -10988,15 +11035,15 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    return low;
 	  };
 
-	  // Generator function to create the indexOf and lastIndexOf functions
-	  function createIndexFinder(dir, predicateFind, sortedIndex) {
+	  // Generator function to create the indexOf and lastIndexOf functions.
+	  var createIndexFinder = function(dir, predicateFind, sortedIndex) {
 	    return function(array, item, idx) {
 	      var i = 0, length = getLength(array);
 	      if (typeof idx == 'number') {
 	        if (dir > 0) {
-	            i = idx >= 0 ? idx : Math.max(idx + length, i);
+	          i = idx >= 0 ? idx : Math.max(idx + length, i);
 	        } else {
-	            length = idx >= 0 ? Math.min(idx + 1, length) : idx + length + 1;
+	          length = idx >= 0 ? Math.min(idx + 1, length) : idx + length + 1;
 	        }
 	      } else if (sortedIndex && idx && length) {
 	        idx = sortedIndex(array, item);
@@ -11011,7 +11058,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      }
 	      return -1;
 	    };
-	  }
+	  };
 
 	  // Return the position of the first occurrence of an item in an array,
 	  // or -1 if the item is not included in the array.
@@ -11028,7 +11075,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      stop = start || 0;
 	      start = 0;
 	    }
-	    step = step || 1;
+	    if (!step) {
+	      step = stop < start ? -1 : 1;
+	    }
 
 	    var length = Math.max(Math.ceil((stop - start) / step), 0);
 	    var range = Array(length);
@@ -11040,11 +11089,23 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    return range;
 	  };
 
+	  // Chunk a single array into multiple arrays, each containing `count` or fewer
+	  // items.
+	  _.chunk = function(array, count) {
+	    if (count == null || count < 1) return [];
+	    var result = [];
+	    var i = 0, length = array.length;
+	    while (i < length) {
+	      result.push(slice.call(array, i, i += count));
+	    }
+	    return result;
+	  };
+
 	  // Function (ahem) Functions
 	  // ------------------
 
 	  // Determines whether to execute a function as a constructor
-	  // or a normal function with the provided arguments
+	  // or a normal function with the provided arguments.
 	  var executeBound = function(sourceFunc, boundFunc, context, callingContext, args) {
 	    if (!(callingContext instanceof boundFunc)) return sourceFunc.apply(context, args);
 	    var self = baseCreate(sourceFunc.prototype);
@@ -11056,52 +11117,53 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  // Create a function bound to a given object (assigning `this`, and arguments,
 	  // optionally). Delegates to **ECMAScript 5**'s native `Function.bind` if
 	  // available.
-	  _.bind = function(func, context) {
-	    if (nativeBind && func.bind === nativeBind) return nativeBind.apply(func, slice.call(arguments, 1));
+	  _.bind = restArguments(function(func, context, args) {
 	    if (!_.isFunction(func)) throw new TypeError('Bind must be called on a function');
-	    var args = slice.call(arguments, 2);
-	    var bound = function() {
-	      return executeBound(func, bound, context, this, args.concat(slice.call(arguments)));
-	    };
+	    var bound = restArguments(function(callArgs) {
+	      return executeBound(func, bound, context, this, args.concat(callArgs));
+	    });
 	    return bound;
-	  };
+	  });
 
 	  // Partially apply a function by creating a version that has had some of its
 	  // arguments pre-filled, without changing its dynamic `this` context. _ acts
-	  // as a placeholder, allowing any combination of arguments to be pre-filled.
-	  _.partial = function(func) {
-	    var boundArgs = slice.call(arguments, 1);
+	  // as a placeholder by default, allowing any combination of arguments to be
+	  // pre-filled. Set `_.partial.placeholder` for a custom placeholder argument.
+	  _.partial = restArguments(function(func, boundArgs) {
+	    var placeholder = _.partial.placeholder;
 	    var bound = function() {
 	      var position = 0, length = boundArgs.length;
 	      var args = Array(length);
 	      for (var i = 0; i < length; i++) {
-	        args[i] = boundArgs[i] === _ ? arguments[position++] : boundArgs[i];
+	        args[i] = boundArgs[i] === placeholder ? arguments[position++] : boundArgs[i];
 	      }
 	      while (position < arguments.length) args.push(arguments[position++]);
 	      return executeBound(func, bound, this, this, args);
 	    };
 	    return bound;
-	  };
+	  });
+
+	  _.partial.placeholder = _;
 
 	  // Bind a number of an object's methods to that object. Remaining arguments
 	  // are the method names to be bound. Useful for ensuring that all callbacks
 	  // defined on an object belong to it.
-	  _.bindAll = function(obj) {
-	    var i, length = arguments.length, key;
-	    if (length <= 1) throw new Error('bindAll must be passed function names');
-	    for (i = 1; i < length; i++) {
-	      key = arguments[i];
+	  _.bindAll = restArguments(function(obj, keys) {
+	    keys = flatten(keys, false, false);
+	    var index = keys.length;
+	    if (index < 1) throw new Error('bindAll must be passed function names');
+	    while (index--) {
+	      var key = keys[index];
 	      obj[key] = _.bind(obj[key], obj);
 	    }
-	    return obj;
-	  };
+	  });
 
 	  // Memoize an expensive function by storing its results.
 	  _.memoize = function(func, hasher) {
 	    var memoize = function(key) {
 	      var cache = memoize.cache;
 	      var address = '' + (hasher ? hasher.apply(this, arguments) : key);
-	      if (!_.has(cache, address)) cache[address] = func.apply(this, arguments);
+	      if (!has(cache, address)) cache[address] = func.apply(this, arguments);
 	      return cache[address];
 	    };
 	    memoize.cache = {};
@@ -11110,12 +11172,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	  // Delays a function for the given number of milliseconds, and then calls
 	  // it with the arguments supplied.
-	  _.delay = function(func, wait) {
-	    var args = slice.call(arguments, 2);
-	    return setTimeout(function(){
+	  _.delay = restArguments(function(func, wait, args) {
+	    return setTimeout(function() {
 	      return func.apply(null, args);
 	    }, wait);
-	  };
+	  });
 
 	  // Defers a function, scheduling it to run after the current call stack has
 	  // cleared.
@@ -11127,17 +11188,18 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  // but if you'd like to disable the execution on the leading edge, pass
 	  // `{leading: false}`. To disable execution on the trailing edge, ditto.
 	  _.throttle = function(func, wait, options) {
-	    var context, args, result;
-	    var timeout = null;
+	    var timeout, context, args, result;
 	    var previous = 0;
 	    if (!options) options = {};
+
 	    var later = function() {
 	      previous = options.leading === false ? 0 : _.now();
 	      timeout = null;
 	      result = func.apply(context, args);
 	      if (!timeout) context = args = null;
 	    };
-	    return function() {
+
+	    var throttled = function() {
 	      var now = _.now();
 	      if (!previous && options.leading === false) previous = now;
 	      var remaining = wait - (now - previous);
@@ -11156,6 +11218,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      }
 	      return result;
 	    };
+
+	    throttled.cancel = function() {
+	      clearTimeout(timeout);
+	      previous = 0;
+	      timeout = context = args = null;
+	    };
+
+	    return throttled;
 	  };
 
 	  // Returns a function, that, as long as it continues to be invoked, will not
@@ -11163,35 +11233,32 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  // N milliseconds. If `immediate` is passed, trigger the function on the
 	  // leading edge, instead of the trailing.
 	  _.debounce = function(func, wait, immediate) {
-	    var timeout, args, context, timestamp, result;
+	    var timeout, result;
 
-	    var later = function() {
-	      var last = _.now() - timestamp;
-
-	      if (last < wait && last >= 0) {
-	        timeout = setTimeout(later, wait - last);
-	      } else {
-	        timeout = null;
-	        if (!immediate) {
-	          result = func.apply(context, args);
-	          if (!timeout) context = args = null;
-	        }
-	      }
+	    var later = function(context, args) {
+	      timeout = null;
+	      if (args) result = func.apply(context, args);
 	    };
 
-	    return function() {
-	      context = this;
-	      args = arguments;
-	      timestamp = _.now();
-	      var callNow = immediate && !timeout;
-	      if (!timeout) timeout = setTimeout(later, wait);
-	      if (callNow) {
-	        result = func.apply(context, args);
-	        context = args = null;
+	    var debounced = restArguments(function(args) {
+	      if (timeout) clearTimeout(timeout);
+	      if (immediate) {
+	        var callNow = !timeout;
+	        timeout = setTimeout(later, wait);
+	        if (callNow) result = func.apply(this, args);
+	      } else {
+	        timeout = _.delay(later, wait, this, args);
 	      }
 
 	      return result;
+	    });
+
+	    debounced.cancel = function() {
+	      clearTimeout(timeout);
+	      timeout = null;
 	    };
+
+	    return debounced;
 	  };
 
 	  // Returns the first function passed as an argument to the second,
@@ -11246,22 +11313,24 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  // often you call it. Useful for lazy initialization.
 	  _.once = _.partial(_.before, 2);
 
+	  _.restArguments = restArguments;
+
 	  // Object Functions
 	  // ----------------
 
 	  // Keys in IE < 9 that won't be iterated by `for key in ...` and thus missed.
 	  var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
 	  var nonEnumerableProps = ['valueOf', 'isPrototypeOf', 'toString',
-	                      'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
+	    'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
 
-	  function collectNonEnumProps(obj, keys) {
+	  var collectNonEnumProps = function(obj, keys) {
 	    var nonEnumIdx = nonEnumerableProps.length;
 	    var constructor = obj.constructor;
-	    var proto = (_.isFunction(constructor) && constructor.prototype) || ObjProto;
+	    var proto = _.isFunction(constructor) && constructor.prototype || ObjProto;
 
 	    // Constructor is a special case.
 	    var prop = 'constructor';
-	    if (_.has(obj, prop) && !_.contains(keys, prop)) keys.push(prop);
+	    if (has(obj, prop) && !_.contains(keys, prop)) keys.push(prop);
 
 	    while (nonEnumIdx--) {
 	      prop = nonEnumerableProps[nonEnumIdx];
@@ -11269,15 +11338,15 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        keys.push(prop);
 	      }
 	    }
-	  }
+	  };
 
 	  // Retrieve the names of an object's own properties.
-	  // Delegates to **ECMAScript 5**'s native `Object.keys`
+	  // Delegates to **ECMAScript 5**'s native `Object.keys`.
 	  _.keys = function(obj) {
 	    if (!_.isObject(obj)) return [];
 	    if (nativeKeys) return nativeKeys(obj);
 	    var keys = [];
-	    for (var key in obj) if (_.has(obj, key)) keys.push(key);
+	    for (var key in obj) if (has(obj, key)) keys.push(key);
 	    // Ahem, IE < 9.
 	    if (hasEnumBug) collectNonEnumProps(obj, keys);
 	    return keys;
@@ -11304,22 +11373,22 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    return values;
 	  };
 
-	  // Returns the results of applying the iteratee to each element of the object
-	  // In contrast to _.map it returns an object
+	  // Returns the results of applying the iteratee to each element of the object.
+	  // In contrast to _.map it returns an object.
 	  _.mapObject = function(obj, iteratee, context) {
 	    iteratee = cb(iteratee, context);
-	    var keys =  _.keys(obj),
-	          length = keys.length,
-	          results = {},
-	          currentKey;
-	      for (var index = 0; index < length; index++) {
-	        currentKey = keys[index];
-	        results[currentKey] = iteratee(obj[currentKey], currentKey, obj);
-	      }
-	      return results;
+	    var keys = _.keys(obj),
+	        length = keys.length,
+	        results = {};
+	    for (var index = 0; index < length; index++) {
+	      var currentKey = keys[index];
+	      results[currentKey] = iteratee(obj[currentKey], currentKey, obj);
+	    }
+	    return results;
 	  };
 
 	  // Convert an object into a list of `[key, value]` pairs.
+	  // The opposite of _.object.
 	  _.pairs = function(obj) {
 	    var keys = _.keys(obj);
 	    var length = keys.length;
@@ -11341,7 +11410,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 
 	  // Return a sorted list of the function names available on the object.
-	  // Aliased as `methods`
+	  // Aliased as `methods`.
 	  _.functions = _.methods = function(obj) {
 	    var names = [];
 	    for (var key in obj) {
@@ -11350,14 +11419,33 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    return names.sort();
 	  };
 
+	  // An internal function for creating assigner functions.
+	  var createAssigner = function(keysFunc, defaults) {
+	    return function(obj) {
+	      var length = arguments.length;
+	      if (defaults) obj = Object(obj);
+	      if (length < 2 || obj == null) return obj;
+	      for (var index = 1; index < length; index++) {
+	        var source = arguments[index],
+	            keys = keysFunc(source),
+	            l = keys.length;
+	        for (var i = 0; i < l; i++) {
+	          var key = keys[i];
+	          if (!defaults || obj[key] === void 0) obj[key] = source[key];
+	        }
+	      }
+	      return obj;
+	    };
+	  };
+
 	  // Extend a given object with all the properties in passed-in object(s).
 	  _.extend = createAssigner(_.allKeys);
 
-	  // Assigns a given object with all the own properties in the passed-in object(s)
+	  // Assigns a given object with all the own properties in the passed-in object(s).
 	  // (https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
 	  _.extendOwn = _.assign = createAssigner(_.keys);
 
-	  // Returns the first key on an object that passes a predicate test
+	  // Returns the first key on an object that passes a predicate test.
 	  _.findKey = function(obj, predicate, context) {
 	    predicate = cb(predicate, context);
 	    var keys = _.keys(obj), key;
@@ -11367,16 +11455,21 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    }
 	  };
 
+	  // Internal pick helper function to determine if `obj` has key `key`.
+	  var keyInObj = function(value, key, obj) {
+	    return key in obj;
+	  };
+
 	  // Return a copy of the object only containing the whitelisted properties.
-	  _.pick = function(object, oiteratee, context) {
-	    var result = {}, obj = object, iteratee, keys;
+	  _.pick = restArguments(function(obj, keys) {
+	    var result = {}, iteratee = keys[0];
 	    if (obj == null) return result;
-	    if (_.isFunction(oiteratee)) {
+	    if (_.isFunction(iteratee)) {
+	      if (keys.length > 1) iteratee = optimizeCb(iteratee, keys[1]);
 	      keys = _.allKeys(obj);
-	      iteratee = optimizeCb(oiteratee, context);
 	    } else {
-	      keys = flatten(arguments, false, false, 1);
-	      iteratee = function(value, key, obj) { return key in obj; };
+	      iteratee = keyInObj;
+	      keys = flatten(keys, false, false);
 	      obj = Object(obj);
 	    }
 	    for (var i = 0, length = keys.length; i < length; i++) {
@@ -11385,20 +11478,22 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      if (iteratee(value, key, obj)) result[key] = value;
 	    }
 	    return result;
-	  };
+	  });
 
-	   // Return a copy of the object without the blacklisted properties.
-	  _.omit = function(obj, iteratee, context) {
+	  // Return a copy of the object without the blacklisted properties.
+	  _.omit = restArguments(function(obj, keys) {
+	    var iteratee = keys[0], context;
 	    if (_.isFunction(iteratee)) {
 	      iteratee = _.negate(iteratee);
+	      if (keys.length > 1) context = keys[1];
 	    } else {
-	      var keys = _.map(flatten(arguments, false, false, 1), String);
+	      keys = _.map(flatten(keys, false, false), String);
 	      iteratee = function(value, key) {
 	        return !_.contains(keys, key);
 	      };
 	    }
 	    return _.pick(obj, iteratee, context);
-	  };
+	  });
 
 	  // Fill in a given object with default properties.
 	  _.defaults = createAssigner(_.allKeys, true);
@@ -11440,12 +11535,23 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 
 	  // Internal recursive comparison function for `isEqual`.
-	  var eq = function(a, b, aStack, bStack) {
+	  var eq, deepEq;
+	  eq = function(a, b, aStack, bStack) {
 	    // Identical objects are equal. `0 === -0`, but they aren't identical.
 	    // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
 	    if (a === b) return a !== 0 || 1 / a === 1 / b;
-	    // A strict comparison is necessary because `null == undefined`.
-	    if (a == null || b == null) return a === b;
+	    // `null` or `undefined` only equal to itself (strict comparison).
+	    if (a == null || b == null) return false;
+	    // `NaN`s are equivalent, but non-reflexive.
+	    if (a !== a) return b !== b;
+	    // Exhaust primitive checks
+	    var type = typeof a;
+	    if (type !== 'function' && type !== 'object' && typeof b != 'object') return false;
+	    return deepEq(a, b, aStack, bStack);
+	  };
+
+	  // Internal recursive comparison function for `isEqual`.
+	  deepEq = function(a, b, aStack, bStack) {
 	    // Unwrap any wrapped objects.
 	    if (a instanceof _) a = a._wrapped;
 	    if (b instanceof _) b = b._wrapped;
@@ -11462,7 +11568,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        return '' + a === '' + b;
 	      case '[object Number]':
 	        // `NaN`s are equivalent, but non-reflexive.
-	        // Object(NaN) is equivalent to NaN
+	        // Object(NaN) is equivalent to NaN.
 	        if (+a !== +a) return +b !== +b;
 	        // An `egal` comparison is performed for other numeric values.
 	        return +a === 0 ? 1 / +a === 1 / b : +a === +b;
@@ -11472,6 +11578,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        // millisecond representations. Note that invalid dates with millisecond representations
 	        // of `NaN` are not equivalent.
 	        return +a === +b;
+	      case '[object Symbol]':
+	        return SymbolProto.valueOf.call(a) === SymbolProto.valueOf.call(b);
 	    }
 
 	    var areArrays = className === '[object Array]';
@@ -11523,7 +11631,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      while (length--) {
 	        // Deep compare each member
 	        key = keys[length];
-	        if (!(_.has(b, key) && eq(a[key], b[key], aStack, bStack))) return false;
+	        if (!(has(b, key) && eq(a[key], b[key], aStack, bStack))) return false;
 	      }
 	    }
 	    // Remove the first object from the stack of traversed objects.
@@ -11562,8 +11670,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    return type === 'function' || type === 'object' && !!obj;
 	  };
 
-	  // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError.
-	  _.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error'], function(name) {
+	  // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError, isMap, isWeakMap, isSet, isWeakSet.
+	  _.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error', 'Symbol', 'Map', 'WeakMap', 'Set', 'WeakSet'], function(name) {
 	    _['is' + name] = function(obj) {
 	      return toString.call(obj) === '[object ' + name + ']';
 	    };
@@ -11573,13 +11681,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  // there isn't any inspectable "Arguments" type.
 	  if (!_.isArguments(arguments)) {
 	    _.isArguments = function(obj) {
-	      return _.has(obj, 'callee');
+	      return has(obj, 'callee');
 	    };
 	  }
 
 	  // Optimize `isFunction` if appropriate. Work around some typeof bugs in old v8,
-	  // IE 11 (#1621), and in Safari 8 (#1929).
-	  if (typeof /./ != 'function' && typeof Int8Array != 'object') {
+	  // IE 11 (#1621), Safari 8 (#1929), and PhantomJS (#2236).
+	  var nodelist = root.document && root.document.childNodes;
+	  if (typeof /./ != 'function' && typeof Int8Array != 'object' && typeof nodelist != 'function') {
 	    _.isFunction = function(obj) {
 	      return typeof obj == 'function' || false;
 	    };
@@ -11587,12 +11696,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	  // Is a given object a finite number?
 	  _.isFinite = function(obj) {
-	    return isFinite(obj) && !isNaN(parseFloat(obj));
+	    return !_.isSymbol(obj) && isFinite(obj) && !isNaN(parseFloat(obj));
 	  };
 
-	  // Is the given value `NaN`? (NaN is the only number which does not equal itself).
+	  // Is the given value `NaN`?
 	  _.isNaN = function(obj) {
-	    return _.isNumber(obj) && obj !== +obj;
+	    return _.isNumber(obj) && isNaN(obj);
 	  };
 
 	  // Is a given value a boolean?
@@ -11612,8 +11721,19 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	  // Shortcut function for checking if an object has a given property directly
 	  // on itself (in other words, not on a prototype).
-	  _.has = function(obj, key) {
-	    return obj != null && hasOwnProperty.call(obj, key);
+	  _.has = function(obj, path) {
+	    if (!_.isArray(path)) {
+	      return has(obj, path);
+	    }
+	    var length = path.length;
+	    for (var i = 0; i < length; i++) {
+	      var key = path[i];
+	      if (obj == null || !hasOwnProperty.call(obj, key)) {
+	        return false;
+	      }
+	      obj = obj[key];
+	    }
+	    return !!length;
 	  };
 
 	  // Utility Functions
@@ -11640,12 +11760,24 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	  _.noop = function(){};
 
-	  _.property = property;
+	  // Creates a function that, when passed an object, will traverse that object’s
+	  // properties down the given `path`, specified as an array of keys or indexes.
+	  _.property = function(path) {
+	    if (!_.isArray(path)) {
+	      return shallowProperty(path);
+	    }
+	    return function(obj) {
+	      return deepGet(obj, path);
+	    };
+	  };
 
 	  // Generates a function for a given object that returns a given property.
 	  _.propertyOf = function(obj) {
-	    return obj == null ? function(){} : function(key) {
-	      return obj[key];
+	    if (obj == null) {
+	      return function(){};
+	    }
+	    return function(path) {
+	      return !_.isArray(path) ? obj[path] : deepGet(obj, path);
 	    };
 	  };
 
@@ -11680,7 +11812,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    return new Date().getTime();
 	  };
 
-	   // List of HTML entities for escaping.
+	  // List of HTML entities for escaping.
 	  var escapeMap = {
 	    '&': '&amp;',
 	    '<': '&lt;',
@@ -11696,7 +11828,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    var escaper = function(match) {
 	      return map[match];
 	    };
-	    // Regexes for identifying a key that needs to be escaped
+	    // Regexes for identifying a key that needs to be escaped.
 	    var source = '(?:' + _.keys(map).join('|') + ')';
 	    var testRegexp = RegExp(source);
 	    var replaceRegexp = RegExp(source, 'g');
@@ -11708,14 +11840,24 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  _.escape = createEscaper(escapeMap);
 	  _.unescape = createEscaper(unescapeMap);
 
-	  // If the value of the named `property` is a function then invoke it with the
-	  // `object` as context; otherwise, return it.
-	  _.result = function(object, property, fallback) {
-	    var value = object == null ? void 0 : object[property];
-	    if (value === void 0) {
-	      value = fallback;
+	  // Traverses the children of `obj` along `path`. If a child is a function, it
+	  // is invoked with its parent as context. Returns the value of the final
+	  // child, or `fallback` if any child is undefined.
+	  _.result = function(obj, path, fallback) {
+	    if (!_.isArray(path)) path = [path];
+	    var length = path.length;
+	    if (!length) {
+	      return _.isFunction(fallback) ? fallback.call(obj) : fallback;
 	    }
-	    return _.isFunction(value) ? value.call(object) : value;
+	    for (var i = 0; i < length; i++) {
+	      var prop = obj == null ? void 0 : obj[path[i]];
+	      if (prop === void 0) {
+	        prop = fallback;
+	        i = length; // Ensure we don't continue iterating.
+	      }
+	      obj = _.isFunction(prop) ? prop.call(obj) : prop;
+	    }
+	    return obj;
 	  };
 
 	  // Generate a unique integer id (unique within the entire client session).
@@ -11729,9 +11871,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  // By default, Underscore uses ERB-style template delimiters, change the
 	  // following template settings to use alternative delimiters.
 	  _.templateSettings = {
-	    evaluate    : /<%([\s\S]+?)%>/g,
-	    interpolate : /<%=([\s\S]+?)%>/g,
-	    escape      : /<%-([\s\S]+?)%>/g
+	    evaluate: /<%([\s\S]+?)%>/g,
+	    interpolate: /<%=([\s\S]+?)%>/g,
+	    escape: /<%-([\s\S]+?)%>/g
 	  };
 
 	  // When customizing `templateSettings`, if you don't want to define an
@@ -11742,15 +11884,15 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  // Certain characters need to be escaped so that they can be put into a
 	  // string literal.
 	  var escapes = {
-	    "'":      "'",
-	    '\\':     '\\',
-	    '\r':     'r',
-	    '\n':     'n',
+	    "'": "'",
+	    '\\': '\\',
+	    '\r': 'r',
+	    '\n': 'n',
 	    '\u2028': 'u2028',
 	    '\u2029': 'u2029'
 	  };
 
-	  var escaper = /\\|'|\r|\n|\u2028|\u2029/g;
+	  var escapeRegExp = /\\|'|\r|\n|\u2028|\u2029/g;
 
 	  var escapeChar = function(match) {
 	    return '\\' + escapes[match];
@@ -11775,7 +11917,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    var index = 0;
 	    var source = "__p+='";
 	    text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
-	      source += text.slice(index, offset).replace(escaper, escapeChar);
+	      source += text.slice(index, offset).replace(escapeRegExp, escapeChar);
 	      index = offset + match.length;
 
 	      if (escape) {
@@ -11786,7 +11928,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        source += "';\n" + evaluate + "\n__p+='";
 	      }
 
-	      // Adobe VMs need the match returned to produce the correct offest.
+	      // Adobe VMs need the match returned to produce the correct offset.
 	      return match;
 	    });
 	    source += "';\n";
@@ -11798,8 +11940,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      "print=function(){__p+=__j.call(arguments,'');};\n" +
 	      source + 'return __p;\n';
 
+	    var render;
 	    try {
-	      var render = new Function(settings.variable || 'obj', '_', source);
+	      render = new Function(settings.variable || 'obj', '_', source);
 	    } catch (e) {
 	      e.source = source;
 	      throw e;
@@ -11830,7 +11973,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  // underscore functions. Wrapped objects may be chained.
 
 	  // Helper function to continue chaining intermediate results.
-	  var result = function(instance, obj) {
+	  var chainResult = function(instance, obj) {
 	    return instance._chain ? _(obj).chain() : obj;
 	  };
 
@@ -11841,9 +11984,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      _.prototype[name] = function() {
 	        var args = [this._wrapped];
 	        push.apply(args, arguments);
-	        return result(this, func.apply(_, args));
+	        return chainResult(this, func.apply(_, args));
 	      };
 	    });
+	    return _;
 	  };
 
 	  // Add all of the Underscore functions to the wrapper object.
@@ -11856,7 +12000,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      var obj = this._wrapped;
 	      method.apply(obj, arguments);
 	      if ((name === 'shift' || name === 'splice') && obj.length === 0) delete obj[0];
-	      return result(this, obj);
+	      return chainResult(this, obj);
 	    };
 	  });
 
@@ -11864,7 +12008,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  _.each(['concat', 'join', 'slice'], function(name) {
 	    var method = ArrayProto[name];
 	    _.prototype[name] = function() {
-	      return result(this, method.apply(this._wrapped, arguments));
+	      return chainResult(this, method.apply(this._wrapped, arguments));
 	    };
 	  });
 
@@ -11878,7 +12022,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  _.prototype.valueOf = _.prototype.toJSON = _.prototype.value;
 
 	  _.prototype.toString = function() {
-	    return '' + this._wrapped;
+	    return String(this._wrapped);
 	  };
 
 	  // AMD registration happens at the end for compatibility with AMD loaders
@@ -11893,62 +12037,79 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      return _;
 	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  }
-	}.call(this));
+	}());
 
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(3)(module)))
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
 
-/***/ },
+
+/***/ }),
 /* 4 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_5__;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 
-	var d3Array = __webpack_require__(6);
-	var d3Axis = __webpack_require__(7);
-	var d3Brush = __webpack_require__(8);
-	var d3Chord = __webpack_require__(17);
-	var d3Collection = __webpack_require__(19);
-	var d3Color = __webpack_require__(13);
-	var d3Contour = __webpack_require__(20);
-	var d3Dispatch = __webpack_require__(10);
-	var d3Drag = __webpack_require__(11);
-	var d3Dsv = __webpack_require__(21);
-	var d3Ease = __webpack_require__(16);
-	var d3Fetch = __webpack_require__(22);
-	var d3Force = __webpack_require__(23);
-	var d3Format = __webpack_require__(25);
-	var d3Geo = __webpack_require__(26);
-	var d3Hierarchy = __webpack_require__(27);
-	var d3Interpolate = __webpack_require__(12);
-	var d3Path = __webpack_require__(18);
-	var d3Polygon = __webpack_require__(28);
-	var d3Quadtree = __webpack_require__(24);
-	var d3Random = __webpack_require__(29);
-	var d3Scale = __webpack_require__(30);
-	var d3ScaleChromatic = __webpack_require__(33);
-	var d3Selection = __webpack_require__(9);
-	var d3Shape = __webpack_require__(34);
-	var d3Time = __webpack_require__(31);
-	var d3TimeFormat = __webpack_require__(32);
-	var d3Timer = __webpack_require__(15);
-	var d3Transition = __webpack_require__(14);
-	var d3Voronoi = __webpack_require__(35);
-	var d3Zoom = __webpack_require__(36);
+	var d3Array = __webpack_require__(7);
+	var d3Axis = __webpack_require__(8);
+	var d3Brush = __webpack_require__(9);
+	var d3Chord = __webpack_require__(18);
+	var d3Collection = __webpack_require__(21);
+	var d3Color = __webpack_require__(14);
+	var d3Contour = __webpack_require__(22);
+	var d3Dispatch = __webpack_require__(11);
+	var d3Drag = __webpack_require__(12);
+	var d3Dsv = __webpack_require__(24);
+	var d3Ease = __webpack_require__(17);
+	var d3Fetch = __webpack_require__(25);
+	var d3Force = __webpack_require__(26);
+	var d3Format = __webpack_require__(28);
+	var d3Geo = __webpack_require__(29);
+	var d3Hierarchy = __webpack_require__(31);
+	var d3Interpolate = __webpack_require__(13);
+	var d3Path = __webpack_require__(20);
+	var d3Polygon = __webpack_require__(32);
+	var d3Quadtree = __webpack_require__(27);
+	var d3Random = __webpack_require__(33);
+	var d3Scale = __webpack_require__(34);
+	var d3ScaleChromatic = __webpack_require__(37);
+	var d3Selection = __webpack_require__(10);
+	var d3Shape = __webpack_require__(38);
+	var d3Time = __webpack_require__(35);
+	var d3TimeFormat = __webpack_require__(36);
+	var d3Timer = __webpack_require__(16);
+	var d3Transition = __webpack_require__(15);
+	var d3Voronoi = __webpack_require__(39);
+	var d3Zoom = __webpack_require__(40);
 
-	var version = "5.9.0";
+	var version = "5.9.7";
 
 	Object.keys(d3Array).forEach(function (key) { exports[key] = d3Array[key]; });
 	Object.keys(d3Axis).forEach(function (key) { exports[key] = d3Axis[key]; });
@@ -11985,9 +12146,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	Object.defineProperty(exports, "event", {get: function() { return d3Selection.event; }});
 
 
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-array/ v1.2.4 Copyright 2018 Mike Bostock
 	(function (global, factory) {
@@ -12581,9 +12742,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-axis/ v1.0.12 Copyright 2018 Mike Bostock
 	(function (global, factory) {
@@ -12780,13 +12941,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-brush/ v1.0.6 Copyright 2018 Mike Bostock
 	(function (global, factory) {
-	 true ? factory(exports, __webpack_require__(9), __webpack_require__(10), __webpack_require__(11), __webpack_require__(12), __webpack_require__(14)) :
+	 true ? factory(exports, __webpack_require__(10), __webpack_require__(11), __webpack_require__(12), __webpack_require__(13), __webpack_require__(15)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-selection', 'd3-dispatch', 'd3-drag', 'd3-interpolate', 'd3-transition'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3,global.d3,global.d3,global.d3,global.d3));
 	}(this, (function (exports,d3Selection,d3Dispatch,d3Drag,d3Interpolate,d3Transition) { 'use strict';
@@ -13353,9 +13514,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-selection/ v1.4.0 Copyright 2019 Mike Bostock
 	(function (global, factory) {
@@ -14346,9 +14507,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-dispatch/ v1.0.5 Copyright 2018 Mike Bostock
 	(function (global, factory) {
@@ -14447,13 +14608,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-drag/ v1.2.3 Copyright 2018 Mike Bostock
 	(function (global, factory) {
-	 true ? factory(exports, __webpack_require__(9), __webpack_require__(10)) :
+	 true ? factory(exports, __webpack_require__(10), __webpack_require__(11)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-selection', 'd3-dispatch'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3,global.d3));
 	}(this, (function (exports,d3Selection,d3Dispatch) { 'use strict';
@@ -14687,13 +14848,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-interpolate/ v1.3.2 Copyright 2018 Mike Bostock
 	(function (global, factory) {
-	 true ? factory(exports, __webpack_require__(13)) :
+	 true ? factory(exports, __webpack_require__(14)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-color'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3));
 	}(this, (function (exports,d3Color) { 'use strict';
@@ -15265,11 +15426,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	// https://d3js.org/d3-color/ v1.2.3 Copyright 2018 Mike Bostock
+	// https://d3js.org/d3-color/ v1.2.8 Copyright 2019 Mike Bostock
 	(function (global, factory) {
 	 true ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -15523,9 +15684,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    return this;
 	  },
 	  displayable: function() {
-	    return (0 <= this.r && this.r <= 255)
-	        && (0 <= this.g && this.g <= 255)
-	        && (0 <= this.b && this.b <= 255)
+	    return (-0.5 <= this.r && this.r < 255.5)
+	        && (-0.5 <= this.g && this.g < 255.5)
+	        && (-0.5 <= this.b && this.b < 255.5)
 	        && (0 <= this.opacity && this.opacity <= 1);
 	  },
 	  hex: function() {
@@ -15630,7 +15791,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	var deg2rad = Math.PI / 180;
 	var rad2deg = 180 / Math.PI;
 
-	// https://beta.observablehq.com/@mbostock/lab-and-rgb
+	// https://observablehq.com/@mbostock/lab-and-rgb
 	var K = 18,
 	    Xn = 0.96422,
 	    Yn = 1,
@@ -15642,11 +15803,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	function labConvert(o) {
 	  if (o instanceof Lab) return new Lab(o.l, o.a, o.b, o.opacity);
-	  if (o instanceof Hcl) {
-	    if (isNaN(o.h)) return new Lab(o.l, 0, 0, o.opacity);
-	    var h = o.h * deg2rad;
-	    return new Lab(o.l, Math.cos(h) * o.c, Math.sin(h) * o.c, o.opacity);
-	  }
+	  if (o instanceof Hcl) return hcl2lab(o);
 	  if (!(o instanceof Rgb)) o = rgbConvert(o);
 	  var r = rgb2lrgb(o.r),
 	      g = rgb2lrgb(o.g),
@@ -15716,7 +15873,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	function hclConvert(o) {
 	  if (o instanceof Hcl) return new Hcl(o.h, o.c, o.l, o.opacity);
 	  if (!(o instanceof Lab)) o = labConvert(o);
-	  if (o.a === 0 && o.b === 0) return new Hcl(NaN, 0, o.l, o.opacity);
+	  if (o.a === 0 && o.b === 0) return new Hcl(NaN, 0 < o.l && o.l < 100 ? 0 : NaN, o.l, o.opacity);
 	  var h = Math.atan2(o.b, o.a) * rad2deg;
 	  return new Hcl(h < 0 ? h + 360 : h, Math.sqrt(o.a * o.a + o.b * o.b), o.l, o.opacity);
 	}
@@ -15736,6 +15893,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  this.opacity = +opacity;
 	}
 
+	function hcl2lab(o) {
+	  if (isNaN(o.h)) return new Lab(o.l, 0, 0, o.opacity);
+	  var h = o.h * deg2rad;
+	  return new Lab(o.l, Math.cos(h) * o.c, Math.sin(h) * o.c, o.opacity);
+	}
+
 	define(Hcl, hcl, extend(Color, {
 	  brighter: function(k) {
 	    return new Hcl(this.h, this.c, this.l + K * (k == null ? 1 : k), this.opacity);
@@ -15744,7 +15907,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    return new Hcl(this.h, this.c, this.l - K * (k == null ? 1 : k), this.opacity);
 	  },
 	  rgb: function() {
-	    return labConvert(this).rgb();
+	    return hcl2lab(this).rgb();
 	  }
 	}));
 
@@ -15820,13 +15983,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-transition/ v1.2.0 Copyright 2019 Mike Bostock
 	(function (global, factory) {
-	 true ? factory(exports, __webpack_require__(10), __webpack_require__(15), __webpack_require__(13), __webpack_require__(12), __webpack_require__(9), __webpack_require__(16)) :
+	 true ? factory(exports, __webpack_require__(11), __webpack_require__(16), __webpack_require__(14), __webpack_require__(13), __webpack_require__(10), __webpack_require__(17)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-dispatch', 'd3-timer', 'd3-color', 'd3-interpolate', 'd3-selection', 'd3-ease'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3,global.d3,global.d3,global.d3,global.d3,global.d3));
 	}(this, (function (exports,d3Dispatch,d3Timer,d3Color,d3Interpolate,d3Selection,d3Ease) { 'use strict';
@@ -16680,9 +16843,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-timer/ v1.0.9 Copyright 2018 Mike Bostock
 	(function (global, factory) {
@@ -16835,9 +16998,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-ease/ v1.0.5 Copyright 2018 Mike Bostock
 	(function (global, factory) {
@@ -17100,13 +17263,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-chord/ v1.0.6 Copyright 2018 Mike Bostock
 	(function (global, factory) {
-	 true ? factory(exports, __webpack_require__(6), __webpack_require__(18)) :
+	 true ? factory(exports, __webpack_require__(19), __webpack_require__(20)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-array', 'd3-path'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3,global.d3));
 	}(this, (function (exports,d3Array,d3Path) { 'use strict';
@@ -17336,9 +17499,605 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// https://d3js.org/d3-array/ v1.2.4 Copyright 2018 Mike Bostock
+	(function (global, factory) {
+	 true ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(factory((global.d3 = global.d3 || {})));
+	}(this, (function (exports) { 'use strict';
+
+	function ascending(a, b) {
+	  return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
+	}
+
+	function bisector(compare) {
+	  if (compare.length === 1) compare = ascendingComparator(compare);
+	  return {
+	    left: function(a, x, lo, hi) {
+	      if (lo == null) lo = 0;
+	      if (hi == null) hi = a.length;
+	      while (lo < hi) {
+	        var mid = lo + hi >>> 1;
+	        if (compare(a[mid], x) < 0) lo = mid + 1;
+	        else hi = mid;
+	      }
+	      return lo;
+	    },
+	    right: function(a, x, lo, hi) {
+	      if (lo == null) lo = 0;
+	      if (hi == null) hi = a.length;
+	      while (lo < hi) {
+	        var mid = lo + hi >>> 1;
+	        if (compare(a[mid], x) > 0) hi = mid;
+	        else lo = mid + 1;
+	      }
+	      return lo;
+	    }
+	  };
+	}
+
+	function ascendingComparator(f) {
+	  return function(d, x) {
+	    return ascending(f(d), x);
+	  };
+	}
+
+	var ascendingBisect = bisector(ascending);
+	var bisectRight = ascendingBisect.right;
+	var bisectLeft = ascendingBisect.left;
+
+	function pairs(array, f) {
+	  if (f == null) f = pair;
+	  var i = 0, n = array.length - 1, p = array[0], pairs = new Array(n < 0 ? 0 : n);
+	  while (i < n) pairs[i] = f(p, p = array[++i]);
+	  return pairs;
+	}
+
+	function pair(a, b) {
+	  return [a, b];
+	}
+
+	function cross(values0, values1, reduce) {
+	  var n0 = values0.length,
+	      n1 = values1.length,
+	      values = new Array(n0 * n1),
+	      i0,
+	      i1,
+	      i,
+	      value0;
+
+	  if (reduce == null) reduce = pair;
+
+	  for (i0 = i = 0; i0 < n0; ++i0) {
+	    for (value0 = values0[i0], i1 = 0; i1 < n1; ++i1, ++i) {
+	      values[i] = reduce(value0, values1[i1]);
+	    }
+	  }
+
+	  return values;
+	}
+
+	function descending(a, b) {
+	  return b < a ? -1 : b > a ? 1 : b >= a ? 0 : NaN;
+	}
+
+	function number(x) {
+	  return x === null ? NaN : +x;
+	}
+
+	function variance(values, valueof) {
+	  var n = values.length,
+	      m = 0,
+	      i = -1,
+	      mean = 0,
+	      value,
+	      delta,
+	      sum = 0;
+
+	  if (valueof == null) {
+	    while (++i < n) {
+	      if (!isNaN(value = number(values[i]))) {
+	        delta = value - mean;
+	        mean += delta / ++m;
+	        sum += delta * (value - mean);
+	      }
+	    }
+	  }
+
+	  else {
+	    while (++i < n) {
+	      if (!isNaN(value = number(valueof(values[i], i, values)))) {
+	        delta = value - mean;
+	        mean += delta / ++m;
+	        sum += delta * (value - mean);
+	      }
+	    }
+	  }
+
+	  if (m > 1) return sum / (m - 1);
+	}
+
+	function deviation(array, f) {
+	  var v = variance(array, f);
+	  return v ? Math.sqrt(v) : v;
+	}
+
+	function extent(values, valueof) {
+	  var n = values.length,
+	      i = -1,
+	      value,
+	      min,
+	      max;
+
+	  if (valueof == null) {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = values[i]) != null && value >= value) {
+	        min = max = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = values[i]) != null) {
+	            if (min > value) min = value;
+	            if (max < value) max = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  else {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = valueof(values[i], i, values)) != null && value >= value) {
+	        min = max = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = valueof(values[i], i, values)) != null) {
+	            if (min > value) min = value;
+	            if (max < value) max = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  return [min, max];
+	}
+
+	var array = Array.prototype;
+
+	var slice = array.slice;
+	var map = array.map;
+
+	function constant(x) {
+	  return function() {
+	    return x;
+	  };
+	}
+
+	function identity(x) {
+	  return x;
+	}
+
+	function range(start, stop, step) {
+	  start = +start, stop = +stop, step = (n = arguments.length) < 2 ? (stop = start, start = 0, 1) : n < 3 ? 1 : +step;
+
+	  var i = -1,
+	      n = Math.max(0, Math.ceil((stop - start) / step)) | 0,
+	      range = new Array(n);
+
+	  while (++i < n) {
+	    range[i] = start + i * step;
+	  }
+
+	  return range;
+	}
+
+	var e10 = Math.sqrt(50),
+	    e5 = Math.sqrt(10),
+	    e2 = Math.sqrt(2);
+
+	function ticks(start, stop, count) {
+	  var reverse,
+	      i = -1,
+	      n,
+	      ticks,
+	      step;
+
+	  stop = +stop, start = +start, count = +count;
+	  if (start === stop && count > 0) return [start];
+	  if (reverse = stop < start) n = start, start = stop, stop = n;
+	  if ((step = tickIncrement(start, stop, count)) === 0 || !isFinite(step)) return [];
+
+	  if (step > 0) {
+	    start = Math.ceil(start / step);
+	    stop = Math.floor(stop / step);
+	    ticks = new Array(n = Math.ceil(stop - start + 1));
+	    while (++i < n) ticks[i] = (start + i) * step;
+	  } else {
+	    start = Math.floor(start * step);
+	    stop = Math.ceil(stop * step);
+	    ticks = new Array(n = Math.ceil(start - stop + 1));
+	    while (++i < n) ticks[i] = (start - i) / step;
+	  }
+
+	  if (reverse) ticks.reverse();
+
+	  return ticks;
+	}
+
+	function tickIncrement(start, stop, count) {
+	  var step = (stop - start) / Math.max(0, count),
+	      power = Math.floor(Math.log(step) / Math.LN10),
+	      error = step / Math.pow(10, power);
+	  return power >= 0
+	      ? (error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1) * Math.pow(10, power)
+	      : -Math.pow(10, -power) / (error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1);
+	}
+
+	function tickStep(start, stop, count) {
+	  var step0 = Math.abs(stop - start) / Math.max(0, count),
+	      step1 = Math.pow(10, Math.floor(Math.log(step0) / Math.LN10)),
+	      error = step0 / step1;
+	  if (error >= e10) step1 *= 10;
+	  else if (error >= e5) step1 *= 5;
+	  else if (error >= e2) step1 *= 2;
+	  return stop < start ? -step1 : step1;
+	}
+
+	function sturges(values) {
+	  return Math.ceil(Math.log(values.length) / Math.LN2) + 1;
+	}
+
+	function histogram() {
+	  var value = identity,
+	      domain = extent,
+	      threshold = sturges;
+
+	  function histogram(data) {
+	    var i,
+	        n = data.length,
+	        x,
+	        values = new Array(n);
+
+	    for (i = 0; i < n; ++i) {
+	      values[i] = value(data[i], i, data);
+	    }
+
+	    var xz = domain(values),
+	        x0 = xz[0],
+	        x1 = xz[1],
+	        tz = threshold(values, x0, x1);
+
+	    // Convert number of thresholds into uniform thresholds.
+	    if (!Array.isArray(tz)) {
+	      tz = tickStep(x0, x1, tz);
+	      tz = range(Math.ceil(x0 / tz) * tz, x1, tz); // exclusive
+	    }
+
+	    // Remove any thresholds outside the domain.
+	    var m = tz.length;
+	    while (tz[0] <= x0) tz.shift(), --m;
+	    while (tz[m - 1] > x1) tz.pop(), --m;
+
+	    var bins = new Array(m + 1),
+	        bin;
+
+	    // Initialize bins.
+	    for (i = 0; i <= m; ++i) {
+	      bin = bins[i] = [];
+	      bin.x0 = i > 0 ? tz[i - 1] : x0;
+	      bin.x1 = i < m ? tz[i] : x1;
+	    }
+
+	    // Assign data to bins by value, ignoring any outside the domain.
+	    for (i = 0; i < n; ++i) {
+	      x = values[i];
+	      if (x0 <= x && x <= x1) {
+	        bins[bisectRight(tz, x, 0, m)].push(data[i]);
+	      }
+	    }
+
+	    return bins;
+	  }
+
+	  histogram.value = function(_) {
+	    return arguments.length ? (value = typeof _ === "function" ? _ : constant(_), histogram) : value;
+	  };
+
+	  histogram.domain = function(_) {
+	    return arguments.length ? (domain = typeof _ === "function" ? _ : constant([_[0], _[1]]), histogram) : domain;
+	  };
+
+	  histogram.thresholds = function(_) {
+	    return arguments.length ? (threshold = typeof _ === "function" ? _ : Array.isArray(_) ? constant(slice.call(_)) : constant(_), histogram) : threshold;
+	  };
+
+	  return histogram;
+	}
+
+	function quantile(values, p, valueof) {
+	  if (valueof == null) valueof = number;
+	  if (!(n = values.length)) return;
+	  if ((p = +p) <= 0 || n < 2) return +valueof(values[0], 0, values);
+	  if (p >= 1) return +valueof(values[n - 1], n - 1, values);
+	  var n,
+	      i = (n - 1) * p,
+	      i0 = Math.floor(i),
+	      value0 = +valueof(values[i0], i0, values),
+	      value1 = +valueof(values[i0 + 1], i0 + 1, values);
+	  return value0 + (value1 - value0) * (i - i0);
+	}
+
+	function freedmanDiaconis(values, min, max) {
+	  values = map.call(values, number).sort(ascending);
+	  return Math.ceil((max - min) / (2 * (quantile(values, 0.75) - quantile(values, 0.25)) * Math.pow(values.length, -1 / 3)));
+	}
+
+	function scott(values, min, max) {
+	  return Math.ceil((max - min) / (3.5 * deviation(values) * Math.pow(values.length, -1 / 3)));
+	}
+
+	function max(values, valueof) {
+	  var n = values.length,
+	      i = -1,
+	      value,
+	      max;
+
+	  if (valueof == null) {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = values[i]) != null && value >= value) {
+	        max = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = values[i]) != null && value > max) {
+	            max = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  else {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = valueof(values[i], i, values)) != null && value >= value) {
+	        max = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = valueof(values[i], i, values)) != null && value > max) {
+	            max = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  return max;
+	}
+
+	function mean(values, valueof) {
+	  var n = values.length,
+	      m = n,
+	      i = -1,
+	      value,
+	      sum = 0;
+
+	  if (valueof == null) {
+	    while (++i < n) {
+	      if (!isNaN(value = number(values[i]))) sum += value;
+	      else --m;
+	    }
+	  }
+
+	  else {
+	    while (++i < n) {
+	      if (!isNaN(value = number(valueof(values[i], i, values)))) sum += value;
+	      else --m;
+	    }
+	  }
+
+	  if (m) return sum / m;
+	}
+
+	function median(values, valueof) {
+	  var n = values.length,
+	      i = -1,
+	      value,
+	      numbers = [];
+
+	  if (valueof == null) {
+	    while (++i < n) {
+	      if (!isNaN(value = number(values[i]))) {
+	        numbers.push(value);
+	      }
+	    }
+	  }
+
+	  else {
+	    while (++i < n) {
+	      if (!isNaN(value = number(valueof(values[i], i, values)))) {
+	        numbers.push(value);
+	      }
+	    }
+	  }
+
+	  return quantile(numbers.sort(ascending), 0.5);
+	}
+
+	function merge(arrays) {
+	  var n = arrays.length,
+	      m,
+	      i = -1,
+	      j = 0,
+	      merged,
+	      array;
+
+	  while (++i < n) j += arrays[i].length;
+	  merged = new Array(j);
+
+	  while (--n >= 0) {
+	    array = arrays[n];
+	    m = array.length;
+	    while (--m >= 0) {
+	      merged[--j] = array[m];
+	    }
+	  }
+
+	  return merged;
+	}
+
+	function min(values, valueof) {
+	  var n = values.length,
+	      i = -1,
+	      value,
+	      min;
+
+	  if (valueof == null) {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = values[i]) != null && value >= value) {
+	        min = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = values[i]) != null && min > value) {
+	            min = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  else {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = valueof(values[i], i, values)) != null && value >= value) {
+	        min = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = valueof(values[i], i, values)) != null && min > value) {
+	            min = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  return min;
+	}
+
+	function permute(array, indexes) {
+	  var i = indexes.length, permutes = new Array(i);
+	  while (i--) permutes[i] = array[indexes[i]];
+	  return permutes;
+	}
+
+	function scan(values, compare) {
+	  if (!(n = values.length)) return;
+	  var n,
+	      i = 0,
+	      j = 0,
+	      xi,
+	      xj = values[j];
+
+	  if (compare == null) compare = ascending;
+
+	  while (++i < n) {
+	    if (compare(xi = values[i], xj) < 0 || compare(xj, xj) !== 0) {
+	      xj = xi, j = i;
+	    }
+	  }
+
+	  if (compare(xj, xj) === 0) return j;
+	}
+
+	function shuffle(array, i0, i1) {
+	  var m = (i1 == null ? array.length : i1) - (i0 = i0 == null ? 0 : +i0),
+	      t,
+	      i;
+
+	  while (m) {
+	    i = Math.random() * m-- | 0;
+	    t = array[m + i0];
+	    array[m + i0] = array[i + i0];
+	    array[i + i0] = t;
+	  }
+
+	  return array;
+	}
+
+	function sum(values, valueof) {
+	  var n = values.length,
+	      i = -1,
+	      value,
+	      sum = 0;
+
+	  if (valueof == null) {
+	    while (++i < n) {
+	      if (value = +values[i]) sum += value; // Note: zero and null are equivalent.
+	    }
+	  }
+
+	  else {
+	    while (++i < n) {
+	      if (value = +valueof(values[i], i, values)) sum += value;
+	    }
+	  }
+
+	  return sum;
+	}
+
+	function transpose(matrix) {
+	  if (!(n = matrix.length)) return [];
+	  for (var i = -1, m = min(matrix, length), transpose = new Array(m); ++i < m;) {
+	    for (var j = -1, n, row = transpose[i] = new Array(n); ++j < n;) {
+	      row[j] = matrix[j][i];
+	    }
+	  }
+	  return transpose;
+	}
+
+	function length(d) {
+	  return d.length;
+	}
+
+	function zip() {
+	  return transpose(arguments);
+	}
+
+	exports.bisect = bisectRight;
+	exports.bisectRight = bisectRight;
+	exports.bisectLeft = bisectLeft;
+	exports.ascending = ascending;
+	exports.bisector = bisector;
+	exports.cross = cross;
+	exports.descending = descending;
+	exports.deviation = deviation;
+	exports.extent = extent;
+	exports.histogram = histogram;
+	exports.thresholdFreedmanDiaconis = freedmanDiaconis;
+	exports.thresholdScott = scott;
+	exports.thresholdSturges = sturges;
+	exports.max = max;
+	exports.mean = mean;
+	exports.median = median;
+	exports.merge = merge;
+	exports.min = min;
+	exports.pairs = pairs;
+	exports.permute = permute;
+	exports.quantile = quantile;
+	exports.range = range;
+	exports.scan = scan;
+	exports.shuffle = shuffle;
+	exports.sum = sum;
+	exports.ticks = ticks;
+	exports.tickIncrement = tickIncrement;
+	exports.tickStep = tickStep;
+	exports.transpose = transpose;
+	exports.variance = variance;
+	exports.zip = zip;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	})));
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-path/ v1.0.7 Copyright 2018 Mike Bostock
 	(function (global, factory) {
@@ -17483,9 +18242,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-collection/ v1.0.7 Copyright 2018 Mike Bostock
 	(function (global, factory) {
@@ -17706,13 +18465,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-contour/ v1.3.2 Copyright 2018 Mike Bostock
 	(function (global, factory) {
-	 true ? factory(exports, __webpack_require__(6)) :
+	 true ? factory(exports, __webpack_require__(23)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-array'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3));
 	}(this, (function (exports,d3Array) { 'use strict';
@@ -18143,9 +18902,605 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// https://d3js.org/d3-array/ v1.2.4 Copyright 2018 Mike Bostock
+	(function (global, factory) {
+	 true ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(factory((global.d3 = global.d3 || {})));
+	}(this, (function (exports) { 'use strict';
+
+	function ascending(a, b) {
+	  return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
+	}
+
+	function bisector(compare) {
+	  if (compare.length === 1) compare = ascendingComparator(compare);
+	  return {
+	    left: function(a, x, lo, hi) {
+	      if (lo == null) lo = 0;
+	      if (hi == null) hi = a.length;
+	      while (lo < hi) {
+	        var mid = lo + hi >>> 1;
+	        if (compare(a[mid], x) < 0) lo = mid + 1;
+	        else hi = mid;
+	      }
+	      return lo;
+	    },
+	    right: function(a, x, lo, hi) {
+	      if (lo == null) lo = 0;
+	      if (hi == null) hi = a.length;
+	      while (lo < hi) {
+	        var mid = lo + hi >>> 1;
+	        if (compare(a[mid], x) > 0) hi = mid;
+	        else lo = mid + 1;
+	      }
+	      return lo;
+	    }
+	  };
+	}
+
+	function ascendingComparator(f) {
+	  return function(d, x) {
+	    return ascending(f(d), x);
+	  };
+	}
+
+	var ascendingBisect = bisector(ascending);
+	var bisectRight = ascendingBisect.right;
+	var bisectLeft = ascendingBisect.left;
+
+	function pairs(array, f) {
+	  if (f == null) f = pair;
+	  var i = 0, n = array.length - 1, p = array[0], pairs = new Array(n < 0 ? 0 : n);
+	  while (i < n) pairs[i] = f(p, p = array[++i]);
+	  return pairs;
+	}
+
+	function pair(a, b) {
+	  return [a, b];
+	}
+
+	function cross(values0, values1, reduce) {
+	  var n0 = values0.length,
+	      n1 = values1.length,
+	      values = new Array(n0 * n1),
+	      i0,
+	      i1,
+	      i,
+	      value0;
+
+	  if (reduce == null) reduce = pair;
+
+	  for (i0 = i = 0; i0 < n0; ++i0) {
+	    for (value0 = values0[i0], i1 = 0; i1 < n1; ++i1, ++i) {
+	      values[i] = reduce(value0, values1[i1]);
+	    }
+	  }
+
+	  return values;
+	}
+
+	function descending(a, b) {
+	  return b < a ? -1 : b > a ? 1 : b >= a ? 0 : NaN;
+	}
+
+	function number(x) {
+	  return x === null ? NaN : +x;
+	}
+
+	function variance(values, valueof) {
+	  var n = values.length,
+	      m = 0,
+	      i = -1,
+	      mean = 0,
+	      value,
+	      delta,
+	      sum = 0;
+
+	  if (valueof == null) {
+	    while (++i < n) {
+	      if (!isNaN(value = number(values[i]))) {
+	        delta = value - mean;
+	        mean += delta / ++m;
+	        sum += delta * (value - mean);
+	      }
+	    }
+	  }
+
+	  else {
+	    while (++i < n) {
+	      if (!isNaN(value = number(valueof(values[i], i, values)))) {
+	        delta = value - mean;
+	        mean += delta / ++m;
+	        sum += delta * (value - mean);
+	      }
+	    }
+	  }
+
+	  if (m > 1) return sum / (m - 1);
+	}
+
+	function deviation(array, f) {
+	  var v = variance(array, f);
+	  return v ? Math.sqrt(v) : v;
+	}
+
+	function extent(values, valueof) {
+	  var n = values.length,
+	      i = -1,
+	      value,
+	      min,
+	      max;
+
+	  if (valueof == null) {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = values[i]) != null && value >= value) {
+	        min = max = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = values[i]) != null) {
+	            if (min > value) min = value;
+	            if (max < value) max = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  else {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = valueof(values[i], i, values)) != null && value >= value) {
+	        min = max = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = valueof(values[i], i, values)) != null) {
+	            if (min > value) min = value;
+	            if (max < value) max = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  return [min, max];
+	}
+
+	var array = Array.prototype;
+
+	var slice = array.slice;
+	var map = array.map;
+
+	function constant(x) {
+	  return function() {
+	    return x;
+	  };
+	}
+
+	function identity(x) {
+	  return x;
+	}
+
+	function range(start, stop, step) {
+	  start = +start, stop = +stop, step = (n = arguments.length) < 2 ? (stop = start, start = 0, 1) : n < 3 ? 1 : +step;
+
+	  var i = -1,
+	      n = Math.max(0, Math.ceil((stop - start) / step)) | 0,
+	      range = new Array(n);
+
+	  while (++i < n) {
+	    range[i] = start + i * step;
+	  }
+
+	  return range;
+	}
+
+	var e10 = Math.sqrt(50),
+	    e5 = Math.sqrt(10),
+	    e2 = Math.sqrt(2);
+
+	function ticks(start, stop, count) {
+	  var reverse,
+	      i = -1,
+	      n,
+	      ticks,
+	      step;
+
+	  stop = +stop, start = +start, count = +count;
+	  if (start === stop && count > 0) return [start];
+	  if (reverse = stop < start) n = start, start = stop, stop = n;
+	  if ((step = tickIncrement(start, stop, count)) === 0 || !isFinite(step)) return [];
+
+	  if (step > 0) {
+	    start = Math.ceil(start / step);
+	    stop = Math.floor(stop / step);
+	    ticks = new Array(n = Math.ceil(stop - start + 1));
+	    while (++i < n) ticks[i] = (start + i) * step;
+	  } else {
+	    start = Math.floor(start * step);
+	    stop = Math.ceil(stop * step);
+	    ticks = new Array(n = Math.ceil(start - stop + 1));
+	    while (++i < n) ticks[i] = (start - i) / step;
+	  }
+
+	  if (reverse) ticks.reverse();
+
+	  return ticks;
+	}
+
+	function tickIncrement(start, stop, count) {
+	  var step = (stop - start) / Math.max(0, count),
+	      power = Math.floor(Math.log(step) / Math.LN10),
+	      error = step / Math.pow(10, power);
+	  return power >= 0
+	      ? (error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1) * Math.pow(10, power)
+	      : -Math.pow(10, -power) / (error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1);
+	}
+
+	function tickStep(start, stop, count) {
+	  var step0 = Math.abs(stop - start) / Math.max(0, count),
+	      step1 = Math.pow(10, Math.floor(Math.log(step0) / Math.LN10)),
+	      error = step0 / step1;
+	  if (error >= e10) step1 *= 10;
+	  else if (error >= e5) step1 *= 5;
+	  else if (error >= e2) step1 *= 2;
+	  return stop < start ? -step1 : step1;
+	}
+
+	function sturges(values) {
+	  return Math.ceil(Math.log(values.length) / Math.LN2) + 1;
+	}
+
+	function histogram() {
+	  var value = identity,
+	      domain = extent,
+	      threshold = sturges;
+
+	  function histogram(data) {
+	    var i,
+	        n = data.length,
+	        x,
+	        values = new Array(n);
+
+	    for (i = 0; i < n; ++i) {
+	      values[i] = value(data[i], i, data);
+	    }
+
+	    var xz = domain(values),
+	        x0 = xz[0],
+	        x1 = xz[1],
+	        tz = threshold(values, x0, x1);
+
+	    // Convert number of thresholds into uniform thresholds.
+	    if (!Array.isArray(tz)) {
+	      tz = tickStep(x0, x1, tz);
+	      tz = range(Math.ceil(x0 / tz) * tz, x1, tz); // exclusive
+	    }
+
+	    // Remove any thresholds outside the domain.
+	    var m = tz.length;
+	    while (tz[0] <= x0) tz.shift(), --m;
+	    while (tz[m - 1] > x1) tz.pop(), --m;
+
+	    var bins = new Array(m + 1),
+	        bin;
+
+	    // Initialize bins.
+	    for (i = 0; i <= m; ++i) {
+	      bin = bins[i] = [];
+	      bin.x0 = i > 0 ? tz[i - 1] : x0;
+	      bin.x1 = i < m ? tz[i] : x1;
+	    }
+
+	    // Assign data to bins by value, ignoring any outside the domain.
+	    for (i = 0; i < n; ++i) {
+	      x = values[i];
+	      if (x0 <= x && x <= x1) {
+	        bins[bisectRight(tz, x, 0, m)].push(data[i]);
+	      }
+	    }
+
+	    return bins;
+	  }
+
+	  histogram.value = function(_) {
+	    return arguments.length ? (value = typeof _ === "function" ? _ : constant(_), histogram) : value;
+	  };
+
+	  histogram.domain = function(_) {
+	    return arguments.length ? (domain = typeof _ === "function" ? _ : constant([_[0], _[1]]), histogram) : domain;
+	  };
+
+	  histogram.thresholds = function(_) {
+	    return arguments.length ? (threshold = typeof _ === "function" ? _ : Array.isArray(_) ? constant(slice.call(_)) : constant(_), histogram) : threshold;
+	  };
+
+	  return histogram;
+	}
+
+	function quantile(values, p, valueof) {
+	  if (valueof == null) valueof = number;
+	  if (!(n = values.length)) return;
+	  if ((p = +p) <= 0 || n < 2) return +valueof(values[0], 0, values);
+	  if (p >= 1) return +valueof(values[n - 1], n - 1, values);
+	  var n,
+	      i = (n - 1) * p,
+	      i0 = Math.floor(i),
+	      value0 = +valueof(values[i0], i0, values),
+	      value1 = +valueof(values[i0 + 1], i0 + 1, values);
+	  return value0 + (value1 - value0) * (i - i0);
+	}
+
+	function freedmanDiaconis(values, min, max) {
+	  values = map.call(values, number).sort(ascending);
+	  return Math.ceil((max - min) / (2 * (quantile(values, 0.75) - quantile(values, 0.25)) * Math.pow(values.length, -1 / 3)));
+	}
+
+	function scott(values, min, max) {
+	  return Math.ceil((max - min) / (3.5 * deviation(values) * Math.pow(values.length, -1 / 3)));
+	}
+
+	function max(values, valueof) {
+	  var n = values.length,
+	      i = -1,
+	      value,
+	      max;
+
+	  if (valueof == null) {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = values[i]) != null && value >= value) {
+	        max = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = values[i]) != null && value > max) {
+	            max = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  else {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = valueof(values[i], i, values)) != null && value >= value) {
+	        max = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = valueof(values[i], i, values)) != null && value > max) {
+	            max = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  return max;
+	}
+
+	function mean(values, valueof) {
+	  var n = values.length,
+	      m = n,
+	      i = -1,
+	      value,
+	      sum = 0;
+
+	  if (valueof == null) {
+	    while (++i < n) {
+	      if (!isNaN(value = number(values[i]))) sum += value;
+	      else --m;
+	    }
+	  }
+
+	  else {
+	    while (++i < n) {
+	      if (!isNaN(value = number(valueof(values[i], i, values)))) sum += value;
+	      else --m;
+	    }
+	  }
+
+	  if (m) return sum / m;
+	}
+
+	function median(values, valueof) {
+	  var n = values.length,
+	      i = -1,
+	      value,
+	      numbers = [];
+
+	  if (valueof == null) {
+	    while (++i < n) {
+	      if (!isNaN(value = number(values[i]))) {
+	        numbers.push(value);
+	      }
+	    }
+	  }
+
+	  else {
+	    while (++i < n) {
+	      if (!isNaN(value = number(valueof(values[i], i, values)))) {
+	        numbers.push(value);
+	      }
+	    }
+	  }
+
+	  return quantile(numbers.sort(ascending), 0.5);
+	}
+
+	function merge(arrays) {
+	  var n = arrays.length,
+	      m,
+	      i = -1,
+	      j = 0,
+	      merged,
+	      array;
+
+	  while (++i < n) j += arrays[i].length;
+	  merged = new Array(j);
+
+	  while (--n >= 0) {
+	    array = arrays[n];
+	    m = array.length;
+	    while (--m >= 0) {
+	      merged[--j] = array[m];
+	    }
+	  }
+
+	  return merged;
+	}
+
+	function min(values, valueof) {
+	  var n = values.length,
+	      i = -1,
+	      value,
+	      min;
+
+	  if (valueof == null) {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = values[i]) != null && value >= value) {
+	        min = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = values[i]) != null && min > value) {
+	            min = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  else {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = valueof(values[i], i, values)) != null && value >= value) {
+	        min = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = valueof(values[i], i, values)) != null && min > value) {
+	            min = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  return min;
+	}
+
+	function permute(array, indexes) {
+	  var i = indexes.length, permutes = new Array(i);
+	  while (i--) permutes[i] = array[indexes[i]];
+	  return permutes;
+	}
+
+	function scan(values, compare) {
+	  if (!(n = values.length)) return;
+	  var n,
+	      i = 0,
+	      j = 0,
+	      xi,
+	      xj = values[j];
+
+	  if (compare == null) compare = ascending;
+
+	  while (++i < n) {
+	    if (compare(xi = values[i], xj) < 0 || compare(xj, xj) !== 0) {
+	      xj = xi, j = i;
+	    }
+	  }
+
+	  if (compare(xj, xj) === 0) return j;
+	}
+
+	function shuffle(array, i0, i1) {
+	  var m = (i1 == null ? array.length : i1) - (i0 = i0 == null ? 0 : +i0),
+	      t,
+	      i;
+
+	  while (m) {
+	    i = Math.random() * m-- | 0;
+	    t = array[m + i0];
+	    array[m + i0] = array[i + i0];
+	    array[i + i0] = t;
+	  }
+
+	  return array;
+	}
+
+	function sum(values, valueof) {
+	  var n = values.length,
+	      i = -1,
+	      value,
+	      sum = 0;
+
+	  if (valueof == null) {
+	    while (++i < n) {
+	      if (value = +values[i]) sum += value; // Note: zero and null are equivalent.
+	    }
+	  }
+
+	  else {
+	    while (++i < n) {
+	      if (value = +valueof(values[i], i, values)) sum += value;
+	    }
+	  }
+
+	  return sum;
+	}
+
+	function transpose(matrix) {
+	  if (!(n = matrix.length)) return [];
+	  for (var i = -1, m = min(matrix, length), transpose = new Array(m); ++i < m;) {
+	    for (var j = -1, n, row = transpose[i] = new Array(n); ++j < n;) {
+	      row[j] = matrix[j][i];
+	    }
+	  }
+	  return transpose;
+	}
+
+	function length(d) {
+	  return d.length;
+	}
+
+	function zip() {
+	  return transpose(arguments);
+	}
+
+	exports.bisect = bisectRight;
+	exports.bisectRight = bisectRight;
+	exports.bisectLeft = bisectLeft;
+	exports.ascending = ascending;
+	exports.bisector = bisector;
+	exports.cross = cross;
+	exports.descending = descending;
+	exports.deviation = deviation;
+	exports.extent = extent;
+	exports.histogram = histogram;
+	exports.thresholdFreedmanDiaconis = freedmanDiaconis;
+	exports.thresholdScott = scott;
+	exports.thresholdSturges = sturges;
+	exports.max = max;
+	exports.mean = mean;
+	exports.median = median;
+	exports.merge = merge;
+	exports.min = min;
+	exports.pairs = pairs;
+	exports.permute = permute;
+	exports.quantile = quantile;
+	exports.range = range;
+	exports.scan = scan;
+	exports.shuffle = shuffle;
+	exports.sum = sum;
+	exports.ticks = ticks;
+	exports.tickIncrement = tickIncrement;
+	exports.tickStep = tickStep;
+	exports.transpose = transpose;
+	exports.variance = variance;
+	exports.zip = zip;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	})));
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-dsv/ v1.1.1 Copyright 2019 Mike Bostock
 	(function (global, factory) {
@@ -18366,13 +19721,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-fetch/ v1.1.2 Copyright 2018 Mike Bostock
 	(function (global, factory) {
-	 true ? factory(exports, __webpack_require__(21)) :
+	 true ? factory(exports, __webpack_require__(24)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-dsv'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3));
 	}(this, (function (exports,d3Dsv) { 'use strict';
@@ -18474,13 +19829,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	// https://d3js.org/d3-force/ v1.2.0 Copyright 2019 Mike Bostock
+	// https://d3js.org/d3-force/ v1.2.1 Copyright 2019 Mike Bostock
 	(function (global, factory) {
-	 true ? factory(exports, __webpack_require__(24), __webpack_require__(19), __webpack_require__(10), __webpack_require__(15)) :
+	 true ? factory(exports, __webpack_require__(27), __webpack_require__(21), __webpack_require__(11), __webpack_require__(16)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-quadtree', 'd3-collection', 'd3-dispatch', 'd3-timer'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3,global.d3,global.d3,global.d3));
 	}(this, (function (exports,d3Quadtree,d3Collection,d3Dispatch,d3Timer) { 'use strict';
@@ -18800,8 +20155,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  function initializeNodes() {
 	    for (var i = 0, n = nodes.length, node; i < n; ++i) {
 	      node = nodes[i], node.index = i;
-	      if (!isNaN(node.fx)) node.x = node.fx;
-	      if (!isNaN(node.fy)) node.y = node.fy;
+	      if (node.fx != null) node.x = node.fx;
+	      if (node.fy != null) node.y = node.fy;
 	      if (isNaN(node.x) || isNaN(node.y)) {
 	        var radius = initialRadius * Math.sqrt(i), angle = i * initialAngle;
 	        node.x = radius * Math.cos(angle);
@@ -19148,11 +20503,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	// https://d3js.org/d3-quadtree/ v1.0.5 Copyright 2018 Mike Bostock
+	// https://d3js.org/d3-quadtree/ v1.0.6 Copyright 2019 Mike Bostock
 	(function (global, factory) {
 	 true ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -19230,9 +20585,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    if (y > y1) y1 = y;
 	  }
 
-	  // If there were no (valid) points, inherit the existing extent.
-	  if (x1 < x0) x0 = this._x0, x1 = this._x1;
-	  if (y1 < y0) y0 = this._y0, y1 = this._y1;
+	  // If there were no (valid) points, abort.
+	  if (x0 > x1 || y0 > y1) return this;
 
 	  // Expand the tree to cover the new points.
 	  this.cover(x0, y0).cover(x1, y1);
@@ -19262,40 +20616,25 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  }
 
 	  // Otherwise, double repeatedly to cover.
-	  else if (x0 > x || x > x1 || y0 > y || y > y1) {
+	  else {
 	    var z = x1 - x0,
 	        node = this._root,
 	        parent,
 	        i;
 
-	    switch (i = (y < (y0 + y1) / 2) << 1 | (x < (x0 + x1) / 2)) {
-	      case 0: {
-	        do parent = new Array(4), parent[i] = node, node = parent;
-	        while (z *= 2, x1 = x0 + z, y1 = y0 + z, x > x1 || y > y1);
-	        break;
-	      }
-	      case 1: {
-	        do parent = new Array(4), parent[i] = node, node = parent;
-	        while (z *= 2, x0 = x1 - z, y1 = y0 + z, x0 > x || y > y1);
-	        break;
-	      }
-	      case 2: {
-	        do parent = new Array(4), parent[i] = node, node = parent;
-	        while (z *= 2, x1 = x0 + z, y0 = y1 - z, x > x1 || y0 > y);
-	        break;
-	      }
-	      case 3: {
-	        do parent = new Array(4), parent[i] = node, node = parent;
-	        while (z *= 2, x0 = x1 - z, y0 = y1 - z, x0 > x || y0 > y);
-	        break;
+	    while (x0 > x || x >= x1 || y0 > y || y >= y1) {
+	      i = (y < y0) << 1 | (x < x0);
+	      parent = new Array(4), parent[i] = node, node = parent, z *= 2;
+	      switch (i) {
+	        case 0: x1 = x0 + z, y1 = y0 + z; break;
+	        case 1: x0 = x1 - z, y1 = y0 + z; break;
+	        case 2: x1 = x0 + z, y0 = y1 - z; break;
+	        case 3: x0 = x1 - z, y0 = y1 - z; break;
 	      }
 	    }
 
 	    if (this._root && this._root.length) this._root = node;
 	  }
-
-	  // If the quadtree covers the point already, just return.
-	  else return this;
 
 	  this._x0 = x0;
 	  this._y0 = y0;
@@ -19589,9 +20928,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-format/ v1.3.2 Copyright 2018 Mike Bostock
 	(function (global, factory) {
@@ -19915,13 +21254,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	// https://d3js.org/d3-geo/ v1.11.3 Copyright 2018 Mike Bostock
+	// https://d3js.org/d3-geo/ v1.11.6 Copyright 2019 Mike Bostock
 	(function (global, factory) {
-	 true ? factory(exports, __webpack_require__(6)) :
+	 true ? factory(exports, __webpack_require__(30)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-array'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3));
 	}(this, (function (exports,d3Array) { 'use strict';
@@ -20204,6 +21543,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    else if (deltaSum > epsilon) phi1 = 90;
 	    else if (deltaSum < -epsilon) phi0 = -90;
 	    range[0] = lambda0$1, range[1] = lambda1;
+	  },
+	  sphere: function() {
+	    lambda0$1 = -(lambda1 = 180), phi0 = -(phi1 = 90);
 	  }
 	};
 
@@ -20774,8 +22116,15 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	var sum = adder();
 
+	function longitude(point) {
+	  if (abs(point[0]) <= pi)
+	    return point[0];
+	  else
+	    return sign(point[0]) * ((abs(point[0]) + pi) % tau - pi);
+	}
+
 	function polygonContains(polygon, point) {
-	  var lambda = point[0],
+	  var lambda = longitude(point),
 	      phi = point[1],
 	      sinPhi = sin(phi),
 	      normal = [sin(lambda), -cos(lambda), 0],
@@ -20792,14 +22141,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    var ring,
 	        m,
 	        point0 = ring[m - 1],
-	        lambda0 = point0[0],
+	        lambda0 = longitude(point0),
 	        phi0 = point0[1] / 2 + quarterPi,
 	        sinPhi0 = sin(phi0),
 	        cosPhi0 = cos(phi0);
 
 	    for (var j = 0; j < m; ++j, lambda0 = lambda1, sinPhi0 = sinPhi1, cosPhi0 = cosPhi1, point0 = point1) {
 	      var point1 = ring[j],
-	          lambda1 = point1[0],
+	          lambda1 = longitude(point1),
 	          phi1 = point1[1] / 2 + quarterPi,
 	          sinPhi1 = sin(phi1),
 	          cosPhi1 = cos(phi1),
@@ -21591,10 +22940,23 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 	function containsLine(coordinates, point) {
-	  var ab = distance(coordinates[0], coordinates[1]),
-	      ao = distance(coordinates[0], point),
-	      ob = distance(point, coordinates[1]);
-	  return ao + ob <= ab + epsilon;
+	  var ao, bo, ab;
+	  for (var i = 0, n = coordinates.length; i < n; i++) {
+	    bo = distance(coordinates[i], point);
+	    if (bo === 0) return true;
+	    if (i > 0) {
+	      ab = distance(coordinates[i], coordinates[i - 1]);
+	      if (
+	        ab > 0 &&
+	        ao <= ab &&
+	        bo <= ab &&
+	        (ao + bo - ab) * (1 - Math.pow((ao - bo) / ab, 2)) < epsilon2 * ab
+	      )
+	        return true;
+	    }
+	    ao = bo;
+	  }
+	  return false;
 	}
 
 	function containsPolygon(coordinates, point) {
@@ -23024,9 +24386,605 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// https://d3js.org/d3-array/ v1.2.4 Copyright 2018 Mike Bostock
+	(function (global, factory) {
+	 true ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(factory((global.d3 = global.d3 || {})));
+	}(this, (function (exports) { 'use strict';
+
+	function ascending(a, b) {
+	  return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
+	}
+
+	function bisector(compare) {
+	  if (compare.length === 1) compare = ascendingComparator(compare);
+	  return {
+	    left: function(a, x, lo, hi) {
+	      if (lo == null) lo = 0;
+	      if (hi == null) hi = a.length;
+	      while (lo < hi) {
+	        var mid = lo + hi >>> 1;
+	        if (compare(a[mid], x) < 0) lo = mid + 1;
+	        else hi = mid;
+	      }
+	      return lo;
+	    },
+	    right: function(a, x, lo, hi) {
+	      if (lo == null) lo = 0;
+	      if (hi == null) hi = a.length;
+	      while (lo < hi) {
+	        var mid = lo + hi >>> 1;
+	        if (compare(a[mid], x) > 0) hi = mid;
+	        else lo = mid + 1;
+	      }
+	      return lo;
+	    }
+	  };
+	}
+
+	function ascendingComparator(f) {
+	  return function(d, x) {
+	    return ascending(f(d), x);
+	  };
+	}
+
+	var ascendingBisect = bisector(ascending);
+	var bisectRight = ascendingBisect.right;
+	var bisectLeft = ascendingBisect.left;
+
+	function pairs(array, f) {
+	  if (f == null) f = pair;
+	  var i = 0, n = array.length - 1, p = array[0], pairs = new Array(n < 0 ? 0 : n);
+	  while (i < n) pairs[i] = f(p, p = array[++i]);
+	  return pairs;
+	}
+
+	function pair(a, b) {
+	  return [a, b];
+	}
+
+	function cross(values0, values1, reduce) {
+	  var n0 = values0.length,
+	      n1 = values1.length,
+	      values = new Array(n0 * n1),
+	      i0,
+	      i1,
+	      i,
+	      value0;
+
+	  if (reduce == null) reduce = pair;
+
+	  for (i0 = i = 0; i0 < n0; ++i0) {
+	    for (value0 = values0[i0], i1 = 0; i1 < n1; ++i1, ++i) {
+	      values[i] = reduce(value0, values1[i1]);
+	    }
+	  }
+
+	  return values;
+	}
+
+	function descending(a, b) {
+	  return b < a ? -1 : b > a ? 1 : b >= a ? 0 : NaN;
+	}
+
+	function number(x) {
+	  return x === null ? NaN : +x;
+	}
+
+	function variance(values, valueof) {
+	  var n = values.length,
+	      m = 0,
+	      i = -1,
+	      mean = 0,
+	      value,
+	      delta,
+	      sum = 0;
+
+	  if (valueof == null) {
+	    while (++i < n) {
+	      if (!isNaN(value = number(values[i]))) {
+	        delta = value - mean;
+	        mean += delta / ++m;
+	        sum += delta * (value - mean);
+	      }
+	    }
+	  }
+
+	  else {
+	    while (++i < n) {
+	      if (!isNaN(value = number(valueof(values[i], i, values)))) {
+	        delta = value - mean;
+	        mean += delta / ++m;
+	        sum += delta * (value - mean);
+	      }
+	    }
+	  }
+
+	  if (m > 1) return sum / (m - 1);
+	}
+
+	function deviation(array, f) {
+	  var v = variance(array, f);
+	  return v ? Math.sqrt(v) : v;
+	}
+
+	function extent(values, valueof) {
+	  var n = values.length,
+	      i = -1,
+	      value,
+	      min,
+	      max;
+
+	  if (valueof == null) {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = values[i]) != null && value >= value) {
+	        min = max = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = values[i]) != null) {
+	            if (min > value) min = value;
+	            if (max < value) max = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  else {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = valueof(values[i], i, values)) != null && value >= value) {
+	        min = max = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = valueof(values[i], i, values)) != null) {
+	            if (min > value) min = value;
+	            if (max < value) max = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  return [min, max];
+	}
+
+	var array = Array.prototype;
+
+	var slice = array.slice;
+	var map = array.map;
+
+	function constant(x) {
+	  return function() {
+	    return x;
+	  };
+	}
+
+	function identity(x) {
+	  return x;
+	}
+
+	function range(start, stop, step) {
+	  start = +start, stop = +stop, step = (n = arguments.length) < 2 ? (stop = start, start = 0, 1) : n < 3 ? 1 : +step;
+
+	  var i = -1,
+	      n = Math.max(0, Math.ceil((stop - start) / step)) | 0,
+	      range = new Array(n);
+
+	  while (++i < n) {
+	    range[i] = start + i * step;
+	  }
+
+	  return range;
+	}
+
+	var e10 = Math.sqrt(50),
+	    e5 = Math.sqrt(10),
+	    e2 = Math.sqrt(2);
+
+	function ticks(start, stop, count) {
+	  var reverse,
+	      i = -1,
+	      n,
+	      ticks,
+	      step;
+
+	  stop = +stop, start = +start, count = +count;
+	  if (start === stop && count > 0) return [start];
+	  if (reverse = stop < start) n = start, start = stop, stop = n;
+	  if ((step = tickIncrement(start, stop, count)) === 0 || !isFinite(step)) return [];
+
+	  if (step > 0) {
+	    start = Math.ceil(start / step);
+	    stop = Math.floor(stop / step);
+	    ticks = new Array(n = Math.ceil(stop - start + 1));
+	    while (++i < n) ticks[i] = (start + i) * step;
+	  } else {
+	    start = Math.floor(start * step);
+	    stop = Math.ceil(stop * step);
+	    ticks = new Array(n = Math.ceil(start - stop + 1));
+	    while (++i < n) ticks[i] = (start - i) / step;
+	  }
+
+	  if (reverse) ticks.reverse();
+
+	  return ticks;
+	}
+
+	function tickIncrement(start, stop, count) {
+	  var step = (stop - start) / Math.max(0, count),
+	      power = Math.floor(Math.log(step) / Math.LN10),
+	      error = step / Math.pow(10, power);
+	  return power >= 0
+	      ? (error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1) * Math.pow(10, power)
+	      : -Math.pow(10, -power) / (error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1);
+	}
+
+	function tickStep(start, stop, count) {
+	  var step0 = Math.abs(stop - start) / Math.max(0, count),
+	      step1 = Math.pow(10, Math.floor(Math.log(step0) / Math.LN10)),
+	      error = step0 / step1;
+	  if (error >= e10) step1 *= 10;
+	  else if (error >= e5) step1 *= 5;
+	  else if (error >= e2) step1 *= 2;
+	  return stop < start ? -step1 : step1;
+	}
+
+	function sturges(values) {
+	  return Math.ceil(Math.log(values.length) / Math.LN2) + 1;
+	}
+
+	function histogram() {
+	  var value = identity,
+	      domain = extent,
+	      threshold = sturges;
+
+	  function histogram(data) {
+	    var i,
+	        n = data.length,
+	        x,
+	        values = new Array(n);
+
+	    for (i = 0; i < n; ++i) {
+	      values[i] = value(data[i], i, data);
+	    }
+
+	    var xz = domain(values),
+	        x0 = xz[0],
+	        x1 = xz[1],
+	        tz = threshold(values, x0, x1);
+
+	    // Convert number of thresholds into uniform thresholds.
+	    if (!Array.isArray(tz)) {
+	      tz = tickStep(x0, x1, tz);
+	      tz = range(Math.ceil(x0 / tz) * tz, x1, tz); // exclusive
+	    }
+
+	    // Remove any thresholds outside the domain.
+	    var m = tz.length;
+	    while (tz[0] <= x0) tz.shift(), --m;
+	    while (tz[m - 1] > x1) tz.pop(), --m;
+
+	    var bins = new Array(m + 1),
+	        bin;
+
+	    // Initialize bins.
+	    for (i = 0; i <= m; ++i) {
+	      bin = bins[i] = [];
+	      bin.x0 = i > 0 ? tz[i - 1] : x0;
+	      bin.x1 = i < m ? tz[i] : x1;
+	    }
+
+	    // Assign data to bins by value, ignoring any outside the domain.
+	    for (i = 0; i < n; ++i) {
+	      x = values[i];
+	      if (x0 <= x && x <= x1) {
+	        bins[bisectRight(tz, x, 0, m)].push(data[i]);
+	      }
+	    }
+
+	    return bins;
+	  }
+
+	  histogram.value = function(_) {
+	    return arguments.length ? (value = typeof _ === "function" ? _ : constant(_), histogram) : value;
+	  };
+
+	  histogram.domain = function(_) {
+	    return arguments.length ? (domain = typeof _ === "function" ? _ : constant([_[0], _[1]]), histogram) : domain;
+	  };
+
+	  histogram.thresholds = function(_) {
+	    return arguments.length ? (threshold = typeof _ === "function" ? _ : Array.isArray(_) ? constant(slice.call(_)) : constant(_), histogram) : threshold;
+	  };
+
+	  return histogram;
+	}
+
+	function quantile(values, p, valueof) {
+	  if (valueof == null) valueof = number;
+	  if (!(n = values.length)) return;
+	  if ((p = +p) <= 0 || n < 2) return +valueof(values[0], 0, values);
+	  if (p >= 1) return +valueof(values[n - 1], n - 1, values);
+	  var n,
+	      i = (n - 1) * p,
+	      i0 = Math.floor(i),
+	      value0 = +valueof(values[i0], i0, values),
+	      value1 = +valueof(values[i0 + 1], i0 + 1, values);
+	  return value0 + (value1 - value0) * (i - i0);
+	}
+
+	function freedmanDiaconis(values, min, max) {
+	  values = map.call(values, number).sort(ascending);
+	  return Math.ceil((max - min) / (2 * (quantile(values, 0.75) - quantile(values, 0.25)) * Math.pow(values.length, -1 / 3)));
+	}
+
+	function scott(values, min, max) {
+	  return Math.ceil((max - min) / (3.5 * deviation(values) * Math.pow(values.length, -1 / 3)));
+	}
+
+	function max(values, valueof) {
+	  var n = values.length,
+	      i = -1,
+	      value,
+	      max;
+
+	  if (valueof == null) {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = values[i]) != null && value >= value) {
+	        max = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = values[i]) != null && value > max) {
+	            max = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  else {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = valueof(values[i], i, values)) != null && value >= value) {
+	        max = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = valueof(values[i], i, values)) != null && value > max) {
+	            max = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  return max;
+	}
+
+	function mean(values, valueof) {
+	  var n = values.length,
+	      m = n,
+	      i = -1,
+	      value,
+	      sum = 0;
+
+	  if (valueof == null) {
+	    while (++i < n) {
+	      if (!isNaN(value = number(values[i]))) sum += value;
+	      else --m;
+	    }
+	  }
+
+	  else {
+	    while (++i < n) {
+	      if (!isNaN(value = number(valueof(values[i], i, values)))) sum += value;
+	      else --m;
+	    }
+	  }
+
+	  if (m) return sum / m;
+	}
+
+	function median(values, valueof) {
+	  var n = values.length,
+	      i = -1,
+	      value,
+	      numbers = [];
+
+	  if (valueof == null) {
+	    while (++i < n) {
+	      if (!isNaN(value = number(values[i]))) {
+	        numbers.push(value);
+	      }
+	    }
+	  }
+
+	  else {
+	    while (++i < n) {
+	      if (!isNaN(value = number(valueof(values[i], i, values)))) {
+	        numbers.push(value);
+	      }
+	    }
+	  }
+
+	  return quantile(numbers.sort(ascending), 0.5);
+	}
+
+	function merge(arrays) {
+	  var n = arrays.length,
+	      m,
+	      i = -1,
+	      j = 0,
+	      merged,
+	      array;
+
+	  while (++i < n) j += arrays[i].length;
+	  merged = new Array(j);
+
+	  while (--n >= 0) {
+	    array = arrays[n];
+	    m = array.length;
+	    while (--m >= 0) {
+	      merged[--j] = array[m];
+	    }
+	  }
+
+	  return merged;
+	}
+
+	function min(values, valueof) {
+	  var n = values.length,
+	      i = -1,
+	      value,
+	      min;
+
+	  if (valueof == null) {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = values[i]) != null && value >= value) {
+	        min = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = values[i]) != null && min > value) {
+	            min = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  else {
+	    while (++i < n) { // Find the first comparable value.
+	      if ((value = valueof(values[i], i, values)) != null && value >= value) {
+	        min = value;
+	        while (++i < n) { // Compare the remaining values.
+	          if ((value = valueof(values[i], i, values)) != null && min > value) {
+	            min = value;
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  return min;
+	}
+
+	function permute(array, indexes) {
+	  var i = indexes.length, permutes = new Array(i);
+	  while (i--) permutes[i] = array[indexes[i]];
+	  return permutes;
+	}
+
+	function scan(values, compare) {
+	  if (!(n = values.length)) return;
+	  var n,
+	      i = 0,
+	      j = 0,
+	      xi,
+	      xj = values[j];
+
+	  if (compare == null) compare = ascending;
+
+	  while (++i < n) {
+	    if (compare(xi = values[i], xj) < 0 || compare(xj, xj) !== 0) {
+	      xj = xi, j = i;
+	    }
+	  }
+
+	  if (compare(xj, xj) === 0) return j;
+	}
+
+	function shuffle(array, i0, i1) {
+	  var m = (i1 == null ? array.length : i1) - (i0 = i0 == null ? 0 : +i0),
+	      t,
+	      i;
+
+	  while (m) {
+	    i = Math.random() * m-- | 0;
+	    t = array[m + i0];
+	    array[m + i0] = array[i + i0];
+	    array[i + i0] = t;
+	  }
+
+	  return array;
+	}
+
+	function sum(values, valueof) {
+	  var n = values.length,
+	      i = -1,
+	      value,
+	      sum = 0;
+
+	  if (valueof == null) {
+	    while (++i < n) {
+	      if (value = +values[i]) sum += value; // Note: zero and null are equivalent.
+	    }
+	  }
+
+	  else {
+	    while (++i < n) {
+	      if (value = +valueof(values[i], i, values)) sum += value;
+	    }
+	  }
+
+	  return sum;
+	}
+
+	function transpose(matrix) {
+	  if (!(n = matrix.length)) return [];
+	  for (var i = -1, m = min(matrix, length), transpose = new Array(m); ++i < m;) {
+	    for (var j = -1, n, row = transpose[i] = new Array(n); ++j < n;) {
+	      row[j] = matrix[j][i];
+	    }
+	  }
+	  return transpose;
+	}
+
+	function length(d) {
+	  return d.length;
+	}
+
+	function zip() {
+	  return transpose(arguments);
+	}
+
+	exports.bisect = bisectRight;
+	exports.bisectRight = bisectRight;
+	exports.bisectLeft = bisectLeft;
+	exports.ascending = ascending;
+	exports.bisector = bisector;
+	exports.cross = cross;
+	exports.descending = descending;
+	exports.deviation = deviation;
+	exports.extent = extent;
+	exports.histogram = histogram;
+	exports.thresholdFreedmanDiaconis = freedmanDiaconis;
+	exports.thresholdScott = scott;
+	exports.thresholdSturges = sturges;
+	exports.max = max;
+	exports.mean = mean;
+	exports.median = median;
+	exports.merge = merge;
+	exports.min = min;
+	exports.pairs = pairs;
+	exports.permute = permute;
+	exports.quantile = quantile;
+	exports.range = range;
+	exports.scan = scan;
+	exports.shuffle = shuffle;
+	exports.sum = sum;
+	exports.ticks = ticks;
+	exports.tickIncrement = tickIncrement;
+	exports.tickStep = tickStep;
+	exports.transpose = transpose;
+	exports.variance = variance;
+	exports.zip = zip;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	})));
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-hierarchy/ v1.1.8 Copyright 2018 Mike Bostock
 	(function (global, factory) {
@@ -24320,9 +26278,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-polygon/ v1.0.5 Copyright 2018 Mike Bostock
 	(function (global, factory) {
@@ -24476,9 +26434,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-random/ v1.1.2 Copyright 2018 Mike Bostock
 	(function (global, factory) {
@@ -24597,13 +26555,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-scale/ v2.2.2 Copyright 2019 Mike Bostock
 	(function (global, factory) {
-	 true ? factory(exports, __webpack_require__(19), __webpack_require__(6), __webpack_require__(12), __webpack_require__(25), __webpack_require__(31), __webpack_require__(32)) :
+	 true ? factory(exports, __webpack_require__(21), __webpack_require__(7), __webpack_require__(13), __webpack_require__(28), __webpack_require__(35), __webpack_require__(36)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-collection', 'd3-array', 'd3-interpolate', 'd3-format', 'd3-time', 'd3-time-format'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3,global.d3,global.d3,global.d3,global.d3,global.d3));
 	}(this, (function (exports,d3Collection,d3Array,d3Interpolate,d3Format,d3Time,d3TimeFormat) { 'use strict';
@@ -25768,9 +27726,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-time/ v1.0.11 Copyright 2019 Mike Bostock
 	(function (global, factory) {
@@ -26145,13 +28103,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-time-format/ v2.1.3 Copyright 2018 Mike Bostock
 	(function (global, factory) {
-	 true ? factory(exports, __webpack_require__(31)) :
+	 true ? factory(exports, __webpack_require__(35)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-time'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3));
 	}(this, (function (exports,d3Time) { 'use strict';
@@ -26835,13 +28793,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-scale-chromatic/ v1.3.3 Copyright 2018 Mike Bostock
 	(function (global, factory) {
-	 true ? factory(exports, __webpack_require__(12), __webpack_require__(13)) :
+	 true ? factory(exports, __webpack_require__(13), __webpack_require__(14)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-interpolate', 'd3-color'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3,global.d3));
 	}(this, (function (exports,d3Interpolate,d3Color) { 'use strict';
@@ -27339,13 +29297,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	// https://d3js.org/d3-shape/ v1.3.4 Copyright 2019 Mike Bostock
+	// https://d3js.org/d3-shape/ v1.3.5 Copyright 2019 Mike Bostock
 	(function (global, factory) {
-	 true ? factory(exports, __webpack_require__(18)) :
+	 true ? factory(exports, __webpack_require__(20)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-path'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3));
 	}(this, (function (exports,d3Path) { 'use strict';
@@ -29136,7 +31094,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 	function diverging(series, order) {
-	  if (!((n = series.length) > 1)) return;
+	  if (!((n = series.length) > 0)) return;
 	  for (var i, j = 0, d, dy, yp, yn, n, m = series[order[0]].length; j < m; ++j) {
 	    for (yp = yn = 0, i = 0; i < n; ++i) {
 	      if ((dy = (d = series[order[i]][j])[1] - d[0]) >= 0) {
@@ -29294,9 +31252,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-voronoi/ v1.1.4 Copyright 2018 Mike Bostock
 	(function (global, factory) {
@@ -30299,13 +32257,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://d3js.org/d3-zoom/ v1.7.3 Copyright 2018 Mike Bostock
 	(function (global, factory) {
-	 true ? factory(exports, __webpack_require__(9), __webpack_require__(10), __webpack_require__(11), __webpack_require__(12), __webpack_require__(14)) :
+	 true ? factory(exports, __webpack_require__(10), __webpack_require__(11), __webpack_require__(12), __webpack_require__(13), __webpack_require__(15)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-selection', 'd3-dispatch', 'd3-drag', 'd3-interpolate', 'd3-transition'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3,global.d3,global.d3,global.d3,global.d3));
 	}(this, (function (exports,d3Selection,d3Dispatch,d3Drag,d3Interpolate,d3Transition) { 'use strict';
@@ -30807,20 +32765,20 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 37 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-	var three = __webpack_require__(38);
-	var ThreeDragControls = _interopDefault(__webpack_require__(39));
-	var ThreeForceGraph = _interopDefault(__webpack_require__(41));
-	var ThreeRenderObjects = _interopDefault(__webpack_require__(92));
-	var accessorFn = _interopDefault(__webpack_require__(90));
-	var Kapsule = _interopDefault(__webpack_require__(89));
+	var three$1 = __webpack_require__(42);
+	var ThreeDragControls = _interopDefault(__webpack_require__(43));
+	var ThreeForceGraph = _interopDefault(__webpack_require__(45));
+	var ThreeRenderObjects = _interopDefault(__webpack_require__(103));
+	var accessorFn = _interopDefault(__webpack_require__(99));
+	var Kapsule = _interopDefault(__webpack_require__(97));
 
 	function styleInject(css, ref) {
 	  if (ref === void 0) ref = {};
@@ -30851,7 +32809,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  }
 	}
 
-	var css = ".graph-nav-info {\n  bottom: 5px;\n  width: 100%;\n  text-align: center;\n  color: slategrey;\n  opacity: 0.7;\n  font-size: 10px;\n}\n\n.graph-info-msg {\n  top: 50%;\n  width: 100%;\n  text-align: center;\n  color: lavender;\n  opacity: 0.7;\n  font-size: 22px;\n}\n\n.graph-tooltip {\n  color: lavender;\n  font-size: 18px;\n  transform: translate(-50%, 25px);\n}\n\n.graph-info-msg, .graph-nav-info, .graph-tooltip {\n  position: absolute;\n  font-family: Sans-serif;\n}\n\n.grabbable {\n  cursor: move;\n  cursor: grab;\n  cursor: -moz-grab;\n  cursor: -webkit-grab;\n}\n\n.grabbable:active {\n  cursor: grabbing;\n  cursor: -moz-grabbing;\n  cursor: -webkit-grabbing;\n}";
+	var css = ".graph-info-msg {\n  top: 50%;\n  width: 100%;\n  text-align: center;\n  color: lavender;\n  opacity: 0.7;\n  font-size: 22px;\n  position: absolute;\n  font-family: Sans-serif;\n}\n\n.grabbable {\n  cursor: move;\n  cursor: grab;\n  cursor: -moz-grab;\n  cursor: -webkit-grab;\n}\n\n.grabbable:active {\n  cursor: grabbing;\n  cursor: -moz-grabbing;\n  cursor: -webkit-grabbing;\n}";
 	styleInject(css);
 
 	function _defineProperty(obj, key, value) {
@@ -30915,7 +32873,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    linkProp: function linkProp(prop) {
 	      // link property config
 	      return {
-	        default: dummyK[prop](),
+	        "default": dummyK[prop](),
 	        onChange: function onChange(v, state) {
 	          state[kapsulePropName][prop](v);
 	        },
@@ -30939,20 +32897,20 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 	}
 
-	var three$1 = window.THREE ? window.THREE // Prefer consumption from global THREE, if exists
+	var three = window.THREE ? window.THREE // Prefer consumption from global THREE, if exists
 	: {
-	  AmbientLight: three.AmbientLight,
-	  DirectionalLight: three.DirectionalLight
+	  AmbientLight: three$1.AmbientLight,
+	  DirectionalLight: three$1.DirectionalLight
 	};
 
 	var CAMERA_DISTANCE2NODES_FACTOR = 150; //
 	// Expose config from forceGraph
 
 	var bindFG = linkKapsule('forceGraph', ThreeForceGraph);
-	var linkedFGProps = Object.assign.apply(Object, _toConsumableArray(['jsonUrl', 'graphData', 'numDimensions', 'dagMode', 'dagLevelDistance', 'nodeRelSize', 'nodeId', 'nodeVal', 'nodeResolution', 'nodeColor', 'nodeAutoColorBy', 'nodeOpacity', 'nodeThreeObject', 'linkSource', 'linkTarget', 'linkVisibility', 'linkColor', 'linkAutoColorBy', 'linkOpacity', 'linkWidth', 'linkResolution', 'linkCurvature', 'linkCurveRotation', 'linkMaterial', 'linkThreeObject', 'linkPositionUpdate', 'linkDirectionalArrowLength', 'linkDirectionalArrowColor', 'linkDirectionalArrowRelPos', 'linkDirectionalArrowResolution', 'linkDirectionalParticles', 'linkDirectionalParticleSpeed', 'linkDirectionalParticleWidth', 'linkDirectionalParticleColor', 'linkDirectionalParticleResolution', 'forceEngine', 'd3AlphaDecay', 'd3VelocityDecay', 'warmupTicks', 'cooldownTicks', 'cooldownTime', 'onEngineTick', 'onEngineStop'].map(function (p) {
+	var linkedFGProps = Object.assign.apply(Object, _toConsumableArray(['jsonUrl', 'graphData', 'numDimensions', 'dagMode', 'dagLevelDistance', 'nodeRelSize', 'nodeId', 'nodeVal', 'nodeResolution', 'nodeColor', 'nodeAutoColorBy', 'nodeOpacity', 'nodeThreeObject', 'nodeThreeObjectExtend', 'linkSource', 'linkTarget', 'linkVisibility', 'linkColor', 'linkAutoColorBy', 'linkOpacity', 'linkWidth', 'linkResolution', 'linkCurvature', 'linkCurveRotation', 'linkMaterial', 'linkThreeObject', 'linkThreeObjectExtend', 'linkPositionUpdate', 'linkDirectionalArrowLength', 'linkDirectionalArrowColor', 'linkDirectionalArrowRelPos', 'linkDirectionalArrowResolution', 'linkDirectionalParticles', 'linkDirectionalParticleSpeed', 'linkDirectionalParticleWidth', 'linkDirectionalParticleColor', 'linkDirectionalParticleResolution', 'forceEngine', 'd3AlphaDecay', 'd3VelocityDecay', 'warmupTicks', 'cooldownTicks', 'cooldownTime', 'onEngineTick', 'onEngineStop'].map(function (p) {
 	  return _defineProperty({}, p, bindFG.linkProp(p));
 	})));
-	var linkedFGMethods = Object.assign.apply(Object, _toConsumableArray(['d3Force'].map(function (p) {
+	var linkedFGMethods = Object.assign.apply(Object, _toConsumableArray(['refresh', 'd3Force'].map(function (p) {
 	  return _defineProperty({}, p, bindFG.linkMethod(p));
 	}))); // Expose config from renderObjs
 
@@ -30967,22 +32925,22 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	var _3dForceGraph = Kapsule({
 	  props: _objectSpread({
 	    nodeLabel: {
-	      default: 'name',
+	      "default": 'name',
 	      triggerUpdate: false
 	    },
 	    linkLabel: {
-	      default: 'name',
+	      "default": 'name',
 	      triggerUpdate: false
 	    },
 	    linkHoverPrecision: {
-	      default: 1,
+	      "default": 1,
 	      onChange: function onChange(p, state) {
 	        return state.renderObjs.lineHoverPrecision(p);
 	      },
 	      triggerUpdate: false
 	    },
 	    enableNavigationControls: {
-	      default: true,
+	      "default": true,
 	      onChange: function onChange(enable, state) {
 	        var controls = state.renderObjs.controls();
 
@@ -30993,55 +32951,42 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      triggerUpdate: false
 	    },
 	    enableNodeDrag: {
-	      default: true,
+	      "default": true,
 	      triggerUpdate: false
 	    },
 	    onNodeDrag: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onNodeDragEnd: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onNodeClick: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onNodeRightClick: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onNodeHover: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onLinkClick: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onLinkRightClick: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onLinkHover: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    }
 	  }, linkedFGProps, linkedRenderObjsProps),
-	  aliases: {
-	    // Prop names supported for backwards compatibility
-	    nameField: 'nodeLabel',
-	    idField: 'nodeId',
-	    valField: 'nodeVal',
-	    colorField: 'nodeColor',
-	    autoColorBy: 'nodeAutoColorBy',
-	    linkSourceField: 'linkSource',
-	    linkTargetField: 'linkTarget',
-	    linkColorField: 'linkColor',
-	    lineOpacity: 'linkOpacity',
-	    stopAnimation: 'pauseAnimation'
-	  },
 	  methods: _objectSpread({
 	    pauseAnimation: function pauseAnimation(state) {
 	      if (state.animationFrameRequestId !== null) {
@@ -31087,6 +33032,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    // Expose controls
 	    tbControls: function tbControls(state) {
 	      return state.renderObjs.tbControls();
+	    },
+	    // To be deprecated
+	    _destructor: function _destructor() {
+	      this.pauseAnimation();
+	      this.graphData({
+	        nodes: [],
+	        links: []
+	      });
 	    }
 	  }, linkedFGMethods, linkedRenderObjsMethods),
 	  stateInit: function stateInit(_ref5) {
@@ -31129,7 +33082,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	      state.graphData = state.forceGraph.graphData(); // re-aim camera, if still in default position (not user modified)
 
-	      if (camera.position.x === 0 && camera.position.y === 0 && camera.position.z === state.lastSetCameraZ) {
+	      if (camera.position.x === 0 && camera.position.y === 0 && camera.position.z === state.lastSetCameraZ && state.graphData.nodes.length) {
 	        camera.lookAt(state.forceGraph.position);
 	        state.lastSetCameraZ = camera.position.z = Math.cbrt(state.graphData.nodes.length) * CAMERA_DISTANCE2NODES_FACTOR;
 	      } // Setup node drag interaction
@@ -31210,7 +33163,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    };
 
 	    state.renderObjs.objects([// Populate scene
-	    new three$1.AmbientLight(0xbbbbbb), new three$1.DirectionalLight(0xffffff, 0.6), state.forceGraph]).hoverOrderComparator(function (a, b) {
+	    new three.AmbientLight(0xbbbbbb), new three.DirectionalLight(0xffffff, 0.6), state.forceGraph]).hoverOrderComparator(function (a, b) {
 	      // Prioritize graph objects
 	      var aObj = getGraphObj(a);
 	      if (!aObj) return 1;
@@ -31277,15 +33230,15 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	module.exports = _3dForceGraph;
 
 
-/***/ },
-/* 38 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
 		 true ? factory(exports) :
 		typeof define === 'function' && define.amd ? define(['exports'], factory) :
-		(factory((global.THREE = {})));
-	}(this, (function (exports) { 'use strict';
+		(global = global || self, factory(global.THREE = {}));
+	}(this, function (exports) { 'use strict';
 
 		// Polyfills
 
@@ -31468,7 +33421,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		} );
 
-		var REVISION = '100';
+		var REVISION = '105';
 		var MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2 };
 		var CullFaceNone = 0;
 		var CullFaceBack = 1;
@@ -32044,21 +33997,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			},
 
-			clampScalar: function () {
+			clampScalar: function ( minVal, maxVal ) {
 
-				var min = new Vector2();
-				var max = new Vector2();
+				this.x = Math.max( minVal, Math.min( maxVal, this.x ) );
+				this.y = Math.max( minVal, Math.min( maxVal, this.y ) );
 
-				return function clampScalar( minVal, maxVal ) {
+				return this;
 
-					min.set( minVal, minVal );
-					max.set( maxVal, maxVal );
-
-					return this.clamp( min, max );
-
-				};
-
-			}(),
+			},
 
 			clampLength: function ( min, max ) {
 
@@ -32256,940 +34202,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				this.y = x * s + y * c + center.y;
 
 				return this;
-
-			}
-
-		} );
-
-		/**
-		 * @author mrdoob / http://mrdoob.com/
-		 * @author supereggbert / http://www.paulbrunt.co.uk/
-		 * @author philogb / http://blog.thejit.org/
-		 * @author jordi_ros / http://plattsoft.com
-		 * @author D1plo1d / http://github.com/D1plo1d
-		 * @author alteredq / http://alteredqualia.com/
-		 * @author mikael emtinger / http://gomo.se/
-		 * @author timknip / http://www.floorplanner.com/
-		 * @author bhouston / http://clara.io
-		 * @author WestLangley / http://github.com/WestLangley
-		 */
-
-		function Matrix4() {
-
-			this.elements = [
-
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				0, 0, 0, 1
-
-			];
-
-			if ( arguments.length > 0 ) {
-
-				console.error( 'THREE.Matrix4: the constructor no longer reads arguments. use .set() instead.' );
-
-			}
-
-		}
-
-		Object.assign( Matrix4.prototype, {
-
-			isMatrix4: true,
-
-			set: function ( n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33, n34, n41, n42, n43, n44 ) {
-
-				var te = this.elements;
-
-				te[ 0 ] = n11; te[ 4 ] = n12; te[ 8 ] = n13; te[ 12 ] = n14;
-				te[ 1 ] = n21; te[ 5 ] = n22; te[ 9 ] = n23; te[ 13 ] = n24;
-				te[ 2 ] = n31; te[ 6 ] = n32; te[ 10 ] = n33; te[ 14 ] = n34;
-				te[ 3 ] = n41; te[ 7 ] = n42; te[ 11 ] = n43; te[ 15 ] = n44;
-
-				return this;
-
-			},
-
-			identity: function () {
-
-				this.set(
-
-					1, 0, 0, 0,
-					0, 1, 0, 0,
-					0, 0, 1, 0,
-					0, 0, 0, 1
-
-				);
-
-				return this;
-
-			},
-
-			clone: function () {
-
-				return new Matrix4().fromArray( this.elements );
-
-			},
-
-			copy: function ( m ) {
-
-				var te = this.elements;
-				var me = m.elements;
-
-				te[ 0 ] = me[ 0 ]; te[ 1 ] = me[ 1 ]; te[ 2 ] = me[ 2 ]; te[ 3 ] = me[ 3 ];
-				te[ 4 ] = me[ 4 ]; te[ 5 ] = me[ 5 ]; te[ 6 ] = me[ 6 ]; te[ 7 ] = me[ 7 ];
-				te[ 8 ] = me[ 8 ]; te[ 9 ] = me[ 9 ]; te[ 10 ] = me[ 10 ]; te[ 11 ] = me[ 11 ];
-				te[ 12 ] = me[ 12 ]; te[ 13 ] = me[ 13 ]; te[ 14 ] = me[ 14 ]; te[ 15 ] = me[ 15 ];
-
-				return this;
-
-			},
-
-			copyPosition: function ( m ) {
-
-				var te = this.elements, me = m.elements;
-
-				te[ 12 ] = me[ 12 ];
-				te[ 13 ] = me[ 13 ];
-				te[ 14 ] = me[ 14 ];
-
-				return this;
-
-			},
-
-			extractBasis: function ( xAxis, yAxis, zAxis ) {
-
-				xAxis.setFromMatrixColumn( this, 0 );
-				yAxis.setFromMatrixColumn( this, 1 );
-				zAxis.setFromMatrixColumn( this, 2 );
-
-				return this;
-
-			},
-
-			makeBasis: function ( xAxis, yAxis, zAxis ) {
-
-				this.set(
-					xAxis.x, yAxis.x, zAxis.x, 0,
-					xAxis.y, yAxis.y, zAxis.y, 0,
-					xAxis.z, yAxis.z, zAxis.z, 0,
-					0, 0, 0, 1
-				);
-
-				return this;
-
-			},
-
-			extractRotation: function () {
-
-				var v1 = new Vector3();
-
-				return function extractRotation( m ) {
-
-					// this method does not support reflection matrices
-
-					var te = this.elements;
-					var me = m.elements;
-
-					var scaleX = 1 / v1.setFromMatrixColumn( m, 0 ).length();
-					var scaleY = 1 / v1.setFromMatrixColumn( m, 1 ).length();
-					var scaleZ = 1 / v1.setFromMatrixColumn( m, 2 ).length();
-
-					te[ 0 ] = me[ 0 ] * scaleX;
-					te[ 1 ] = me[ 1 ] * scaleX;
-					te[ 2 ] = me[ 2 ] * scaleX;
-					te[ 3 ] = 0;
-
-					te[ 4 ] = me[ 4 ] * scaleY;
-					te[ 5 ] = me[ 5 ] * scaleY;
-					te[ 6 ] = me[ 6 ] * scaleY;
-					te[ 7 ] = 0;
-
-					te[ 8 ] = me[ 8 ] * scaleZ;
-					te[ 9 ] = me[ 9 ] * scaleZ;
-					te[ 10 ] = me[ 10 ] * scaleZ;
-					te[ 11 ] = 0;
-
-					te[ 12 ] = 0;
-					te[ 13 ] = 0;
-					te[ 14 ] = 0;
-					te[ 15 ] = 1;
-
-					return this;
-
-				};
-
-			}(),
-
-			makeRotationFromEuler: function ( euler ) {
-
-				if ( ! ( euler && euler.isEuler ) ) {
-
-					console.error( 'THREE.Matrix4: .makeRotationFromEuler() now expects a Euler rotation rather than a Vector3 and order.' );
-
-				}
-
-				var te = this.elements;
-
-				var x = euler.x, y = euler.y, z = euler.z;
-				var a = Math.cos( x ), b = Math.sin( x );
-				var c = Math.cos( y ), d = Math.sin( y );
-				var e = Math.cos( z ), f = Math.sin( z );
-
-				if ( euler.order === 'XYZ' ) {
-
-					var ae = a * e, af = a * f, be = b * e, bf = b * f;
-
-					te[ 0 ] = c * e;
-					te[ 4 ] = - c * f;
-					te[ 8 ] = d;
-
-					te[ 1 ] = af + be * d;
-					te[ 5 ] = ae - bf * d;
-					te[ 9 ] = - b * c;
-
-					te[ 2 ] = bf - ae * d;
-					te[ 6 ] = be + af * d;
-					te[ 10 ] = a * c;
-
-				} else if ( euler.order === 'YXZ' ) {
-
-					var ce = c * e, cf = c * f, de = d * e, df = d * f;
-
-					te[ 0 ] = ce + df * b;
-					te[ 4 ] = de * b - cf;
-					te[ 8 ] = a * d;
-
-					te[ 1 ] = a * f;
-					te[ 5 ] = a * e;
-					te[ 9 ] = - b;
-
-					te[ 2 ] = cf * b - de;
-					te[ 6 ] = df + ce * b;
-					te[ 10 ] = a * c;
-
-				} else if ( euler.order === 'ZXY' ) {
-
-					var ce = c * e, cf = c * f, de = d * e, df = d * f;
-
-					te[ 0 ] = ce - df * b;
-					te[ 4 ] = - a * f;
-					te[ 8 ] = de + cf * b;
-
-					te[ 1 ] = cf + de * b;
-					te[ 5 ] = a * e;
-					te[ 9 ] = df - ce * b;
-
-					te[ 2 ] = - a * d;
-					te[ 6 ] = b;
-					te[ 10 ] = a * c;
-
-				} else if ( euler.order === 'ZYX' ) {
-
-					var ae = a * e, af = a * f, be = b * e, bf = b * f;
-
-					te[ 0 ] = c * e;
-					te[ 4 ] = be * d - af;
-					te[ 8 ] = ae * d + bf;
-
-					te[ 1 ] = c * f;
-					te[ 5 ] = bf * d + ae;
-					te[ 9 ] = af * d - be;
-
-					te[ 2 ] = - d;
-					te[ 6 ] = b * c;
-					te[ 10 ] = a * c;
-
-				} else if ( euler.order === 'YZX' ) {
-
-					var ac = a * c, ad = a * d, bc = b * c, bd = b * d;
-
-					te[ 0 ] = c * e;
-					te[ 4 ] = bd - ac * f;
-					te[ 8 ] = bc * f + ad;
-
-					te[ 1 ] = f;
-					te[ 5 ] = a * e;
-					te[ 9 ] = - b * e;
-
-					te[ 2 ] = - d * e;
-					te[ 6 ] = ad * f + bc;
-					te[ 10 ] = ac - bd * f;
-
-				} else if ( euler.order === 'XZY' ) {
-
-					var ac = a * c, ad = a * d, bc = b * c, bd = b * d;
-
-					te[ 0 ] = c * e;
-					te[ 4 ] = - f;
-					te[ 8 ] = d * e;
-
-					te[ 1 ] = ac * f + bd;
-					te[ 5 ] = a * e;
-					te[ 9 ] = ad * f - bc;
-
-					te[ 2 ] = bc * f - ad;
-					te[ 6 ] = b * e;
-					te[ 10 ] = bd * f + ac;
-
-				}
-
-				// bottom row
-				te[ 3 ] = 0;
-				te[ 7 ] = 0;
-				te[ 11 ] = 0;
-
-				// last column
-				te[ 12 ] = 0;
-				te[ 13 ] = 0;
-				te[ 14 ] = 0;
-				te[ 15 ] = 1;
-
-				return this;
-
-			},
-
-			makeRotationFromQuaternion: function () {
-
-				var zero = new Vector3( 0, 0, 0 );
-				var one = new Vector3( 1, 1, 1 );
-
-				return function makeRotationFromQuaternion( q ) {
-
-					return this.compose( zero, q, one );
-
-				};
-
-			}(),
-
-			lookAt: function () {
-
-				var x = new Vector3();
-				var y = new Vector3();
-				var z = new Vector3();
-
-				return function lookAt( eye, target, up ) {
-
-					var te = this.elements;
-
-					z.subVectors( eye, target );
-
-					if ( z.lengthSq() === 0 ) {
-
-						// eye and target are in the same position
-
-						z.z = 1;
-
-					}
-
-					z.normalize();
-					x.crossVectors( up, z );
-
-					if ( x.lengthSq() === 0 ) {
-
-						// up and z are parallel
-
-						if ( Math.abs( up.z ) === 1 ) {
-
-							z.x += 0.0001;
-
-						} else {
-
-							z.z += 0.0001;
-
-						}
-
-						z.normalize();
-						x.crossVectors( up, z );
-
-					}
-
-					x.normalize();
-					y.crossVectors( z, x );
-
-					te[ 0 ] = x.x; te[ 4 ] = y.x; te[ 8 ] = z.x;
-					te[ 1 ] = x.y; te[ 5 ] = y.y; te[ 9 ] = z.y;
-					te[ 2 ] = x.z; te[ 6 ] = y.z; te[ 10 ] = z.z;
-
-					return this;
-
-				};
-
-			}(),
-
-			multiply: function ( m, n ) {
-
-				if ( n !== undefined ) {
-
-					console.warn( 'THREE.Matrix4: .multiply() now only accepts one argument. Use .multiplyMatrices( a, b ) instead.' );
-					return this.multiplyMatrices( m, n );
-
-				}
-
-				return this.multiplyMatrices( this, m );
-
-			},
-
-			premultiply: function ( m ) {
-
-				return this.multiplyMatrices( m, this );
-
-			},
-
-			multiplyMatrices: function ( a, b ) {
-
-				var ae = a.elements;
-				var be = b.elements;
-				var te = this.elements;
-
-				var a11 = ae[ 0 ], a12 = ae[ 4 ], a13 = ae[ 8 ], a14 = ae[ 12 ];
-				var a21 = ae[ 1 ], a22 = ae[ 5 ], a23 = ae[ 9 ], a24 = ae[ 13 ];
-				var a31 = ae[ 2 ], a32 = ae[ 6 ], a33 = ae[ 10 ], a34 = ae[ 14 ];
-				var a41 = ae[ 3 ], a42 = ae[ 7 ], a43 = ae[ 11 ], a44 = ae[ 15 ];
-
-				var b11 = be[ 0 ], b12 = be[ 4 ], b13 = be[ 8 ], b14 = be[ 12 ];
-				var b21 = be[ 1 ], b22 = be[ 5 ], b23 = be[ 9 ], b24 = be[ 13 ];
-				var b31 = be[ 2 ], b32 = be[ 6 ], b33 = be[ 10 ], b34 = be[ 14 ];
-				var b41 = be[ 3 ], b42 = be[ 7 ], b43 = be[ 11 ], b44 = be[ 15 ];
-
-				te[ 0 ] = a11 * b11 + a12 * b21 + a13 * b31 + a14 * b41;
-				te[ 4 ] = a11 * b12 + a12 * b22 + a13 * b32 + a14 * b42;
-				te[ 8 ] = a11 * b13 + a12 * b23 + a13 * b33 + a14 * b43;
-				te[ 12 ] = a11 * b14 + a12 * b24 + a13 * b34 + a14 * b44;
-
-				te[ 1 ] = a21 * b11 + a22 * b21 + a23 * b31 + a24 * b41;
-				te[ 5 ] = a21 * b12 + a22 * b22 + a23 * b32 + a24 * b42;
-				te[ 9 ] = a21 * b13 + a22 * b23 + a23 * b33 + a24 * b43;
-				te[ 13 ] = a21 * b14 + a22 * b24 + a23 * b34 + a24 * b44;
-
-				te[ 2 ] = a31 * b11 + a32 * b21 + a33 * b31 + a34 * b41;
-				te[ 6 ] = a31 * b12 + a32 * b22 + a33 * b32 + a34 * b42;
-				te[ 10 ] = a31 * b13 + a32 * b23 + a33 * b33 + a34 * b43;
-				te[ 14 ] = a31 * b14 + a32 * b24 + a33 * b34 + a34 * b44;
-
-				te[ 3 ] = a41 * b11 + a42 * b21 + a43 * b31 + a44 * b41;
-				te[ 7 ] = a41 * b12 + a42 * b22 + a43 * b32 + a44 * b42;
-				te[ 11 ] = a41 * b13 + a42 * b23 + a43 * b33 + a44 * b43;
-				te[ 15 ] = a41 * b14 + a42 * b24 + a43 * b34 + a44 * b44;
-
-				return this;
-
-			},
-
-			multiplyScalar: function ( s ) {
-
-				var te = this.elements;
-
-				te[ 0 ] *= s; te[ 4 ] *= s; te[ 8 ] *= s; te[ 12 ] *= s;
-				te[ 1 ] *= s; te[ 5 ] *= s; te[ 9 ] *= s; te[ 13 ] *= s;
-				te[ 2 ] *= s; te[ 6 ] *= s; te[ 10 ] *= s; te[ 14 ] *= s;
-				te[ 3 ] *= s; te[ 7 ] *= s; te[ 11 ] *= s; te[ 15 ] *= s;
-
-				return this;
-
-			},
-
-			applyToBufferAttribute: function () {
-
-				var v1 = new Vector3();
-
-				return function applyToBufferAttribute( attribute ) {
-
-					for ( var i = 0, l = attribute.count; i < l; i ++ ) {
-
-						v1.x = attribute.getX( i );
-						v1.y = attribute.getY( i );
-						v1.z = attribute.getZ( i );
-
-						v1.applyMatrix4( this );
-
-						attribute.setXYZ( i, v1.x, v1.y, v1.z );
-
-					}
-
-					return attribute;
-
-				};
-
-			}(),
-
-			determinant: function () {
-
-				var te = this.elements;
-
-				var n11 = te[ 0 ], n12 = te[ 4 ], n13 = te[ 8 ], n14 = te[ 12 ];
-				var n21 = te[ 1 ], n22 = te[ 5 ], n23 = te[ 9 ], n24 = te[ 13 ];
-				var n31 = te[ 2 ], n32 = te[ 6 ], n33 = te[ 10 ], n34 = te[ 14 ];
-				var n41 = te[ 3 ], n42 = te[ 7 ], n43 = te[ 11 ], n44 = te[ 15 ];
-
-				//TODO: make this more efficient
-				//( based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm )
-
-				return (
-					n41 * (
-						+ n14 * n23 * n32
-						 - n13 * n24 * n32
-						 - n14 * n22 * n33
-						 + n12 * n24 * n33
-						 + n13 * n22 * n34
-						 - n12 * n23 * n34
-					) +
-					n42 * (
-						+ n11 * n23 * n34
-						 - n11 * n24 * n33
-						 + n14 * n21 * n33
-						 - n13 * n21 * n34
-						 + n13 * n24 * n31
-						 - n14 * n23 * n31
-					) +
-					n43 * (
-						+ n11 * n24 * n32
-						 - n11 * n22 * n34
-						 - n14 * n21 * n32
-						 + n12 * n21 * n34
-						 + n14 * n22 * n31
-						 - n12 * n24 * n31
-					) +
-					n44 * (
-						- n13 * n22 * n31
-						 - n11 * n23 * n32
-						 + n11 * n22 * n33
-						 + n13 * n21 * n32
-						 - n12 * n21 * n33
-						 + n12 * n23 * n31
-					)
-
-				);
-
-			},
-
-			transpose: function () {
-
-				var te = this.elements;
-				var tmp;
-
-				tmp = te[ 1 ]; te[ 1 ] = te[ 4 ]; te[ 4 ] = tmp;
-				tmp = te[ 2 ]; te[ 2 ] = te[ 8 ]; te[ 8 ] = tmp;
-				tmp = te[ 6 ]; te[ 6 ] = te[ 9 ]; te[ 9 ] = tmp;
-
-				tmp = te[ 3 ]; te[ 3 ] = te[ 12 ]; te[ 12 ] = tmp;
-				tmp = te[ 7 ]; te[ 7 ] = te[ 13 ]; te[ 13 ] = tmp;
-				tmp = te[ 11 ]; te[ 11 ] = te[ 14 ]; te[ 14 ] = tmp;
-
-				return this;
-
-			},
-
-			setPosition: function ( v ) {
-
-				var te = this.elements;
-
-				te[ 12 ] = v.x;
-				te[ 13 ] = v.y;
-				te[ 14 ] = v.z;
-
-				return this;
-
-			},
-
-			getInverse: function ( m, throwOnDegenerate ) {
-
-				// based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
-				var te = this.elements,
-					me = m.elements,
-
-					n11 = me[ 0 ], n21 = me[ 1 ], n31 = me[ 2 ], n41 = me[ 3 ],
-					n12 = me[ 4 ], n22 = me[ 5 ], n32 = me[ 6 ], n42 = me[ 7 ],
-					n13 = me[ 8 ], n23 = me[ 9 ], n33 = me[ 10 ], n43 = me[ 11 ],
-					n14 = me[ 12 ], n24 = me[ 13 ], n34 = me[ 14 ], n44 = me[ 15 ],
-
-					t11 = n23 * n34 * n42 - n24 * n33 * n42 + n24 * n32 * n43 - n22 * n34 * n43 - n23 * n32 * n44 + n22 * n33 * n44,
-					t12 = n14 * n33 * n42 - n13 * n34 * n42 - n14 * n32 * n43 + n12 * n34 * n43 + n13 * n32 * n44 - n12 * n33 * n44,
-					t13 = n13 * n24 * n42 - n14 * n23 * n42 + n14 * n22 * n43 - n12 * n24 * n43 - n13 * n22 * n44 + n12 * n23 * n44,
-					t14 = n14 * n23 * n32 - n13 * n24 * n32 - n14 * n22 * n33 + n12 * n24 * n33 + n13 * n22 * n34 - n12 * n23 * n34;
-
-				var det = n11 * t11 + n21 * t12 + n31 * t13 + n41 * t14;
-
-				if ( det === 0 ) {
-
-					var msg = "THREE.Matrix4: .getInverse() can't invert matrix, determinant is 0";
-
-					if ( throwOnDegenerate === true ) {
-
-						throw new Error( msg );
-
-					} else {
-
-						console.warn( msg );
-
-					}
-
-					return this.identity();
-
-				}
-
-				var detInv = 1 / det;
-
-				te[ 0 ] = t11 * detInv;
-				te[ 1 ] = ( n24 * n33 * n41 - n23 * n34 * n41 - n24 * n31 * n43 + n21 * n34 * n43 + n23 * n31 * n44 - n21 * n33 * n44 ) * detInv;
-				te[ 2 ] = ( n22 * n34 * n41 - n24 * n32 * n41 + n24 * n31 * n42 - n21 * n34 * n42 - n22 * n31 * n44 + n21 * n32 * n44 ) * detInv;
-				te[ 3 ] = ( n23 * n32 * n41 - n22 * n33 * n41 - n23 * n31 * n42 + n21 * n33 * n42 + n22 * n31 * n43 - n21 * n32 * n43 ) * detInv;
-
-				te[ 4 ] = t12 * detInv;
-				te[ 5 ] = ( n13 * n34 * n41 - n14 * n33 * n41 + n14 * n31 * n43 - n11 * n34 * n43 - n13 * n31 * n44 + n11 * n33 * n44 ) * detInv;
-				te[ 6 ] = ( n14 * n32 * n41 - n12 * n34 * n41 - n14 * n31 * n42 + n11 * n34 * n42 + n12 * n31 * n44 - n11 * n32 * n44 ) * detInv;
-				te[ 7 ] = ( n12 * n33 * n41 - n13 * n32 * n41 + n13 * n31 * n42 - n11 * n33 * n42 - n12 * n31 * n43 + n11 * n32 * n43 ) * detInv;
-
-				te[ 8 ] = t13 * detInv;
-				te[ 9 ] = ( n14 * n23 * n41 - n13 * n24 * n41 - n14 * n21 * n43 + n11 * n24 * n43 + n13 * n21 * n44 - n11 * n23 * n44 ) * detInv;
-				te[ 10 ] = ( n12 * n24 * n41 - n14 * n22 * n41 + n14 * n21 * n42 - n11 * n24 * n42 - n12 * n21 * n44 + n11 * n22 * n44 ) * detInv;
-				te[ 11 ] = ( n13 * n22 * n41 - n12 * n23 * n41 - n13 * n21 * n42 + n11 * n23 * n42 + n12 * n21 * n43 - n11 * n22 * n43 ) * detInv;
-
-				te[ 12 ] = t14 * detInv;
-				te[ 13 ] = ( n13 * n24 * n31 - n14 * n23 * n31 + n14 * n21 * n33 - n11 * n24 * n33 - n13 * n21 * n34 + n11 * n23 * n34 ) * detInv;
-				te[ 14 ] = ( n14 * n22 * n31 - n12 * n24 * n31 - n14 * n21 * n32 + n11 * n24 * n32 + n12 * n21 * n34 - n11 * n22 * n34 ) * detInv;
-				te[ 15 ] = ( n12 * n23 * n31 - n13 * n22 * n31 + n13 * n21 * n32 - n11 * n23 * n32 - n12 * n21 * n33 + n11 * n22 * n33 ) * detInv;
-
-				return this;
-
-			},
-
-			scale: function ( v ) {
-
-				var te = this.elements;
-				var x = v.x, y = v.y, z = v.z;
-
-				te[ 0 ] *= x; te[ 4 ] *= y; te[ 8 ] *= z;
-				te[ 1 ] *= x; te[ 5 ] *= y; te[ 9 ] *= z;
-				te[ 2 ] *= x; te[ 6 ] *= y; te[ 10 ] *= z;
-				te[ 3 ] *= x; te[ 7 ] *= y; te[ 11 ] *= z;
-
-				return this;
-
-			},
-
-			getMaxScaleOnAxis: function () {
-
-				var te = this.elements;
-
-				var scaleXSq = te[ 0 ] * te[ 0 ] + te[ 1 ] * te[ 1 ] + te[ 2 ] * te[ 2 ];
-				var scaleYSq = te[ 4 ] * te[ 4 ] + te[ 5 ] * te[ 5 ] + te[ 6 ] * te[ 6 ];
-				var scaleZSq = te[ 8 ] * te[ 8 ] + te[ 9 ] * te[ 9 ] + te[ 10 ] * te[ 10 ];
-
-				return Math.sqrt( Math.max( scaleXSq, scaleYSq, scaleZSq ) );
-
-			},
-
-			makeTranslation: function ( x, y, z ) {
-
-				this.set(
-
-					1, 0, 0, x,
-					0, 1, 0, y,
-					0, 0, 1, z,
-					0, 0, 0, 1
-
-				);
-
-				return this;
-
-			},
-
-			makeRotationX: function ( theta ) {
-
-				var c = Math.cos( theta ), s = Math.sin( theta );
-
-				this.set(
-
-					1, 0, 0, 0,
-					0, c, - s, 0,
-					0, s, c, 0,
-					0, 0, 0, 1
-
-				);
-
-				return this;
-
-			},
-
-			makeRotationY: function ( theta ) {
-
-				var c = Math.cos( theta ), s = Math.sin( theta );
-
-				this.set(
-
-					 c, 0, s, 0,
-					 0, 1, 0, 0,
-					- s, 0, c, 0,
-					 0, 0, 0, 1
-
-				);
-
-				return this;
-
-			},
-
-			makeRotationZ: function ( theta ) {
-
-				var c = Math.cos( theta ), s = Math.sin( theta );
-
-				this.set(
-
-					c, - s, 0, 0,
-					s, c, 0, 0,
-					0, 0, 1, 0,
-					0, 0, 0, 1
-
-				);
-
-				return this;
-
-			},
-
-			makeRotationAxis: function ( axis, angle ) {
-
-				// Based on http://www.gamedev.net/reference/articles/article1199.asp
-
-				var c = Math.cos( angle );
-				var s = Math.sin( angle );
-				var t = 1 - c;
-				var x = axis.x, y = axis.y, z = axis.z;
-				var tx = t * x, ty = t * y;
-
-				this.set(
-
-					tx * x + c, tx * y - s * z, tx * z + s * y, 0,
-					tx * y + s * z, ty * y + c, ty * z - s * x, 0,
-					tx * z - s * y, ty * z + s * x, t * z * z + c, 0,
-					0, 0, 0, 1
-
-				);
-
-				 return this;
-
-			},
-
-			makeScale: function ( x, y, z ) {
-
-				this.set(
-
-					x, 0, 0, 0,
-					0, y, 0, 0,
-					0, 0, z, 0,
-					0, 0, 0, 1
-
-				);
-
-				return this;
-
-			},
-
-			makeShear: function ( x, y, z ) {
-
-				this.set(
-
-					1, y, z, 0,
-					x, 1, z, 0,
-					x, y, 1, 0,
-					0, 0, 0, 1
-
-				);
-
-				return this;
-
-			},
-
-			compose: function ( position, quaternion, scale ) {
-
-				var te = this.elements;
-
-				var x = quaternion._x, y = quaternion._y, z = quaternion._z, w = quaternion._w;
-				var x2 = x + x,	y2 = y + y, z2 = z + z;
-				var xx = x * x2, xy = x * y2, xz = x * z2;
-				var yy = y * y2, yz = y * z2, zz = z * z2;
-				var wx = w * x2, wy = w * y2, wz = w * z2;
-
-				var sx = scale.x, sy = scale.y, sz = scale.z;
-
-			        te[ 0 ] = ( 1 - ( yy + zz ) ) * sx;
-			        te[ 1 ] = ( xy + wz ) * sx;
-			        te[ 2 ] = ( xz - wy ) * sx;
-			        te[ 3 ] = 0;
-
-			        te[ 4 ] = ( xy - wz ) * sy;
-			        te[ 5 ] = ( 1 - ( xx + zz ) ) * sy;
-			        te[ 6 ] = ( yz + wx ) * sy;
-			        te[ 7 ] = 0;
-
-			        te[ 8 ] = ( xz + wy ) * sz;
-			        te[ 9 ] = ( yz - wx ) * sz;
-			        te[ 10 ] = ( 1 - ( xx + yy ) ) * sz;
-			        te[ 11 ] = 0;
-
-			        te[ 12 ] = position.x;
-			        te[ 13 ] = position.y;
-			        te[ 14 ] = position.z;
-			        te[ 15 ] = 1;
-
-			        return this;
-
-			},
-
-			decompose: function () {
-
-				var vector = new Vector3();
-				var matrix = new Matrix4();
-
-				return function decompose( position, quaternion, scale ) {
-
-					var te = this.elements;
-
-					var sx = vector.set( te[ 0 ], te[ 1 ], te[ 2 ] ).length();
-					var sy = vector.set( te[ 4 ], te[ 5 ], te[ 6 ] ).length();
-					var sz = vector.set( te[ 8 ], te[ 9 ], te[ 10 ] ).length();
-
-					// if determine is negative, we need to invert one scale
-					var det = this.determinant();
-					if ( det < 0 ) sx = - sx;
-
-					position.x = te[ 12 ];
-					position.y = te[ 13 ];
-					position.z = te[ 14 ];
-
-					// scale the rotation part
-					matrix.copy( this );
-
-					var invSX = 1 / sx;
-					var invSY = 1 / sy;
-					var invSZ = 1 / sz;
-
-					matrix.elements[ 0 ] *= invSX;
-					matrix.elements[ 1 ] *= invSX;
-					matrix.elements[ 2 ] *= invSX;
-
-					matrix.elements[ 4 ] *= invSY;
-					matrix.elements[ 5 ] *= invSY;
-					matrix.elements[ 6 ] *= invSY;
-
-					matrix.elements[ 8 ] *= invSZ;
-					matrix.elements[ 9 ] *= invSZ;
-					matrix.elements[ 10 ] *= invSZ;
-
-					quaternion.setFromRotationMatrix( matrix );
-
-					scale.x = sx;
-					scale.y = sy;
-					scale.z = sz;
-
-					return this;
-
-				};
-
-			}(),
-
-			makePerspective: function ( left, right, top, bottom, near, far ) {
-
-				if ( far === undefined ) {
-
-					console.warn( 'THREE.Matrix4: .makePerspective() has been redefined and has a new signature. Please check the docs.' );
-
-				}
-
-				var te = this.elements;
-				var x = 2 * near / ( right - left );
-				var y = 2 * near / ( top - bottom );
-
-				var a = ( right + left ) / ( right - left );
-				var b = ( top + bottom ) / ( top - bottom );
-				var c = - ( far + near ) / ( far - near );
-				var d = - 2 * far * near / ( far - near );
-
-				te[ 0 ] = x;	te[ 4 ] = 0;	te[ 8 ] = a;	te[ 12 ] = 0;
-				te[ 1 ] = 0;	te[ 5 ] = y;	te[ 9 ] = b;	te[ 13 ] = 0;
-				te[ 2 ] = 0;	te[ 6 ] = 0;	te[ 10 ] = c;	te[ 14 ] = d;
-				te[ 3 ] = 0;	te[ 7 ] = 0;	te[ 11 ] = - 1;	te[ 15 ] = 0;
-
-				return this;
-
-			},
-
-			makeOrthographic: function ( left, right, top, bottom, near, far ) {
-
-				var te = this.elements;
-				var w = 1.0 / ( right - left );
-				var h = 1.0 / ( top - bottom );
-				var p = 1.0 / ( far - near );
-
-				var x = ( right + left ) * w;
-				var y = ( top + bottom ) * h;
-				var z = ( far + near ) * p;
-
-				te[ 0 ] = 2 * w;	te[ 4 ] = 0;	te[ 8 ] = 0;	te[ 12 ] = - x;
-				te[ 1 ] = 0;	te[ 5 ] = 2 * h;	te[ 9 ] = 0;	te[ 13 ] = - y;
-				te[ 2 ] = 0;	te[ 6 ] = 0;	te[ 10 ] = - 2 * p;	te[ 14 ] = - z;
-				te[ 3 ] = 0;	te[ 7 ] = 0;	te[ 11 ] = 0;	te[ 15 ] = 1;
-
-				return this;
-
-			},
-
-			equals: function ( matrix ) {
-
-				var te = this.elements;
-				var me = matrix.elements;
-
-				for ( var i = 0; i < 16; i ++ ) {
-
-					if ( te[ i ] !== me[ i ] ) return false;
-
-				}
-
-				return true;
-
-			},
-
-			fromArray: function ( array, offset ) {
-
-				if ( offset === undefined ) offset = 0;
-
-				for ( var i = 0; i < 16; i ++ ) {
-
-					this.elements[ i ] = array[ i + offset ];
-
-				}
-
-				return this;
-
-			},
-
-			toArray: function ( array, offset ) {
-
-				if ( array === undefined ) array = [];
-				if ( offset === undefined ) offset = 0;
-
-				var te = this.elements;
-
-				array[ offset ] = te[ 0 ];
-				array[ offset + 1 ] = te[ 1 ];
-				array[ offset + 2 ] = te[ 2 ];
-				array[ offset + 3 ] = te[ 3 ];
-
-				array[ offset + 4 ] = te[ 4 ];
-				array[ offset + 5 ] = te[ 5 ];
-				array[ offset + 6 ] = te[ 6 ];
-				array[ offset + 7 ] = te[ 7 ];
-
-				array[ offset + 8 ] = te[ 8 ];
-				array[ offset + 9 ] = te[ 9 ];
-				array[ offset + 10 ] = te[ 10 ];
-				array[ offset + 11 ] = te[ 11 ];
-
-				array[ offset + 12 ] = te[ 12 ];
-				array[ offset + 13 ] = te[ 13 ];
-				array[ offset + 14 ] = te[ 14 ];
-				array[ offset + 15 ] = te[ 15 ];
-
-				return array;
 
 			}
 
@@ -33544,51 +34556,48 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			},
 
-			setFromUnitVectors: function () {
+			setFromUnitVectors: function ( vFrom, vTo ) {
 
 				// assumes direction vectors vFrom and vTo are normalized
 
-				var v1 = new Vector3();
-				var r;
-
 				var EPS = 0.000001;
 
-				return function setFromUnitVectors( vFrom, vTo ) {
+				var r = vFrom.dot( vTo ) + 1;
 
-					if ( v1 === undefined ) v1 = new Vector3();
+				if ( r < EPS ) {
 
-					r = vFrom.dot( vTo ) + 1;
+					r = 0;
 
-					if ( r < EPS ) {
+					if ( Math.abs( vFrom.x ) > Math.abs( vFrom.z ) ) {
 
-						r = 0;
-
-						if ( Math.abs( vFrom.x ) > Math.abs( vFrom.z ) ) {
-
-							v1.set( - vFrom.y, vFrom.x, 0 );
-
-						} else {
-
-							v1.set( 0, - vFrom.z, vFrom.y );
-
-						}
+						this._x = - vFrom.y;
+						this._y = vFrom.x;
+						this._z = 0;
+						this._w = r;
 
 					} else {
 
-						v1.crossVectors( vFrom, vTo );
+						this._x = 0;
+						this._y = - vFrom.z;
+						this._z = vFrom.y;
+						this._w = r;
 
 					}
 
-					this._x = v1.x;
-					this._y = v1.y;
-					this._z = v1.z;
+				} else {
+
+					// crossVectors( vFrom, vTo ); // inlined to avoid cyclic dependency on Vector3
+
+					this._x = vFrom.y * vTo.z - vFrom.z * vTo.y;
+					this._y = vFrom.z * vTo.x - vFrom.x * vTo.z;
+					this._z = vFrom.x * vTo.y - vFrom.y * vTo.x;
 					this._w = r;
 
-					return this.normalize();
+				}
 
-				};
+				return this.normalize();
 
-			}(),
+			},
 
 			angleTo: function ( q ) {
 
@@ -34143,17 +35152,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			},
 
-			unproject: function () {
+			unproject: function ( camera ) {
 
-				var matrix = new Matrix4();
+				return this.applyMatrix4( camera.projectionMatrixInverse ).applyMatrix4( camera.matrixWorld );
 
-				return function unproject( camera ) {
-
-					return this.applyMatrix4( matrix.getInverse( camera.projectionMatrix ) ).applyMatrix4( camera.matrixWorld );
-
-				};
-
-			}(),
+			},
 
 			transformDirection: function ( m ) {
 
@@ -34219,21 +35222,15 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			},
 
-			clampScalar: function () {
+			clampScalar: function ( minVal, maxVal ) {
 
-				var min = new Vector3();
-				var max = new Vector3();
+				this.x = Math.max( minVal, Math.min( maxVal, this.x ) );
+				this.y = Math.max( minVal, Math.min( maxVal, this.y ) );
+				this.z = Math.max( minVal, Math.min( maxVal, this.z ) );
 
-				return function clampScalar( minVal, maxVal ) {
+				return this;
 
-					min.set( minVal, minVal, minVal );
-					max.set( maxVal, maxVal, maxVal );
-
-					return this.clamp( min, max );
-
-				};
-
-			}(),
+			},
 
 			clampLength: function ( min, max ) {
 
@@ -35046,7 +36043,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			// Values of encoding !== THREE.LinearEncoding only supported on map, envMap and emissiveMap.
 			//
 			// Also changing the encoding after already used by a Material will not automatically make the Material
-			// update.  You need to explicitly call Material.needsUpdate to trigger it to recompile.
+			// update. You need to explicitly call Material.needsUpdate to trigger it to recompile.
 			this.encoding = encoding !== undefined ? encoding : LinearEncoding;
 
 			this.version = 0;
@@ -36026,15 +37023,43 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		} );
 
 		/**
+		 * @author Mugen87 / https://github.com/Mugen87
+		 * @author Matt DesLauriers / @mattdesl
+		 */
+
+		function WebGLMultisampleRenderTarget( width, height, options ) {
+
+			WebGLRenderTarget.call( this, width, height, options );
+
+			this.samples = 4;
+
+		}
+
+		WebGLMultisampleRenderTarget.prototype = Object.assign( Object.create( WebGLRenderTarget.prototype ), {
+
+			constructor: WebGLMultisampleRenderTarget,
+
+			isWebGLMultisampleRenderTarget: true,
+
+			copy: function ( source ) {
+
+				WebGLRenderTarget.prototype.copy.call( this, source );
+
+				this.samples = source.samples;
+
+				return this;
+
+			}
+
+		} );
+
+		/**
 		 * @author alteredq / http://alteredqualia.com
 		 */
 
 		function WebGLRenderTargetCube( width, height, options ) {
 
 			WebGLRenderTarget.call( this, width, height, options );
-
-			this.activeCubeFace = 0; // PX 0, NX 1, PY 2, NY 3, PZ 4, NZ 5
-			this.activeMipMapLevel = 0;
 
 		}
 
@@ -36589,8 +37614,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					if ( target === undefined ) {
 
-						console.warn( 'THREE.Box3: .getBoundingSphere() target is now required' );
-						target = new Sphere();
+						console.error( 'THREE.Box3: .getBoundingSphere() target is now required' );
+						//target = new Sphere(); // removed to avoid cyclic dependency
 
 					}
 
@@ -37281,6 +38306,950 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		} );
 
+		/**
+		 * @author mrdoob / http://mrdoob.com/
+		 * @author supereggbert / http://www.paulbrunt.co.uk/
+		 * @author philogb / http://blog.thejit.org/
+		 * @author jordi_ros / http://plattsoft.com
+		 * @author D1plo1d / http://github.com/D1plo1d
+		 * @author alteredq / http://alteredqualia.com/
+		 * @author mikael emtinger / http://gomo.se/
+		 * @author timknip / http://www.floorplanner.com/
+		 * @author bhouston / http://clara.io
+		 * @author WestLangley / http://github.com/WestLangley
+		 */
+
+		function Matrix4() {
+
+			this.elements = [
+
+				1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, 1, 0,
+				0, 0, 0, 1
+
+			];
+
+			if ( arguments.length > 0 ) {
+
+				console.error( 'THREE.Matrix4: the constructor no longer reads arguments. use .set() instead.' );
+
+			}
+
+		}
+
+		Object.assign( Matrix4.prototype, {
+
+			isMatrix4: true,
+
+			set: function ( n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33, n34, n41, n42, n43, n44 ) {
+
+				var te = this.elements;
+
+				te[ 0 ] = n11; te[ 4 ] = n12; te[ 8 ] = n13; te[ 12 ] = n14;
+				te[ 1 ] = n21; te[ 5 ] = n22; te[ 9 ] = n23; te[ 13 ] = n24;
+				te[ 2 ] = n31; te[ 6 ] = n32; te[ 10 ] = n33; te[ 14 ] = n34;
+				te[ 3 ] = n41; te[ 7 ] = n42; te[ 11 ] = n43; te[ 15 ] = n44;
+
+				return this;
+
+			},
+
+			identity: function () {
+
+				this.set(
+
+					1, 0, 0, 0,
+					0, 1, 0, 0,
+					0, 0, 1, 0,
+					0, 0, 0, 1
+
+				);
+
+				return this;
+
+			},
+
+			clone: function () {
+
+				return new Matrix4().fromArray( this.elements );
+
+			},
+
+			copy: function ( m ) {
+
+				var te = this.elements;
+				var me = m.elements;
+
+				te[ 0 ] = me[ 0 ]; te[ 1 ] = me[ 1 ]; te[ 2 ] = me[ 2 ]; te[ 3 ] = me[ 3 ];
+				te[ 4 ] = me[ 4 ]; te[ 5 ] = me[ 5 ]; te[ 6 ] = me[ 6 ]; te[ 7 ] = me[ 7 ];
+				te[ 8 ] = me[ 8 ]; te[ 9 ] = me[ 9 ]; te[ 10 ] = me[ 10 ]; te[ 11 ] = me[ 11 ];
+				te[ 12 ] = me[ 12 ]; te[ 13 ] = me[ 13 ]; te[ 14 ] = me[ 14 ]; te[ 15 ] = me[ 15 ];
+
+				return this;
+
+			},
+
+			copyPosition: function ( m ) {
+
+				var te = this.elements, me = m.elements;
+
+				te[ 12 ] = me[ 12 ];
+				te[ 13 ] = me[ 13 ];
+				te[ 14 ] = me[ 14 ];
+
+				return this;
+
+			},
+
+			extractBasis: function ( xAxis, yAxis, zAxis ) {
+
+				xAxis.setFromMatrixColumn( this, 0 );
+				yAxis.setFromMatrixColumn( this, 1 );
+				zAxis.setFromMatrixColumn( this, 2 );
+
+				return this;
+
+			},
+
+			makeBasis: function ( xAxis, yAxis, zAxis ) {
+
+				this.set(
+					xAxis.x, yAxis.x, zAxis.x, 0,
+					xAxis.y, yAxis.y, zAxis.y, 0,
+					xAxis.z, yAxis.z, zAxis.z, 0,
+					0, 0, 0, 1
+				);
+
+				return this;
+
+			},
+
+			extractRotation: function () {
+
+				var v1 = new Vector3();
+
+				return function extractRotation( m ) {
+
+					// this method does not support reflection matrices
+
+					var te = this.elements;
+					var me = m.elements;
+
+					var scaleX = 1 / v1.setFromMatrixColumn( m, 0 ).length();
+					var scaleY = 1 / v1.setFromMatrixColumn( m, 1 ).length();
+					var scaleZ = 1 / v1.setFromMatrixColumn( m, 2 ).length();
+
+					te[ 0 ] = me[ 0 ] * scaleX;
+					te[ 1 ] = me[ 1 ] * scaleX;
+					te[ 2 ] = me[ 2 ] * scaleX;
+					te[ 3 ] = 0;
+
+					te[ 4 ] = me[ 4 ] * scaleY;
+					te[ 5 ] = me[ 5 ] * scaleY;
+					te[ 6 ] = me[ 6 ] * scaleY;
+					te[ 7 ] = 0;
+
+					te[ 8 ] = me[ 8 ] * scaleZ;
+					te[ 9 ] = me[ 9 ] * scaleZ;
+					te[ 10 ] = me[ 10 ] * scaleZ;
+					te[ 11 ] = 0;
+
+					te[ 12 ] = 0;
+					te[ 13 ] = 0;
+					te[ 14 ] = 0;
+					te[ 15 ] = 1;
+
+					return this;
+
+				};
+
+			}(),
+
+			makeRotationFromEuler: function ( euler ) {
+
+				if ( ! ( euler && euler.isEuler ) ) {
+
+					console.error( 'THREE.Matrix4: .makeRotationFromEuler() now expects a Euler rotation rather than a Vector3 and order.' );
+
+				}
+
+				var te = this.elements;
+
+				var x = euler.x, y = euler.y, z = euler.z;
+				var a = Math.cos( x ), b = Math.sin( x );
+				var c = Math.cos( y ), d = Math.sin( y );
+				var e = Math.cos( z ), f = Math.sin( z );
+
+				if ( euler.order === 'XYZ' ) {
+
+					var ae = a * e, af = a * f, be = b * e, bf = b * f;
+
+					te[ 0 ] = c * e;
+					te[ 4 ] = - c * f;
+					te[ 8 ] = d;
+
+					te[ 1 ] = af + be * d;
+					te[ 5 ] = ae - bf * d;
+					te[ 9 ] = - b * c;
+
+					te[ 2 ] = bf - ae * d;
+					te[ 6 ] = be + af * d;
+					te[ 10 ] = a * c;
+
+				} else if ( euler.order === 'YXZ' ) {
+
+					var ce = c * e, cf = c * f, de = d * e, df = d * f;
+
+					te[ 0 ] = ce + df * b;
+					te[ 4 ] = de * b - cf;
+					te[ 8 ] = a * d;
+
+					te[ 1 ] = a * f;
+					te[ 5 ] = a * e;
+					te[ 9 ] = - b;
+
+					te[ 2 ] = cf * b - de;
+					te[ 6 ] = df + ce * b;
+					te[ 10 ] = a * c;
+
+				} else if ( euler.order === 'ZXY' ) {
+
+					var ce = c * e, cf = c * f, de = d * e, df = d * f;
+
+					te[ 0 ] = ce - df * b;
+					te[ 4 ] = - a * f;
+					te[ 8 ] = de + cf * b;
+
+					te[ 1 ] = cf + de * b;
+					te[ 5 ] = a * e;
+					te[ 9 ] = df - ce * b;
+
+					te[ 2 ] = - a * d;
+					te[ 6 ] = b;
+					te[ 10 ] = a * c;
+
+				} else if ( euler.order === 'ZYX' ) {
+
+					var ae = a * e, af = a * f, be = b * e, bf = b * f;
+
+					te[ 0 ] = c * e;
+					te[ 4 ] = be * d - af;
+					te[ 8 ] = ae * d + bf;
+
+					te[ 1 ] = c * f;
+					te[ 5 ] = bf * d + ae;
+					te[ 9 ] = af * d - be;
+
+					te[ 2 ] = - d;
+					te[ 6 ] = b * c;
+					te[ 10 ] = a * c;
+
+				} else if ( euler.order === 'YZX' ) {
+
+					var ac = a * c, ad = a * d, bc = b * c, bd = b * d;
+
+					te[ 0 ] = c * e;
+					te[ 4 ] = bd - ac * f;
+					te[ 8 ] = bc * f + ad;
+
+					te[ 1 ] = f;
+					te[ 5 ] = a * e;
+					te[ 9 ] = - b * e;
+
+					te[ 2 ] = - d * e;
+					te[ 6 ] = ad * f + bc;
+					te[ 10 ] = ac - bd * f;
+
+				} else if ( euler.order === 'XZY' ) {
+
+					var ac = a * c, ad = a * d, bc = b * c, bd = b * d;
+
+					te[ 0 ] = c * e;
+					te[ 4 ] = - f;
+					te[ 8 ] = d * e;
+
+					te[ 1 ] = ac * f + bd;
+					te[ 5 ] = a * e;
+					te[ 9 ] = ad * f - bc;
+
+					te[ 2 ] = bc * f - ad;
+					te[ 6 ] = b * e;
+					te[ 10 ] = bd * f + ac;
+
+				}
+
+				// bottom row
+				te[ 3 ] = 0;
+				te[ 7 ] = 0;
+				te[ 11 ] = 0;
+
+				// last column
+				te[ 12 ] = 0;
+				te[ 13 ] = 0;
+				te[ 14 ] = 0;
+				te[ 15 ] = 1;
+
+				return this;
+
+			},
+
+			makeRotationFromQuaternion: function () {
+
+				var zero = new Vector3( 0, 0, 0 );
+				var one = new Vector3( 1, 1, 1 );
+
+				return function makeRotationFromQuaternion( q ) {
+
+					return this.compose( zero, q, one );
+
+				};
+
+			}(),
+
+			lookAt: function () {
+
+				var x = new Vector3();
+				var y = new Vector3();
+				var z = new Vector3();
+
+				return function lookAt( eye, target, up ) {
+
+					var te = this.elements;
+
+					z.subVectors( eye, target );
+
+					if ( z.lengthSq() === 0 ) {
+
+						// eye and target are in the same position
+
+						z.z = 1;
+
+					}
+
+					z.normalize();
+					x.crossVectors( up, z );
+
+					if ( x.lengthSq() === 0 ) {
+
+						// up and z are parallel
+
+						if ( Math.abs( up.z ) === 1 ) {
+
+							z.x += 0.0001;
+
+						} else {
+
+							z.z += 0.0001;
+
+						}
+
+						z.normalize();
+						x.crossVectors( up, z );
+
+					}
+
+					x.normalize();
+					y.crossVectors( z, x );
+
+					te[ 0 ] = x.x; te[ 4 ] = y.x; te[ 8 ] = z.x;
+					te[ 1 ] = x.y; te[ 5 ] = y.y; te[ 9 ] = z.y;
+					te[ 2 ] = x.z; te[ 6 ] = y.z; te[ 10 ] = z.z;
+
+					return this;
+
+				};
+
+			}(),
+
+			multiply: function ( m, n ) {
+
+				if ( n !== undefined ) {
+
+					console.warn( 'THREE.Matrix4: .multiply() now only accepts one argument. Use .multiplyMatrices( a, b ) instead.' );
+					return this.multiplyMatrices( m, n );
+
+				}
+
+				return this.multiplyMatrices( this, m );
+
+			},
+
+			premultiply: function ( m ) {
+
+				return this.multiplyMatrices( m, this );
+
+			},
+
+			multiplyMatrices: function ( a, b ) {
+
+				var ae = a.elements;
+				var be = b.elements;
+				var te = this.elements;
+
+				var a11 = ae[ 0 ], a12 = ae[ 4 ], a13 = ae[ 8 ], a14 = ae[ 12 ];
+				var a21 = ae[ 1 ], a22 = ae[ 5 ], a23 = ae[ 9 ], a24 = ae[ 13 ];
+				var a31 = ae[ 2 ], a32 = ae[ 6 ], a33 = ae[ 10 ], a34 = ae[ 14 ];
+				var a41 = ae[ 3 ], a42 = ae[ 7 ], a43 = ae[ 11 ], a44 = ae[ 15 ];
+
+				var b11 = be[ 0 ], b12 = be[ 4 ], b13 = be[ 8 ], b14 = be[ 12 ];
+				var b21 = be[ 1 ], b22 = be[ 5 ], b23 = be[ 9 ], b24 = be[ 13 ];
+				var b31 = be[ 2 ], b32 = be[ 6 ], b33 = be[ 10 ], b34 = be[ 14 ];
+				var b41 = be[ 3 ], b42 = be[ 7 ], b43 = be[ 11 ], b44 = be[ 15 ];
+
+				te[ 0 ] = a11 * b11 + a12 * b21 + a13 * b31 + a14 * b41;
+				te[ 4 ] = a11 * b12 + a12 * b22 + a13 * b32 + a14 * b42;
+				te[ 8 ] = a11 * b13 + a12 * b23 + a13 * b33 + a14 * b43;
+				te[ 12 ] = a11 * b14 + a12 * b24 + a13 * b34 + a14 * b44;
+
+				te[ 1 ] = a21 * b11 + a22 * b21 + a23 * b31 + a24 * b41;
+				te[ 5 ] = a21 * b12 + a22 * b22 + a23 * b32 + a24 * b42;
+				te[ 9 ] = a21 * b13 + a22 * b23 + a23 * b33 + a24 * b43;
+				te[ 13 ] = a21 * b14 + a22 * b24 + a23 * b34 + a24 * b44;
+
+				te[ 2 ] = a31 * b11 + a32 * b21 + a33 * b31 + a34 * b41;
+				te[ 6 ] = a31 * b12 + a32 * b22 + a33 * b32 + a34 * b42;
+				te[ 10 ] = a31 * b13 + a32 * b23 + a33 * b33 + a34 * b43;
+				te[ 14 ] = a31 * b14 + a32 * b24 + a33 * b34 + a34 * b44;
+
+				te[ 3 ] = a41 * b11 + a42 * b21 + a43 * b31 + a44 * b41;
+				te[ 7 ] = a41 * b12 + a42 * b22 + a43 * b32 + a44 * b42;
+				te[ 11 ] = a41 * b13 + a42 * b23 + a43 * b33 + a44 * b43;
+				te[ 15 ] = a41 * b14 + a42 * b24 + a43 * b34 + a44 * b44;
+
+				return this;
+
+			},
+
+			multiplyScalar: function ( s ) {
+
+				var te = this.elements;
+
+				te[ 0 ] *= s; te[ 4 ] *= s; te[ 8 ] *= s; te[ 12 ] *= s;
+				te[ 1 ] *= s; te[ 5 ] *= s; te[ 9 ] *= s; te[ 13 ] *= s;
+				te[ 2 ] *= s; te[ 6 ] *= s; te[ 10 ] *= s; te[ 14 ] *= s;
+				te[ 3 ] *= s; te[ 7 ] *= s; te[ 11 ] *= s; te[ 15 ] *= s;
+
+				return this;
+
+			},
+
+			applyToBufferAttribute: function () {
+
+				var v1 = new Vector3();
+
+				return function applyToBufferAttribute( attribute ) {
+
+					for ( var i = 0, l = attribute.count; i < l; i ++ ) {
+
+						v1.x = attribute.getX( i );
+						v1.y = attribute.getY( i );
+						v1.z = attribute.getZ( i );
+
+						v1.applyMatrix4( this );
+
+						attribute.setXYZ( i, v1.x, v1.y, v1.z );
+
+					}
+
+					return attribute;
+
+				};
+
+			}(),
+
+			determinant: function () {
+
+				var te = this.elements;
+
+				var n11 = te[ 0 ], n12 = te[ 4 ], n13 = te[ 8 ], n14 = te[ 12 ];
+				var n21 = te[ 1 ], n22 = te[ 5 ], n23 = te[ 9 ], n24 = te[ 13 ];
+				var n31 = te[ 2 ], n32 = te[ 6 ], n33 = te[ 10 ], n34 = te[ 14 ];
+				var n41 = te[ 3 ], n42 = te[ 7 ], n43 = te[ 11 ], n44 = te[ 15 ];
+
+				//TODO: make this more efficient
+				//( based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm )
+
+				return (
+					n41 * (
+						+ n14 * n23 * n32
+						 - n13 * n24 * n32
+						 - n14 * n22 * n33
+						 + n12 * n24 * n33
+						 + n13 * n22 * n34
+						 - n12 * n23 * n34
+					) +
+					n42 * (
+						+ n11 * n23 * n34
+						 - n11 * n24 * n33
+						 + n14 * n21 * n33
+						 - n13 * n21 * n34
+						 + n13 * n24 * n31
+						 - n14 * n23 * n31
+					) +
+					n43 * (
+						+ n11 * n24 * n32
+						 - n11 * n22 * n34
+						 - n14 * n21 * n32
+						 + n12 * n21 * n34
+						 + n14 * n22 * n31
+						 - n12 * n24 * n31
+					) +
+					n44 * (
+						- n13 * n22 * n31
+						 - n11 * n23 * n32
+						 + n11 * n22 * n33
+						 + n13 * n21 * n32
+						 - n12 * n21 * n33
+						 + n12 * n23 * n31
+					)
+
+				);
+
+			},
+
+			transpose: function () {
+
+				var te = this.elements;
+				var tmp;
+
+				tmp = te[ 1 ]; te[ 1 ] = te[ 4 ]; te[ 4 ] = tmp;
+				tmp = te[ 2 ]; te[ 2 ] = te[ 8 ]; te[ 8 ] = tmp;
+				tmp = te[ 6 ]; te[ 6 ] = te[ 9 ]; te[ 9 ] = tmp;
+
+				tmp = te[ 3 ]; te[ 3 ] = te[ 12 ]; te[ 12 ] = tmp;
+				tmp = te[ 7 ]; te[ 7 ] = te[ 13 ]; te[ 13 ] = tmp;
+				tmp = te[ 11 ]; te[ 11 ] = te[ 14 ]; te[ 14 ] = tmp;
+
+				return this;
+
+			},
+
+			setPosition: function ( x, y, z ) {
+
+				var te = this.elements;
+
+				if ( x.isVector3 ) {
+
+					te[ 12 ] = x.x;
+					te[ 13 ] = x.y;
+					te[ 14 ] = x.z;
+
+				} else {
+
+					te[ 12 ] = x;
+					te[ 13 ] = y;
+					te[ 14 ] = z;
+
+				}
+
+				return this;
+
+			},
+
+			getInverse: function ( m, throwOnDegenerate ) {
+
+				// based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
+				var te = this.elements,
+					me = m.elements,
+
+					n11 = me[ 0 ], n21 = me[ 1 ], n31 = me[ 2 ], n41 = me[ 3 ],
+					n12 = me[ 4 ], n22 = me[ 5 ], n32 = me[ 6 ], n42 = me[ 7 ],
+					n13 = me[ 8 ], n23 = me[ 9 ], n33 = me[ 10 ], n43 = me[ 11 ],
+					n14 = me[ 12 ], n24 = me[ 13 ], n34 = me[ 14 ], n44 = me[ 15 ],
+
+					t11 = n23 * n34 * n42 - n24 * n33 * n42 + n24 * n32 * n43 - n22 * n34 * n43 - n23 * n32 * n44 + n22 * n33 * n44,
+					t12 = n14 * n33 * n42 - n13 * n34 * n42 - n14 * n32 * n43 + n12 * n34 * n43 + n13 * n32 * n44 - n12 * n33 * n44,
+					t13 = n13 * n24 * n42 - n14 * n23 * n42 + n14 * n22 * n43 - n12 * n24 * n43 - n13 * n22 * n44 + n12 * n23 * n44,
+					t14 = n14 * n23 * n32 - n13 * n24 * n32 - n14 * n22 * n33 + n12 * n24 * n33 + n13 * n22 * n34 - n12 * n23 * n34;
+
+				var det = n11 * t11 + n21 * t12 + n31 * t13 + n41 * t14;
+
+				if ( det === 0 ) {
+
+					var msg = "THREE.Matrix4: .getInverse() can't invert matrix, determinant is 0";
+
+					if ( throwOnDegenerate === true ) {
+
+						throw new Error( msg );
+
+					} else {
+
+						console.warn( msg );
+
+					}
+
+					return this.identity();
+
+				}
+
+				var detInv = 1 / det;
+
+				te[ 0 ] = t11 * detInv;
+				te[ 1 ] = ( n24 * n33 * n41 - n23 * n34 * n41 - n24 * n31 * n43 + n21 * n34 * n43 + n23 * n31 * n44 - n21 * n33 * n44 ) * detInv;
+				te[ 2 ] = ( n22 * n34 * n41 - n24 * n32 * n41 + n24 * n31 * n42 - n21 * n34 * n42 - n22 * n31 * n44 + n21 * n32 * n44 ) * detInv;
+				te[ 3 ] = ( n23 * n32 * n41 - n22 * n33 * n41 - n23 * n31 * n42 + n21 * n33 * n42 + n22 * n31 * n43 - n21 * n32 * n43 ) * detInv;
+
+				te[ 4 ] = t12 * detInv;
+				te[ 5 ] = ( n13 * n34 * n41 - n14 * n33 * n41 + n14 * n31 * n43 - n11 * n34 * n43 - n13 * n31 * n44 + n11 * n33 * n44 ) * detInv;
+				te[ 6 ] = ( n14 * n32 * n41 - n12 * n34 * n41 - n14 * n31 * n42 + n11 * n34 * n42 + n12 * n31 * n44 - n11 * n32 * n44 ) * detInv;
+				te[ 7 ] = ( n12 * n33 * n41 - n13 * n32 * n41 + n13 * n31 * n42 - n11 * n33 * n42 - n12 * n31 * n43 + n11 * n32 * n43 ) * detInv;
+
+				te[ 8 ] = t13 * detInv;
+				te[ 9 ] = ( n14 * n23 * n41 - n13 * n24 * n41 - n14 * n21 * n43 + n11 * n24 * n43 + n13 * n21 * n44 - n11 * n23 * n44 ) * detInv;
+				te[ 10 ] = ( n12 * n24 * n41 - n14 * n22 * n41 + n14 * n21 * n42 - n11 * n24 * n42 - n12 * n21 * n44 + n11 * n22 * n44 ) * detInv;
+				te[ 11 ] = ( n13 * n22 * n41 - n12 * n23 * n41 - n13 * n21 * n42 + n11 * n23 * n42 + n12 * n21 * n43 - n11 * n22 * n43 ) * detInv;
+
+				te[ 12 ] = t14 * detInv;
+				te[ 13 ] = ( n13 * n24 * n31 - n14 * n23 * n31 + n14 * n21 * n33 - n11 * n24 * n33 - n13 * n21 * n34 + n11 * n23 * n34 ) * detInv;
+				te[ 14 ] = ( n14 * n22 * n31 - n12 * n24 * n31 - n14 * n21 * n32 + n11 * n24 * n32 + n12 * n21 * n34 - n11 * n22 * n34 ) * detInv;
+				te[ 15 ] = ( n12 * n23 * n31 - n13 * n22 * n31 + n13 * n21 * n32 - n11 * n23 * n32 - n12 * n21 * n33 + n11 * n22 * n33 ) * detInv;
+
+				return this;
+
+			},
+
+			scale: function ( v ) {
+
+				var te = this.elements;
+				var x = v.x, y = v.y, z = v.z;
+
+				te[ 0 ] *= x; te[ 4 ] *= y; te[ 8 ] *= z;
+				te[ 1 ] *= x; te[ 5 ] *= y; te[ 9 ] *= z;
+				te[ 2 ] *= x; te[ 6 ] *= y; te[ 10 ] *= z;
+				te[ 3 ] *= x; te[ 7 ] *= y; te[ 11 ] *= z;
+
+				return this;
+
+			},
+
+			getMaxScaleOnAxis: function () {
+
+				var te = this.elements;
+
+				var scaleXSq = te[ 0 ] * te[ 0 ] + te[ 1 ] * te[ 1 ] + te[ 2 ] * te[ 2 ];
+				var scaleYSq = te[ 4 ] * te[ 4 ] + te[ 5 ] * te[ 5 ] + te[ 6 ] * te[ 6 ];
+				var scaleZSq = te[ 8 ] * te[ 8 ] + te[ 9 ] * te[ 9 ] + te[ 10 ] * te[ 10 ];
+
+				return Math.sqrt( Math.max( scaleXSq, scaleYSq, scaleZSq ) );
+
+			},
+
+			makeTranslation: function ( x, y, z ) {
+
+				this.set(
+
+					1, 0, 0, x,
+					0, 1, 0, y,
+					0, 0, 1, z,
+					0, 0, 0, 1
+
+				);
+
+				return this;
+
+			},
+
+			makeRotationX: function ( theta ) {
+
+				var c = Math.cos( theta ), s = Math.sin( theta );
+
+				this.set(
+
+					1, 0, 0, 0,
+					0, c, - s, 0,
+					0, s, c, 0,
+					0, 0, 0, 1
+
+				);
+
+				return this;
+
+			},
+
+			makeRotationY: function ( theta ) {
+
+				var c = Math.cos( theta ), s = Math.sin( theta );
+
+				this.set(
+
+					 c, 0, s, 0,
+					 0, 1, 0, 0,
+					- s, 0, c, 0,
+					 0, 0, 0, 1
+
+				);
+
+				return this;
+
+			},
+
+			makeRotationZ: function ( theta ) {
+
+				var c = Math.cos( theta ), s = Math.sin( theta );
+
+				this.set(
+
+					c, - s, 0, 0,
+					s, c, 0, 0,
+					0, 0, 1, 0,
+					0, 0, 0, 1
+
+				);
+
+				return this;
+
+			},
+
+			makeRotationAxis: function ( axis, angle ) {
+
+				// Based on http://www.gamedev.net/reference/articles/article1199.asp
+
+				var c = Math.cos( angle );
+				var s = Math.sin( angle );
+				var t = 1 - c;
+				var x = axis.x, y = axis.y, z = axis.z;
+				var tx = t * x, ty = t * y;
+
+				this.set(
+
+					tx * x + c, tx * y - s * z, tx * z + s * y, 0,
+					tx * y + s * z, ty * y + c, ty * z - s * x, 0,
+					tx * z - s * y, ty * z + s * x, t * z * z + c, 0,
+					0, 0, 0, 1
+
+				);
+
+				 return this;
+
+			},
+
+			makeScale: function ( x, y, z ) {
+
+				this.set(
+
+					x, 0, 0, 0,
+					0, y, 0, 0,
+					0, 0, z, 0,
+					0, 0, 0, 1
+
+				);
+
+				return this;
+
+			},
+
+			makeShear: function ( x, y, z ) {
+
+				this.set(
+
+					1, y, z, 0,
+					x, 1, z, 0,
+					x, y, 1, 0,
+					0, 0, 0, 1
+
+				);
+
+				return this;
+
+			},
+
+			compose: function ( position, quaternion, scale ) {
+
+				var te = this.elements;
+
+				var x = quaternion._x, y = quaternion._y, z = quaternion._z, w = quaternion._w;
+				var x2 = x + x,	y2 = y + y, z2 = z + z;
+				var xx = x * x2, xy = x * y2, xz = x * z2;
+				var yy = y * y2, yz = y * z2, zz = z * z2;
+				var wx = w * x2, wy = w * y2, wz = w * z2;
+
+				var sx = scale.x, sy = scale.y, sz = scale.z;
+
+				te[ 0 ] = ( 1 - ( yy + zz ) ) * sx;
+				te[ 1 ] = ( xy + wz ) * sx;
+				te[ 2 ] = ( xz - wy ) * sx;
+				te[ 3 ] = 0;
+
+				te[ 4 ] = ( xy - wz ) * sy;
+				te[ 5 ] = ( 1 - ( xx + zz ) ) * sy;
+				te[ 6 ] = ( yz + wx ) * sy;
+				te[ 7 ] = 0;
+
+				te[ 8 ] = ( xz + wy ) * sz;
+				te[ 9 ] = ( yz - wx ) * sz;
+				te[ 10 ] = ( 1 - ( xx + yy ) ) * sz;
+				te[ 11 ] = 0;
+
+				te[ 12 ] = position.x;
+				te[ 13 ] = position.y;
+				te[ 14 ] = position.z;
+				te[ 15 ] = 1;
+
+				return this;
+
+			},
+
+			decompose: function () {
+
+				var vector = new Vector3();
+				var matrix = new Matrix4();
+
+				return function decompose( position, quaternion, scale ) {
+
+					var te = this.elements;
+
+					var sx = vector.set( te[ 0 ], te[ 1 ], te[ 2 ] ).length();
+					var sy = vector.set( te[ 4 ], te[ 5 ], te[ 6 ] ).length();
+					var sz = vector.set( te[ 8 ], te[ 9 ], te[ 10 ] ).length();
+
+					// if determine is negative, we need to invert one scale
+					var det = this.determinant();
+					if ( det < 0 ) sx = - sx;
+
+					position.x = te[ 12 ];
+					position.y = te[ 13 ];
+					position.z = te[ 14 ];
+
+					// scale the rotation part
+					matrix.copy( this );
+
+					var invSX = 1 / sx;
+					var invSY = 1 / sy;
+					var invSZ = 1 / sz;
+
+					matrix.elements[ 0 ] *= invSX;
+					matrix.elements[ 1 ] *= invSX;
+					matrix.elements[ 2 ] *= invSX;
+
+					matrix.elements[ 4 ] *= invSY;
+					matrix.elements[ 5 ] *= invSY;
+					matrix.elements[ 6 ] *= invSY;
+
+					matrix.elements[ 8 ] *= invSZ;
+					matrix.elements[ 9 ] *= invSZ;
+					matrix.elements[ 10 ] *= invSZ;
+
+					quaternion.setFromRotationMatrix( matrix );
+
+					scale.x = sx;
+					scale.y = sy;
+					scale.z = sz;
+
+					return this;
+
+				};
+
+			}(),
+
+			makePerspective: function ( left, right, top, bottom, near, far ) {
+
+				if ( far === undefined ) {
+
+					console.warn( 'THREE.Matrix4: .makePerspective() has been redefined and has a new signature. Please check the docs.' );
+
+				}
+
+				var te = this.elements;
+				var x = 2 * near / ( right - left );
+				var y = 2 * near / ( top - bottom );
+
+				var a = ( right + left ) / ( right - left );
+				var b = ( top + bottom ) / ( top - bottom );
+				var c = - ( far + near ) / ( far - near );
+				var d = - 2 * far * near / ( far - near );
+
+				te[ 0 ] = x;	te[ 4 ] = 0;	te[ 8 ] = a;	te[ 12 ] = 0;
+				te[ 1 ] = 0;	te[ 5 ] = y;	te[ 9 ] = b;	te[ 13 ] = 0;
+				te[ 2 ] = 0;	te[ 6 ] = 0;	te[ 10 ] = c;	te[ 14 ] = d;
+				te[ 3 ] = 0;	te[ 7 ] = 0;	te[ 11 ] = - 1;	te[ 15 ] = 0;
+
+				return this;
+
+			},
+
+			makeOrthographic: function ( left, right, top, bottom, near, far ) {
+
+				var te = this.elements;
+				var w = 1.0 / ( right - left );
+				var h = 1.0 / ( top - bottom );
+				var p = 1.0 / ( far - near );
+
+				var x = ( right + left ) * w;
+				var y = ( top + bottom ) * h;
+				var z = ( far + near ) * p;
+
+				te[ 0 ] = 2 * w;	te[ 4 ] = 0;	te[ 8 ] = 0;	te[ 12 ] = - x;
+				te[ 1 ] = 0;	te[ 5 ] = 2 * h;	te[ 9 ] = 0;	te[ 13 ] = - y;
+				te[ 2 ] = 0;	te[ 6 ] = 0;	te[ 10 ] = - 2 * p;	te[ 14 ] = - z;
+				te[ 3 ] = 0;	te[ 7 ] = 0;	te[ 11 ] = 0;	te[ 15 ] = 1;
+
+				return this;
+
+			},
+
+			equals: function ( matrix ) {
+
+				var te = this.elements;
+				var me = matrix.elements;
+
+				for ( var i = 0; i < 16; i ++ ) {
+
+					if ( te[ i ] !== me[ i ] ) return false;
+
+				}
+
+				return true;
+
+			},
+
+			fromArray: function ( array, offset ) {
+
+				if ( offset === undefined ) offset = 0;
+
+				for ( var i = 0; i < 16; i ++ ) {
+
+					this.elements[ i ] = array[ i + offset ];
+
+				}
+
+				return this;
+
+			},
+
+			toArray: function ( array, offset ) {
+
+				if ( array === undefined ) array = [];
+				if ( offset === undefined ) offset = 0;
+
+				var te = this.elements;
+
+				array[ offset ] = te[ 0 ];
+				array[ offset + 1 ] = te[ 1 ];
+				array[ offset + 2 ] = te[ 2 ];
+				array[ offset + 3 ] = te[ 3 ];
+
+				array[ offset + 4 ] = te[ 4 ];
+				array[ offset + 5 ] = te[ 5 ];
+				array[ offset + 6 ] = te[ 6 ];
+				array[ offset + 7 ] = te[ 7 ];
+
+				array[ offset + 8 ] = te[ 8 ];
+				array[ offset + 9 ] = te[ 9 ];
+				array[ offset + 10 ] = te[ 10 ];
+				array[ offset + 11 ] = te[ 11 ];
+
+				array[ offset + 12 ] = te[ 12 ];
+				array[ offset + 13 ] = te[ 13 ];
+				array[ offset + 14 ] = te[ 14 ];
+				array[ offset + 15 ] = te[ 15 ];
+
+				return array;
+
+			}
+
+		} );
+
 		var alphamap_fragment = "#ifdef USE_ALPHAMAP\n\tdiffuseColor.a *= texture2D( alphaMap, vUv ).g;\n#endif";
 
 		var alphamap_pars_fragment = "#ifdef USE_ALPHAMAP\n\tuniform sampler2D alphaMap;\n#endif";
@@ -37293,9 +39262,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		var begin_vertex = "vec3 transformed = vec3( position );";
 
-		var beginnormal_vertex = "vec3 objectNormal = vec3( normal );";
+		var beginnormal_vertex = "vec3 objectNormal = vec3( normal );\n#ifdef USE_TANGENT\n\tvec3 objectTangent = vec3( tangent.xyz );\n#endif";
 
-		var bsdfs = "float punctualLightIntensityToIrradianceFactor( const in float lightDistance, const in float cutoffDistance, const in float decayExponent ) {\n#if defined ( PHYSICALLY_CORRECT_LIGHTS )\n\tfloat distanceFalloff = 1.0 / max( pow( lightDistance, decayExponent ), 0.01 );\n\tif( cutoffDistance > 0.0 ) {\n\t\tdistanceFalloff *= pow2( saturate( 1.0 - pow4( lightDistance / cutoffDistance ) ) );\n\t}\n\treturn distanceFalloff;\n#else\n\tif( cutoffDistance > 0.0 && decayExponent > 0.0 ) {\n\t\treturn pow( saturate( -lightDistance / cutoffDistance + 1.0 ), decayExponent );\n\t}\n\treturn 1.0;\n#endif\n}\nvec3 BRDF_Diffuse_Lambert( const in vec3 diffuseColor ) {\n\treturn RECIPROCAL_PI * diffuseColor;\n}\nvec3 F_Schlick( const in vec3 specularColor, const in float dotLH ) {\n\tfloat fresnel = exp2( ( -5.55473 * dotLH - 6.98316 ) * dotLH );\n\treturn ( 1.0 - specularColor ) * fresnel + specularColor;\n}\nfloat G_GGX_Smith( const in float alpha, const in float dotNL, const in float dotNV ) {\n\tfloat a2 = pow2( alpha );\n\tfloat gl = dotNL + sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNL ) );\n\tfloat gv = dotNV + sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNV ) );\n\treturn 1.0 / ( gl * gv );\n}\nfloat G_GGX_SmithCorrelated( const in float alpha, const in float dotNL, const in float dotNV ) {\n\tfloat a2 = pow2( alpha );\n\tfloat gv = dotNL * sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNV ) );\n\tfloat gl = dotNV * sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNL ) );\n\treturn 0.5 / max( gv + gl, EPSILON );\n}\nfloat D_GGX( const in float alpha, const in float dotNH ) {\n\tfloat a2 = pow2( alpha );\n\tfloat denom = pow2( dotNH ) * ( a2 - 1.0 ) + 1.0;\n\treturn RECIPROCAL_PI * a2 / pow2( denom );\n}\nvec3 BRDF_Specular_GGX( const in IncidentLight incidentLight, const in GeometricContext geometry, const in vec3 specularColor, const in float roughness ) {\n\tfloat alpha = pow2( roughness );\n\tvec3 halfDir = normalize( incidentLight.direction + geometry.viewDir );\n\tfloat dotNL = saturate( dot( geometry.normal, incidentLight.direction ) );\n\tfloat dotNV = saturate( dot( geometry.normal, geometry.viewDir ) );\n\tfloat dotNH = saturate( dot( geometry.normal, halfDir ) );\n\tfloat dotLH = saturate( dot( incidentLight.direction, halfDir ) );\n\tvec3 F = F_Schlick( specularColor, dotLH );\n\tfloat G = G_GGX_SmithCorrelated( alpha, dotNL, dotNV );\n\tfloat D = D_GGX( alpha, dotNH );\n\treturn F * ( G * D );\n}\nvec2 LTC_Uv( const in vec3 N, const in vec3 V, const in float roughness ) {\n\tconst float LUT_SIZE  = 64.0;\n\tconst float LUT_SCALE = ( LUT_SIZE - 1.0 ) / LUT_SIZE;\n\tconst float LUT_BIAS  = 0.5 / LUT_SIZE;\n\tfloat dotNV = saturate( dot( N, V ) );\n\tvec2 uv = vec2( roughness, sqrt( 1.0 - dotNV ) );\n\tuv = uv * LUT_SCALE + LUT_BIAS;\n\treturn uv;\n}\nfloat LTC_ClippedSphereFormFactor( const in vec3 f ) {\n\tfloat l = length( f );\n\treturn max( ( l * l + f.z ) / ( l + 1.0 ), 0.0 );\n}\nvec3 LTC_EdgeVectorFormFactor( const in vec3 v1, const in vec3 v2 ) {\n\tfloat x = dot( v1, v2 );\n\tfloat y = abs( x );\n\tfloat a = 0.8543985 + ( 0.4965155 + 0.0145206 * y ) * y;\n\tfloat b = 3.4175940 + ( 4.1616724 + y ) * y;\n\tfloat v = a / b;\n\tfloat theta_sintheta = ( x > 0.0 ) ? v : 0.5 * inversesqrt( max( 1.0 - x * x, 1e-7 ) ) - v;\n\treturn cross( v1, v2 ) * theta_sintheta;\n}\nvec3 LTC_Evaluate( const in vec3 N, const in vec3 V, const in vec3 P, const in mat3 mInv, const in vec3 rectCoords[ 4 ] ) {\n\tvec3 v1 = rectCoords[ 1 ] - rectCoords[ 0 ];\n\tvec3 v2 = rectCoords[ 3 ] - rectCoords[ 0 ];\n\tvec3 lightNormal = cross( v1, v2 );\n\tif( dot( lightNormal, P - rectCoords[ 0 ] ) < 0.0 ) return vec3( 0.0 );\n\tvec3 T1, T2;\n\tT1 = normalize( V - N * dot( V, N ) );\n\tT2 = - cross( N, T1 );\n\tmat3 mat = mInv * transposeMat3( mat3( T1, T2, N ) );\n\tvec3 coords[ 4 ];\n\tcoords[ 0 ] = mat * ( rectCoords[ 0 ] - P );\n\tcoords[ 1 ] = mat * ( rectCoords[ 1 ] - P );\n\tcoords[ 2 ] = mat * ( rectCoords[ 2 ] - P );\n\tcoords[ 3 ] = mat * ( rectCoords[ 3 ] - P );\n\tcoords[ 0 ] = normalize( coords[ 0 ] );\n\tcoords[ 1 ] = normalize( coords[ 1 ] );\n\tcoords[ 2 ] = normalize( coords[ 2 ] );\n\tcoords[ 3 ] = normalize( coords[ 3 ] );\n\tvec3 vectorFormFactor = vec3( 0.0 );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 0 ], coords[ 1 ] );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 1 ], coords[ 2 ] );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 2 ], coords[ 3 ] );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 3 ], coords[ 0 ] );\n\tfloat result = LTC_ClippedSphereFormFactor( vectorFormFactor );\n\treturn vec3( result );\n}\nvec3 BRDF_Specular_GGX_Environment( const in GeometricContext geometry, const in vec3 specularColor, const in float roughness ) {\n\tfloat dotNV = saturate( dot( geometry.normal, geometry.viewDir ) );\n\tconst vec4 c0 = vec4( - 1, - 0.0275, - 0.572, 0.022 );\n\tconst vec4 c1 = vec4( 1, 0.0425, 1.04, - 0.04 );\n\tvec4 r = roughness * c0 + c1;\n\tfloat a004 = min( r.x * r.x, exp2( - 9.28 * dotNV ) ) * r.x + r.y;\n\tvec2 AB = vec2( -1.04, 1.04 ) * a004 + r.zw;\n\treturn specularColor * AB.x + AB.y;\n}\nfloat G_BlinnPhong_Implicit( ) {\n\treturn 0.25;\n}\nfloat D_BlinnPhong( const in float shininess, const in float dotNH ) {\n\treturn RECIPROCAL_PI * ( shininess * 0.5 + 1.0 ) * pow( dotNH, shininess );\n}\nvec3 BRDF_Specular_BlinnPhong( const in IncidentLight incidentLight, const in GeometricContext geometry, const in vec3 specularColor, const in float shininess ) {\n\tvec3 halfDir = normalize( incidentLight.direction + geometry.viewDir );\n\tfloat dotNH = saturate( dot( geometry.normal, halfDir ) );\n\tfloat dotLH = saturate( dot( incidentLight.direction, halfDir ) );\n\tvec3 F = F_Schlick( specularColor, dotLH );\n\tfloat G = G_BlinnPhong_Implicit( );\n\tfloat D = D_BlinnPhong( shininess, dotNH );\n\treturn F * ( G * D );\n}\nfloat GGXRoughnessToBlinnExponent( const in float ggxRoughness ) {\n\treturn ( 2.0 / pow2( ggxRoughness + 0.0001 ) - 2.0 );\n}\nfloat BlinnExponentToGGXRoughness( const in float blinnExponent ) {\n\treturn sqrt( 2.0 / ( blinnExponent + 2.0 ) );\n}";
+		var bsdfs = "vec2 integrateSpecularBRDF( const in float dotNV, const in float roughness ) {\n\tconst vec4 c0 = vec4( - 1, - 0.0275, - 0.572, 0.022 );\n\tconst vec4 c1 = vec4( 1, 0.0425, 1.04, - 0.04 );\n\tvec4 r = roughness * c0 + c1;\n\tfloat a004 = min( r.x * r.x, exp2( - 9.28 * dotNV ) ) * r.x + r.y;\n\treturn vec2( -1.04, 1.04 ) * a004 + r.zw;\n}\nfloat punctualLightIntensityToIrradianceFactor( const in float lightDistance, const in float cutoffDistance, const in float decayExponent ) {\n#if defined ( PHYSICALLY_CORRECT_LIGHTS )\n\tfloat distanceFalloff = 1.0 / max( pow( lightDistance, decayExponent ), 0.01 );\n\tif( cutoffDistance > 0.0 ) {\n\t\tdistanceFalloff *= pow2( saturate( 1.0 - pow4( lightDistance / cutoffDistance ) ) );\n\t}\n\treturn distanceFalloff;\n#else\n\tif( cutoffDistance > 0.0 && decayExponent > 0.0 ) {\n\t\treturn pow( saturate( -lightDistance / cutoffDistance + 1.0 ), decayExponent );\n\t}\n\treturn 1.0;\n#endif\n}\nvec3 BRDF_Diffuse_Lambert( const in vec3 diffuseColor ) {\n\treturn RECIPROCAL_PI * diffuseColor;\n}\nvec3 F_Schlick( const in vec3 specularColor, const in float dotLH ) {\n\tfloat fresnel = exp2( ( -5.55473 * dotLH - 6.98316 ) * dotLH );\n\treturn ( 1.0 - specularColor ) * fresnel + specularColor;\n}\nvec3 F_Schlick_RoughnessDependent( const in vec3 F0, const in float dotNV, const in float roughness ) {\n\tfloat fresnel = exp2( ( -5.55473 * dotNV - 6.98316 ) * dotNV );\n\tvec3 Fr = max( vec3( 1.0 - roughness ), F0 ) - F0;\n\treturn Fr * fresnel + F0;\n}\nfloat G_GGX_Smith( const in float alpha, const in float dotNL, const in float dotNV ) {\n\tfloat a2 = pow2( alpha );\n\tfloat gl = dotNL + sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNL ) );\n\tfloat gv = dotNV + sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNV ) );\n\treturn 1.0 / ( gl * gv );\n}\nfloat G_GGX_SmithCorrelated( const in float alpha, const in float dotNL, const in float dotNV ) {\n\tfloat a2 = pow2( alpha );\n\tfloat gv = dotNL * sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNV ) );\n\tfloat gl = dotNV * sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNL ) );\n\treturn 0.5 / max( gv + gl, EPSILON );\n}\nfloat D_GGX( const in float alpha, const in float dotNH ) {\n\tfloat a2 = pow2( alpha );\n\tfloat denom = pow2( dotNH ) * ( a2 - 1.0 ) + 1.0;\n\treturn RECIPROCAL_PI * a2 / pow2( denom );\n}\nvec3 BRDF_Specular_GGX( const in IncidentLight incidentLight, const in GeometricContext geometry, const in vec3 specularColor, const in float roughness ) {\n\tfloat alpha = pow2( roughness );\n\tvec3 halfDir = normalize( incidentLight.direction + geometry.viewDir );\n\tfloat dotNL = saturate( dot( geometry.normal, incidentLight.direction ) );\n\tfloat dotNV = saturate( dot( geometry.normal, geometry.viewDir ) );\n\tfloat dotNH = saturate( dot( geometry.normal, halfDir ) );\n\tfloat dotLH = saturate( dot( incidentLight.direction, halfDir ) );\n\tvec3 F = F_Schlick( specularColor, dotLH );\n\tfloat G = G_GGX_SmithCorrelated( alpha, dotNL, dotNV );\n\tfloat D = D_GGX( alpha, dotNH );\n\treturn F * ( G * D );\n}\nvec2 LTC_Uv( const in vec3 N, const in vec3 V, const in float roughness ) {\n\tconst float LUT_SIZE  = 64.0;\n\tconst float LUT_SCALE = ( LUT_SIZE - 1.0 ) / LUT_SIZE;\n\tconst float LUT_BIAS  = 0.5 / LUT_SIZE;\n\tfloat dotNV = saturate( dot( N, V ) );\n\tvec2 uv = vec2( roughness, sqrt( 1.0 - dotNV ) );\n\tuv = uv * LUT_SCALE + LUT_BIAS;\n\treturn uv;\n}\nfloat LTC_ClippedSphereFormFactor( const in vec3 f ) {\n\tfloat l = length( f );\n\treturn max( ( l * l + f.z ) / ( l + 1.0 ), 0.0 );\n}\nvec3 LTC_EdgeVectorFormFactor( const in vec3 v1, const in vec3 v2 ) {\n\tfloat x = dot( v1, v2 );\n\tfloat y = abs( x );\n\tfloat a = 0.8543985 + ( 0.4965155 + 0.0145206 * y ) * y;\n\tfloat b = 3.4175940 + ( 4.1616724 + y ) * y;\n\tfloat v = a / b;\n\tfloat theta_sintheta = ( x > 0.0 ) ? v : 0.5 * inversesqrt( max( 1.0 - x * x, 1e-7 ) ) - v;\n\treturn cross( v1, v2 ) * theta_sintheta;\n}\nvec3 LTC_Evaluate( const in vec3 N, const in vec3 V, const in vec3 P, const in mat3 mInv, const in vec3 rectCoords[ 4 ] ) {\n\tvec3 v1 = rectCoords[ 1 ] - rectCoords[ 0 ];\n\tvec3 v2 = rectCoords[ 3 ] - rectCoords[ 0 ];\n\tvec3 lightNormal = cross( v1, v2 );\n\tif( dot( lightNormal, P - rectCoords[ 0 ] ) < 0.0 ) return vec3( 0.0 );\n\tvec3 T1, T2;\n\tT1 = normalize( V - N * dot( V, N ) );\n\tT2 = - cross( N, T1 );\n\tmat3 mat = mInv * transposeMat3( mat3( T1, T2, N ) );\n\tvec3 coords[ 4 ];\n\tcoords[ 0 ] = mat * ( rectCoords[ 0 ] - P );\n\tcoords[ 1 ] = mat * ( rectCoords[ 1 ] - P );\n\tcoords[ 2 ] = mat * ( rectCoords[ 2 ] - P );\n\tcoords[ 3 ] = mat * ( rectCoords[ 3 ] - P );\n\tcoords[ 0 ] = normalize( coords[ 0 ] );\n\tcoords[ 1 ] = normalize( coords[ 1 ] );\n\tcoords[ 2 ] = normalize( coords[ 2 ] );\n\tcoords[ 3 ] = normalize( coords[ 3 ] );\n\tvec3 vectorFormFactor = vec3( 0.0 );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 0 ], coords[ 1 ] );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 1 ], coords[ 2 ] );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 2 ], coords[ 3 ] );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 3 ], coords[ 0 ] );\n\tfloat result = LTC_ClippedSphereFormFactor( vectorFormFactor );\n\treturn vec3( result );\n}\nvec3 BRDF_Specular_GGX_Environment( const in GeometricContext geometry, const in vec3 specularColor, const in float roughness ) {\n\tfloat dotNV = saturate( dot( geometry.normal, geometry.viewDir ) );\n\tvec2 brdf = integrateSpecularBRDF( dotNV, roughness );\n\treturn specularColor * brdf.x + brdf.y;\n}\nvoid BRDF_Specular_Multiscattering_Environment( const in GeometricContext geometry, const in vec3 specularColor, const in float roughness, inout vec3 singleScatter, inout vec3 multiScatter ) {\n\tfloat dotNV = saturate( dot( geometry.normal, geometry.viewDir ) );\n\tvec3 F = F_Schlick_RoughnessDependent( specularColor, dotNV, roughness );\n\tvec2 brdf = integrateSpecularBRDF( dotNV, roughness );\n\tvec3 FssEss = F * brdf.x + brdf.y;\n\tfloat Ess = brdf.x + brdf.y;\n\tfloat Ems = 1.0 - Ess;\n\tvec3 Favg = specularColor + ( 1.0 - specularColor ) * 0.047619;\tvec3 Fms = FssEss * Favg / ( 1.0 - Ems * Favg );\n\tsingleScatter += FssEss;\n\tmultiScatter += Fms * Ems;\n}\nfloat G_BlinnPhong_Implicit( ) {\n\treturn 0.25;\n}\nfloat D_BlinnPhong( const in float shininess, const in float dotNH ) {\n\treturn RECIPROCAL_PI * ( shininess * 0.5 + 1.0 ) * pow( dotNH, shininess );\n}\nvec3 BRDF_Specular_BlinnPhong( const in IncidentLight incidentLight, const in GeometricContext geometry, const in vec3 specularColor, const in float shininess ) {\n\tvec3 halfDir = normalize( incidentLight.direction + geometry.viewDir );\n\tfloat dotNH = saturate( dot( geometry.normal, halfDir ) );\n\tfloat dotLH = saturate( dot( incidentLight.direction, halfDir ) );\n\tvec3 F = F_Schlick( specularColor, dotLH );\n\tfloat G = G_BlinnPhong_Implicit( );\n\tfloat D = D_BlinnPhong( shininess, dotNH );\n\treturn F * ( G * D );\n}\nfloat GGXRoughnessToBlinnExponent( const in float ggxRoughness ) {\n\treturn ( 2.0 / pow2( ggxRoughness + 0.0001 ) - 2.0 );\n}\nfloat BlinnExponentToGGXRoughness( const in float blinnExponent ) {\n\treturn sqrt( 2.0 / ( blinnExponent + 2.0 ) );\n}";
 
 		var bumpmap_pars_fragment = "#ifdef USE_BUMPMAP\n\tuniform sampler2D bumpMap;\n\tuniform float bumpScale;\n\tvec2 dHdxy_fwd() {\n\t\tvec2 dSTdx = dFdx( vUv );\n\t\tvec2 dSTdy = dFdy( vUv );\n\t\tfloat Hll = bumpScale * texture2D( bumpMap, vUv ).x;\n\t\tfloat dBx = bumpScale * texture2D( bumpMap, vUv + dSTdx ).x - Hll;\n\t\tfloat dBy = bumpScale * texture2D( bumpMap, vUv + dSTdy ).x - Hll;\n\t\treturn vec2( dBx, dBy );\n\t}\n\tvec3 perturbNormalArb( vec3 surf_pos, vec3 surf_norm, vec2 dHdxy ) {\n\t\tvec3 vSigmaX = vec3( dFdx( surf_pos.x ), dFdx( surf_pos.y ), dFdx( surf_pos.z ) );\n\t\tvec3 vSigmaY = vec3( dFdy( surf_pos.x ), dFdy( surf_pos.y ), dFdy( surf_pos.z ) );\n\t\tvec3 vN = surf_norm;\n\t\tvec3 R1 = cross( vSigmaY, vN );\n\t\tvec3 R2 = cross( vN, vSigmaX );\n\t\tfloat fDet = dot( vSigmaX, R1 );\n\t\tfDet *= ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t\tvec3 vGrad = sign( fDet ) * ( dHdxy.x * R1 + dHdxy.y * R2 );\n\t\treturn normalize( abs( fDet ) * surf_norm - vGrad );\n\t}\n#endif";
 
@@ -37319,7 +39288,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		var cube_uv_reflection_fragment = "#ifdef ENVMAP_TYPE_CUBE_UV\n#define cubeUV_textureSize (1024.0)\nint getFaceFromDirection(vec3 direction) {\n\tvec3 absDirection = abs(direction);\n\tint face = -1;\n\tif( absDirection.x > absDirection.z ) {\n\t\tif(absDirection.x > absDirection.y )\n\t\t\tface = direction.x > 0.0 ? 0 : 3;\n\t\telse\n\t\t\tface = direction.y > 0.0 ? 1 : 4;\n\t}\n\telse {\n\t\tif(absDirection.z > absDirection.y )\n\t\t\tface = direction.z > 0.0 ? 2 : 5;\n\t\telse\n\t\t\tface = direction.y > 0.0 ? 1 : 4;\n\t}\n\treturn face;\n}\n#define cubeUV_maxLods1  (log2(cubeUV_textureSize*0.25) - 1.0)\n#define cubeUV_rangeClamp (exp2((6.0 - 1.0) * 2.0))\nvec2 MipLevelInfo( vec3 vec, float roughnessLevel, float roughness ) {\n\tfloat scale = exp2(cubeUV_maxLods1 - roughnessLevel);\n\tfloat dxRoughness = dFdx(roughness);\n\tfloat dyRoughness = dFdy(roughness);\n\tvec3 dx = dFdx( vec * scale * dxRoughness );\n\tvec3 dy = dFdy( vec * scale * dyRoughness );\n\tfloat d = max( dot( dx, dx ), dot( dy, dy ) );\n\td = clamp(d, 1.0, cubeUV_rangeClamp);\n\tfloat mipLevel = 0.5 * log2(d);\n\treturn vec2(floor(mipLevel), fract(mipLevel));\n}\n#define cubeUV_maxLods2 (log2(cubeUV_textureSize*0.25) - 2.0)\n#define cubeUV_rcpTextureSize (1.0 / cubeUV_textureSize)\nvec2 getCubeUV(vec3 direction, float roughnessLevel, float mipLevel) {\n\tmipLevel = roughnessLevel > cubeUV_maxLods2 - 3.0 ? 0.0 : mipLevel;\n\tfloat a = 16.0 * cubeUV_rcpTextureSize;\n\tvec2 exp2_packed = exp2( vec2( roughnessLevel, mipLevel ) );\n\tvec2 rcp_exp2_packed = vec2( 1.0 ) / exp2_packed;\n\tfloat powScale = exp2_packed.x * exp2_packed.y;\n\tfloat scale = rcp_exp2_packed.x * rcp_exp2_packed.y * 0.25;\n\tfloat mipOffset = 0.75*(1.0 - rcp_exp2_packed.y) * rcp_exp2_packed.x;\n\tbool bRes = mipLevel == 0.0;\n\tscale =  bRes && (scale < a) ? a : scale;\n\tvec3 r;\n\tvec2 offset;\n\tint face = getFaceFromDirection(direction);\n\tfloat rcpPowScale = 1.0 / powScale;\n\tif( face == 0) {\n\t\tr = vec3(direction.x, -direction.z, direction.y);\n\t\toffset = vec2(0.0+mipOffset,0.75 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? a : offset.y;\n\t}\n\telse if( face == 1) {\n\t\tr = vec3(direction.y, direction.x, direction.z);\n\t\toffset = vec2(scale+mipOffset, 0.75 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? a : offset.y;\n\t}\n\telse if( face == 2) {\n\t\tr = vec3(direction.z, direction.x, direction.y);\n\t\toffset = vec2(2.0*scale+mipOffset, 0.75 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? a : offset.y;\n\t}\n\telse if( face == 3) {\n\t\tr = vec3(direction.x, direction.z, direction.y);\n\t\toffset = vec2(0.0+mipOffset,0.5 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? 0.0 : offset.y;\n\t}\n\telse if( face == 4) {\n\t\tr = vec3(direction.y, direction.x, -direction.z);\n\t\toffset = vec2(scale+mipOffset, 0.5 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? 0.0 : offset.y;\n\t}\n\telse {\n\t\tr = vec3(direction.z, -direction.x, direction.y);\n\t\toffset = vec2(2.0*scale+mipOffset, 0.5 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? 0.0 : offset.y;\n\t}\n\tr = normalize(r);\n\tfloat texelOffset = 0.5 * cubeUV_rcpTextureSize;\n\tvec2 s = ( r.yz / abs( r.x ) + vec2( 1.0 ) ) * 0.5;\n\tvec2 base = offset + vec2( texelOffset );\n\treturn base + s * ( scale - 2.0 * texelOffset );\n}\n#define cubeUV_maxLods3 (log2(cubeUV_textureSize*0.25) - 3.0)\nvec4 textureCubeUV( sampler2D envMap, vec3 reflectedDirection, float roughness ) {\n\tfloat roughnessVal = roughness* cubeUV_maxLods3;\n\tfloat r1 = floor(roughnessVal);\n\tfloat r2 = r1 + 1.0;\n\tfloat t = fract(roughnessVal);\n\tvec2 mipInfo = MipLevelInfo(reflectedDirection, r1, roughness);\n\tfloat s = mipInfo.y;\n\tfloat level0 = mipInfo.x;\n\tfloat level1 = level0 + 1.0;\n\tlevel1 = level1 > 5.0 ? 5.0 : level1;\n\tlevel0 += min( floor( s + 0.5 ), 5.0 );\n\tvec2 uv_10 = getCubeUV(reflectedDirection, r1, level0);\n\tvec4 color10 = envMapTexelToLinear(texture2D(envMap, uv_10));\n\tvec2 uv_20 = getCubeUV(reflectedDirection, r2, level0);\n\tvec4 color20 = envMapTexelToLinear(texture2D(envMap, uv_20));\n\tvec4 result = mix(color10, color20, t);\n\treturn vec4(result.rgb, 1.0);\n}\n#endif";
 
-		var defaultnormal_vertex = "vec3 transformedNormal = normalMatrix * objectNormal;\n#ifdef FLIP_SIDED\n\ttransformedNormal = - transformedNormal;\n#endif";
+		var defaultnormal_vertex = "vec3 transformedNormal = normalMatrix * objectNormal;\n#ifdef FLIP_SIDED\n\ttransformedNormal = - transformedNormal;\n#endif\n#ifdef USE_TANGENT\n\tvec3 transformedTangent = normalMatrix * objectTangent;\n\t#ifdef FLIP_SIDED\n\t\ttransformedTangent = - transformedTangent;\n\t#endif\n#endif";
 
 		var displacementmap_pars_vertex = "#ifdef USE_DISPLACEMENTMAP\n\tuniform sampler2D displacementMap;\n\tuniform float displacementScale;\n\tuniform float displacementBias;\n#endif";
 
@@ -37331,7 +39300,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		var encodings_fragment = "gl_FragColor = linearToOutputTexel( gl_FragColor );";
 
-		var encodings_pars_fragment = "\nvec4 LinearToLinear( in vec4 value ) {\n\treturn value;\n}\nvec4 GammaToLinear( in vec4 value, in float gammaFactor ) {\n\treturn vec4( pow( value.rgb, vec3( gammaFactor ) ), value.a );\n}\nvec4 LinearToGamma( in vec4 value, in float gammaFactor ) {\n\treturn vec4( pow( value.rgb, vec3( 1.0 / gammaFactor ) ), value.a );\n}\nvec4 sRGBToLinear( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb * 0.9478672986 + vec3( 0.0521327014 ), vec3( 2.4 ) ), value.rgb * 0.0773993808, vec3( lessThanEqual( value.rgb, vec3( 0.04045 ) ) ) ), value.a );\n}\nvec4 LinearTosRGB( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), value.rgb * 12.92, vec3( lessThanEqual( value.rgb, vec3( 0.0031308 ) ) ) ), value.a );\n}\nvec4 RGBEToLinear( in vec4 value ) {\n\treturn vec4( value.rgb * exp2( value.a * 255.0 - 128.0 ), 1.0 );\n}\nvec4 LinearToRGBE( in vec4 value ) {\n\tfloat maxComponent = max( max( value.r, value.g ), value.b );\n\tfloat fExp = clamp( ceil( log2( maxComponent ) ), -128.0, 127.0 );\n\treturn vec4( value.rgb / exp2( fExp ), ( fExp + 128.0 ) / 255.0 );\n}\nvec4 RGBMToLinear( in vec4 value, in float maxRange ) {\n\treturn vec4( value.rgb * value.a * maxRange, 1.0 );\n}\nvec4 LinearToRGBM( in vec4 value, in float maxRange ) {\n\tfloat maxRGB = max( value.r, max( value.g, value.b ) );\n\tfloat M = clamp( maxRGB / maxRange, 0.0, 1.0 );\n\tM = ceil( M * 255.0 ) / 255.0;\n\treturn vec4( value.rgb / ( M * maxRange ), M );\n}\nvec4 RGBDToLinear( in vec4 value, in float maxRange ) {\n\treturn vec4( value.rgb * ( ( maxRange / 255.0 ) / value.a ), 1.0 );\n}\nvec4 LinearToRGBD( in vec4 value, in float maxRange ) {\n\tfloat maxRGB = max( value.r, max( value.g, value.b ) );\n\tfloat D = max( maxRange / maxRGB, 1.0 );\n\tD = min( floor( D ) / 255.0, 1.0 );\n\treturn vec4( value.rgb * ( D * ( 255.0 / maxRange ) ), D );\n}\nconst mat3 cLogLuvM = mat3( 0.2209, 0.3390, 0.4184, 0.1138, 0.6780, 0.7319, 0.0102, 0.1130, 0.2969 );\nvec4 LinearToLogLuv( in vec4 value )  {\n\tvec3 Xp_Y_XYZp = value.rgb * cLogLuvM;\n\tXp_Y_XYZp = max( Xp_Y_XYZp, vec3( 1e-6, 1e-6, 1e-6 ) );\n\tvec4 vResult;\n\tvResult.xy = Xp_Y_XYZp.xy / Xp_Y_XYZp.z;\n\tfloat Le = 2.0 * log2(Xp_Y_XYZp.y) + 127.0;\n\tvResult.w = fract( Le );\n\tvResult.z = ( Le - ( floor( vResult.w * 255.0 ) ) / 255.0 ) / 255.0;\n\treturn vResult;\n}\nconst mat3 cLogLuvInverseM = mat3( 6.0014, -2.7008, -1.7996, -1.3320, 3.1029, -5.7721, 0.3008, -1.0882, 5.6268 );\nvec4 LogLuvToLinear( in vec4 value ) {\n\tfloat Le = value.z * 255.0 + value.w;\n\tvec3 Xp_Y_XYZp;\n\tXp_Y_XYZp.y = exp2( ( Le - 127.0 ) / 2.0 );\n\tXp_Y_XYZp.z = Xp_Y_XYZp.y / value.y;\n\tXp_Y_XYZp.x = value.x * Xp_Y_XYZp.z;\n\tvec3 vRGB = Xp_Y_XYZp.rgb * cLogLuvInverseM;\n\treturn vec4( max( vRGB, 0.0 ), 1.0 );\n}";
+		var encodings_pars_fragment = "\nvec4 LinearToLinear( in vec4 value ) {\n\treturn value;\n}\nvec4 GammaToLinear( in vec4 value, in float gammaFactor ) {\n\treturn vec4( pow( value.rgb, vec3( gammaFactor ) ), value.a );\n}\nvec4 LinearToGamma( in vec4 value, in float gammaFactor ) {\n\treturn vec4( pow( value.rgb, vec3( 1.0 / gammaFactor ) ), value.a );\n}\nvec4 sRGBToLinear( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb * 0.9478672986 + vec3( 0.0521327014 ), vec3( 2.4 ) ), value.rgb * 0.0773993808, vec3( lessThanEqual( value.rgb, vec3( 0.04045 ) ) ) ), value.a );\n}\nvec4 LinearTosRGB( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), value.rgb * 12.92, vec3( lessThanEqual( value.rgb, vec3( 0.0031308 ) ) ) ), value.a );\n}\nvec4 RGBEToLinear( in vec4 value ) {\n\treturn vec4( value.rgb * exp2( value.a * 255.0 - 128.0 ), 1.0 );\n}\nvec4 LinearToRGBE( in vec4 value ) {\n\tfloat maxComponent = max( max( value.r, value.g ), value.b );\n\tfloat fExp = clamp( ceil( log2( maxComponent ) ), -128.0, 127.0 );\n\treturn vec4( value.rgb / exp2( fExp ), ( fExp + 128.0 ) / 255.0 );\n}\nvec4 RGBMToLinear( in vec4 value, in float maxRange ) {\n\treturn vec4( value.rgb * value.a * maxRange, 1.0 );\n}\nvec4 LinearToRGBM( in vec4 value, in float maxRange ) {\n\tfloat maxRGB = max( value.r, max( value.g, value.b ) );\n\tfloat M = clamp( maxRGB / maxRange, 0.0, 1.0 );\n\tM = ceil( M * 255.0 ) / 255.0;\n\treturn vec4( value.rgb / ( M * maxRange ), M );\n}\nvec4 RGBDToLinear( in vec4 value, in float maxRange ) {\n\treturn vec4( value.rgb * ( ( maxRange / 255.0 ) / value.a ), 1.0 );\n}\nvec4 LinearToRGBD( in vec4 value, in float maxRange ) {\n\tfloat maxRGB = max( value.r, max( value.g, value.b ) );\n\tfloat D = max( maxRange / maxRGB, 1.0 );\n\tD = min( floor( D ) / 255.0, 1.0 );\n\treturn vec4( value.rgb * ( D * ( 255.0 / maxRange ) ), D );\n}\nconst mat3 cLogLuvM = mat3( 0.2209, 0.3390, 0.4184, 0.1138, 0.6780, 0.7319, 0.0102, 0.1130, 0.2969 );\nvec4 LinearToLogLuv( in vec4 value )  {\n\tvec3 Xp_Y_XYZp = cLogLuvM * value.rgb;\n\tXp_Y_XYZp = max( Xp_Y_XYZp, vec3( 1e-6, 1e-6, 1e-6 ) );\n\tvec4 vResult;\n\tvResult.xy = Xp_Y_XYZp.xy / Xp_Y_XYZp.z;\n\tfloat Le = 2.0 * log2(Xp_Y_XYZp.y) + 127.0;\n\tvResult.w = fract( Le );\n\tvResult.z = ( Le - ( floor( vResult.w * 255.0 ) ) / 255.0 ) / 255.0;\n\treturn vResult;\n}\nconst mat3 cLogLuvInverseM = mat3( 6.0014, -2.7008, -1.7996, -1.3320, 3.1029, -5.7721, 0.3008, -1.0882, 5.6268 );\nvec4 LogLuvToLinear( in vec4 value ) {\n\tfloat Le = value.z * 255.0 + value.w;\n\tvec3 Xp_Y_XYZp;\n\tXp_Y_XYZp.y = exp2( ( Le - 127.0 ) / 2.0 );\n\tXp_Y_XYZp.z = Xp_Y_XYZp.y / value.y;\n\tXp_Y_XYZp.x = value.x * Xp_Y_XYZp.z;\n\tvec3 vRGB = cLogLuvInverseM * Xp_Y_XYZp.rgb;\n\treturn vec4( max( vRGB, 0.0 ), 1.0 );\n}";
 
 		var envmap_fragment = "#ifdef USE_ENVMAP\n\t#if defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( PHONG )\n\t\tvec3 cameraToVertex = normalize( vWorldPosition - cameraPosition );\n\t\tvec3 worldNormal = inverseTransformDirection( normal, viewMatrix );\n\t\t#ifdef ENVMAP_MODE_REFLECTION\n\t\t\tvec3 reflectVec = reflect( cameraToVertex, worldNormal );\n\t\t#else\n\t\t\tvec3 reflectVec = refract( cameraToVertex, worldNormal, refractionRatio );\n\t\t#endif\n\t#else\n\t\tvec3 reflectVec = vReflect;\n\t#endif\n\t#ifdef ENVMAP_TYPE_CUBE\n\t\tvec4 envColor = textureCube( envMap, vec3( flipEnvMap * reflectVec.x, reflectVec.yz ) );\n\t#elif defined( ENVMAP_TYPE_EQUIREC )\n\t\tvec2 sampleUV;\n\t\treflectVec = normalize( reflectVec );\n\t\tsampleUV.y = asin( clamp( reflectVec.y, - 1.0, 1.0 ) ) * RECIPROCAL_PI + 0.5;\n\t\tsampleUV.x = atan( reflectVec.z, reflectVec.x ) * RECIPROCAL_PI2 + 0.5;\n\t\tvec4 envColor = texture2D( envMap, sampleUV );\n\t#elif defined( ENVMAP_TYPE_SPHERE )\n\t\treflectVec = normalize( reflectVec );\n\t\tvec3 reflectView = normalize( ( viewMatrix * vec4( reflectVec, 0.0 ) ).xyz + vec3( 0.0, 0.0, 1.0 ) );\n\t\tvec4 envColor = texture2D( envMap, reflectView.xy * 0.5 + 0.5 );\n\t#else\n\t\tvec4 envColor = vec4( 0.0 );\n\t#endif\n\tenvColor = envMapTexelToLinear( envColor );\n\t#ifdef ENVMAP_BLENDING_MULTIPLY\n\t\toutgoingLight = mix( outgoingLight, outgoingLight * envColor.xyz, specularStrength * reflectivity );\n\t#elif defined( ENVMAP_BLENDING_MIX )\n\t\toutgoingLight = mix( outgoingLight, envColor.xyz, specularStrength * reflectivity );\n\t#elif defined( ENVMAP_BLENDING_ADD )\n\t\toutgoingLight += envColor.xyz * specularStrength * reflectivity;\n\t#endif\n#endif";
 
@@ -37355,9 +39324,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		var lightmap_pars_fragment = "#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n#endif";
 
-		var lights_lambert_vertex = "vec3 diffuse = vec3( 1.0 );\nGeometricContext geometry;\ngeometry.position = mvPosition.xyz;\ngeometry.normal = normalize( transformedNormal );\ngeometry.viewDir = normalize( -mvPosition.xyz );\nGeometricContext backGeometry;\nbackGeometry.position = geometry.position;\nbackGeometry.normal = -geometry.normal;\nbackGeometry.viewDir = geometry.viewDir;\nvLightFront = vec3( 0.0 );\n#ifdef DOUBLE_SIDED\n\tvLightBack = vec3( 0.0 );\n#endif\nIncidentLight directLight;\nfloat dotNL;\nvec3 directLightColor_Diffuse;\n#if NUM_POINT_LIGHTS > 0\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n\t\tgetPointDirectLightIrradiance( pointLights[ i ], geometry, directLight );\n\t\tdotNL = dot( geometry.normal, directLight.direction );\n\t\tdirectLightColor_Diffuse = PI * directLight.color;\n\t\tvLightFront += saturate( dotNL ) * directLightColor_Diffuse;\n\t\t#ifdef DOUBLE_SIDED\n\t\t\tvLightBack += saturate( -dotNL ) * directLightColor_Diffuse;\n\t\t#endif\n\t}\n#endif\n#if NUM_SPOT_LIGHTS > 0\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n\t\tgetSpotDirectLightIrradiance( spotLights[ i ], geometry, directLight );\n\t\tdotNL = dot( geometry.normal, directLight.direction );\n\t\tdirectLightColor_Diffuse = PI * directLight.color;\n\t\tvLightFront += saturate( dotNL ) * directLightColor_Diffuse;\n\t\t#ifdef DOUBLE_SIDED\n\t\t\tvLightBack += saturate( -dotNL ) * directLightColor_Diffuse;\n\t\t#endif\n\t}\n#endif\n#if NUM_DIR_LIGHTS > 0\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n\t\tgetDirectionalDirectLightIrradiance( directionalLights[ i ], geometry, directLight );\n\t\tdotNL = dot( geometry.normal, directLight.direction );\n\t\tdirectLightColor_Diffuse = PI * directLight.color;\n\t\tvLightFront += saturate( dotNL ) * directLightColor_Diffuse;\n\t\t#ifdef DOUBLE_SIDED\n\t\t\tvLightBack += saturate( -dotNL ) * directLightColor_Diffuse;\n\t\t#endif\n\t}\n#endif\n#if NUM_HEMI_LIGHTS > 0\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n\t\tvLightFront += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n\t\t#ifdef DOUBLE_SIDED\n\t\t\tvLightBack += getHemisphereLightIrradiance( hemisphereLights[ i ], backGeometry );\n\t\t#endif\n\t}\n#endif";
+		var lights_lambert_vertex = "vec3 diffuse = vec3( 1.0 );\nGeometricContext geometry;\ngeometry.position = mvPosition.xyz;\ngeometry.normal = normalize( transformedNormal );\ngeometry.viewDir = normalize( -mvPosition.xyz );\nGeometricContext backGeometry;\nbackGeometry.position = geometry.position;\nbackGeometry.normal = -geometry.normal;\nbackGeometry.viewDir = geometry.viewDir;\nvLightFront = vec3( 0.0 );\nvIndirectFront = vec3( 0.0 );\n#ifdef DOUBLE_SIDED\n\tvLightBack = vec3( 0.0 );\n\tvIndirectBack = vec3( 0.0 );\n#endif\nIncidentLight directLight;\nfloat dotNL;\nvec3 directLightColor_Diffuse;\n#if NUM_POINT_LIGHTS > 0\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n\t\tgetPointDirectLightIrradiance( pointLights[ i ], geometry, directLight );\n\t\tdotNL = dot( geometry.normal, directLight.direction );\n\t\tdirectLightColor_Diffuse = PI * directLight.color;\n\t\tvLightFront += saturate( dotNL ) * directLightColor_Diffuse;\n\t\t#ifdef DOUBLE_SIDED\n\t\t\tvLightBack += saturate( -dotNL ) * directLightColor_Diffuse;\n\t\t#endif\n\t}\n#endif\n#if NUM_SPOT_LIGHTS > 0\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n\t\tgetSpotDirectLightIrradiance( spotLights[ i ], geometry, directLight );\n\t\tdotNL = dot( geometry.normal, directLight.direction );\n\t\tdirectLightColor_Diffuse = PI * directLight.color;\n\t\tvLightFront += saturate( dotNL ) * directLightColor_Diffuse;\n\t\t#ifdef DOUBLE_SIDED\n\t\t\tvLightBack += saturate( -dotNL ) * directLightColor_Diffuse;\n\t\t#endif\n\t}\n#endif\n#if NUM_DIR_LIGHTS > 0\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n\t\tgetDirectionalDirectLightIrradiance( directionalLights[ i ], geometry, directLight );\n\t\tdotNL = dot( geometry.normal, directLight.direction );\n\t\tdirectLightColor_Diffuse = PI * directLight.color;\n\t\tvLightFront += saturate( dotNL ) * directLightColor_Diffuse;\n\t\t#ifdef DOUBLE_SIDED\n\t\t\tvLightBack += saturate( -dotNL ) * directLightColor_Diffuse;\n\t\t#endif\n\t}\n#endif\n#if NUM_HEMI_LIGHTS > 0\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n\t\tvIndirectFront += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n\t\t#ifdef DOUBLE_SIDED\n\t\t\tvIndirectBack += getHemisphereLightIrradiance( hemisphereLights[ i ], backGeometry );\n\t\t#endif\n\t}\n#endif";
 
-		var lights_pars_begin = "uniform vec3 ambientLightColor;\nvec3 getAmbientLightIrradiance( const in vec3 ambientLightColor ) {\n\tvec3 irradiance = ambientLightColor;\n\t#ifndef PHYSICALLY_CORRECT_LIGHTS\n\t\tirradiance *= PI;\n\t#endif\n\treturn irradiance;\n}\n#if NUM_DIR_LIGHTS > 0\n\tstruct DirectionalLight {\n\t\tvec3 direction;\n\t\tvec3 color;\n\t\tint shadow;\n\t\tfloat shadowBias;\n\t\tfloat shadowRadius;\n\t\tvec2 shadowMapSize;\n\t};\n\tuniform DirectionalLight directionalLights[ NUM_DIR_LIGHTS ];\n\tvoid getDirectionalDirectLightIrradiance( const in DirectionalLight directionalLight, const in GeometricContext geometry, out IncidentLight directLight ) {\n\t\tdirectLight.color = directionalLight.color;\n\t\tdirectLight.direction = directionalLight.direction;\n\t\tdirectLight.visible = true;\n\t}\n#endif\n#if NUM_POINT_LIGHTS > 0\n\tstruct PointLight {\n\t\tvec3 position;\n\t\tvec3 color;\n\t\tfloat distance;\n\t\tfloat decay;\n\t\tint shadow;\n\t\tfloat shadowBias;\n\t\tfloat shadowRadius;\n\t\tvec2 shadowMapSize;\n\t\tfloat shadowCameraNear;\n\t\tfloat shadowCameraFar;\n\t};\n\tuniform PointLight pointLights[ NUM_POINT_LIGHTS ];\n\tvoid getPointDirectLightIrradiance( const in PointLight pointLight, const in GeometricContext geometry, out IncidentLight directLight ) {\n\t\tvec3 lVector = pointLight.position - geometry.position;\n\t\tdirectLight.direction = normalize( lVector );\n\t\tfloat lightDistance = length( lVector );\n\t\tdirectLight.color = pointLight.color;\n\t\tdirectLight.color *= punctualLightIntensityToIrradianceFactor( lightDistance, pointLight.distance, pointLight.decay );\n\t\tdirectLight.visible = ( directLight.color != vec3( 0.0 ) );\n\t}\n#endif\n#if NUM_SPOT_LIGHTS > 0\n\tstruct SpotLight {\n\t\tvec3 position;\n\t\tvec3 direction;\n\t\tvec3 color;\n\t\tfloat distance;\n\t\tfloat decay;\n\t\tfloat coneCos;\n\t\tfloat penumbraCos;\n\t\tint shadow;\n\t\tfloat shadowBias;\n\t\tfloat shadowRadius;\n\t\tvec2 shadowMapSize;\n\t};\n\tuniform SpotLight spotLights[ NUM_SPOT_LIGHTS ];\n\tvoid getSpotDirectLightIrradiance( const in SpotLight spotLight, const in GeometricContext geometry, out IncidentLight directLight  ) {\n\t\tvec3 lVector = spotLight.position - geometry.position;\n\t\tdirectLight.direction = normalize( lVector );\n\t\tfloat lightDistance = length( lVector );\n\t\tfloat angleCos = dot( directLight.direction, spotLight.direction );\n\t\tif ( angleCos > spotLight.coneCos ) {\n\t\t\tfloat spotEffect = smoothstep( spotLight.coneCos, spotLight.penumbraCos, angleCos );\n\t\t\tdirectLight.color = spotLight.color;\n\t\t\tdirectLight.color *= spotEffect * punctualLightIntensityToIrradianceFactor( lightDistance, spotLight.distance, spotLight.decay );\n\t\t\tdirectLight.visible = true;\n\t\t} else {\n\t\t\tdirectLight.color = vec3( 0.0 );\n\t\t\tdirectLight.visible = false;\n\t\t}\n\t}\n#endif\n#if NUM_RECT_AREA_LIGHTS > 0\n\tstruct RectAreaLight {\n\t\tvec3 color;\n\t\tvec3 position;\n\t\tvec3 halfWidth;\n\t\tvec3 halfHeight;\n\t};\n\tuniform sampler2D ltc_1;\tuniform sampler2D ltc_2;\n\tuniform RectAreaLight rectAreaLights[ NUM_RECT_AREA_LIGHTS ];\n#endif\n#if NUM_HEMI_LIGHTS > 0\n\tstruct HemisphereLight {\n\t\tvec3 direction;\n\t\tvec3 skyColor;\n\t\tvec3 groundColor;\n\t};\n\tuniform HemisphereLight hemisphereLights[ NUM_HEMI_LIGHTS ];\n\tvec3 getHemisphereLightIrradiance( const in HemisphereLight hemiLight, const in GeometricContext geometry ) {\n\t\tfloat dotNL = dot( geometry.normal, hemiLight.direction );\n\t\tfloat hemiDiffuseWeight = 0.5 * dotNL + 0.5;\n\t\tvec3 irradiance = mix( hemiLight.groundColor, hemiLight.skyColor, hemiDiffuseWeight );\n\t\t#ifndef PHYSICALLY_CORRECT_LIGHTS\n\t\t\tirradiance *= PI;\n\t\t#endif\n\t\treturn irradiance;\n\t}\n#endif";
+		var lights_pars_begin = "uniform vec3 ambientLightColor;\nuniform vec3 lightProbe[ 9 ];\nvec3 shGetIrradianceAt( in vec3 normal, in vec3 shCoefficients[ 9 ] ) {\n\tfloat x = normal.x, y = normal.y, z = normal.z;\n\tvec3 result = shCoefficients[ 0 ] * 0.886227;\n\tresult += shCoefficients[ 1 ] * 2.0 * 0.511664 * y;\n\tresult += shCoefficients[ 2 ] * 2.0 * 0.511664 * z;\n\tresult += shCoefficients[ 3 ] * 2.0 * 0.511664 * x;\n\tresult += shCoefficients[ 4 ] * 2.0 * 0.429043 * x * y;\n\tresult += shCoefficients[ 5 ] * 2.0 * 0.429043 * y * z;\n\tresult += shCoefficients[ 6 ] * ( 0.743125 * z * z - 0.247708 );\n\tresult += shCoefficients[ 7 ] * 2.0 * 0.429043 * x * z;\n\tresult += shCoefficients[ 8 ] * 0.429043 * ( x * x - y * y );\n\treturn result;\n}\nvec3 getLightProbeIrradiance( const in vec3 lightProbe[ 9 ], const in GeometricContext geometry ) {\n\tvec3 worldNormal = inverseTransformDirection( geometry.normal, viewMatrix );\n\tvec3 irradiance = shGetIrradianceAt( worldNormal, lightProbe );\n\treturn irradiance;\n}\nvec3 getAmbientLightIrradiance( const in vec3 ambientLightColor ) {\n\tvec3 irradiance = ambientLightColor;\n\t#ifndef PHYSICALLY_CORRECT_LIGHTS\n\t\tirradiance *= PI;\n\t#endif\n\treturn irradiance;\n}\n#if NUM_DIR_LIGHTS > 0\n\tstruct DirectionalLight {\n\t\tvec3 direction;\n\t\tvec3 color;\n\t\tint shadow;\n\t\tfloat shadowBias;\n\t\tfloat shadowRadius;\n\t\tvec2 shadowMapSize;\n\t};\n\tuniform DirectionalLight directionalLights[ NUM_DIR_LIGHTS ];\n\tvoid getDirectionalDirectLightIrradiance( const in DirectionalLight directionalLight, const in GeometricContext geometry, out IncidentLight directLight ) {\n\t\tdirectLight.color = directionalLight.color;\n\t\tdirectLight.direction = directionalLight.direction;\n\t\tdirectLight.visible = true;\n\t}\n#endif\n#if NUM_POINT_LIGHTS > 0\n\tstruct PointLight {\n\t\tvec3 position;\n\t\tvec3 color;\n\t\tfloat distance;\n\t\tfloat decay;\n\t\tint shadow;\n\t\tfloat shadowBias;\n\t\tfloat shadowRadius;\n\t\tvec2 shadowMapSize;\n\t\tfloat shadowCameraNear;\n\t\tfloat shadowCameraFar;\n\t};\n\tuniform PointLight pointLights[ NUM_POINT_LIGHTS ];\n\tvoid getPointDirectLightIrradiance( const in PointLight pointLight, const in GeometricContext geometry, out IncidentLight directLight ) {\n\t\tvec3 lVector = pointLight.position - geometry.position;\n\t\tdirectLight.direction = normalize( lVector );\n\t\tfloat lightDistance = length( lVector );\n\t\tdirectLight.color = pointLight.color;\n\t\tdirectLight.color *= punctualLightIntensityToIrradianceFactor( lightDistance, pointLight.distance, pointLight.decay );\n\t\tdirectLight.visible = ( directLight.color != vec3( 0.0 ) );\n\t}\n#endif\n#if NUM_SPOT_LIGHTS > 0\n\tstruct SpotLight {\n\t\tvec3 position;\n\t\tvec3 direction;\n\t\tvec3 color;\n\t\tfloat distance;\n\t\tfloat decay;\n\t\tfloat coneCos;\n\t\tfloat penumbraCos;\n\t\tint shadow;\n\t\tfloat shadowBias;\n\t\tfloat shadowRadius;\n\t\tvec2 shadowMapSize;\n\t};\n\tuniform SpotLight spotLights[ NUM_SPOT_LIGHTS ];\n\tvoid getSpotDirectLightIrradiance( const in SpotLight spotLight, const in GeometricContext geometry, out IncidentLight directLight  ) {\n\t\tvec3 lVector = spotLight.position - geometry.position;\n\t\tdirectLight.direction = normalize( lVector );\n\t\tfloat lightDistance = length( lVector );\n\t\tfloat angleCos = dot( directLight.direction, spotLight.direction );\n\t\tif ( angleCos > spotLight.coneCos ) {\n\t\t\tfloat spotEffect = smoothstep( spotLight.coneCos, spotLight.penumbraCos, angleCos );\n\t\t\tdirectLight.color = spotLight.color;\n\t\t\tdirectLight.color *= spotEffect * punctualLightIntensityToIrradianceFactor( lightDistance, spotLight.distance, spotLight.decay );\n\t\t\tdirectLight.visible = true;\n\t\t} else {\n\t\t\tdirectLight.color = vec3( 0.0 );\n\t\t\tdirectLight.visible = false;\n\t\t}\n\t}\n#endif\n#if NUM_RECT_AREA_LIGHTS > 0\n\tstruct RectAreaLight {\n\t\tvec3 color;\n\t\tvec3 position;\n\t\tvec3 halfWidth;\n\t\tvec3 halfHeight;\n\t};\n\tuniform sampler2D ltc_1;\tuniform sampler2D ltc_2;\n\tuniform RectAreaLight rectAreaLights[ NUM_RECT_AREA_LIGHTS ];\n#endif\n#if NUM_HEMI_LIGHTS > 0\n\tstruct HemisphereLight {\n\t\tvec3 direction;\n\t\tvec3 skyColor;\n\t\tvec3 groundColor;\n\t};\n\tuniform HemisphereLight hemisphereLights[ NUM_HEMI_LIGHTS ];\n\tvec3 getHemisphereLightIrradiance( const in HemisphereLight hemiLight, const in GeometricContext geometry ) {\n\t\tfloat dotNL = dot( geometry.normal, hemiLight.direction );\n\t\tfloat hemiDiffuseWeight = 0.5 * dotNL + 0.5;\n\t\tvec3 irradiance = mix( hemiLight.groundColor, hemiLight.skyColor, hemiDiffuseWeight );\n\t\t#ifndef PHYSICALLY_CORRECT_LIGHTS\n\t\t\tirradiance *= PI;\n\t\t#endif\n\t\treturn irradiance;\n\t}\n#endif";
 
 		var envmap_physical_pars_fragment = "#if defined( USE_ENVMAP ) && defined( PHYSICAL )\n\tvec3 getLightProbeIndirectIrradiance( const in GeometricContext geometry, const in int maxMIPLevel ) {\n\t\tvec3 worldNormal = inverseTransformDirection( geometry.normal, viewMatrix );\n\t\t#ifdef ENVMAP_TYPE_CUBE\n\t\t\tvec3 queryVec = vec3( flipEnvMap * worldNormal.x, worldNormal.yz );\n\t\t\t#ifdef TEXTURE_LOD_EXT\n\t\t\t\tvec4 envMapColor = textureCubeLodEXT( envMap, queryVec, float( maxMIPLevel ) );\n\t\t\t#else\n\t\t\t\tvec4 envMapColor = textureCube( envMap, queryVec, float( maxMIPLevel ) );\n\t\t\t#endif\n\t\t\tenvMapColor.rgb = envMapTexelToLinear( envMapColor ).rgb;\n\t\t#elif defined( ENVMAP_TYPE_CUBE_UV )\n\t\t\tvec3 queryVec = vec3( flipEnvMap * worldNormal.x, worldNormal.yz );\n\t\t\tvec4 envMapColor = textureCubeUV( envMap, queryVec, 1.0 );\n\t\t#else\n\t\t\tvec4 envMapColor = vec4( 0.0 );\n\t\t#endif\n\t\treturn PI * envMapColor.rgb * envMapIntensity;\n\t}\n\tfloat getSpecularMIPLevel( const in float blinnShininessExponent, const in int maxMIPLevel ) {\n\t\tfloat maxMIPLevelScalar = float( maxMIPLevel );\n\t\tfloat desiredMIPLevel = maxMIPLevelScalar + 0.79248 - 0.5 * log2( pow2( blinnShininessExponent ) + 1.0 );\n\t\treturn clamp( desiredMIPLevel, 0.0, maxMIPLevelScalar );\n\t}\n\tvec3 getLightProbeIndirectRadiance( const in GeometricContext geometry, const in float blinnShininessExponent, const in int maxMIPLevel ) {\n\t\t#ifdef ENVMAP_MODE_REFLECTION\n\t\t\tvec3 reflectVec = reflect( -geometry.viewDir, geometry.normal );\n\t\t#else\n\t\t\tvec3 reflectVec = refract( -geometry.viewDir, geometry.normal, refractionRatio );\n\t\t#endif\n\t\treflectVec = inverseTransformDirection( reflectVec, viewMatrix );\n\t\tfloat specularMIPLevel = getSpecularMIPLevel( blinnShininessExponent, maxMIPLevel );\n\t\t#ifdef ENVMAP_TYPE_CUBE\n\t\t\tvec3 queryReflectVec = vec3( flipEnvMap * reflectVec.x, reflectVec.yz );\n\t\t\t#ifdef TEXTURE_LOD_EXT\n\t\t\t\tvec4 envMapColor = textureCubeLodEXT( envMap, queryReflectVec, specularMIPLevel );\n\t\t\t#else\n\t\t\t\tvec4 envMapColor = textureCube( envMap, queryReflectVec, specularMIPLevel );\n\t\t\t#endif\n\t\t\tenvMapColor.rgb = envMapTexelToLinear( envMapColor ).rgb;\n\t\t#elif defined( ENVMAP_TYPE_CUBE_UV )\n\t\t\tvec3 queryReflectVec = vec3( flipEnvMap * reflectVec.x, reflectVec.yz );\n\t\t\tvec4 envMapColor = textureCubeUV( envMap, queryReflectVec, BlinnExponentToGGXRoughness(blinnShininessExponent ));\n\t\t#elif defined( ENVMAP_TYPE_EQUIREC )\n\t\t\tvec2 sampleUV;\n\t\t\tsampleUV.y = asin( clamp( reflectVec.y, - 1.0, 1.0 ) ) * RECIPROCAL_PI + 0.5;\n\t\t\tsampleUV.x = atan( reflectVec.z, reflectVec.x ) * RECIPROCAL_PI2 + 0.5;\n\t\t\t#ifdef TEXTURE_LOD_EXT\n\t\t\t\tvec4 envMapColor = texture2DLodEXT( envMap, sampleUV, specularMIPLevel );\n\t\t\t#else\n\t\t\t\tvec4 envMapColor = texture2D( envMap, sampleUV, specularMIPLevel );\n\t\t\t#endif\n\t\t\tenvMapColor.rgb = envMapTexelToLinear( envMapColor ).rgb;\n\t\t#elif defined( ENVMAP_TYPE_SPHERE )\n\t\t\tvec3 reflectView = normalize( ( viewMatrix * vec4( reflectVec, 0.0 ) ).xyz + vec3( 0.0,0.0,1.0 ) );\n\t\t\t#ifdef TEXTURE_LOD_EXT\n\t\t\t\tvec4 envMapColor = texture2DLodEXT( envMap, reflectView.xy * 0.5 + 0.5, specularMIPLevel );\n\t\t\t#else\n\t\t\t\tvec4 envMapColor = texture2D( envMap, reflectView.xy * 0.5 + 0.5, specularMIPLevel );\n\t\t\t#endif\n\t\t\tenvMapColor.rgb = envMapTexelToLinear( envMapColor ).rgb;\n\t\t#endif\n\t\treturn envMapColor.rgb * envMapIntensity;\n\t}\n#endif";
 
@@ -37367,13 +39336,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		var lights_physical_fragment = "PhysicalMaterial material;\nmaterial.diffuseColor = diffuseColor.rgb * ( 1.0 - metalnessFactor );\nmaterial.specularRoughness = clamp( roughnessFactor, 0.04, 1.0 );\n#ifdef STANDARD\n\tmaterial.specularColor = mix( vec3( DEFAULT_SPECULAR_COEFFICIENT ), diffuseColor.rgb, metalnessFactor );\n#else\n\tmaterial.specularColor = mix( vec3( MAXIMUM_SPECULAR_COEFFICIENT * pow2( reflectivity ) ), diffuseColor.rgb, metalnessFactor );\n\tmaterial.clearCoat = saturate( clearCoat );\tmaterial.clearCoatRoughness = clamp( clearCoatRoughness, 0.04, 1.0 );\n#endif";
 
-		var lights_physical_pars_fragment = "struct PhysicalMaterial {\n\tvec3\tdiffuseColor;\n\tfloat\tspecularRoughness;\n\tvec3\tspecularColor;\n\t#ifndef STANDARD\n\t\tfloat clearCoat;\n\t\tfloat clearCoatRoughness;\n\t#endif\n};\n#define MAXIMUM_SPECULAR_COEFFICIENT 0.16\n#define DEFAULT_SPECULAR_COEFFICIENT 0.04\nfloat clearCoatDHRApprox( const in float roughness, const in float dotNL ) {\n\treturn DEFAULT_SPECULAR_COEFFICIENT + ( 1.0 - DEFAULT_SPECULAR_COEFFICIENT ) * ( pow( 1.0 - dotNL, 5.0 ) * pow( 1.0 - roughness, 2.0 ) );\n}\n#if NUM_RECT_AREA_LIGHTS > 0\n\tvoid RE_Direct_RectArea_Physical( const in RectAreaLight rectAreaLight, const in GeometricContext geometry, const in PhysicalMaterial material, inout ReflectedLight reflectedLight ) {\n\t\tvec3 normal = geometry.normal;\n\t\tvec3 viewDir = geometry.viewDir;\n\t\tvec3 position = geometry.position;\n\t\tvec3 lightPos = rectAreaLight.position;\n\t\tvec3 halfWidth = rectAreaLight.halfWidth;\n\t\tvec3 halfHeight = rectAreaLight.halfHeight;\n\t\tvec3 lightColor = rectAreaLight.color;\n\t\tfloat roughness = material.specularRoughness;\n\t\tvec3 rectCoords[ 4 ];\n\t\trectCoords[ 0 ] = lightPos + halfWidth - halfHeight;\t\trectCoords[ 1 ] = lightPos - halfWidth - halfHeight;\n\t\trectCoords[ 2 ] = lightPos - halfWidth + halfHeight;\n\t\trectCoords[ 3 ] = lightPos + halfWidth + halfHeight;\n\t\tvec2 uv = LTC_Uv( normal, viewDir, roughness );\n\t\tvec4 t1 = texture2D( ltc_1, uv );\n\t\tvec4 t2 = texture2D( ltc_2, uv );\n\t\tmat3 mInv = mat3(\n\t\t\tvec3( t1.x, 0, t1.y ),\n\t\t\tvec3(    0, 1,    0 ),\n\t\t\tvec3( t1.z, 0, t1.w )\n\t\t);\n\t\tvec3 fresnel = ( material.specularColor * t2.x + ( vec3( 1.0 ) - material.specularColor ) * t2.y );\n\t\treflectedLight.directSpecular += lightColor * fresnel * LTC_Evaluate( normal, viewDir, position, mInv, rectCoords );\n\t\treflectedLight.directDiffuse += lightColor * material.diffuseColor * LTC_Evaluate( normal, viewDir, position, mat3( 1.0 ), rectCoords );\n\t}\n#endif\nvoid RE_Direct_Physical( const in IncidentLight directLight, const in GeometricContext geometry, const in PhysicalMaterial material, inout ReflectedLight reflectedLight ) {\n\tfloat dotNL = saturate( dot( geometry.normal, directLight.direction ) );\n\tvec3 irradiance = dotNL * directLight.color;\n\t#ifndef PHYSICALLY_CORRECT_LIGHTS\n\t\tirradiance *= PI;\n\t#endif\n\t#ifndef STANDARD\n\t\tfloat clearCoatDHR = material.clearCoat * clearCoatDHRApprox( material.clearCoatRoughness, dotNL );\n\t#else\n\t\tfloat clearCoatDHR = 0.0;\n\t#endif\n\treflectedLight.directSpecular += ( 1.0 - clearCoatDHR ) * irradiance * BRDF_Specular_GGX( directLight, geometry, material.specularColor, material.specularRoughness );\n\treflectedLight.directDiffuse += ( 1.0 - clearCoatDHR ) * irradiance * BRDF_Diffuse_Lambert( material.diffuseColor );\n\t#ifndef STANDARD\n\t\treflectedLight.directSpecular += irradiance * material.clearCoat * BRDF_Specular_GGX( directLight, geometry, vec3( DEFAULT_SPECULAR_COEFFICIENT ), material.clearCoatRoughness );\n\t#endif\n}\nvoid RE_IndirectDiffuse_Physical( const in vec3 irradiance, const in GeometricContext geometry, const in PhysicalMaterial material, inout ReflectedLight reflectedLight ) {\n\treflectedLight.indirectDiffuse += irradiance * BRDF_Diffuse_Lambert( material.diffuseColor );\n}\nvoid RE_IndirectSpecular_Physical( const in vec3 radiance, const in vec3 clearCoatRadiance, const in GeometricContext geometry, const in PhysicalMaterial material, inout ReflectedLight reflectedLight ) {\n\t#ifndef STANDARD\n\t\tfloat dotNV = saturate( dot( geometry.normal, geometry.viewDir ) );\n\t\tfloat dotNL = dotNV;\n\t\tfloat clearCoatDHR = material.clearCoat * clearCoatDHRApprox( material.clearCoatRoughness, dotNL );\n\t#else\n\t\tfloat clearCoatDHR = 0.0;\n\t#endif\n\treflectedLight.indirectSpecular += ( 1.0 - clearCoatDHR ) * radiance * BRDF_Specular_GGX_Environment( geometry, material.specularColor, material.specularRoughness );\n\t#ifndef STANDARD\n\t\treflectedLight.indirectSpecular += clearCoatRadiance * material.clearCoat * BRDF_Specular_GGX_Environment( geometry, vec3( DEFAULT_SPECULAR_COEFFICIENT ), material.clearCoatRoughness );\n\t#endif\n}\n#define RE_Direct\t\t\t\tRE_Direct_Physical\n#define RE_Direct_RectArea\t\tRE_Direct_RectArea_Physical\n#define RE_IndirectDiffuse\t\tRE_IndirectDiffuse_Physical\n#define RE_IndirectSpecular\t\tRE_IndirectSpecular_Physical\n#define Material_BlinnShininessExponent( material )   GGXRoughnessToBlinnExponent( material.specularRoughness )\n#define Material_ClearCoat_BlinnShininessExponent( material )   GGXRoughnessToBlinnExponent( material.clearCoatRoughness )\nfloat computeSpecularOcclusion( const in float dotNV, const in float ambientOcclusion, const in float roughness ) {\n\treturn saturate( pow( dotNV + ambientOcclusion, exp2( - 16.0 * roughness - 1.0 ) ) - 1.0 + ambientOcclusion );\n}";
+		var lights_physical_pars_fragment = "struct PhysicalMaterial {\n\tvec3\tdiffuseColor;\n\tfloat\tspecularRoughness;\n\tvec3\tspecularColor;\n\t#ifndef STANDARD\n\t\tfloat clearCoat;\n\t\tfloat clearCoatRoughness;\n\t#endif\n};\n#define MAXIMUM_SPECULAR_COEFFICIENT 0.16\n#define DEFAULT_SPECULAR_COEFFICIENT 0.04\nfloat clearCoatDHRApprox( const in float roughness, const in float dotNL ) {\n\treturn DEFAULT_SPECULAR_COEFFICIENT + ( 1.0 - DEFAULT_SPECULAR_COEFFICIENT ) * ( pow( 1.0 - dotNL, 5.0 ) * pow( 1.0 - roughness, 2.0 ) );\n}\n#if NUM_RECT_AREA_LIGHTS > 0\n\tvoid RE_Direct_RectArea_Physical( const in RectAreaLight rectAreaLight, const in GeometricContext geometry, const in PhysicalMaterial material, inout ReflectedLight reflectedLight ) {\n\t\tvec3 normal = geometry.normal;\n\t\tvec3 viewDir = geometry.viewDir;\n\t\tvec3 position = geometry.position;\n\t\tvec3 lightPos = rectAreaLight.position;\n\t\tvec3 halfWidth = rectAreaLight.halfWidth;\n\t\tvec3 halfHeight = rectAreaLight.halfHeight;\n\t\tvec3 lightColor = rectAreaLight.color;\n\t\tfloat roughness = material.specularRoughness;\n\t\tvec3 rectCoords[ 4 ];\n\t\trectCoords[ 0 ] = lightPos + halfWidth - halfHeight;\t\trectCoords[ 1 ] = lightPos - halfWidth - halfHeight;\n\t\trectCoords[ 2 ] = lightPos - halfWidth + halfHeight;\n\t\trectCoords[ 3 ] = lightPos + halfWidth + halfHeight;\n\t\tvec2 uv = LTC_Uv( normal, viewDir, roughness );\n\t\tvec4 t1 = texture2D( ltc_1, uv );\n\t\tvec4 t2 = texture2D( ltc_2, uv );\n\t\tmat3 mInv = mat3(\n\t\t\tvec3( t1.x, 0, t1.y ),\n\t\t\tvec3(    0, 1,    0 ),\n\t\t\tvec3( t1.z, 0, t1.w )\n\t\t);\n\t\tvec3 fresnel = ( material.specularColor * t2.x + ( vec3( 1.0 ) - material.specularColor ) * t2.y );\n\t\treflectedLight.directSpecular += lightColor * fresnel * LTC_Evaluate( normal, viewDir, position, mInv, rectCoords );\n\t\treflectedLight.directDiffuse += lightColor * material.diffuseColor * LTC_Evaluate( normal, viewDir, position, mat3( 1.0 ), rectCoords );\n\t}\n#endif\nvoid RE_Direct_Physical( const in IncidentLight directLight, const in GeometricContext geometry, const in PhysicalMaterial material, inout ReflectedLight reflectedLight ) {\n\tfloat dotNL = saturate( dot( geometry.normal, directLight.direction ) );\n\tvec3 irradiance = dotNL * directLight.color;\n\t#ifndef PHYSICALLY_CORRECT_LIGHTS\n\t\tirradiance *= PI;\n\t#endif\n\t#ifndef STANDARD\n\t\tfloat clearCoatDHR = material.clearCoat * clearCoatDHRApprox( material.clearCoatRoughness, dotNL );\n\t#else\n\t\tfloat clearCoatDHR = 0.0;\n\t#endif\n\treflectedLight.directSpecular += ( 1.0 - clearCoatDHR ) * irradiance * BRDF_Specular_GGX( directLight, geometry, material.specularColor, material.specularRoughness );\n\treflectedLight.directDiffuse += ( 1.0 - clearCoatDHR ) * irradiance * BRDF_Diffuse_Lambert( material.diffuseColor );\n\t#ifndef STANDARD\n\t\treflectedLight.directSpecular += irradiance * material.clearCoat * BRDF_Specular_GGX( directLight, geometry, vec3( DEFAULT_SPECULAR_COEFFICIENT ), material.clearCoatRoughness );\n\t#endif\n}\nvoid RE_IndirectDiffuse_Physical( const in vec3 irradiance, const in GeometricContext geometry, const in PhysicalMaterial material, inout ReflectedLight reflectedLight ) {\n\t#ifndef ENVMAP_TYPE_CUBE_UV\n\t\treflectedLight.indirectDiffuse += irradiance * BRDF_Diffuse_Lambert( material.diffuseColor );\n\t#endif\n}\nvoid RE_IndirectSpecular_Physical( const in vec3 radiance, const in vec3 irradiance, const in vec3 clearCoatRadiance, const in GeometricContext geometry, const in PhysicalMaterial material, inout ReflectedLight reflectedLight) {\n\t#ifndef STANDARD\n\t\tfloat dotNV = saturate( dot( geometry.normal, geometry.viewDir ) );\n\t\tfloat dotNL = dotNV;\n\t\tfloat clearCoatDHR = material.clearCoat * clearCoatDHRApprox( material.clearCoatRoughness, dotNL );\n\t#else\n\t\tfloat clearCoatDHR = 0.0;\n\t#endif\n\tfloat clearCoatInv = 1.0 - clearCoatDHR;\n\t#if defined( ENVMAP_TYPE_CUBE_UV )\n\t\tvec3 singleScattering = vec3( 0.0 );\n\t\tvec3 multiScattering = vec3( 0.0 );\n\t\tvec3 cosineWeightedIrradiance = irradiance * RECIPROCAL_PI;\n\t\tBRDF_Specular_Multiscattering_Environment( geometry, material.specularColor, material.specularRoughness, singleScattering, multiScattering );\n\t\tvec3 diffuse = material.diffuseColor * ( 1.0 - ( singleScattering + multiScattering ) );\n\t\treflectedLight.indirectSpecular += clearCoatInv * radiance * singleScattering;\n\t\treflectedLight.indirectDiffuse += multiScattering * cosineWeightedIrradiance;\n\t\treflectedLight.indirectDiffuse += diffuse * cosineWeightedIrradiance;\n\t#else\n\t\treflectedLight.indirectSpecular += clearCoatInv * radiance * BRDF_Specular_GGX_Environment( geometry, material.specularColor, material.specularRoughness );\n\t#endif\n\t#ifndef STANDARD\n\t\treflectedLight.indirectSpecular += clearCoatRadiance * material.clearCoat * BRDF_Specular_GGX_Environment( geometry, vec3( DEFAULT_SPECULAR_COEFFICIENT ), material.clearCoatRoughness );\n\t#endif\n}\n#define RE_Direct\t\t\t\tRE_Direct_Physical\n#define RE_Direct_RectArea\t\tRE_Direct_RectArea_Physical\n#define RE_IndirectDiffuse\t\tRE_IndirectDiffuse_Physical\n#define RE_IndirectSpecular\t\tRE_IndirectSpecular_Physical\n#define Material_BlinnShininessExponent( material )   GGXRoughnessToBlinnExponent( material.specularRoughness )\n#define Material_ClearCoat_BlinnShininessExponent( material )   GGXRoughnessToBlinnExponent( material.clearCoatRoughness )\nfloat computeSpecularOcclusion( const in float dotNV, const in float ambientOcclusion, const in float roughness ) {\n\treturn saturate( pow( dotNV + ambientOcclusion, exp2( - 16.0 * roughness - 1.0 ) ) - 1.0 + ambientOcclusion );\n}";
 
-		var lights_fragment_begin = "\nGeometricContext geometry;\ngeometry.position = - vViewPosition;\ngeometry.normal = normal;\ngeometry.viewDir = normalize( vViewPosition );\nIncidentLight directLight;\n#if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n\tPointLight pointLight;\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n\t\tpointLight = pointLights[ i ];\n\t\tgetPointDirectLightIrradiance( pointLight, geometry, directLight );\n\t\t#ifdef USE_SHADOWMAP\n\t\tdirectLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ], pointLight.shadowCameraNear, pointLight.shadowCameraFar ) : 1.0;\n\t\t#endif\n\t\tRE_Direct( directLight, geometry, material, reflectedLight );\n\t}\n#endif\n#if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n\tSpotLight spotLight;\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n\t\tspotLight = spotLights[ i ];\n\t\tgetSpotDirectLightIrradiance( spotLight, geometry, directLight );\n\t\t#ifdef USE_SHADOWMAP\n\t\tdirectLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n\t\t#endif\n\t\tRE_Direct( directLight, geometry, material, reflectedLight );\n\t}\n#endif\n#if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n\tDirectionalLight directionalLight;\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n\t\tdirectionalLight = directionalLights[ i ];\n\t\tgetDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n\t\t#ifdef USE_SHADOWMAP\n\t\tdirectLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n\t\t#endif\n\t\tRE_Direct( directLight, geometry, material, reflectedLight );\n\t}\n#endif\n#if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n\tRectAreaLight rectAreaLight;\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n\t\trectAreaLight = rectAreaLights[ i ];\n\t\tRE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n\t}\n#endif\n#if defined( RE_IndirectDiffuse )\n\tvec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n\t#if ( NUM_HEMI_LIGHTS > 0 )\n\t\t#pragma unroll_loop\n\t\tfor ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n\t\t\tirradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n\t\t}\n\t#endif\n#endif\n#if defined( RE_IndirectSpecular )\n\tvec3 radiance = vec3( 0.0 );\n\tvec3 clearCoatRadiance = vec3( 0.0 );\n#endif";
+		var lights_fragment_begin = "\nGeometricContext geometry;\ngeometry.position = - vViewPosition;\ngeometry.normal = normal;\ngeometry.viewDir = normalize( vViewPosition );\nIncidentLight directLight;\n#if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n\tPointLight pointLight;\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n\t\tpointLight = pointLights[ i ];\n\t\tgetPointDirectLightIrradiance( pointLight, geometry, directLight );\n\t\t#ifdef USE_SHADOWMAP\n\t\tdirectLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ], pointLight.shadowCameraNear, pointLight.shadowCameraFar ) : 1.0;\n\t\t#endif\n\t\tRE_Direct( directLight, geometry, material, reflectedLight );\n\t}\n#endif\n#if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n\tSpotLight spotLight;\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n\t\tspotLight = spotLights[ i ];\n\t\tgetSpotDirectLightIrradiance( spotLight, geometry, directLight );\n\t\t#ifdef USE_SHADOWMAP\n\t\tdirectLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n\t\t#endif\n\t\tRE_Direct( directLight, geometry, material, reflectedLight );\n\t}\n#endif\n#if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n\tDirectionalLight directionalLight;\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n\t\tdirectionalLight = directionalLights[ i ];\n\t\tgetDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n\t\t#ifdef USE_SHADOWMAP\n\t\tdirectLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n\t\t#endif\n\t\tRE_Direct( directLight, geometry, material, reflectedLight );\n\t}\n#endif\n#if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n\tRectAreaLight rectAreaLight;\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n\t\trectAreaLight = rectAreaLights[ i ];\n\t\tRE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n\t}\n#endif\n#if defined( RE_IndirectDiffuse )\n\tvec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n\tirradiance += getLightProbeIrradiance( lightProbe, geometry );\n\t#if ( NUM_HEMI_LIGHTS > 0 )\n\t\t#pragma unroll_loop\n\t\tfor ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n\t\t\tirradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n\t\t}\n\t#endif\n#endif\n#if defined( RE_IndirectSpecular )\n\tvec3 radiance = vec3( 0.0 );\n\tvec3 clearCoatRadiance = vec3( 0.0 );\n#endif";
 
 		var lights_fragment_maps = "#if defined( RE_IndirectDiffuse )\n\t#ifdef USE_LIGHTMAP\n\t\tvec3 lightMapIrradiance = texture2D( lightMap, vUv2 ).xyz * lightMapIntensity;\n\t\t#ifndef PHYSICALLY_CORRECT_LIGHTS\n\t\t\tlightMapIrradiance *= PI;\n\t\t#endif\n\t\tirradiance += lightMapIrradiance;\n\t#endif\n\t#if defined( USE_ENVMAP ) && defined( PHYSICAL ) && defined( ENVMAP_TYPE_CUBE_UV )\n\t\tirradiance += getLightProbeIndirectIrradiance( geometry, maxMipLevel );\n\t#endif\n#endif\n#if defined( USE_ENVMAP ) && defined( RE_IndirectSpecular )\n\tradiance += getLightProbeIndirectRadiance( geometry, Material_BlinnShininessExponent( material ), maxMipLevel );\n\t#ifndef STANDARD\n\t\tclearCoatRadiance += getLightProbeIndirectRadiance( geometry, Material_ClearCoat_BlinnShininessExponent( material ), maxMipLevel );\n\t#endif\n#endif";
 
-		var lights_fragment_end = "#if defined( RE_IndirectDiffuse )\n\tRE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n#endif\n#if defined( RE_IndirectSpecular )\n\tRE_IndirectSpecular( radiance, clearCoatRadiance, geometry, material, reflectedLight );\n#endif";
+		var lights_fragment_end = "#if defined( RE_IndirectDiffuse )\n\tRE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n#endif\n#if defined( RE_IndirectSpecular )\n\tRE_IndirectSpecular( radiance, irradiance, clearCoatRadiance, geometry, material, reflectedLight );\n#endif";
 
 		var logdepthbuf_fragment = "#if defined( USE_LOGDEPTHBUF ) && defined( USE_LOGDEPTHBUF_EXT )\n\tgl_FragDepthEXT = log2( vFragDepth ) * logDepthBufFC * 0.5;\n#endif";
 
@@ -37401,9 +39370,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		var morphtarget_vertex = "#ifdef USE_MORPHTARGETS\n\ttransformed += ( morphTarget0 - position ) * morphTargetInfluences[ 0 ];\n\ttransformed += ( morphTarget1 - position ) * morphTargetInfluences[ 1 ];\n\ttransformed += ( morphTarget2 - position ) * morphTargetInfluences[ 2 ];\n\ttransformed += ( morphTarget3 - position ) * morphTargetInfluences[ 3 ];\n\t#ifndef USE_MORPHNORMALS\n\ttransformed += ( morphTarget4 - position ) * morphTargetInfluences[ 4 ];\n\ttransformed += ( morphTarget5 - position ) * morphTargetInfluences[ 5 ];\n\ttransformed += ( morphTarget6 - position ) * morphTargetInfluences[ 6 ];\n\ttransformed += ( morphTarget7 - position ) * morphTargetInfluences[ 7 ];\n\t#endif\n#endif";
 
-		var normal_fragment_begin = "#ifdef FLAT_SHADED\n\tvec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n\tvec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n\tvec3 normal = normalize( cross( fdx, fdy ) );\n#else\n\tvec3 normal = normalize( vNormal );\n\t#ifdef DOUBLE_SIDED\n\t\tnormal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t#endif\n#endif";
+		var normal_fragment_begin = "#ifdef FLAT_SHADED\n\tvec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n\tvec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n\tvec3 normal = normalize( cross( fdx, fdy ) );\n#else\n\tvec3 normal = normalize( vNormal );\n\t#ifdef DOUBLE_SIDED\n\t\tnormal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t#endif\n\t#ifdef USE_TANGENT\n\t\tvec3 tangent = normalize( vTangent );\n\t\tvec3 bitangent = normalize( vBitangent );\n\t\t#ifdef DOUBLE_SIDED\n\t\t\ttangent = tangent * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t\t\tbitangent = bitangent * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t\t#endif\n\t#endif\n#endif";
 
-		var normal_fragment_maps = "#ifdef USE_NORMALMAP\n\t#ifdef OBJECTSPACE_NORMALMAP\n\t\tnormal = texture2D( normalMap, vUv ).xyz * 2.0 - 1.0;\n\t\t#ifdef FLIP_SIDED\n\t\t\tnormal = - normal;\n\t\t#endif\n\t\t#ifdef DOUBLE_SIDED\n\t\t\tnormal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t\t#endif\n\t\tnormal = normalize( normalMatrix * normal );\n\t#else\n\t\tnormal = perturbNormal2Arb( -vViewPosition, normal );\n\t#endif\n#elif defined( USE_BUMPMAP )\n\tnormal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n#endif";
+		var normal_fragment_maps = "#ifdef USE_NORMALMAP\n\t#ifdef OBJECTSPACE_NORMALMAP\n\t\tnormal = texture2D( normalMap, vUv ).xyz * 2.0 - 1.0;\n\t\t#ifdef FLIP_SIDED\n\t\t\tnormal = - normal;\n\t\t#endif\n\t\t#ifdef DOUBLE_SIDED\n\t\t\tnormal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t\t#endif\n\t\tnormal = normalize( normalMatrix * normal );\n\t#else\n\t\t#ifdef USE_TANGENT\n\t\t\tmat3 vTBN = mat3( tangent, bitangent, normal );\n\t\t\tvec3 mapN = texture2D( normalMap, vUv ).xyz * 2.0 - 1.0;\n\t\t\tmapN.xy = normalScale * mapN.xy;\n\t\t\tnormal = normalize( vTBN * mapN );\n\t\t#else\n\t\t\tnormal = perturbNormal2Arb( -vViewPosition, normal );\n\t\t#endif\n\t#endif\n#elif defined( USE_BUMPMAP )\n\tnormal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n#endif";
 
 		var normalmap_pars_fragment = "#ifdef USE_NORMALMAP\n\tuniform sampler2D normalMap;\n\tuniform vec2 normalScale;\n\t#ifdef OBJECTSPACE_NORMALMAP\n\t\tuniform mat3 normalMatrix;\n\t#else\n\t\tvec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm ) {\n\t\t\tvec3 q0 = vec3( dFdx( eye_pos.x ), dFdx( eye_pos.y ), dFdx( eye_pos.z ) );\n\t\t\tvec3 q1 = vec3( dFdy( eye_pos.x ), dFdy( eye_pos.y ), dFdy( eye_pos.z ) );\n\t\t\tvec2 st0 = dFdx( vUv.st );\n\t\t\tvec2 st1 = dFdy( vUv.st );\n\t\t\tfloat scale = sign( st1.t * st0.s - st0.t * st1.s );\n\t\t\tvec3 S = normalize( ( q0 * st1.t - q1 * st0.t ) * scale );\n\t\t\tvec3 T = normalize( ( - q0 * st1.s + q1 * st0.s ) * scale );\n\t\t\tvec3 N = normalize( surf_norm );\n\t\t\tmat3 tsn = mat3( S, T, N );\n\t\t\tvec3 mapN = texture2D( normalMap, vUv ).xyz * 2.0 - 1.0;\n\t\t\tmapN.xy *= normalScale;\n\t\t\tmapN.xy *= ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t\t\treturn normalize( tsn * mapN );\n\t\t}\n\t#endif\n#endif";
 
@@ -37413,7 +39382,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		var project_vertex = "vec4 mvPosition = modelViewMatrix * vec4( transformed, 1.0 );\ngl_Position = projectionMatrix * mvPosition;";
 
-		var dithering_fragment = "#if defined( DITHERING )\n  gl_FragColor.rgb = dithering( gl_FragColor.rgb );\n#endif";
+		var dithering_fragment = "#if defined( DITHERING )\n\tgl_FragColor.rgb = dithering( gl_FragColor.rgb );\n#endif";
 
 		var dithering_pars_fragment = "#if defined( DITHERING )\n\tvec3 dithering( vec3 color ) {\n\t\tfloat grid_position = rand( gl_FragCoord.xy );\n\t\tvec3 dither_shift_RGB = vec3( 0.25 / 255.0, -0.25 / 255.0, 0.25 / 255.0 );\n\t\tdither_shift_RGB = mix( 2.0 * dither_shift_RGB, -2.0 * dither_shift_RGB, grid_position );\n\t\treturn color + dither_shift_RGB;\n\t}\n#endif";
 
@@ -37435,13 +39404,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		var skinning_vertex = "#ifdef USE_SKINNING\n\tvec4 skinVertex = bindMatrix * vec4( transformed, 1.0 );\n\tvec4 skinned = vec4( 0.0 );\n\tskinned += boneMatX * skinVertex * skinWeight.x;\n\tskinned += boneMatY * skinVertex * skinWeight.y;\n\tskinned += boneMatZ * skinVertex * skinWeight.z;\n\tskinned += boneMatW * skinVertex * skinWeight.w;\n\ttransformed = ( bindMatrixInverse * skinned ).xyz;\n#endif";
 
-		var skinnormal_vertex = "#ifdef USE_SKINNING\n\tmat4 skinMatrix = mat4( 0.0 );\n\tskinMatrix += skinWeight.x * boneMatX;\n\tskinMatrix += skinWeight.y * boneMatY;\n\tskinMatrix += skinWeight.z * boneMatZ;\n\tskinMatrix += skinWeight.w * boneMatW;\n\tskinMatrix  = bindMatrixInverse * skinMatrix * bindMatrix;\n\tobjectNormal = vec4( skinMatrix * vec4( objectNormal, 0.0 ) ).xyz;\n#endif";
+		var skinnormal_vertex = "#ifdef USE_SKINNING\n\tmat4 skinMatrix = mat4( 0.0 );\n\tskinMatrix += skinWeight.x * boneMatX;\n\tskinMatrix += skinWeight.y * boneMatY;\n\tskinMatrix += skinWeight.z * boneMatZ;\n\tskinMatrix += skinWeight.w * boneMatW;\n\tskinMatrix  = bindMatrixInverse * skinMatrix * bindMatrix;\n\tobjectNormal = vec4( skinMatrix * vec4( objectNormal, 0.0 ) ).xyz;\n\t#ifdef USE_TANGENT\n\t\tobjectTangent = vec4( skinMatrix * vec4( objectTangent, 0.0 ) ).xyz;\n\t#endif\n#endif";
 
 		var specularmap_fragment = "float specularStrength;\n#ifdef USE_SPECULARMAP\n\tvec4 texelSpecular = texture2D( specularMap, vUv );\n\tspecularStrength = texelSpecular.r;\n#else\n\tspecularStrength = 1.0;\n#endif";
 
 		var specularmap_pars_fragment = "#ifdef USE_SPECULARMAP\n\tuniform sampler2D specularMap;\n#endif";
 
-		var tonemapping_fragment = "#if defined( TONE_MAPPING )\n  gl_FragColor.rgb = toneMapping( gl_FragColor.rgb );\n#endif";
+		var tonemapping_fragment = "#if defined( TONE_MAPPING )\n\tgl_FragColor.rgb = toneMapping( gl_FragColor.rgb );\n#endif";
 
 		var tonemapping_pars_fragment = "#ifndef saturate\n\t#define saturate(a) clamp( a, 0.0, 1.0 )\n#endif\nuniform float toneMappingExposure;\nuniform float toneMappingWhitePoint;\nvec3 LinearToneMapping( vec3 color ) {\n\treturn toneMappingExposure * color;\n}\nvec3 ReinhardToneMapping( vec3 color ) {\n\tcolor *= toneMappingExposure;\n\treturn saturate( color / ( vec3( 1.0 ) + color ) );\n}\n#define Uncharted2Helper( x ) max( ( ( x * ( 0.15 * x + 0.10 * 0.50 ) + 0.20 * 0.02 ) / ( x * ( 0.15 * x + 0.50 ) + 0.20 * 0.30 ) ) - 0.02 / 0.30, vec3( 0.0 ) )\nvec3 Uncharted2ToneMapping( vec3 color ) {\n\tcolor *= toneMappingExposure;\n\treturn saturate( Uncharted2Helper( color ) / Uncharted2Helper( vec3( toneMappingWhitePoint ) ) );\n}\nvec3 OptimizedCineonToneMapping( vec3 color ) {\n\tcolor *= toneMappingExposure;\n\tcolor = max( vec3( 0.0 ), color - 0.004 );\n\treturn pow( ( color * ( 6.2 * color + 0.5 ) ) / ( color * ( 6.2 * color + 1.7 ) + 0.06 ), vec3( 2.2 ) );\n}\nvec3 ACESFilmicToneMapping( vec3 color ) {\n\tcolor *= toneMappingExposure;\n\treturn saturate( ( color * ( 2.51 * color + 0.03 ) ) / ( color * ( 2.43 * color + 0.59 ) + 0.14 ) );\n}";
 
@@ -37487,9 +39456,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		var meshbasic_vert = "#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <envmap_pars_vertex>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <color_vertex>\n\t#include <skinbase_vertex>\n\t#ifdef USE_ENVMAP\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n\t#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <worldpos_vertex>\n\t#include <clipping_planes_vertex>\n\t#include <envmap_vertex>\n\t#include <fog_vertex>\n}";
 
-		var meshlambert_frag = "uniform vec3 diffuse;\nuniform vec3 emissive;\nuniform float opacity;\nvarying vec3 vLightFront;\n#ifdef DOUBLE_SIDED\n\tvarying vec3 vLightBack;\n#endif\n#include <common>\n#include <packing>\n#include <dithering_pars_fragment>\n#include <color_pars_fragment>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#include <aomap_pars_fragment>\n#include <lightmap_pars_fragment>\n#include <emissivemap_pars_fragment>\n#include <envmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars_begin>\n#include <fog_pars_fragment>\n#include <shadowmap_pars_fragment>\n#include <shadowmask_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\tReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n\tvec3 totalEmissiveRadiance = emissive;\n\t#include <logdepthbuf_fragment>\n\t#include <map_fragment>\n\t#include <color_fragment>\n\t#include <alphamap_fragment>\n\t#include <alphatest_fragment>\n\t#include <specularmap_fragment>\n\t#include <emissivemap_fragment>\n\treflectedLight.indirectDiffuse = getAmbientLightIrradiance( ambientLightColor );\n\t#include <lightmap_fragment>\n\treflectedLight.indirectDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );\n\t#ifdef DOUBLE_SIDED\n\t\treflectedLight.directDiffuse = ( gl_FrontFacing ) ? vLightFront : vLightBack;\n\t#else\n\t\treflectedLight.directDiffuse = vLightFront;\n\t#endif\n\treflectedLight.directDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb ) * getShadowMask();\n\t#include <aomap_fragment>\n\tvec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + totalEmissiveRadiance;\n\t#include <envmap_fragment>\n\tgl_FragColor = vec4( outgoingLight, diffuseColor.a );\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n\t#include <premultiplied_alpha_fragment>\n\t#include <dithering_fragment>\n}";
+		var meshlambert_frag = "uniform vec3 diffuse;\nuniform vec3 emissive;\nuniform float opacity;\nvarying vec3 vLightFront;\nvarying vec3 vIndirectFront;\n#ifdef DOUBLE_SIDED\n\tvarying vec3 vLightBack;\n\tvarying vec3 vIndirectBack;\n#endif\n#include <common>\n#include <packing>\n#include <dithering_pars_fragment>\n#include <color_pars_fragment>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#include <aomap_pars_fragment>\n#include <lightmap_pars_fragment>\n#include <emissivemap_pars_fragment>\n#include <envmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars_begin>\n#include <fog_pars_fragment>\n#include <shadowmap_pars_fragment>\n#include <shadowmask_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\tReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n\tvec3 totalEmissiveRadiance = emissive;\n\t#include <logdepthbuf_fragment>\n\t#include <map_fragment>\n\t#include <color_fragment>\n\t#include <alphamap_fragment>\n\t#include <alphatest_fragment>\n\t#include <specularmap_fragment>\n\t#include <emissivemap_fragment>\n\treflectedLight.indirectDiffuse = getAmbientLightIrradiance( ambientLightColor );\n\t#ifdef DOUBLE_SIDED\n\t\treflectedLight.indirectDiffuse += ( gl_FrontFacing ) ? vIndirectFront : vIndirectBack;\n\t#else\n\t\treflectedLight.indirectDiffuse += vIndirectFront;\n\t#endif\n\t#include <lightmap_fragment>\n\treflectedLight.indirectDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );\n\t#ifdef DOUBLE_SIDED\n\t\treflectedLight.directDiffuse = ( gl_FrontFacing ) ? vLightFront : vLightBack;\n\t#else\n\t\treflectedLight.directDiffuse = vLightFront;\n\t#endif\n\treflectedLight.directDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb ) * getShadowMask();\n\t#include <aomap_fragment>\n\tvec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + totalEmissiveRadiance;\n\t#include <envmap_fragment>\n\tgl_FragColor = vec4( outgoingLight, diffuseColor.a );\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n\t#include <premultiplied_alpha_fragment>\n\t#include <dithering_fragment>\n}";
 
-		var meshlambert_vert = "#define LAMBERT\nvarying vec3 vLightFront;\n#ifdef DOUBLE_SIDED\n\tvarying vec3 vLightBack;\n#endif\n#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <envmap_pars_vertex>\n#include <bsdfs>\n#include <lights_pars_begin>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <shadowmap_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <color_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <clipping_planes_vertex>\n\t#include <worldpos_vertex>\n\t#include <envmap_vertex>\n\t#include <lights_lambert_vertex>\n\t#include <shadowmap_vertex>\n\t#include <fog_vertex>\n}";
+		var meshlambert_vert = "#define LAMBERT\nvarying vec3 vLightFront;\nvarying vec3 vIndirectFront;\n#ifdef DOUBLE_SIDED\n\tvarying vec3 vLightBack;\n\tvarying vec3 vIndirectBack;\n#endif\n#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <envmap_pars_vertex>\n#include <bsdfs>\n#include <lights_pars_begin>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <shadowmap_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <color_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <clipping_planes_vertex>\n\t#include <worldpos_vertex>\n\t#include <envmap_vertex>\n\t#include <lights_lambert_vertex>\n\t#include <shadowmap_vertex>\n\t#include <fog_vertex>\n}";
 
 		var meshmatcap_frag = "#define MATCAP\nuniform vec3 diffuse;\nuniform float opacity;\nuniform sampler2D matcap;\nvarying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <common>\n#include <uv_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#include <fog_pars_fragment>\n#include <bumpmap_pars_fragment>\n#include <normalmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\t#include <logdepthbuf_fragment>\n\t#include <map_fragment>\n\t#include <alphamap_fragment>\n\t#include <alphatest_fragment>\n\t#include <normal_fragment_begin>\n\t#include <normal_fragment_maps>\n\tvec3 viewDir = normalize( vViewPosition );\n\tvec3 x = normalize( vec3( viewDir.z, 0.0, - viewDir.x ) );\n\tvec3 y = cross( viewDir, x );\n\tvec2 uv = vec2( dot( x, normal ), dot( y, normal ) ) * 0.495 + 0.5;\n\t#ifdef USE_MATCAP\n\t\tvec4 matcapColor = texture2D( matcap, uv );\n\t\tmatcapColor = matcapTexelToLinear( matcapColor );\n\t#else\n\t\tvec4 matcapColor = vec4( 1.0 );\n\t#endif\n\tvec3 outgoingLight = diffuseColor.rgb * matcapColor.rgb;\n\tgl_FragColor = vec4( outgoingLight, diffuseColor.a );\n\t#include <premultiplied_alpha_fragment>\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n}";
 
@@ -37499,13 +39468,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		var meshphong_vert = "#define PHONG\nvarying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <displacementmap_pars_vertex>\n#include <envmap_pars_vertex>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <shadowmap_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <color_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n#ifndef FLAT_SHADED\n\tvNormal = normalize( transformedNormal );\n#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <displacementmap_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <clipping_planes_vertex>\n\tvViewPosition = - mvPosition.xyz;\n\t#include <worldpos_vertex>\n\t#include <envmap_vertex>\n\t#include <shadowmap_vertex>\n\t#include <fog_vertex>\n}";
 
-		var meshphysical_frag = "#define PHYSICAL\nuniform vec3 diffuse;\nuniform vec3 emissive;\nuniform float roughness;\nuniform float metalness;\nuniform float opacity;\n#ifndef STANDARD\n\tuniform float clearCoat;\n\tuniform float clearCoatRoughness;\n#endif\nvarying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <common>\n#include <packing>\n#include <dithering_pars_fragment>\n#include <color_pars_fragment>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#include <aomap_pars_fragment>\n#include <lightmap_pars_fragment>\n#include <emissivemap_pars_fragment>\n#include <bsdfs>\n#include <cube_uv_reflection_fragment>\n#include <envmap_pars_fragment>\n#include <envmap_physical_pars_fragment>\n#include <fog_pars_fragment>\n#include <lights_pars_begin>\n#include <lights_physical_pars_fragment>\n#include <shadowmap_pars_fragment>\n#include <bumpmap_pars_fragment>\n#include <normalmap_pars_fragment>\n#include <roughnessmap_pars_fragment>\n#include <metalnessmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\tReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n\tvec3 totalEmissiveRadiance = emissive;\n\t#include <logdepthbuf_fragment>\n\t#include <map_fragment>\n\t#include <color_fragment>\n\t#include <alphamap_fragment>\n\t#include <alphatest_fragment>\n\t#include <roughnessmap_fragment>\n\t#include <metalnessmap_fragment>\n\t#include <normal_fragment_begin>\n\t#include <normal_fragment_maps>\n\t#include <emissivemap_fragment>\n\t#include <lights_physical_fragment>\n\t#include <lights_fragment_begin>\n\t#include <lights_fragment_maps>\n\t#include <lights_fragment_end>\n\t#include <aomap_fragment>\n\tvec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n\tgl_FragColor = vec4( outgoingLight, diffuseColor.a );\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n\t#include <premultiplied_alpha_fragment>\n\t#include <dithering_fragment>\n}";
+		var meshphysical_frag = "#define PHYSICAL\nuniform vec3 diffuse;\nuniform vec3 emissive;\nuniform float roughness;\nuniform float metalness;\nuniform float opacity;\n#ifndef STANDARD\n\tuniform float clearCoat;\n\tuniform float clearCoatRoughness;\n#endif\nvarying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n\t#ifdef USE_TANGENT\n\t\tvarying vec3 vTangent;\n\t\tvarying vec3 vBitangent;\n\t#endif\n#endif\n#include <common>\n#include <packing>\n#include <dithering_pars_fragment>\n#include <color_pars_fragment>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#include <aomap_pars_fragment>\n#include <lightmap_pars_fragment>\n#include <emissivemap_pars_fragment>\n#include <bsdfs>\n#include <cube_uv_reflection_fragment>\n#include <envmap_pars_fragment>\n#include <envmap_physical_pars_fragment>\n#include <fog_pars_fragment>\n#include <lights_pars_begin>\n#include <lights_physical_pars_fragment>\n#include <shadowmap_pars_fragment>\n#include <bumpmap_pars_fragment>\n#include <normalmap_pars_fragment>\n#include <roughnessmap_pars_fragment>\n#include <metalnessmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\tReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n\tvec3 totalEmissiveRadiance = emissive;\n\t#include <logdepthbuf_fragment>\n\t#include <map_fragment>\n\t#include <color_fragment>\n\t#include <alphamap_fragment>\n\t#include <alphatest_fragment>\n\t#include <roughnessmap_fragment>\n\t#include <metalnessmap_fragment>\n\t#include <normal_fragment_begin>\n\t#include <normal_fragment_maps>\n\t#include <emissivemap_fragment>\n\t#include <lights_physical_fragment>\n\t#include <lights_fragment_begin>\n\t#include <lights_fragment_maps>\n\t#include <lights_fragment_end>\n\t#include <aomap_fragment>\n\tvec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n\tgl_FragColor = vec4( outgoingLight, diffuseColor.a );\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n\t#include <premultiplied_alpha_fragment>\n\t#include <dithering_fragment>\n}";
 
-		var meshphysical_vert = "#define PHYSICAL\nvarying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <displacementmap_pars_vertex>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <shadowmap_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <color_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n#ifndef FLAT_SHADED\n\tvNormal = normalize( transformedNormal );\n#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <displacementmap_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <clipping_planes_vertex>\n\tvViewPosition = - mvPosition.xyz;\n\t#include <worldpos_vertex>\n\t#include <shadowmap_vertex>\n\t#include <fog_vertex>\n}";
+		var meshphysical_vert = "#define PHYSICAL\nvarying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n\t#ifdef USE_TANGENT\n\t\tvarying vec3 vTangent;\n\t\tvarying vec3 vBitangent;\n\t#endif\n#endif\n#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <displacementmap_pars_vertex>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <shadowmap_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <color_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n#ifndef FLAT_SHADED\n\tvNormal = normalize( transformedNormal );\n\t#ifdef USE_TANGENT\n\t\tvTangent = normalize( transformedTangent );\n\t\tvBitangent = normalize( cross( vNormal, vTangent ) * tangent.w );\n\t#endif\n#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <displacementmap_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <clipping_planes_vertex>\n\tvViewPosition = - mvPosition.xyz;\n\t#include <worldpos_vertex>\n\t#include <shadowmap_vertex>\n\t#include <fog_vertex>\n}";
 
-		var normal_frag = "#define NORMAL\nuniform float opacity;\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || ( defined( USE_NORMALMAP ) && ! defined( OBJECTSPACE_NORMALMAP ) )\n\tvarying vec3 vViewPosition;\n#endif\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <packing>\n#include <uv_pars_fragment>\n#include <bumpmap_pars_fragment>\n#include <normalmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\nvoid main() {\n\t#include <logdepthbuf_fragment>\n\t#include <normal_fragment_begin>\n\t#include <normal_fragment_maps>\n\tgl_FragColor = vec4( packNormalToRGB( normal ), opacity );\n}";
+		var normal_frag = "#define NORMAL\nuniform float opacity;\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || ( defined( USE_NORMALMAP ) && ! defined( OBJECTSPACE_NORMALMAP ) )\n\tvarying vec3 vViewPosition;\n#endif\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n\t#ifdef USE_TANGENT\n\t\tvarying vec3 vTangent;\n\t\tvarying vec3 vBitangent;\n\t#endif\n#endif\n#include <packing>\n#include <uv_pars_fragment>\n#include <bumpmap_pars_fragment>\n#include <normalmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\nvoid main() {\n\t#include <logdepthbuf_fragment>\n\t#include <normal_fragment_begin>\n\t#include <normal_fragment_maps>\n\tgl_FragColor = vec4( packNormalToRGB( normal ), opacity );\n}";
 
-		var normal_vert = "#define NORMAL\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || ( defined( USE_NORMALMAP ) && ! defined( OBJECTSPACE_NORMALMAP ) )\n\tvarying vec3 vViewPosition;\n#endif\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <displacementmap_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <logdepthbuf_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n#ifndef FLAT_SHADED\n\tvNormal = normalize( transformedNormal );\n#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <displacementmap_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || ( defined( USE_NORMALMAP ) && ! defined( OBJECTSPACE_NORMALMAP ) )\n\tvViewPosition = - mvPosition.xyz;\n#endif\n}";
+		var normal_vert = "#define NORMAL\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || ( defined( USE_NORMALMAP ) && ! defined( OBJECTSPACE_NORMALMAP ) )\n\tvarying vec3 vViewPosition;\n#endif\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n\t#ifdef USE_TANGENT\n\t\tvarying vec3 vTangent;\n\t\tvarying vec3 vBitangent;\n\t#endif\n#endif\n#include <uv_pars_vertex>\n#include <displacementmap_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <logdepthbuf_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n#ifndef FLAT_SHADED\n\tvNormal = normalize( transformedNormal );\n\t#ifdef USE_TANGENT\n\t\tvTangent = normalize( transformedTangent );\n\t\tvBitangent = normalize( cross( vNormal, vTangent ) * tangent.w );\n\t#endif\n#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <displacementmap_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || ( defined( USE_NORMALMAP ) && ! defined( OBJECTSPACE_NORMALMAP ) )\n\tvViewPosition = - mvPosition.xyz;\n#endif\n}";
 
 		var points_frag = "uniform vec3 diffuse;\nuniform float opacity;\n#include <common>\n#include <color_pars_fragment>\n#include <map_particle_pars_fragment>\n#include <fog_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec3 outgoingLight = vec3( 0.0 );\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\t#include <logdepthbuf_fragment>\n\t#include <map_particle_fragment>\n\t#include <color_fragment>\n\t#include <alphatest_fragment>\n\toutgoingLight = diffuseColor.rgb;\n\tgl_FragColor = vec4( outgoingLight, diffuseColor.a );\n\t#include <premultiplied_alpha_fragment>\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n}";
 
@@ -38415,6 +40384,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			lights: {
 
 				ambientLightColor: { value: [] },
+
+				lightProbe: { value: [] },
 
 				directionalLights: { value: [], properties: {
 					direction: {},
@@ -39542,7 +41513,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			applyMatrix: function ( matrix ) {
 
-				this.matrix.multiplyMatrices( matrix, this.matrix );
+				if ( this.matrixAutoUpdate ) this.updateMatrix();
+
+				this.matrix.premultiply( matrix );
 
 				this.matrix.decompose( this.position, this.quaternion, this.scale );
 
@@ -39859,6 +41832,38 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			},
 
+			attach: function () {
+
+				// adds object as a child of this, while maintaining the object's world transform
+
+				var m = new Matrix4();
+
+				return function attach( object ) {
+
+					this.updateWorldMatrix( true, false );
+
+					m.getInverse( this.matrixWorld );
+
+					if ( object.parent !== null ) {
+
+						object.parent.updateWorldMatrix( true, false );
+
+						m.multiply( object.parent.matrixWorld );
+
+					}
+
+					object.applyMatrix( m );
+
+					object.updateWorldMatrix( false, false );
+
+					this.add( object );
+
+					return this;
+
+				};
+
+			}(),
+
 			getObjectById: function ( id ) {
 
 				return this.getObjectByProperty( 'id', id );
@@ -40146,6 +42151,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				object.matrix = this.matrix.toArray();
 
 				if ( this.matrixAutoUpdate === false ) object.matrixAutoUpdate = false;
+
+				// object specific properties
+
+				if ( this.isMesh && this.drawMode !== TrianglesDrawMode ) object.drawMode = this.drawMode;
 
 				//
 
@@ -40536,7 +42545,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				if ( uvs2 !== undefined ) this.faceVertexUvs[ 1 ] = [];
 
-				for ( var i = 0, j = 0; i < positions.length; i += 3, j += 2 ) {
+				for ( var i = 0; i < positions.length; i += 3 ) {
 
 					scope.vertices.push( new Vector3().fromArray( positions, i ) );
 
@@ -42055,6 +44064,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				return new this.constructor( this.array, this.itemSize ).copy( this );
 
+			},
+
+			toJSON: function () {
+
+				return {
+					itemSize: this.itemSize,
+					type: this.array.constructor.name,
+					array: Array.prototype.slice.call( this.array ),
+					normalized: this.normalized
+				};
+
 			}
 
 		} );
@@ -42584,6 +44604,18 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				}
 
+				var tangent = this.attributes.tangent;
+
+				if ( tangent !== undefined ) {
+
+					var normalMatrix = new Matrix3().getNormalMatrix( matrix );
+
+					// Tangent is vec4, but the '.w' component is a sign value (+1/-1).
+					normalMatrix.applyToBufferAttribute( tangent );
+					tangent.needsUpdate = true;
+
+				}
+
 				if ( this.boundingBox !== null ) {
 
 					this.computeBoundingBox();
@@ -43019,35 +45051,59 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			computeBoundingBox: function () {
 
-				if ( this.boundingBox === null ) {
+				var box = new Box3();
 
-					this.boundingBox = new Box3();
+				return function computeBoundingBox() {
 
-				}
+					if ( this.boundingBox === null ) {
 
-				var position = this.attributes.position;
+						this.boundingBox = new Box3();
 
-				if ( position !== undefined ) {
+					}
 
-					this.boundingBox.setFromBufferAttribute( position );
+					var position = this.attributes.position;
+					var morphAttributesPosition = this.morphAttributes.position;
 
-				} else {
+					if ( position !== undefined ) {
 
-					this.boundingBox.makeEmpty();
+						this.boundingBox.setFromBufferAttribute( position );
 
-				}
+						// process morph attributes if present
 
-				if ( isNaN( this.boundingBox.min.x ) || isNaN( this.boundingBox.min.y ) || isNaN( this.boundingBox.min.z ) ) {
+						if ( morphAttributesPosition ) {
 
-					console.error( 'THREE.BufferGeometry.computeBoundingBox: Computed min/max have NaN values. The "position" attribute is likely to have NaN values.', this );
+							for ( var i = 0, il = morphAttributesPosition.length; i < il; i ++ ) {
 
-				}
+								var morphAttribute = morphAttributesPosition[ i ];
+								box.setFromBufferAttribute( morphAttribute );
 
-			},
+								this.boundingBox.expandByPoint( box.min );
+								this.boundingBox.expandByPoint( box.max );
+
+							}
+
+						}
+
+					} else {
+
+						this.boundingBox.makeEmpty();
+
+					}
+
+					if ( isNaN( this.boundingBox.min.x ) || isNaN( this.boundingBox.min.y ) || isNaN( this.boundingBox.min.z ) ) {
+
+						console.error( 'THREE.BufferGeometry.computeBoundingBox: Computed min/max have NaN values. The "position" attribute is likely to have NaN values.', this );
+
+					}
+
+				};
+
+			}(),
 
 			computeBoundingSphere: function () {
 
 				var box = new Box3();
+				var boxMorphTargets = new Box3();
 				var vector = new Vector3();
 
 				return function computeBoundingSphere() {
@@ -43059,25 +45115,64 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					}
 
 					var position = this.attributes.position;
+					var morphAttributesPosition = this.morphAttributes.position;
 
 					if ( position ) {
+
+						// first, find the center of the bounding sphere
 
 						var center = this.boundingSphere.center;
 
 						box.setFromBufferAttribute( position );
+
+						// process morph attributes if present
+
+						if ( morphAttributesPosition ) {
+
+							for ( var i = 0, il = morphAttributesPosition.length; i < il; i ++ ) {
+
+								var morphAttribute = morphAttributesPosition[ i ];
+								boxMorphTargets.setFromBufferAttribute( morphAttribute );
+
+								box.expandByPoint( boxMorphTargets.min );
+								box.expandByPoint( boxMorphTargets.max );
+
+							}
+
+						}
+
 						box.getCenter( center );
 
-						// hoping to find a boundingSphere with a radius smaller than the
+						// second, try to find a boundingSphere with a radius smaller than the
 						// boundingSphere of the boundingBox: sqrt(3) smaller in the best case
 
 						var maxRadiusSq = 0;
 
 						for ( var i = 0, il = position.count; i < il; i ++ ) {
 
-							vector.x = position.getX( i );
-							vector.y = position.getY( i );
-							vector.z = position.getZ( i );
+							vector.fromBufferAttribute( position, i );
+
 							maxRadiusSq = Math.max( maxRadiusSq, center.distanceToSquared( vector ) );
+
+						}
+
+						// process morph attributes if present
+
+						if ( morphAttributesPosition ) {
+
+							for ( var i = 0, il = morphAttributesPosition.length; i < il; i ++ ) {
+
+								var morphAttribute = morphAttributesPosition[ i ];
+
+								for ( var j = 0, jl = morphAttribute.count; j < jl; j ++ ) {
+
+									vector.fromBufferAttribute( morphAttribute, j );
+
+									maxRadiusSq = Math.max( maxRadiusSq, center.distanceToSquared( vector ) );
+
+								}
+
+							}
 
 						}
 
@@ -43238,9 +45333,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					var attribute2 = geometry.attributes[ key ];
 					var attributeArray2 = attribute2.array;
 
-					var attributeSize = attribute2.itemSize;
+					var attributeOffset = attribute2.itemSize * offset;
+					var length = Math.min( attributeArray2.length, attributeArray1.length - attributeOffset );
 
-					for ( var i = 0, j = attributeSize * offset; i < attributeArray2.length; i ++, j ++ ) {
+					for ( var i = 0, j = attributeOffset; i < length; i ++, j ++ ) {
 
 						attributeArray1[ j ] = attributeArray2[ i ];
 
@@ -43278,21 +45374,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			toNonIndexed: function () {
 
-				if ( this.index === null ) {
-
-					console.warn( 'THREE.BufferGeometry.toNonIndexed(): Geometry is already non-indexed.' );
-					return this;
-
-				}
-
-				var geometry2 = new BufferGeometry();
-
-				var indices = this.index.array;
-				var attributes = this.attributes;
-
-				for ( var name in attributes ) {
-
-					var attribute = attributes[ name ];
+				function convertBufferAttribute( attribute, indices ) {
 
 					var array = attribute.array;
 					var itemSize = attribute.itemSize;
@@ -43313,9 +45395,60 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					}
 
-					geometry2.addAttribute( name, new BufferAttribute( array2, itemSize ) );
+					return new BufferAttribute( array2, itemSize );
 
 				}
+
+				//
+
+				if ( this.index === null ) {
+
+					console.warn( 'THREE.BufferGeometry.toNonIndexed(): Geometry is already non-indexed.' );
+					return this;
+
+				}
+
+				var geometry2 = new BufferGeometry();
+
+				var indices = this.index.array;
+				var attributes = this.attributes;
+
+				// attributes
+
+				for ( var name in attributes ) {
+
+					var attribute = attributes[ name ];
+
+					var newAttribute = convertBufferAttribute( attribute, indices );
+
+					geometry2.addAttribute( name, newAttribute );
+
+				}
+
+				// morph attributes
+
+				var morphAttributes = this.morphAttributes;
+
+				for ( name in morphAttributes ) {
+
+					var morphArray = [];
+					var morphAttribute = morphAttributes[ name ]; // morphAttribute: array of Float32BufferAttributes
+
+					for ( var i = 0, il = morphAttribute.length; i < il; i ++ ) {
+
+						var attribute = morphAttribute[ i ];
+
+						var newAttribute = convertBufferAttribute( attribute, indices );
+
+						morphArray.push( newAttribute );
+
+					}
+
+					geometry2.morphAttributes[ name ] = morphArray;
+
+				}
+
+				// groups
 
 				var groups = this.groups;
 
@@ -43367,11 +45500,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				if ( index !== null ) {
 
-					var array = Array.prototype.slice.call( index.array );
-
 					data.data.index = {
 						type: index.array.constructor.name,
-						array: array
+						array: Array.prototype.slice.call( index.array )
 					};
 
 				}
@@ -43382,16 +45513,46 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					var attribute = attributes[ key ];
 
-					var array = Array.prototype.slice.call( attribute.array );
+					var attributeData = attribute.toJSON();
 
-					data.data.attributes[ key ] = {
-						itemSize: attribute.itemSize,
-						type: attribute.array.constructor.name,
-						array: array,
-						normalized: attribute.normalized
-					};
+					if ( attribute.name !== '' ) attributeData.name = attribute.name;
+
+					data.data.attributes[ key ] = attributeData;
 
 				}
+
+				var morphAttributes = {};
+				var hasMorphAttributes = false;
+
+				for ( var key in this.morphAttributes ) {
+
+					var attributeArray = this.morphAttributes[ key ];
+
+					var array = [];
+
+					for ( var i = 0, il = attributeArray.length; i < il; i ++ ) {
+
+						var attribute = attributeArray[ i ];
+
+						var attributeData = attribute.toJSON();
+
+						if ( attribute.name !== '' ) attributeData.name = attribute.name;
+
+						array.push( attributeData );
+
+					}
+
+					if ( array.length > 0 ) {
+
+						morphAttributes[ key ] = array;
+
+						hasMorphAttributes = true;
+
+					}
+
+				}
+
+				if ( hasMorphAttributes ) data.data.morphAttributes = morphAttributes;
 
 				var groups = this.groups;
 
@@ -43893,6 +46054,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			this.blending = NormalBlending;
 			this.side = FrontSide;
 			this.flatShading = false;
+			this.vertexTangents = false;
 			this.vertexColors = NoColors; // THREE.NoColors, THREE.VertexColors, THREE.FaceColors
 
 			this.opacity = 1;
@@ -44036,6 +46198,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				if ( this.clearCoatRoughness !== undefined ) data.clearCoatRoughness = this.clearCoatRoughness;
 
 				if ( this.map && this.map.isTexture ) data.map = this.map.toJSON( meta ).uuid;
+				if ( this.matcap && this.matcap.isTexture ) data.matcap = this.matcap.toJSON( meta ).uuid;
 				if ( this.alphaMap && this.alphaMap.isTexture ) data.alphaMap = this.alphaMap.toJSON( meta ).uuid;
 				if ( this.lightMap && this.lightMap.isTexture ) data.lightMap = this.lightMap.toJSON( meta ).uuid;
 
@@ -44246,6 +46409,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		} );
 
+		var default_vertex = "void main() {\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n}";
+
+		var default_fragment = "void main() {\n\tgl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );\n}";
+
 		/**
 		 * @author alteredq / http://alteredqualia.com/
 		 *
@@ -44276,8 +46443,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			this.defines = {};
 			this.uniforms = {};
 
-			this.vertexShader = 'void main() {\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n}';
-			this.fragmentShader = 'void main() {\n\tgl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );\n}';
+			this.vertexShader = default_vertex;
+			this.fragmentShader = default_fragment;
 
 			this.linewidth = 1;
 
@@ -44400,6 +46567,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					data.uniforms[ name ] = {
 						type: 'v4',
+						value: value.toArray()
+					};
+
+				} else if ( value && value.isMatrix3 ) {
+
+					data.uniforms[ name ] = {
+						type: 'm3',
 						value: value.toArray()
 					};
 
@@ -45108,6 +47282,23 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				};
 
+			}(),
+
+			isFrontFacing: function () {
+
+				var v0 = new Vector3();
+				var v1 = new Vector3();
+
+				return function isFrontFacing( a, b, c, direction ) {
+
+					v0.subVectors( c, b );
+					v1.subVectors( a, b );
+
+					// strictly front facing
+					return ( v0.cross( v1 ).dot( direction ) < 0 ) ? true : false;
+
+				};
+
 			}()
 
 		} );
@@ -45204,15 +47395,21 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			},
 
+			getUV: function ( point, uv1, uv2, uv3, target ) {
+
+				return Triangle.getUV( point, this.a, this.b, this.c, uv1, uv2, uv3, target );
+
+			},
+
 			containsPoint: function ( point ) {
 
 				return Triangle.containsPoint( point, this.a, this.b, this.c );
 
 			},
 
-			getUV: function ( point, uv1, uv2, uv3, result ) {
+			isFrontFacing: function ( direction ) {
 
-				return Triangle.getUV( point, this.a, this.b, this.c, uv1, uv2, uv3, result );
+				return Triangle.isFrontFacing( this.a, this.b, this.c, direction );
 
 			},
 
@@ -45558,6 +47755,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				var tempB = new Vector3();
 				var tempC = new Vector3();
 
+				var morphA = new Vector3();
+				var morphB = new Vector3();
+				var morphC = new Vector3();
+
 				var uvA = new Vector2();
 				var uvB = new Vector2();
 				var uvC = new Vector2();
@@ -45596,11 +47797,42 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				}
 
-				function checkBufferGeometryIntersection( object, material, raycaster, ray, position, uv, a, b, c ) {
+				function checkBufferGeometryIntersection( object, material, raycaster, ray, position, morphPosition, uv, a, b, c ) {
 
 					vA.fromBufferAttribute( position, a );
 					vB.fromBufferAttribute( position, b );
 					vC.fromBufferAttribute( position, c );
+
+					var morphInfluences = object.morphTargetInfluences;
+
+					if ( material.morphTargets && morphPosition && morphInfluences ) {
+
+						morphA.set( 0, 0, 0 );
+						morphB.set( 0, 0, 0 );
+						morphC.set( 0, 0, 0 );
+
+						for ( var i = 0, il = morphPosition.length; i < il; i ++ ) {
+
+							var influence = morphInfluences[ i ];
+							var morphAttribute = morphPosition[ i ];
+
+							if ( influence === 0 ) continue;
+
+							tempA.fromBufferAttribute( morphAttribute, a );
+							tempB.fromBufferAttribute( morphAttribute, b );
+							tempC.fromBufferAttribute( morphAttribute, c );
+
+							morphA.addScaledVector( tempA.sub( vA ), influence );
+							morphB.addScaledVector( tempB.sub( vB ), influence );
+							morphC.addScaledVector( tempC.sub( vC ), influence );
+
+						}
+
+						vA.add( morphA );
+						vB.add( morphB );
+						vC.add( morphC );
+
+					}
 
 					var intersection = checkIntersection( object, material, raycaster, ray, vA, vB, vC, intersectionPoint );
 
@@ -45664,6 +47896,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 						var a, b, c;
 						var index = geometry.index;
 						var position = geometry.attributes.position;
+						var morphPosition = geometry.morphAttributes.position;
 						var uv = geometry.attributes.uv;
 						var groups = geometry.groups;
 						var drawRange = geometry.drawRange;
@@ -45691,11 +47924,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 										b = index.getX( j + 1 );
 										c = index.getX( j + 2 );
 
-										intersection = checkBufferGeometryIntersection( this, groupMaterial, raycaster, ray, position, uv, a, b, c );
+										intersection = checkBufferGeometryIntersection( this, groupMaterial, raycaster, ray, position, morphPosition, uv, a, b, c );
 
 										if ( intersection ) {
 
 											intersection.faceIndex = Math.floor( j / 3 ); // triangle number in indexed buffer semantics
+											intersection.face.materialIndex = group.materialIndex;
 											intersects.push( intersection );
 
 										}
@@ -45715,7 +47949,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 									b = index.getX( i + 1 );
 									c = index.getX( i + 2 );
 
-									intersection = checkBufferGeometryIntersection( this, material, raycaster, ray, position, uv, a, b, c );
+									intersection = checkBufferGeometryIntersection( this, material, raycaster, ray, position, morphPosition, uv, a, b, c );
 
 									if ( intersection ) {
 
@@ -45748,11 +47982,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 										b = j + 1;
 										c = j + 2;
 
-										intersection = checkBufferGeometryIntersection( this, groupMaterial, raycaster, ray, position, uv, a, b, c );
+										intersection = checkBufferGeometryIntersection( this, groupMaterial, raycaster, ray, position, morphPosition, uv, a, b, c );
 
 										if ( intersection ) {
 
 											intersection.faceIndex = Math.floor( j / 3 ); // triangle number in non-indexed buffer semantics
+											intersection.face.materialIndex = group.materialIndex;
 											intersects.push( intersection );
 
 										}
@@ -45772,7 +48007,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 									b = i + 1;
 									c = i + 2;
 
-									intersection = checkBufferGeometryIntersection( this, material, raycaster, ray, position, uv, a, b, c );
+									intersection = checkBufferGeometryIntersection( this, material, raycaster, ray, position, morphPosition, uv, a, b, c );
 
 									if ( intersection ) {
 
@@ -45809,39 +48044,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 							fvA = vertices[ face.a ];
 							fvB = vertices[ face.b ];
 							fvC = vertices[ face.c ];
-
-							if ( faceMaterial.morphTargets === true ) {
-
-								var morphTargets = geometry.morphTargets;
-								var morphInfluences = this.morphTargetInfluences;
-
-								vA.set( 0, 0, 0 );
-								vB.set( 0, 0, 0 );
-								vC.set( 0, 0, 0 );
-
-								for ( var t = 0, tl = morphTargets.length; t < tl; t ++ ) {
-
-									var influence = morphInfluences[ t ];
-
-									if ( influence === 0 ) continue;
-
-									var targets = morphTargets[ t ].vertices;
-
-									vA.addScaledVector( tempA.subVectors( targets[ face.a ], fvA ), influence );
-									vB.addScaledVector( tempB.subVectors( targets[ face.b ], fvB ), influence );
-									vC.addScaledVector( tempC.subVectors( targets[ face.c ], fvC ), influence );
-
-								}
-
-								vA.add( fvA );
-								vB.add( fvB );
-								vC.add( fvC );
-
-								fvA = vA;
-								fvB = vB;
-								fvC = vC;
-
-							}
 
 							intersection = checkIntersection( this, faceMaterial, raycaster, ray, fvA, fvB, fvC, intersectionPoint );
 
@@ -45900,6 +48102,18 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				var background = scene.background;
 
+				// Ignore background in AR
+				// TODO: Reconsider this.
+
+				var vr = renderer.vr;
+				var session = vr.getSession && vr.getSession();
+
+				if ( session && session.environmentBlendMode === 'additive' ) {
+
+					background = null;
+
+				}
+
 				if ( background === null ) {
 
 					setClear( clearColor, clearAlpha );
@@ -45933,7 +48147,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 								vertexShader: ShaderLib.cube.vertexShader,
 								fragmentShader: ShaderLib.cube.fragmentShader,
 								side: BackSide,
-								depthTest: true,
+								depthTest: false,
 								depthWrite: false,
 								fog: false
 							} )
@@ -45978,7 +48192,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					}
 
 					// push to the pre-sorted opaque render list
-					renderList.unshift( boxMesh, boxMesh.geometry, boxMesh.material, 0, null );
+					renderList.unshift( boxMesh, boxMesh.geometry, boxMesh.material, 0, 0, null );
 
 				} else if ( background && background.isTexture ) {
 
@@ -46037,7 +48251,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 
 					// push to the pre-sorted opaque render list
-					renderList.unshift( planeMesh, planeMesh.geometry, planeMesh.material, 0, null );
+					renderList.unshift( planeMesh, planeMesh.geometry, planeMesh.material, 0, 0, null );
 
 				}
 
@@ -46223,6 +48437,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			var floatFragmentTextures = isWebGL2 || !! extensions.get( 'OES_texture_float' );
 			var floatVertexTextures = vertexTextures && floatFragmentTextures;
 
+			var maxSamples = isWebGL2 ? gl.getParameter( 36183 ) : 0;
+
 			return {
 
 				isWebGL2: isWebGL2,
@@ -46245,7 +48461,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				vertexTextures: vertexTextures,
 				floatFragmentTextures: floatFragmentTextures,
-				floatVertexTextures: floatVertexTextures
+				floatVertexTextures: floatVertexTextures,
+
+				maxSamples: maxSamples
 
 			};
 
@@ -46962,6 +49180,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			images = images !== undefined ? images : [];
 			mapping = mapping !== undefined ? mapping : CubeReflectionMapping;
+			format = format !== undefined ? format : RGBFormat;
 
 			Texture.call( this, images, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding );
 
@@ -46991,6 +49210,30 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		} );
 
 		/**
+		 * @author Takahiro https://github.com/takahirox
+		 */
+
+		function DataTexture2DArray( data, width, height, depth ) {
+
+			Texture.call( this, null );
+
+			this.image = { data: data, width: width, height: height, depth: depth };
+
+			this.magFilter = NearestFilter;
+			this.minFilter = NearestFilter;
+
+			this.wrapR = ClampToEdgeWrapping;
+
+			this.generateMipmaps = false;
+			this.flipY = false;
+
+		}
+
+		DataTexture2DArray.prototype = Object.create( Texture.prototype );
+		DataTexture2DArray.prototype.constructor = DataTexture2DArray;
+		DataTexture2DArray.prototype.isDataTexture2DArray = true;
+
+		/**
 		 * @author Artur Trzesiok
 		 */
 
@@ -47011,6 +49254,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			this.magFilter = NearestFilter;
 			this.minFilter = NearestFilter;
 
+			this.wrapR = ClampToEdgeWrapping;
+
 			this.generateMipmaps = false;
 			this.flipY = false;
 
@@ -47027,7 +49272,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		 *
 		 * Uniforms of a program.
 		 * Those form a tree structure with a special top-level container for the root,
-		 * which you get by calling 'new WebGLUniforms( gl, program, renderer )'.
+		 * which you get by calling 'new WebGLUniforms( gl, program )'.
 		 *
 		 *
 		 * Properties of inner nodes including the top-level container:
@@ -47038,15 +49283,15 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		 *
 		 * Methods of all nodes except the top-level container:
 		 *
-		 * .setValue( gl, value, [renderer] )
+		 * .setValue( gl, value, [textures] )
 		 *
 		 * 		uploads a uniform value(s)
-		 *  	the 'renderer' parameter is needed for sampler uniforms
+		 *  	the 'textures' parameter is needed for sampler uniforms
 		 *
 		 *
-		 * Static methods of the top-level container (renderer factorizations):
+		 * Static methods of the top-level container (textures factorizations):
 		 *
-		 * .upload( gl, seq, values, renderer )
+		 * .upload( gl, seq, values, textures )
 		 *
 		 * 		sets uniforms in 'seq' to 'values[id].value'
 		 *
@@ -47055,15 +49300,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		 * 		filters 'seq' entries with corresponding entry in values
 		 *
 		 *
-		 * Methods of the top-level container (renderer factorizations):
+		 * Methods of the top-level container (textures factorizations):
 		 *
-		 * .setValue( gl, name, value )
+		 * .setValue( gl, name, value, textures )
 		 *
 		 * 		sets uniform with  name 'name' to 'value'
-		 *
-		 * .set( gl, obj, prop )
-		 *
-		 * 		sets uniform from object and property with same name than uniform
 		 *
 		 * .setOptional( gl, obj, prop )
 		 *
@@ -47072,17 +49313,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		 */
 
 		var emptyTexture = new Texture();
+		var emptyTexture2dArray = new DataTexture2DArray();
 		var emptyTexture3d = new DataTexture3D();
 		var emptyCubeTexture = new CubeTexture();
-
-		// --- Base for inner nodes (including the root) ---
-
-		function UniformContainer() {
-
-			this.seq = [];
-			this.map = {};
-
-		}
 
 		// --- Utilities ---
 
@@ -47160,7 +49393,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		// Texture unit allocation
 
-		function allocTexUnits( renderer, n ) {
+		function allocTexUnits( textures, n ) {
 
 			var r = arrayCacheI32[ n ];
 
@@ -47172,7 +49405,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			}
 
 			for ( var i = 0; i !== n; ++ i )
-				r[ i ] = renderer.allocTextureUnit();
+				r[ i ] = textures.allocateTextureUnit();
 
 			return r;
 
@@ -47185,7 +49418,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		// Single scalar
 
-		function setValue1f( gl, v ) {
+		function setValueV1f( gl, v ) {
 
 			var cache = this.cache;
 
@@ -47197,21 +49430,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		}
 
-		function setValue1i( gl, v ) {
-
-			var cache = this.cache;
-
-			if ( cache[ 0 ] === v ) return;
-
-			gl.uniform1i( this.addr, v );
-
-			cache[ 0 ] = v;
-
-		}
-
 		// Single float vector (from flat array or THREE.VectorN)
 
-		function setValue2fv( gl, v ) {
+		function setValueV2f( gl, v ) {
 
 			var cache = this.cache;
 
@@ -47238,7 +49459,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		}
 
-		function setValue3fv( gl, v ) {
+		function setValueV3f( gl, v ) {
 
 			var cache = this.cache;
 
@@ -47278,7 +49499,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		}
 
-		function setValue4fv( gl, v ) {
+		function setValueV4f( gl, v ) {
 
 			var cache = this.cache;
 
@@ -47309,7 +49530,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		// Single matrix (from flat array or MatrixN)
 
-		function setValue2fm( gl, v ) {
+		function setValueM2( gl, v ) {
 
 			var cache = this.cache;
 			var elements = v.elements;
@@ -47336,7 +49557,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		}
 
-		function setValue3fm( gl, v ) {
+		function setValueM3( gl, v ) {
 
 			var cache = this.cache;
 			var elements = v.elements;
@@ -47363,7 +49584,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		}
 
-		function setValue4fm( gl, v ) {
+		function setValueM4( gl, v ) {
 
 			var cache = this.cache;
 			var elements = v.elements;
@@ -47392,10 +49613,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		// Single texture (2D / Cube)
 
-		function setValueT1( gl, v, renderer ) {
+		function setValueT1( gl, v, textures ) {
 
 			var cache = this.cache;
-			var unit = renderer.allocTextureUnit();
+			var unit = textures.allocateTextureUnit();
 
 			if ( cache[ 0 ] !== unit ) {
 
@@ -47404,14 +49625,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			}
 
-			renderer.setTexture2D( v || emptyTexture, unit );
+			textures.safeSetTexture2D( v || emptyTexture, unit );
 
 		}
 
-		function setValueT3D1( gl, v, renderer ) {
+		function setValueT2DArray1( gl, v, textures ) {
 
 			var cache = this.cache;
-			var unit = renderer.allocTextureUnit();
+			var unit = textures.allocateTextureUnit();
 
 			if ( cache[ 0 ] !== unit ) {
 
@@ -47420,14 +49641,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			}
 
-			renderer.setTexture3D( v || emptyTexture3d, unit );
+			textures.setTexture2DArray( v || emptyTexture2dArray, unit );
 
 		}
 
-		function setValueT6( gl, v, renderer ) {
+		function setValueT3D1( gl, v, textures ) {
 
 			var cache = this.cache;
-			var unit = renderer.allocTextureUnit();
+			var unit = textures.allocateTextureUnit();
 
 			if ( cache[ 0 ] !== unit ) {
 
@@ -47436,13 +49657,41 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			}
 
-			renderer.setTextureCube( v || emptyCubeTexture, unit );
+			textures.setTexture3D( v || emptyTexture3d, unit );
+
+		}
+
+		function setValueT6( gl, v, textures ) {
+
+			var cache = this.cache;
+			var unit = textures.allocateTextureUnit();
+
+			if ( cache[ 0 ] !== unit ) {
+
+				gl.uniform1i( this.addr, unit );
+				cache[ 0 ] = unit;
+
+			}
+
+			textures.safeSetTextureCube( v || emptyCubeTexture, unit );
 
 		}
 
 		// Integer / Boolean vectors or arrays thereof (always flat arrays)
 
-		function setValue2iv( gl, v ) {
+		function setValueV1i( gl, v ) {
+
+			var cache = this.cache;
+
+			if ( cache[ 0 ] === v ) return;
+
+			gl.uniform1i( this.addr, v );
+
+			cache[ 0 ] = v;
+
+		}
+
+		function setValueV2i( gl, v ) {
 
 			var cache = this.cache;
 
@@ -47454,7 +49703,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		}
 
-		function setValue3iv( gl, v ) {
+		function setValueV3i( gl, v ) {
 
 			var cache = this.cache;
 
@@ -47466,7 +49715,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		}
 
-		function setValue4iv( gl, v ) {
+		function setValueV4i( gl, v ) {
 
 			var cache = this.cache;
 
@@ -47484,176 +49733,143 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			switch ( type ) {
 
-				case 0x1406: return setValue1f; // FLOAT
-				case 0x8b50: return setValue2fv; // _VEC2
-				case 0x8b51: return setValue3fv; // _VEC3
-				case 0x8b52: return setValue4fv; // _VEC4
+				case 0x1406: return setValueV1f; // FLOAT
+				case 0x8b50: return setValueV2f; // _VEC2
+				case 0x8b51: return setValueV3f; // _VEC3
+				case 0x8b52: return setValueV4f; // _VEC4
 
-				case 0x8b5a: return setValue2fm; // _MAT2
-				case 0x8b5b: return setValue3fm; // _MAT3
-				case 0x8b5c: return setValue4fm; // _MAT4
+				case 0x8b5a: return setValueM2; // _MAT2
+				case 0x8b5b: return setValueM3; // _MAT3
+				case 0x8b5c: return setValueM4; // _MAT4
 
 				case 0x8b5e: case 0x8d66: return setValueT1; // SAMPLER_2D, SAMPLER_EXTERNAL_OES
-				case 0x8B5F: return setValueT3D1; // SAMPLER_3D
+				case 0x8b5f: return setValueT3D1; // SAMPLER_3D
 				case 0x8b60: return setValueT6; // SAMPLER_CUBE
+				case 0x8DC1: return setValueT2DArray1; // SAMPLER_2D_ARRAY
 
-				case 0x1404: case 0x8b56: return setValue1i; // INT, BOOL
-				case 0x8b53: case 0x8b57: return setValue2iv; // _VEC2
-				case 0x8b54: case 0x8b58: return setValue3iv; // _VEC3
-				case 0x8b55: case 0x8b59: return setValue4iv; // _VEC4
+				case 0x1404: case 0x8b56: return setValueV1i; // INT, BOOL
+				case 0x8b53: case 0x8b57: return setValueV2i; // _VEC2
+				case 0x8b54: case 0x8b58: return setValueV3i; // _VEC3
+				case 0x8b55: case 0x8b59: return setValueV4i; // _VEC4
 
 			}
 
 		}
 
 		// Array of scalars
-
-		function setValue1fv( gl, v ) {
-
-			var cache = this.cache;
-
-			if ( arraysEqual( cache, v ) ) return;
+		function setValueV1fArray( gl, v ) {
 
 			gl.uniform1fv( this.addr, v );
 
-			copyArray( cache, v );
-
 		}
-		function setValue1iv( gl, v ) {
 
-			var cache = this.cache;
-
-			if ( arraysEqual( cache, v ) ) return;
+		// Integer / Boolean vectors or arrays thereof (always flat arrays)
+		function setValueV1iArray( gl, v ) {
 
 			gl.uniform1iv( this.addr, v );
 
-			copyArray( cache, v );
+		}
+
+		function setValueV2iArray( gl, v ) {
+
+			gl.uniform2iv( this.addr, v );
 
 		}
+
+		function setValueV3iArray( gl, v ) {
+
+			gl.uniform3iv( this.addr, v );
+
+		}
+
+		function setValueV4iArray( gl, v ) {
+
+			gl.uniform4iv( this.addr, v );
+
+		}
+
 
 		// Array of vectors (flat or from THREE classes)
 
-		function setValueV2a( gl, v ) {
+		function setValueV2fArray( gl, v ) {
 
-			var cache = this.cache;
 			var data = flatten( v, this.size, 2 );
-
-			if ( arraysEqual( cache, data ) ) return;
 
 			gl.uniform2fv( this.addr, data );
 
-			this.updateCache( data );
-
 		}
 
-		function setValueV3a( gl, v ) {
+		function setValueV3fArray( gl, v ) {
 
-			var cache = this.cache;
 			var data = flatten( v, this.size, 3 );
-
-			if ( arraysEqual( cache, data ) ) return;
 
 			gl.uniform3fv( this.addr, data );
 
-			this.updateCache( data );
-
 		}
 
-		function setValueV4a( gl, v ) {
+		function setValueV4fArray( gl, v ) {
 
-			var cache = this.cache;
 			var data = flatten( v, this.size, 4 );
 
-			if ( arraysEqual( cache, data ) ) return;
-
 			gl.uniform4fv( this.addr, data );
-
-			this.updateCache( data );
 
 		}
 
 		// Array of matrices (flat or from THREE clases)
 
-		function setValueM2a( gl, v ) {
+		function setValueM2Array( gl, v ) {
 
-			var cache = this.cache;
 			var data = flatten( v, this.size, 4 );
-
-			if ( arraysEqual( cache, data ) ) return;
 
 			gl.uniformMatrix2fv( this.addr, false, data );
 
-			this.updateCache( data );
-
 		}
 
-		function setValueM3a( gl, v ) {
+		function setValueM3Array( gl, v ) {
 
-			var cache = this.cache;
 			var data = flatten( v, this.size, 9 );
-
-			if ( arraysEqual( cache, data ) ) return;
 
 			gl.uniformMatrix3fv( this.addr, false, data );
 
-			this.updateCache( data );
-
 		}
 
-		function setValueM4a( gl, v ) {
+		function setValueM4Array( gl, v ) {
 
-			var cache = this.cache;
 			var data = flatten( v, this.size, 16 );
 
-			if ( arraysEqual( cache, data ) ) return;
-
 			gl.uniformMatrix4fv( this.addr, false, data );
-
-			this.updateCache( data );
 
 		}
 
 		// Array of textures (2D / Cube)
 
-		function setValueT1a( gl, v, renderer ) {
+		function setValueT1Array( gl, v, textures ) {
 
-			var cache = this.cache;
 			var n = v.length;
 
-			var units = allocTexUnits( renderer, n );
+			var units = allocTexUnits( textures, n );
 
-			if ( arraysEqual( cache, units ) === false ) {
-
-				gl.uniform1iv( this.addr, units );
-				copyArray( cache, units );
-
-			}
+			gl.uniform1iv( this.addr, units );
 
 			for ( var i = 0; i !== n; ++ i ) {
 
-				renderer.setTexture2D( v[ i ] || emptyTexture, units[ i ] );
+				textures.safeSetTexture2D( v[ i ] || emptyTexture, units[ i ] );
 
 			}
 
 		}
 
-		function setValueT6a( gl, v, renderer ) {
+		function setValueT6Array( gl, v, textures ) {
 
-			var cache = this.cache;
 			var n = v.length;
 
-			var units = allocTexUnits( renderer, n );
+			var units = allocTexUnits( textures, n );
 
-			if ( arraysEqual( cache, units ) === false ) {
-
-				gl.uniform1iv( this.addr, units );
-				copyArray( cache, units );
-
-			}
+			gl.uniform1iv( this.addr, units );
 
 			for ( var i = 0; i !== n; ++ i ) {
 
-				renderer.setTextureCube( v[ i ] || emptyCubeTexture, units[ i ] );
+				textures.safeSetTextureCube( v[ i ] || emptyCubeTexture, units[ i ] );
 
 			}
 
@@ -47665,22 +49881,22 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			switch ( type ) {
 
-				case 0x1406: return setValue1fv; // FLOAT
-				case 0x8b50: return setValueV2a; // _VEC2
-				case 0x8b51: return setValueV3a; // _VEC3
-				case 0x8b52: return setValueV4a; // _VEC4
+				case 0x1406: return setValueV1fArray; // FLOAT
+				case 0x8b50: return setValueV2fArray; // _VEC2
+				case 0x8b51: return setValueV3fArray; // _VEC3
+				case 0x8b52: return setValueV4fArray; // _VEC4
 
-				case 0x8b5a: return setValueM2a; // _MAT2
-				case 0x8b5b: return setValueM3a; // _MAT3
-				case 0x8b5c: return setValueM4a; // _MAT4
+				case 0x8b5a: return setValueM2Array; // _MAT2
+				case 0x8b5b: return setValueM3Array; // _MAT3
+				case 0x8b5c: return setValueM4Array; // _MAT4
 
-				case 0x8b5e: return setValueT1a; // SAMPLER_2D
-				case 0x8b60: return setValueT6a; // SAMPLER_CUBE
+				case 0x8b5e: return setValueT1Array; // SAMPLER_2D
+				case 0x8b60: return setValueT6Array; // SAMPLER_CUBE
 
-				case 0x1404: case 0x8b56: return setValue1iv; // INT, BOOL
-				case 0x8b53: case 0x8b57: return setValue2iv; // _VEC2
-				case 0x8b54: case 0x8b58: return setValue3iv; // _VEC3
-				case 0x8b55: case 0x8b59: return setValue4iv; // _VEC4
+				case 0x1404: case 0x8b56: return setValueV1iArray; // INT, BOOL
+				case 0x8b53: case 0x8b57: return setValueV2iArray; // _VEC2
+				case 0x8b54: case 0x8b58: return setValueV3iArray; // _VEC3
+				case 0x8b55: case 0x8b59: return setValueV4iArray; // _VEC4
 
 			}
 
@@ -47729,18 +49945,19 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			this.id = id;
 
-			UniformContainer.call( this ); // mix-in
+			this.seq = [];
+			this.map = {};
 
 		}
 
-		StructuredUniform.prototype.setValue = function ( gl, value, renderer ) {
+		StructuredUniform.prototype.setValue = function ( gl, value, textures ) {
 
 			var seq = this.seq;
 
 			for ( var i = 0, n = seq.length; i !== n; ++ i ) {
 
 				var u = seq[ i ];
-				u.setValue( gl, value[ u.id ], renderer );
+				u.setValue( gl, value[ u.id ], textures );
 
 			}
 
@@ -47820,11 +50037,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		// Root Container
 
-		function WebGLUniforms( gl, program, renderer ) {
+		function WebGLUniforms( gl, program ) {
 
-			UniformContainer.call( this );
-
-			this.renderer = renderer;
+			this.seq = [];
+			this.map = {};
 
 			var n = gl.getProgramParameter( program, 35718 );
 
@@ -47839,11 +50055,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		}
 
-		WebGLUniforms.prototype.setValue = function ( gl, name, value ) {
+		WebGLUniforms.prototype.setValue = function ( gl, name, value, textures ) {
 
 			var u = this.map[ name ];
 
-			if ( u !== undefined ) u.setValue( gl, value, this.renderer );
+			if ( u !== undefined ) u.setValue( gl, value, textures );
 
 		};
 
@@ -47858,7 +50074,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		// Static interface
 
-		WebGLUniforms.upload = function ( gl, seq, values, renderer ) {
+		WebGLUniforms.upload = function ( gl, seq, values, textures ) {
 
 			for ( var i = 0, n = seq.length; i !== n; ++ i ) {
 
@@ -47868,7 +50084,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				if ( v.needsUpdate !== false ) {
 
 					// note: always updating when .needsUpdate is undefined
-					u.setValue( gl, v.value, renderer );
+					u.setValue( gl, v.value, textures );
 
 				}
 
@@ -47909,22 +50125,26 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		}
 
-		function WebGLShader( gl, type, string ) {
+		function WebGLShader( gl, type, string, debug ) {
 
 			var shader = gl.createShader( type );
 
 			gl.shaderSource( shader, string );
 			gl.compileShader( shader );
 
-			if ( gl.getShaderParameter( shader, 35713 ) === false ) {
+			if ( debug === true ) {
 
-				console.error( 'THREE.WebGLShader: Shader couldn\'t compile.' );
+				if ( gl.getShaderParameter( shader, 35713 ) === false ) {
 
-			}
+					console.error( 'THREE.WebGLShader: Shader couldn\'t compile.' );
 
-			if ( gl.getShaderInfoLog( shader ) !== '' ) {
+				}
 
-				console.warn( 'THREE.WebGLShader: gl.getShaderInfoLog()', type === 35633 ? 'vertex' : 'fragment', gl.getShaderInfoLog( shader ), addLineNumbers( string ) );
+				if ( gl.getShaderInfoLog( shader ) !== '' ) {
+
+					console.warn( 'THREE.WebGLShader: gl.getShaderInfoLog()', type === 35633 ? 'vertex' : 'fragment', gl.getShaderInfoLog( shader ), addLineNumbers( string ) );
+
+				}
 
 			}
 
@@ -48138,7 +50358,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		}
 
-		function WebGLProgram( renderer, extensions, code, material, shader, parameters, capabilities ) {
+		function WebGLProgram( renderer, extensions, code, material, shader, parameters, capabilities, textures ) {
 
 			var gl = renderer.context;
 
@@ -48291,6 +50511,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					parameters.roughnessMap ? '#define USE_ROUGHNESSMAP' : '',
 					parameters.metalnessMap ? '#define USE_METALNESSMAP' : '',
 					parameters.alphaMap ? '#define USE_ALPHAMAP' : '',
+
+					parameters.vertexTangents ? '#define USE_TANGENT' : '',
 					parameters.vertexColors ? '#define USE_COLOR' : '',
 
 					parameters.flatShading ? '#define FLAT_SHADED' : '',
@@ -48321,6 +50543,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					'attribute vec3 position;',
 					'attribute vec3 normal;',
 					'attribute vec2 uv;',
+
+					'#ifdef USE_TANGENT',
+
+					'	attribute vec4 tangent;',
+
+					'#endif',
 
 					'#ifdef USE_COLOR',
 
@@ -48398,6 +50626,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					parameters.roughnessMap ? '#define USE_ROUGHNESSMAP' : '',
 					parameters.metalnessMap ? '#define USE_METALNESSMAP' : '',
 					parameters.alphaMap ? '#define USE_ALPHAMAP' : '',
+
+					parameters.vertexTangents ? '#define USE_TANGENT' : '',
 					parameters.vertexColors ? '#define USE_COLOR' : '',
 
 					parameters.gradientMap ? '#define USE_GRADIENTMAP' : '',
@@ -48505,8 +50735,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			// console.log( '*VERTEX*', vertexGlsl );
 			// console.log( '*FRAGMENT*', fragmentGlsl );
 
-			var glVertexShader = WebGLShader( gl, 35633, vertexGlsl );
-			var glFragmentShader = WebGLShader( gl, 35632, fragmentGlsl );
+			var glVertexShader = WebGLShader( gl, 35633, vertexGlsl, renderer.debug.checkShaderErrors );
+			var glFragmentShader = WebGLShader( gl, 35632, fragmentGlsl, renderer.debug.checkShaderErrors );
 
 			gl.attachShader( program, glVertexShader );
 			gl.attachShader( program, glFragmentShader );
@@ -48526,56 +50756,61 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			gl.linkProgram( program );
 
-			var programLog = gl.getProgramInfoLog( program ).trim();
-			var vertexLog = gl.getShaderInfoLog( glVertexShader ).trim();
-			var fragmentLog = gl.getShaderInfoLog( glFragmentShader ).trim();
+			// check for link errors
+			if ( renderer.debug.checkShaderErrors ) {
 
-			var runnable = true;
-			var haveDiagnostics = true;
+				var programLog = gl.getProgramInfoLog( program ).trim();
+				var vertexLog = gl.getShaderInfoLog( glVertexShader ).trim();
+				var fragmentLog = gl.getShaderInfoLog( glFragmentShader ).trim();
 
-			// console.log( '**VERTEX**', gl.getExtension( 'WEBGL_debug_shaders' ).getTranslatedShaderSource( glVertexShader ) );
-			// console.log( '**FRAGMENT**', gl.getExtension( 'WEBGL_debug_shaders' ).getTranslatedShaderSource( glFragmentShader ) );
+				var runnable = true;
+				var haveDiagnostics = true;
 
-			if ( gl.getProgramParameter( program, 35714 ) === false ) {
+				// console.log( '**VERTEX**', gl.getExtension( 'WEBGL_debug_shaders' ).getTranslatedShaderSource( glVertexShader ) );
+				// console.log( '**FRAGMENT**', gl.getExtension( 'WEBGL_debug_shaders' ).getTranslatedShaderSource( glFragmentShader ) );
 
-				runnable = false;
+				if ( gl.getProgramParameter( program, 35714 ) === false ) {
 
-				console.error( 'THREE.WebGLProgram: shader error: ', gl.getError(), '35715', gl.getProgramParameter( program, 35715 ), 'gl.getProgramInfoLog', programLog, vertexLog, fragmentLog );
+					runnable = false;
 
-			} else if ( programLog !== '' ) {
+					console.error( 'THREE.WebGLProgram: shader error: ', gl.getError(), '35715', gl.getProgramParameter( program, 35715 ), 'gl.getProgramInfoLog', programLog, vertexLog, fragmentLog );
 
-				console.warn( 'THREE.WebGLProgram: gl.getProgramInfoLog()', programLog );
+				} else if ( programLog !== '' ) {
 
-			} else if ( vertexLog === '' || fragmentLog === '' ) {
+					console.warn( 'THREE.WebGLProgram: gl.getProgramInfoLog()', programLog );
 
-				haveDiagnostics = false;
+				} else if ( vertexLog === '' || fragmentLog === '' ) {
 
-			}
+					haveDiagnostics = false;
 
-			if ( haveDiagnostics ) {
+				}
 
-				this.diagnostics = {
+				if ( haveDiagnostics ) {
 
-					runnable: runnable,
-					material: material,
+					this.diagnostics = {
 
-					programLog: programLog,
+						runnable: runnable,
+						material: material,
 
-					vertexShader: {
+						programLog: programLog,
 
-						log: vertexLog,
-						prefix: prefixVertex
+						vertexShader: {
 
-					},
+							log: vertexLog,
+							prefix: prefixVertex
 
-					fragmentShader: {
+						},
 
-						log: fragmentLog,
-						prefix: prefixFragment
+						fragmentShader: {
 
-					}
+							log: fragmentLog,
+							prefix: prefixFragment
 
-				};
+						}
+
+					};
+
+				}
 
 			}
 
@@ -48592,7 +50827,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				if ( cachedUniforms === undefined ) {
 
-					cachedUniforms = new WebGLUniforms( gl, program, renderer );
+					cachedUniforms = new WebGLUniforms( gl, program, textures );
 
 				}
 
@@ -48668,7 +50903,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		 * @author mrdoob / http://mrdoob.com/
 		 */
 
-		function WebGLPrograms( renderer, extensions, capabilities ) {
+		function WebGLPrograms( renderer, extensions, capabilities, textures ) {
 
 			var programs = [];
 
@@ -48694,7 +50929,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				"precision", "supportsVertexTextures", "map", "mapEncoding", "matcap", "matcapEncoding", "envMap", "envMapMode", "envMapEncoding",
 				"lightMap", "aoMap", "emissiveMap", "emissiveMapEncoding", "bumpMap", "normalMap", "objectSpaceNormalMap", "displacementMap", "specularMap",
 				"roughnessMap", "metalnessMap", "gradientMap",
-				"alphaMap", "combine", "vertexColors", "fog", "useFog", "fogExp",
+				"alphaMap", "combine", "vertexColors", "vertexTangents", "fog", "useFog", "fogExp",
 				"flatShading", "sizeAttenuation", "logarithmicDepthBuffer", "skinning",
 				"maxBones", "useVertexTexture", "morphTargets", "morphNormals",
 				"maxMorphTargets", "maxMorphNormals", "premultipliedAlpha",
@@ -48826,6 +51061,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					combine: material.combine,
 
+					vertexTangents: ( material.normalMap && material.vertexTangents ),
 					vertexColors: material.vertexColors,
 
 					fog: !! fog,
@@ -48941,7 +51177,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				if ( program === undefined ) {
 
-					program = new WebGLProgram( renderer, extensions, code, material, shader, parameters, capabilities );
+					program = new WebGLProgram( renderer, extensions, code, material, shader, parameters, capabilities, textures );
 					programs.push( program );
 
 				}
@@ -49027,11 +51263,15 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		function painterSortStable( a, b ) {
 
-			if ( a.renderOrder !== b.renderOrder ) {
+			if ( a.groupOrder !== b.groupOrder ) {
+
+				return a.groupOrder - b.groupOrder;
+
+			} else if ( a.renderOrder !== b.renderOrder ) {
 
 				return a.renderOrder - b.renderOrder;
 
-			} else if ( a.program && b.program && a.program !== b.program ) {
+			} else if ( a.program !== b.program ) {
 
 				return a.program.id - b.program.id;
 
@@ -49053,11 +51293,15 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		function reversePainterSortStable( a, b ) {
 
-			if ( a.renderOrder !== b.renderOrder ) {
+			if ( a.groupOrder !== b.groupOrder ) {
+
+				return a.groupOrder - b.groupOrder;
+
+			} else if ( a.renderOrder !== b.renderOrder ) {
 
 				return a.renderOrder - b.renderOrder;
 
-			} if ( a.z !== b.z ) {
+			} else if ( a.z !== b.z ) {
 
 				return b.z - a.z;
 
@@ -49078,6 +51322,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			var opaque = [];
 			var transparent = [];
 
+			var defaultProgram = { id: - 1 };
+
 			function init() {
 
 				renderItemsIndex = 0;
@@ -49087,7 +51333,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			}
 
-			function getNextRenderItem( object, geometry, material, z, group ) {
+			function getNextRenderItem( object, geometry, material, groupOrder, z, group ) {
 
 				var renderItem = renderItems[ renderItemsIndex ];
 
@@ -49098,7 +51344,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 						object: object,
 						geometry: geometry,
 						material: material,
-						program: material.program,
+						program: material.program || defaultProgram,
+						groupOrder: groupOrder,
 						renderOrder: object.renderOrder,
 						z: z,
 						group: group
@@ -49112,7 +51359,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					renderItem.object = object;
 					renderItem.geometry = geometry;
 					renderItem.material = material;
-					renderItem.program = material.program;
+					renderItem.program = material.program || defaultProgram;
+					renderItem.groupOrder = groupOrder;
 					renderItem.renderOrder = object.renderOrder;
 					renderItem.z = z;
 					renderItem.group = group;
@@ -49125,17 +51373,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			}
 
-			function push( object, geometry, material, z, group ) {
+			function push( object, geometry, material, groupOrder, z, group ) {
 
-				var renderItem = getNextRenderItem( object, geometry, material, z, group );
+				var renderItem = getNextRenderItem( object, geometry, material, groupOrder, z, group );
 
 				( material.transparent === true ? transparent : opaque ).push( renderItem );
 
 			}
 
-			function unshift( object, geometry, material, z, group ) {
+			function unshift( object, geometry, material, groupOrder, z, group ) {
 
-				var renderItem = getNextRenderItem( object, geometry, material, z, group );
+				var renderItem = getNextRenderItem( object, geometry, material, groupOrder, z, group );
 
 				( material.transparent === true ? transparent : opaque ).unshift( renderItem );
 
@@ -49165,6 +51413,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			var lists = {};
 
+			function onSceneDispose( event ) {
+
+				var scene = event.target;
+
+				scene.removeEventListener( 'dispose', onSceneDispose );
+
+				delete lists[ scene.id ];
+
+			}
+
 			function get( scene, camera ) {
 
 				var cameras = lists[ scene.id ];
@@ -49174,6 +51432,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					list = new WebGLRenderList();
 					lists[ scene.id ] = {};
 					lists[ scene.id ][ camera.id ] = list;
+
+					scene.addEventListener( 'dispose', onSceneDispose );
 
 				} else {
 
@@ -49322,6 +51582,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				},
 
 				ambient: [ 0, 0, 0 ],
+				probe: [],
 				directional: [],
 				directionalShadowMap: [],
 				directionalShadowMatrix: [],
@@ -49336,6 +51597,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			};
 
+			for ( var i = 0; i < 9; i ++ ) state.probe.push( new Vector3() );
+
 			var vector3 = new Vector3();
 			var matrix4 = new Matrix4();
 			var matrix42 = new Matrix4();
@@ -49343,6 +51606,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			function setup( lights, shadows, camera ) {
 
 				var r = 0, g = 0, b = 0;
+
+				for ( var i = 0; i < 9; i ++ ) state.probe[ i ].set( 0, 0, 0 );
 
 				var directionalLength = 0;
 				var pointLength = 0;
@@ -49367,6 +51632,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 						r += color.r * intensity;
 						g += color.g * intensity;
 						b += color.b * intensity;
+
+					} else if ( light.isLightProbe ) {
+
+						for ( var j = 0; j < 9; j ++ ) {
+
+							state.probe[ j ].addScaledVector( light.sh.coefficients[ j ], intensity );
+
+						}
 
 					} else if ( light.isDirectionalLight ) {
 
@@ -49600,6 +51873,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			var renderStates = {};
 
+			function onSceneDispose( event ) {
+
+				var scene = event.target;
+
+				scene.removeEventListener( 'dispose', onSceneDispose );
+
+				delete renderStates[ scene.id ];
+
+			}
+
 			function get( scene, camera ) {
 
 				var renderState;
@@ -49609,6 +51892,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					renderState = new WebGLRenderState();
 					renderStates[ scene.id ] = {};
 					renderStates[ scene.id ][ camera.id ] = renderState;
+
+					scene.addEventListener( 'dispose', onSceneDispose );
 
 				} else {
 
@@ -49894,12 +52179,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				if ( lights.length === 0 ) return;
 
-				// TODO Clean up (needed in case of contextlost)
-				var _gl = _renderer.context;
+				var currentRenderTarget = _renderer.getRenderTarget();
+				var activeCubeFace = _renderer.getActiveCubeFace();
+				var activeMipMapLevel = _renderer.getActiveMipMapLevel();
+
 				var _state = _renderer.state;
 
 				// Set GL state for depth map.
-				_state.disable( 3042 );
+				_state.setBlending( NoBlending );
 				_state.buffers.color.setClear( 1, 1, 1, 1 );
 				_state.buffers.depth.setTest( true );
 				_state.setScissorTest( false );
@@ -50051,6 +52338,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				}
 
 				scope.needsUpdate = false;
+
+				_renderer.setRenderTarget( currentRenderTarget, activeCubeFace, activeMipMapLevel );
 
 			};
 
@@ -51204,32 +53493,72 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			//
 
-			function clampToMaxSize( image, maxSize ) {
+			var useOffscreenCanvas = typeof OffscreenCanvas !== 'undefined';
+
+			function createCanvas( width, height ) {
+
+				// Use OffscreenCanvas when available. Specially needed in web workers
+
+				return useOffscreenCanvas ?
+					new OffscreenCanvas( width, height ) :
+					document.createElementNS( 'http://www.w3.org/1999/xhtml', 'canvas' );
+
+			}
+
+			function resizeImage( image, needsPowerOfTwo, needsNewCanvas, maxSize ) {
+
+				var scale = 1;
+
+				// handle case if texture exceeds max size
 
 				if ( image.width > maxSize || image.height > maxSize ) {
 
-					if ( 'data' in image ) {
+					scale = maxSize / Math.max( image.width, image.height );
 
-						console.warn( 'THREE.WebGLRenderer: image in DataTexture is too big (' + image.width + 'x' + image.height + ').' );
-						return;
+				}
+
+				// only perform resize if necessary
+
+				if ( scale < 1 || needsPowerOfTwo === true ) {
+
+					// only perform resize for certain image types
+
+					if ( ( typeof HTMLImageElement !== 'undefined' && image instanceof HTMLImageElement ) ||
+						( typeof HTMLCanvasElement !== 'undefined' && image instanceof HTMLCanvasElement ) ||
+						( typeof ImageBitmap !== 'undefined' && image instanceof ImageBitmap ) ) {
+
+						var floor = needsPowerOfTwo ? _Math.floorPowerOfTwo : Math.floor;
+
+						var width = floor( scale * image.width );
+						var height = floor( scale * image.height );
+
+						if ( _canvas === undefined ) _canvas = createCanvas( width, height );
+
+						// cube textures can't reuse the same canvas
+
+						var canvas = needsNewCanvas ? createCanvas( width, height ) : _canvas;
+
+						canvas.width = width;
+						canvas.height = height;
+
+						var context = canvas.getContext( '2d' );
+						context.drawImage( image, 0, 0, width, height );
+
+						console.warn( 'THREE.WebGLRenderer: Texture has been resized from (' + image.width + 'x' + image.height + ') to (' + width + 'x' + height + ').' );
+
+						return canvas;
+
+					} else {
+
+						if ( 'data' in image ) {
+
+							console.warn( 'THREE.WebGLRenderer: Image in DataTexture is too big (' + image.width + 'x' + image.height + ').' );
+
+						}
+
+						return image;
 
 					}
-
-					// Warning: Scaling through the canvas will only work with images that use
-					// premultiplied alpha.
-
-					var scale = maxSize / Math.max( image.width, image.height );
-
-					var canvas = document.createElementNS( 'http://www.w3.org/1999/xhtml', 'canvas' );
-					canvas.width = Math.floor( image.width * scale );
-					canvas.height = Math.floor( image.height * scale );
-
-					var context = canvas.getContext( '2d' );
-					context.drawImage( image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height );
-
-					console.warn( 'THREE.WebGLRenderer: image is too big (' + image.width + 'x' + image.height + '). Resized to ' + canvas.width + 'x' + canvas.height );
-
-					return canvas;
 
 				}
 
@@ -51243,28 +53572,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			}
 
-			function makePowerOfTwo( image ) {
-
-				if ( image instanceof HTMLImageElement || image instanceof HTMLCanvasElement || image instanceof ImageBitmap ) {
-
-					if ( _canvas === undefined ) _canvas = document.createElementNS( 'http://www.w3.org/1999/xhtml', 'canvas' );
-
-					_canvas.width = _Math.floorPowerOfTwo( image.width );
-					_canvas.height = _Math.floorPowerOfTwo( image.height );
-
-					var context = _canvas.getContext( '2d' );
-					context.drawImage( image, 0, 0, _canvas.width, _canvas.height );
-
-					console.warn( 'THREE.WebGLRenderer: image is not power of two (' + image.width + 'x' + image.height + '). Resized to ' + _canvas.width + 'x' + _canvas.height );
-
-					return _canvas;
-
-				}
-
-				return image;
-
-			}
-
 			function textureNeedsPowerOfTwo( texture ) {
 
 				if ( capabilities.isWebGL2 ) return false;
@@ -51274,9 +53581,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			}
 
-			function textureNeedsGenerateMipmaps( texture, isPowerOfTwo ) {
+			function textureNeedsGenerateMipmaps( texture, supportsMips ) {
 
-				return texture.generateMipmaps && isPowerOfTwo &&
+				return texture.generateMipmaps && supportsMips &&
 					texture.minFilter !== NearestFilter && texture.minFilter !== LinearFilter;
 
 			}
@@ -51296,31 +53603,44 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				if ( ! capabilities.isWebGL2 ) return glFormat;
 
+				var internalFormat = glFormat;
+
 				if ( glFormat === 6403 ) {
 
-					if ( glType === 5126 ) return 33326;
-					if ( glType === 5131 ) return 33325;
-					if ( glType === 5121 ) return 33321;
+					if ( glType === 5126 ) internalFormat = 33326;
+					if ( glType === 5131 ) internalFormat = 33325;
+					if ( glType === 5121 ) internalFormat = 33321;
 
 				}
 
 				if ( glFormat === 6407 ) {
 
-					if ( glType === 5126 ) return 34837;
-					if ( glType === 5131 ) return 34843;
-					if ( glType === 5121 ) return 32849;
+					if ( glType === 5126 ) internalFormat = 34837;
+					if ( glType === 5131 ) internalFormat = 34843;
+					if ( glType === 5121 ) internalFormat = 32849;
 
 				}
 
 				if ( glFormat === 6408 ) {
 
-					if ( glType === 5126 ) return 34836;
-					if ( glType === 5131 ) return 34842;
-					if ( glType === 5121 ) return 32856;
+					if ( glType === 5126 ) internalFormat = 34836;
+					if ( glType === 5131 ) internalFormat = 34842;
+					if ( glType === 5121 ) internalFormat = 32856;
 
 				}
 
-				return glFormat;
+				if ( internalFormat === 33325 || internalFormat === 33326 ||
+					internalFormat === 34842 || internalFormat === 34836 ) {
+
+					extensions.get( 'EXT_color_buffer_float' );
+
+				} else if ( internalFormat === 34843 || internalFormat === 34837 ) {
+
+					console.warn( 'THREE.WebGLRenderer: Floating point textures with RGB format not supported. Please use RGBA instead.' );
+
+				}
+
+				return internalFormat;
 
 			}
 
@@ -51376,23 +53696,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				var textureProperties = properties.get( texture );
 
-				if ( texture.image && textureProperties.__image__webglTextureCube ) {
+				if ( textureProperties.__webglInit === undefined ) return;
 
-					// cube texture
+				_gl.deleteTexture( textureProperties.__webglTexture );
 
-					_gl.deleteTexture( textureProperties.__image__webglTextureCube );
-
-				} else {
-
-					// 2D texture
-
-					if ( textureProperties.__webglInit === undefined ) return;
-
-					_gl.deleteTexture( textureProperties.__webglTexture );
-
-				}
-
-				// remove all webgl properties
 				properties.remove( texture );
 
 			}
@@ -51439,7 +53746,31 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			//
 
+			var textureUnits = 0;
 
+			function resetTextureUnits() {
+
+				textureUnits = 0;
+
+			}
+
+			function allocateTextureUnit() {
+
+				var textureUnit = textureUnits;
+
+				if ( textureUnit >= capabilities.maxTextures ) {
+
+					console.warn( 'THREE.WebGLTextures: Trying to use ' + textureUnit + ' texture units while this GPU supports only ' + capabilities.maxTextures );
+
+				}
+
+				textureUnits += 1;
+
+				return textureUnit;
+
+			}
+
+			//
 
 			function setTexture2D( texture, slot ) {
 
@@ -51473,6 +53804,22 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			}
 
+			function setTexture2DArray( texture, slot ) {
+
+				var textureProperties = properties.get( texture );
+
+				if ( texture.version > 0 && textureProperties.__version !== texture.version ) {
+
+					uploadTexture( textureProperties, texture, slot );
+					return;
+
+				}
+
+				state.activeTexture( 33984 + slot );
+				state.bindTexture( 35866, textureProperties.__webglTexture );
+
+			}
+
 			function setTexture3D( texture, slot ) {
 
 				var textureProperties = properties.get( texture );
@@ -51489,7 +53836,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			}
 
-
 			function setTextureCube( texture, slot ) {
 
 				var textureProperties = properties.get( texture );
@@ -51498,18 +53844,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					if ( texture.version > 0 && textureProperties.__version !== texture.version ) {
 
-						if ( ! textureProperties.__image__webglTextureCube ) {
-
-							texture.addEventListener( 'dispose', onTextureDispose );
-
-							textureProperties.__image__webglTextureCube = _gl.createTexture();
-
-							info.memory.textures ++;
-
-						}
+						initTexture( textureProperties, texture );
 
 						state.activeTexture( 33984 + slot );
-						state.bindTexture( 34067, textureProperties.__image__webglTextureCube );
+						state.bindTexture( 34067, textureProperties.__webglTexture );
 
 						_gl.pixelStorei( 37440, texture.flipY );
 
@@ -51522,7 +53860,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 							if ( ! isCompressed && ! isDataTexture ) {
 
-								cubeImage[ i ] = clampToMaxSize( texture.image[ i ], capabilities.maxCubemapSize );
+								cubeImage[ i ] = resizeImage( texture.image[ i ], false, true, capabilities.maxCubemapSize );
 
 							} else {
 
@@ -51533,12 +53871,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 						}
 
 						var image = cubeImage[ 0 ],
-							isPowerOfTwoImage = isPowerOfTwo( image ),
+							supportsMips = isPowerOfTwo( image ) || capabilities.isWebGL2,
 							glFormat = utils.convert( texture.format ),
 							glType = utils.convert( texture.type ),
 							glInternalFormat = getInternalFormat( glFormat, glType );
 
-						setTextureParameters( 34067, texture, isPowerOfTwoImage );
+						setTextureParameters( 34067, texture, supportsMips );
 
 						for ( var i = 0; i < 6; i ++ ) {
 
@@ -51596,7 +53934,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 						}
 
-						if ( textureNeedsGenerateMipmaps( texture, isPowerOfTwoImage ) ) {
+						if ( textureNeedsGenerateMipmaps( texture, supportsMips ) ) {
 
 							// We assume images for cube map have the same size.
 							generateMipmap( 34067, texture, image.width, image.height );
@@ -51610,7 +53948,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					} else {
 
 						state.activeTexture( 33984 + slot );
-						state.bindTexture( 34067, textureProperties.__image__webglTextureCube );
+						state.bindTexture( 34067, textureProperties.__webglTexture );
 
 					}
 
@@ -51625,14 +53963,20 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			}
 
-			function setTextureParameters( textureType, texture, isPowerOfTwoImage ) {
+			function setTextureParameters( textureType, texture, supportsMips ) {
 
 				var extension;
 
-				if ( isPowerOfTwoImage ) {
+				if ( supportsMips ) {
 
 					_gl.texParameteri( textureType, 10242, utils.convert( texture.wrapS ) );
 					_gl.texParameteri( textureType, 10243, utils.convert( texture.wrapT ) );
+
+					if ( textureType === 32879 || textureType === 35866 ) {
+
+						_gl.texParameteri( textureType, 32882, utils.convert( texture.wrapR ) );
+
+					}
 
 					_gl.texParameteri( textureType, 10240, utils.convert( texture.magFilter ) );
 					_gl.texParameteri( textureType, 10241, utils.convert( texture.minFilter ) );
@@ -51641,6 +53985,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					_gl.texParameteri( textureType, 10242, 33071 );
 					_gl.texParameteri( textureType, 10243, 33071 );
+
+					if ( textureType === 32879 || textureType === 35866 ) {
+
+						_gl.texParameteri( textureType, 32882, 33071 );
+
+					}
 
 					if ( texture.wrapS !== ClampToEdgeWrapping || texture.wrapT !== ClampToEdgeWrapping ) {
 
@@ -51677,20 +54027,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			}
 
-			function uploadTexture( textureProperties, texture, slot ) {
-
-				var textureType;
-
-				if ( texture.isDataTexture3D ) {
-
-					textureType = 32879;
-
-				} else {
-
-					textureType = 3553;
-
-				}
-
+			function initTexture( textureProperties, texture ) {
 
 				if ( textureProperties.__webglInit === undefined ) {
 
@@ -51703,31 +54040,34 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					info.memory.textures ++;
 
 				}
+
+			}
+
+			function uploadTexture( textureProperties, texture, slot ) {
+
+				var textureType = 3553;
+
+				if ( texture.isDataTexture2DArray ) textureType = 35866;
+				if ( texture.isDataTexture3D ) textureType = 32879;
+
+				initTexture( textureProperties, texture );
+
 				state.activeTexture( 33984 + slot );
-
-
 				state.bindTexture( textureType, textureProperties.__webglTexture );
-
-
 
 				_gl.pixelStorei( 37440, texture.flipY );
 				_gl.pixelStorei( 37441, texture.premultiplyAlpha );
 				_gl.pixelStorei( 3317, texture.unpackAlignment );
 
-				var image = clampToMaxSize( texture.image, capabilities.maxTextureSize );
+				var needsPowerOfTwo = textureNeedsPowerOfTwo( texture ) && isPowerOfTwo( texture.image ) === false;
+				var image = resizeImage( texture.image, needsPowerOfTwo, false, capabilities.maxTextureSize );
 
-				if ( textureNeedsPowerOfTwo( texture ) && isPowerOfTwo( image ) === false ) {
-
-					image = makePowerOfTwo( image );
-
-				}
-
-				var isPowerOfTwoImage = isPowerOfTwo( image ),
+				var supportsMips = isPowerOfTwo( image ) || capabilities.isWebGL2,
 					glFormat = utils.convert( texture.format ),
 					glType = utils.convert( texture.type ),
 					glInternalFormat = getInternalFormat( glFormat, glType );
 
-				setTextureParameters( textureType, texture, isPowerOfTwoImage );
+				setTextureParameters( textureType, texture, supportsMips );
 
 				var mipmap, mipmaps = texture.mipmaps;
 
@@ -51793,7 +54133,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					// if there are no manual mipmaps
 					// set 0 level mipmap and then use GL to generate other mipmap levels
 
-					if ( mipmaps.length > 0 && isPowerOfTwoImage ) {
+					if ( mipmaps.length > 0 && supportsMips ) {
 
 						for ( var i = 0, il = mipmaps.length; i < il; i ++ ) {
 
@@ -51840,6 +54180,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					textureProperties.__maxMipLevel = mipmaps.length - 1;
 
+				} else if ( texture.isDataTexture2DArray ) {
+
+					state.texImage3D( 35866, 0, glInternalFormat, image.width, image.height, image.depth, 0, glFormat, glType, image.data );
+					textureProperties.__maxMipLevel = 0;
+
 				} else if ( texture.isDataTexture3D ) {
 
 					state.texImage3D( 32879, 0, glInternalFormat, image.width, image.height, image.depth, 0, glFormat, glType, image.data );
@@ -51853,7 +54198,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					// if there are no manual mipmaps
 					// set 0 level mipmap and then use GL to generate other mipmap levels
 
-					if ( mipmaps.length > 0 && isPowerOfTwoImage ) {
+					if ( mipmaps.length > 0 && supportsMips ) {
 
 						for ( var i = 0, il = mipmaps.length; i < il; i ++ ) {
 
@@ -51874,7 +54219,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				}
 
-				if ( textureNeedsGenerateMipmaps( texture, isPowerOfTwoImage ) ) {
+				if ( textureNeedsGenerateMipmaps( texture, supportsMips ) ) {
 
 					generateMipmap( 3553, texture, image.width, image.height );
 
@@ -51902,24 +54247,60 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			}
 
 			// Setup storage for internal depth/stencil buffers and bind to correct framebuffer
-			function setupRenderBufferStorage( renderbuffer, renderTarget ) {
+			function setupRenderBufferStorage( renderbuffer, renderTarget, isMultisample ) {
 
 				_gl.bindRenderbuffer( 36161, renderbuffer );
 
 				if ( renderTarget.depthBuffer && ! renderTarget.stencilBuffer ) {
 
-					_gl.renderbufferStorage( 36161, 33189, renderTarget.width, renderTarget.height );
+					if ( isMultisample ) {
+
+						var samples = getRenderTargetSamples( renderTarget );
+
+						_gl.renderbufferStorageMultisample( 36161, samples, 33189, renderTarget.width, renderTarget.height );
+
+					} else {
+
+						_gl.renderbufferStorage( 36161, 33189, renderTarget.width, renderTarget.height );
+
+					}
+
 					_gl.framebufferRenderbuffer( 36160, 36096, 36161, renderbuffer );
 
 				} else if ( renderTarget.depthBuffer && renderTarget.stencilBuffer ) {
 
-					_gl.renderbufferStorage( 36161, 34041, renderTarget.width, renderTarget.height );
+					if ( isMultisample ) {
+
+						var samples = getRenderTargetSamples( renderTarget );
+
+						_gl.renderbufferStorageMultisample( 36161, samples, 34041, renderTarget.width, renderTarget.height );
+
+					} else {
+
+						_gl.renderbufferStorage( 36161, 34041, renderTarget.width, renderTarget.height );
+
+					}
+
+
 					_gl.framebufferRenderbuffer( 36160, 33306, 36161, renderbuffer );
 
 				} else {
 
-					// FIXME: We don't support !depth !stencil
-					_gl.renderbufferStorage( 36161, 32854, renderTarget.width, renderTarget.height );
+					var glFormat = utils.convert( renderTarget.texture.format );
+					var glType = utils.convert( renderTarget.texture.type );
+					var glInternalFormat = getInternalFormat( glFormat, glType );
+
+					if ( isMultisample ) {
+
+						var samples = getRenderTargetSamples( renderTarget );
+
+						_gl.renderbufferStorageMultisample( 36161, samples, glInternalFormat, renderTarget.width, renderTarget.height );
+
+					} else {
+
+						_gl.renderbufferStorage( 36161, glInternalFormat, renderTarget.width, renderTarget.height );
+
+					}
 
 				}
 
@@ -52026,7 +54407,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				info.memory.textures ++;
 
 				var isCube = ( renderTarget.isWebGLRenderTargetCube === true );
-				var isTargetPowerOfTwo = isPowerOfTwo( renderTarget );
+				var isMultisample = ( renderTarget.isWebGLMultisampleRenderTarget === true );
+				var supportsMips = isPowerOfTwo( renderTarget ) || capabilities.isWebGL2;
 
 				// Setup framebuffer
 
@@ -52044,6 +54426,42 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					renderTargetProperties.__webglFramebuffer = _gl.createFramebuffer();
 
+					if ( isMultisample ) {
+
+						if ( capabilities.isWebGL2 ) {
+
+							renderTargetProperties.__webglMultisampledFramebuffer = _gl.createFramebuffer();
+							renderTargetProperties.__webglColorRenderbuffer = _gl.createRenderbuffer();
+
+							_gl.bindRenderbuffer( 36161, renderTargetProperties.__webglColorRenderbuffer );
+							var glFormat = utils.convert( renderTarget.texture.format );
+							var glType = utils.convert( renderTarget.texture.type );
+							var glInternalFormat = getInternalFormat( glFormat, glType );
+							var samples = getRenderTargetSamples( renderTarget );
+							_gl.renderbufferStorageMultisample( 36161, samples, glInternalFormat, renderTarget.width, renderTarget.height );
+
+							_gl.bindFramebuffer( 36160, renderTargetProperties.__webglMultisampledFramebuffer );
+							_gl.framebufferRenderbuffer( 36160, 36064, 36161, renderTargetProperties.__webglColorRenderbuffer );
+							_gl.bindRenderbuffer( 36161, null );
+
+							if ( renderTarget.depthBuffer ) {
+
+								renderTargetProperties.__webglDepthRenderbuffer = _gl.createRenderbuffer();
+								setupRenderBufferStorage( renderTargetProperties.__webglDepthRenderbuffer, renderTarget, true );
+
+							}
+
+							_gl.bindFramebuffer( 36160, null );
+
+
+						} else {
+
+							console.warn( 'THREE.WebGLRenderer: WebGLMultisampleRenderTarget can only be used with WebGL2.' );
+
+						}
+
+					}
+
 				}
 
 				// Setup color buffer
@@ -52051,7 +54469,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				if ( isCube ) {
 
 					state.bindTexture( 34067, textureProperties.__webglTexture );
-					setTextureParameters( 34067, renderTarget.texture, isTargetPowerOfTwo );
+					setTextureParameters( 34067, renderTarget.texture, supportsMips );
 
 					for ( var i = 0; i < 6; i ++ ) {
 
@@ -52059,7 +54477,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					}
 
-					if ( textureNeedsGenerateMipmaps( renderTarget.texture, isTargetPowerOfTwo ) ) {
+					if ( textureNeedsGenerateMipmaps( renderTarget.texture, supportsMips ) ) {
 
 						generateMipmap( 34067, renderTarget.texture, renderTarget.width, renderTarget.height );
 
@@ -52070,10 +54488,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				} else {
 
 					state.bindTexture( 3553, textureProperties.__webglTexture );
-					setTextureParameters( 3553, renderTarget.texture, isTargetPowerOfTwo );
+					setTextureParameters( 3553, renderTarget.texture, supportsMips );
 					setupFrameBufferTexture( renderTargetProperties.__webglFramebuffer, renderTarget, 36064, 3553 );
 
-					if ( textureNeedsGenerateMipmaps( renderTarget.texture, isTargetPowerOfTwo ) ) {
+					if ( textureNeedsGenerateMipmaps( renderTarget.texture, supportsMips ) ) {
 
 						generateMipmap( 3553, renderTarget.texture, renderTarget.width, renderTarget.height );
 
@@ -52096,9 +54514,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			function updateRenderTargetMipmap( renderTarget ) {
 
 				var texture = renderTarget.texture;
-				var isTargetPowerOfTwo = isPowerOfTwo( renderTarget );
+				var supportsMips = isPowerOfTwo( renderTarget ) || capabilities.isWebGL2;
 
-				if ( textureNeedsGenerateMipmaps( texture, isTargetPowerOfTwo ) ) {
+				if ( textureNeedsGenerateMipmaps( texture, supportsMips ) ) {
 
 					var target = renderTarget.isWebGLRenderTargetCube ? 34067 : 3553;
 					var webglTexture = properties.get( texture ).__webglTexture;
@@ -52108,6 +54526,43 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					state.bindTexture( target, null );
 
 				}
+
+			}
+
+			function updateMultisampleRenderTarget( renderTarget ) {
+
+				if ( renderTarget.isWebGLMultisampleRenderTarget ) {
+
+					if ( capabilities.isWebGL2 ) {
+
+						var renderTargetProperties = properties.get( renderTarget );
+
+						_gl.bindFramebuffer( 36008, renderTargetProperties.__webglMultisampledFramebuffer );
+						_gl.bindFramebuffer( 36009, renderTargetProperties.__webglFramebuffer );
+
+						var width = renderTarget.width;
+						var height = renderTarget.height;
+						var mask = 16384;
+
+						if ( renderTarget.depthBuffer ) mask |= 256;
+						if ( renderTarget.stencilBuffer ) mask |= 1024;
+
+						_gl.blitFramebuffer( 0, 0, width, height, 0, 0, width, height, mask, 9728 );
+
+					} else {
+
+						console.warn( 'THREE.WebGLRenderer: WebGLMultisampleRenderTarget can only be used with WebGL2.' );
+
+					}
+
+				}
+
+			}
+
+			function getRenderTargetSamples( renderTarget ) {
+
+				return ( capabilities.isWebGL2 && renderTarget.isWebGLMultisampleRenderTarget ) ?
+					Math.min( capabilities.maxSamples, renderTarget.samples ) : 0;
 
 			}
 
@@ -52127,12 +54582,80 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			}
 
+			// backwards compatibility
+
+			var warnedTexture2D = false;
+			var warnedTextureCube = false;
+
+			function safeSetTexture2D( texture, slot ) {
+
+				if ( texture && texture.isWebGLRenderTarget ) {
+
+					if ( warnedTexture2D === false ) {
+
+						console.warn( "THREE.WebGLTextures.safeSetTexture2D: don't use render targets as textures. Use their .texture property instead." );
+						warnedTexture2D = true;
+
+					}
+
+					texture = texture.texture;
+
+				}
+
+				setTexture2D( texture, slot );
+
+			}
+
+			function safeSetTextureCube( texture, slot ) {
+
+				if ( texture && texture.isWebGLRenderTargetCube ) {
+
+					if ( warnedTextureCube === false ) {
+
+						console.warn( "THREE.WebGLTextures.safeSetTextureCube: don't use cube render targets as textures. Use their .texture property instead." );
+						warnedTextureCube = true;
+
+					}
+
+					texture = texture.texture;
+
+				}
+
+				// currently relying on the fact that WebGLRenderTargetCube.texture is a Texture and NOT a CubeTexture
+				// TODO: unify these code paths
+				if ( ( texture && texture.isCubeTexture ) ||
+					( Array.isArray( texture.image ) && texture.image.length === 6 ) ) {
+
+					// CompressedTexture can have Array in image :/
+
+					// this function alone should take care of cube textures
+					setTextureCube( texture, slot );
+
+				} else {
+
+					// assumed: texture property of THREE.WebGLRenderTargetCube
+					setTextureCubeDynamic( texture, slot );
+
+				}
+
+			}
+
+			//
+
+			this.allocateTextureUnit = allocateTextureUnit;
+			this.resetTextureUnits = resetTextureUnits;
+
 			this.setTexture2D = setTexture2D;
+			this.setTexture2DArray = setTexture2DArray;
 			this.setTexture3D = setTexture3D;
 			this.setTextureCube = setTextureCube;
 			this.setTextureCubeDynamic = setTextureCubeDynamic;
 			this.setupRenderTarget = setupRenderTarget;
 			this.updateRenderTargetMipmap = updateRenderTargetMipmap;
+			this.updateMultisampleRenderTarget = updateMultisampleRenderTarget;
+
+			this.safeSetTexture2D = safeSetTexture2D;
+			this.safeSetTextureCube = safeSetTextureCube;
 
 		}
 
@@ -52519,17 +55042,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			 *   var fullHeight = h * 2;
 			 *
 			 *   --A--
-			 *   camera.setOffset( fullWidth, fullHeight, w * 0, h * 0, w, h );
+			 *   camera.setViewOffset( fullWidth, fullHeight, w * 0, h * 0, w, h );
 			 *   --B--
-			 *   camera.setOffset( fullWidth, fullHeight, w * 1, h * 0, w, h );
+			 *   camera.setViewOffset( fullWidth, fullHeight, w * 1, h * 0, w, h );
 			 *   --C--
-			 *   camera.setOffset( fullWidth, fullHeight, w * 2, h * 0, w, h );
+			 *   camera.setViewOffset( fullWidth, fullHeight, w * 2, h * 0, w, h );
 			 *   --D--
-			 *   camera.setOffset( fullWidth, fullHeight, w * 0, h * 1, w, h );
+			 *   camera.setViewOffset( fullWidth, fullHeight, w * 0, h * 1, w, h );
 			 *   --E--
-			 *   camera.setOffset( fullWidth, fullHeight, w * 1, h * 1, w, h );
+			 *   camera.setViewOffset( fullWidth, fullHeight, w * 1, h * 1, w, h );
 			 *   --F--
-			 *   camera.setOffset( fullWidth, fullHeight, w * 2, h * 1, w, h );
+			 *   camera.setViewOffset( fullWidth, fullHeight, w * 2, h * 1, w, h );
 			 *
 			 *   Note there is no reason monitors have to be the same size or in a grid.
 			 */
@@ -52718,6 +55241,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		function WebVRManager( renderer ) {
 
+			var renderWidth, renderHeight;
 			var scope = this;
 
 			var device = null;
@@ -52731,7 +55255,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			var framebufferScaleFactor = 1.0;
 
-			var frameOfReferenceType = 'stage';
+			var referenceSpaceType = 'local-floor';
 
 			if ( typeof window !== 'undefined' && 'VRFrameData' in window ) {
 
@@ -52745,11 +55269,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			var tempPosition = new Vector3();
 
 			var cameraL = new PerspectiveCamera();
-			cameraL.bounds = new Vector4( 0.0, 0.0, 0.5, 1.0 );
+			cameraL.viewport = new Vector4();
 			cameraL.layers.enable( 1 );
 
 			var cameraR = new PerspectiveCamera();
-			cameraR.bounds = new Vector4( 0.5, 0.0, 0.5, 1.0 );
+			cameraR.viewport = new Vector4();
 			cameraR.layers.enable( 2 );
 
 			var cameraVR = new ArrayCamera( [ cameraL, cameraR ] );
@@ -52764,20 +55288,23 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			}
 
-			var currentSize, currentPixelRatio;
+			var currentSize = new Vector2(), currentPixelRatio;
 
 			function onVRDisplayPresentChange() {
 
 				if ( isPresenting() ) {
 
 					var eyeParameters = device.getEyeParameters( 'left' );
-					var renderWidth = eyeParameters.renderWidth * framebufferScaleFactor;
-					var renderHeight = eyeParameters.renderHeight * framebufferScaleFactor;
+					renderWidth = 2 * eyeParameters.renderWidth * framebufferScaleFactor;
+					renderHeight = eyeParameters.renderHeight * framebufferScaleFactor;
 
 					currentPixelRatio = renderer.getPixelRatio();
-					currentSize = renderer.getSize();
+					renderer.getSize( currentSize );
 
-					renderer.setDrawingBufferSize( renderWidth * 2, renderHeight, 1 );
+					renderer.setDrawingBufferSize( renderWidth, renderHeight, 1 );
+
+					cameraL.viewport.set( 0, 0, renderWidth / 2, renderHeight );
+					cameraR.viewport.set( renderWidth / 2, 0, renderWidth / 2, renderHeight );
 
 					animation.start();
 
@@ -52834,7 +55361,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 						if ( gamepad.pose === null ) return;
 
-						//  Pose
+						// Pose
 
 						var pose = gamepad.pose;
 
@@ -52848,9 +55375,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 						controller.matrixWorldNeedsUpdate = true;
 						controller.visible = true;
 
-						//  Trigger
+						// Trigger
 
 						var buttonId = gamepad.id === 'Daydream Controller' ? 0 : 1;
+
+						if ( triggers[ i ] === undefined ) triggers[ i ] = false;
 
 						if ( triggers[ i ] !== gamepad.buttons[ buttonId ].pressed ) {
 
@@ -52874,6 +55403,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 						controller.visible = false;
 
 					}
+
+				}
+
+			}
+
+			function updateViewportFromBounds( viewport, bounds ) {
+
+				if ( bounds !== null && bounds.length === 4 ) {
+
+					viewport.set( bounds[ 0 ] * renderWidth, bounds[ 1 ] * renderHeight, bounds[ 2 ] * renderWidth, bounds[ 3 ] * renderHeight );
 
 				}
 
@@ -52921,9 +55460,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			};
 
-			this.setFrameOfReferenceType = function ( value ) {
+			this.setReferenceSpaceType = function ( value ) {
 
-				frameOfReferenceType = value;
+				referenceSpaceType = value;
 
 			};
 
@@ -52935,11 +55474,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			this.getCamera = function ( camera ) {
 
-				var userHeight = frameOfReferenceType === 'stage' ? 1.6 : 0;
+				var userHeight = referenceSpaceType === 'local-floor' ? 1.6 : 0;
 
-				if ( device === null ) {
+				if ( isPresenting() === false ) {
 
 					camera.position.set( 0, userHeight, 0 );
+					camera.rotation.set( 0, 0, 0 );
+
 					return camera;
 
 				}
@@ -52951,7 +55492,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				//
 
-				if ( frameOfReferenceType === 'stage' ) {
+				if ( referenceSpaceType === 'local-floor' ) {
 
 					var stageParameters = device.stageParameters;
 
@@ -52993,8 +55534,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				poseObject.updateMatrixWorld();
 
-				if ( device.isPresenting === false ) return camera;
-
 				//
 
 				cameraL.near = camera.near;
@@ -53010,7 +55549,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				standingMatrixInverse.getInverse( standingMatrix );
 
-				if ( frameOfReferenceType === 'stage' ) {
+				if ( referenceSpaceType === 'local-floor' ) {
 
 					cameraL.matrixWorldInverse.multiply( standingMatrixInverse );
 					cameraR.matrixWorldInverse.multiply( standingMatrixInverse );
@@ -53046,17 +55585,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					var layer = layers[ 0 ];
 
-					if ( layer.leftBounds !== null && layer.leftBounds.length === 4 ) {
-
-						cameraL.bounds.fromArray( layer.leftBounds );
-
-					}
-
-					if ( layer.rightBounds !== null && layer.rightBounds.length === 4 ) {
-
-						cameraR.bounds.fromArray( layer.rightBounds );
-
-					}
+					updateViewportFromBounds( cameraL.viewport, layer.leftBounds );
+					updateViewportFromBounds( cameraR.viewport, layer.rightBounds );
 
 				}
 
@@ -53082,6 +55612,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				animation.setAnimationLoop( callback );
 
+				if ( isPresenting() ) animation.start();
+
 			};
 
 			this.submitFrame = function () {
@@ -53100,6 +55632,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			};
 
+			// DEPRECATED
+
+			this.setFrameOfReferenceType = function () {
+
+				console.warn( 'THREE.WebVRManager: setFrameOfReferenceType() has been deprecated.' );
+
+			};
+
 		}
 
 		/**
@@ -53110,13 +55650,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			var gl = renderer.context;
 
-			var device = null;
 			var session = null;
 
-			var framebufferScaleFactor = 1.0;
-
-			var frameOfReference = null;
-			var frameOfReferenceType = 'stage';
+			var referenceSpace = null;
+			var referenceSpaceType = 'local-floor';
 
 			var pose = null;
 
@@ -53125,7 +55662,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			function isPresenting() {
 
-				return session !== null && frameOfReference !== null;
+				return session !== null && referenceSpace !== null;
 
 			}
 
@@ -53165,44 +55702,52 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			};
 
-			this.getDevice = function () {
-
-				return device;
-
-			};
-
-			this.setDevice = function ( value ) {
-
-				if ( value !== undefined ) device = value;
-				if ( value instanceof XRDevice ) gl.setCompatibleXRDevice( value );
-
-			};
-
 			//
 
 			function onSessionEvent( event ) {
 
-				var controller = controllers[ inputSources.indexOf( event.inputSource ) ];
-				if ( controller ) controller.dispatchEvent( { type: event.type } );
+				for ( var i = 0; i < controllers.length; i ++ ) {
+
+					if ( inputSources[ i ] === event.inputSource ) {
+
+						controllers[ i ].dispatchEvent( { type: event.type } );
+
+					}
+
+				}
 
 			}
 
 			function onSessionEnd() {
 
 				renderer.setFramebuffer( null );
+				renderer.setRenderTarget( renderer.getRenderTarget() ); // Hack #15830
 				animation.stop();
+
+			}
+
+			function onRequestReferenceSpace( value ) {
+
+				referenceSpace = value;
+
+				animation.setContext( session );
+				animation.start();
 
 			}
 
 			this.setFramebufferScaleFactor = function ( value ) {
 
-				framebufferScaleFactor = value;
+			};
+
+			this.setReferenceSpaceType = function ( value ) {
+
+				referenceSpaceType = value;
 
 			};
 
-			this.setFrameOfReferenceType = function ( value ) {
+			this.getSession = function () {
 
-				frameOfReferenceType = value;
+				return session;
 
 			};
 
@@ -53217,25 +55762,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					session.addEventListener( 'selectend', onSessionEvent );
 					session.addEventListener( 'end', onSessionEnd );
 
-					session.baseLayer = new XRWebGLLayer( session, gl, { framebufferScaleFactor: framebufferScaleFactor } );
-					session.requestFrameOfReference( frameOfReferenceType ).then( function ( value ) {
+					session.updateRenderState( { baseLayer: new XRWebGLLayer( session, gl ) } );
 
-						frameOfReference = value;
-
-						renderer.setFramebuffer( session.baseLayer.framebuffer );
-
-						animation.setContext( session );
-						animation.start();
-
-					} );
+					session.requestReferenceSpace( referenceSpaceType ).then( onRequestReferenceSpace );
 
 					//
 
-					inputSources = session.getInputSources();
+					inputSources = session.inputSources;
 
 					session.addEventListener( 'inputsourceschange', function () {
 
-						inputSources = session.getInputSources();
+						inputSources = session.inputSources;
 						console.log( inputSources );
 
 						for ( var i = 0; i < controllers.length; i ++ ) {
@@ -53312,18 +55849,20 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			function onAnimationFrame( time, frame ) {
 
-				pose = frame.getDevicePose( frameOfReference );
+				pose = frame.getViewerPose( referenceSpace );
 
 				if ( pose !== null ) {
 
-					var layer = session.baseLayer;
-					var views = frame.views;
+					var views = pose.views;
+					var baseLayer = session.renderState.baseLayer;
+
+					renderer.setFramebuffer( baseLayer.framebuffer );
 
 					for ( var i = 0; i < views.length; i ++ ) {
 
 						var view = views[ i ];
-						var viewport = layer.getViewport( view );
-						var viewMatrix = pose.getViewMatrix( view );
+						var viewport = baseLayer.getViewport( view );
+						var viewMatrix = view.transform.inverse.matrix;
 
 						var camera = cameraVR.cameras[ i ];
 						camera.matrix.fromArray( viewMatrix ).getInverse( camera.matrix );
@@ -53350,22 +55889,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					if ( inputSource ) {
 
-						var inputPose = frame.getInputPose( inputSource, frameOfReference );
+						var inputPose = frame.getPose( inputSource.targetRaySpace, referenceSpace );
 
 						if ( inputPose !== null ) {
 
-							if ( 'targetRay' in inputPose ) {
-
-								controller.matrix.elements = inputPose.targetRay.transformMatrix;
-
-							} else if ( 'pointerMatrix' in inputPose ) {
-
-								// DEPRECATED
-
-								controller.matrix.elements = inputPose.pointerMatrix;
-
-							}
-
+							controller.matrix.fromArray( inputPose.transform.matrix );
 							controller.matrix.decompose( controller.position, controller.rotation, controller.scale );
 							controller.visible = true;
 
@@ -53399,7 +55927,25 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			this.getStandingMatrix = function () {
 
 				console.warn( 'THREE.WebXRManager: getStandingMatrix() is no longer needed.' );
-				return new THREE.Matrix4();
+				return new Matrix4();
+
+			};
+
+			this.getDevice = function () {
+
+				console.warn( 'THREE.WebXRManager: getDevice() has been deprecated.' );
+
+			};
+
+			this.setDevice = function () {
+
+				console.warn( 'THREE.WebXRManager: setDevice() has been deprecated.' );
+
+			};
+
+			this.setFrameOfReferenceType = function () {
+
+				console.warn( 'THREE.WebXRManager: setFrameOfReferenceType() has been deprecated.' );
 
 			};
 
@@ -53430,7 +55976,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				_antialias = parameters.antialias !== undefined ? parameters.antialias : false,
 				_premultipliedAlpha = parameters.premultipliedAlpha !== undefined ? parameters.premultipliedAlpha : true,
 				_preserveDrawingBuffer = parameters.preserveDrawingBuffer !== undefined ? parameters.preserveDrawingBuffer : false,
-				_powerPreference = parameters.powerPreference !== undefined ? parameters.powerPreference : 'default';
+				_powerPreference = parameters.powerPreference !== undefined ? parameters.powerPreference : 'default',
+				_failIfMajorPerformanceCaveat = parameters.failIfMajorPerformanceCaveat !== undefined ? parameters.failIfMajorPerformanceCaveat : false;
 
 			var currentRenderList = null;
 			var currentRenderState = null;
@@ -53439,6 +55986,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			this.domElement = _canvas;
 			this.context = null;
+
+			// Debug configuration container
+			this.debug = {
+
+				/**
+				 * Enables error checking and reporting when shader programs are being compiled
+				 * @type {boolean}
+				 */
+				checkShaderErrors: true
+			};
 
 			// clearing
 
@@ -53487,6 +56044,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				_framebuffer = null,
 
+				_currentActiveCubeFace = 0,
+				_currentActiveMipmapLevel = 0,
 				_currentRenderTarget = null,
 				_currentFramebuffer = null,
 				_currentMaterialId = - 1,
@@ -53505,10 +56064,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				_currentViewport = new Vector4(),
 				_currentScissor = new Vector4(),
 				_currentScissorTest = null,
-
-				//
-
-				_usedTextureUnits = 0,
 
 				//
 
@@ -53556,7 +56111,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					antialias: _antialias,
 					premultipliedAlpha: _premultipliedAlpha,
 					preserveDrawingBuffer: _preserveDrawingBuffer,
-					powerPreference: _powerPreference
+					powerPreference: _powerPreference,
+					failIfMajorPerformanceCaveat: _failIfMajorPerformanceCaveat,
+					xrCompatible: true
 				};
 
 				// event listeners must be registered before WebGL context is created, see #12753
@@ -53595,6 +56152,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			} catch ( error ) {
 
 				console.error( 'THREE.WebGLRenderer: ' + error.message );
+				throw error;
 
 			}
 
@@ -53639,7 +56197,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				geometries = new WebGLGeometries( _gl, attributes, info );
 				objects = new WebGLObjects( geometries, info );
 				morphtargets = new WebGLMorphtargets( _gl );
-				programCache = new WebGLPrograms( _this, extensions, capabilities );
+				programCache = new WebGLPrograms( _this, extensions, capabilities, textures );
 				renderLists = new WebGLRenderLists();
 				renderStates = new WebGLRenderStates();
 
@@ -53664,13 +56222,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			// vr
 
-			var vr = null;
-
-			if ( typeof navigator !== 'undefined' ) {
-
-				vr = ( 'xr' in navigator ) ? new WebXRManager( _this ) : new WebVRManager( _this );
-
-			}
+			var vr = ( typeof navigator !== 'undefined' && 'xr' in navigator && 'supportsSession' in navigator.xr ) ? new WebXRManager( _this ) : new WebVRManager( _this );
 
 			this.vr = vr;
 
@@ -53724,12 +56276,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			};
 
-			this.getSize = function () {
+			this.getSize = function ( target ) {
 
-				return {
-					width: _width,
-					height: _height
-				};
+				if ( target === undefined ) {
+
+					console.warn( 'WebGLRenderer: .getsize() now requires a Vector2 as an argument' );
+
+					target = new Vector2();
+
+				}
+
+				return target.set( _width, _height );
 
 			};
 
@@ -53759,12 +56316,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			};
 
-			this.getDrawingBufferSize = function () {
+			this.getDrawingBufferSize = function ( target ) {
 
-				return {
-					width: _width * _pixelRatio,
-					height: _height * _pixelRatio
-				};
+				if ( target === undefined ) {
+
+					console.warn( 'WebGLRenderer: .getdrawingBufferSize() now requires a Vector2 as an argument' );
+
+					target = new Vector2();
+
+				}
+
+				return target.set( _width * _pixelRatio, _height * _pixelRatio );
 
 			};
 
@@ -53782,23 +56344,67 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			};
 
-			this.getCurrentViewport = function () {
+			this.getCurrentViewport = function ( target ) {
 
-				return _currentViewport;
+				if ( target === undefined ) {
+
+					console.warn( 'WebGLRenderer: .getCurrentViewport() now requires a Vector4 as an argument' );
+
+					target = new Vector4();
+
+				}
+
+				return target.copy( _currentViewport );
+
+			};
+
+			this.getViewport = function ( target ) {
+
+				return target.copy( _viewport );
 
 			};
 
 			this.setViewport = function ( x, y, width, height ) {
 
-				_viewport.set( x, _height - y - height, width, height );
+				if ( x.isVector4 ) {
+
+					_viewport.set( x.x, x.y, x.z, x.w );
+
+				} else {
+
+					_viewport.set( x, y, width, height );
+
+				}
+
 				state.viewport( _currentViewport.copy( _viewport ).multiplyScalar( _pixelRatio ) );
+
+			};
+
+			this.getScissor = function ( target ) {
+
+				return target.copy( _scissor );
 
 			};
 
 			this.setScissor = function ( x, y, width, height ) {
 
-				_scissor.set( x, _height - y - height, width, height );
+				if ( x.isVector4 ) {
+
+					_scissor.set( x.x, x.y, x.z, x.w );
+
+				} else {
+
+					_scissor.set( x, y, width, height );
+
+				}
+
 				state.scissor( _currentScissor.copy( _scissor ).multiplyScalar( _pixelRatio ) );
+
+			};
+
+			this.getScissorTest = function () {
+
+				return _scissorTest;
 
 			};
 
@@ -54014,7 +56620,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			this.renderBufferDirect = function ( camera, fog, geometry, material, object, group ) {
 
-				var frontFaceCW = ( object.isMesh && object.normalMatrix.determinant() < 0 );
+				var frontFaceCW = ( object.isMesh && object.matrixWorld.determinant() < 0 );
 
 				state.setMaterial( material, frontFaceCW );
 
@@ -54185,7 +56791,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			function setupVertexAttributes( material, program, geometry ) {
 
-				if ( geometry && geometry.isInstancedBufferGeometry & ! capabilities.isWebGL2 ) {
+				if ( geometry && geometry.isInstancedBufferGeometry && ! capabilities.isWebGL2 ) {
 
 					if ( extensions.get( 'ANGLE_instanced_arrays' ) === null ) {
 
@@ -54388,7 +56994,23 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			// Rendering
 
-			this.render = function ( scene, camera, renderTarget, forceClear ) {
+			this.render = function ( scene, camera ) {
+
+				var renderTarget, forceClear;
+
+				if ( arguments[ 2 ] !== undefined ) {
+
+					console.warn( 'THREE.WebGLRenderer.render(): the renderTarget argument has been removed. Use .setRenderTarget() instead.' );
+					renderTarget = arguments[ 2 ];
+
+				}
+
+				if ( arguments[ 3 ] !== undefined ) {
+
+					console.warn( 'THREE.WebGLRenderer.render(): the forceClear argument has been removed. Use .clear() instead.' );
+					forceClear = arguments[ 3 ];
+
+				}
 
 				if ( ! ( camera && camera.isCamera ) ) {
 
@@ -54426,7 +57048,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				currentRenderState = renderStates.get( scene, camera );
 				currentRenderState.init();
 
-				scene.onBeforeRender( _this, scene, camera, renderTarget );
+				scene.onBeforeRender( _this, scene, camera, renderTarget || _currentRenderTarget );
 
 				_projScreenMatrix.multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse );
 				_frustum.setFromMatrix( _projScreenMatrix );
@@ -54437,7 +57059,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				currentRenderList = renderLists.get( scene, camera );
 				currentRenderList.init();
 
-				projectObject( scene, camera, _this.sortObjects );
+				projectObject( scene, camera, 0, _this.sortObjects );
 
 				if ( _this.sortObjects === true ) {
 
@@ -54461,13 +57083,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				if ( this.info.autoReset ) this.info.reset();
 
-				if ( renderTarget === undefined ) {
+				if ( renderTarget !== undefined ) {
 
-					renderTarget = null;
+					this.setRenderTarget( renderTarget );
 
 				}
-
-				this.setRenderTarget( renderTarget );
 
 				//
 
@@ -54497,11 +57117,21 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				}
 
-				// Generate mipmap if we're using any kind of mipmap filtering
+				//
 
-				if ( renderTarget ) {
+				scene.onAfterRender( _this, scene, camera );
 
-					textures.updateRenderTargetMipmap( renderTarget );
+				//
+
+				if ( _currentRenderTarget !== null ) {
+
+					// Generate mipmap if we're using any kind of mipmap filtering
+
+					textures.updateRenderTargetMipmap( _currentRenderTarget );
+
+					// resolve multisample renderbuffers to a single-sample texture if necessary
+
+					textures.updateMultisampleRenderTarget( _currentRenderTarget );
 
 				}
 
@@ -54512,8 +57142,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				state.buffers.color.setMask( true );
 
 				state.setPolygonOffset( false );
-
-				scene.onAfterRender( _this, scene, camera );
 
 				if ( vr.enabled ) {
 
@@ -54528,7 +57156,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			};
 
-			function projectObject( object, camera, sortObjects ) {
+			function projectObject( object, camera, groupOrder, sortObjects ) {
 
 				if ( object.visible === false ) return;
 
@@ -54536,7 +57164,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				if ( visible ) {
 
-					if ( object.isLight ) {
+					if ( object.isGroup ) {
+
+						groupOrder = object.renderOrder;
+
+					} else if ( object.isLight ) {
 
 						currentRenderState.pushLight( object );
 
@@ -54560,7 +57192,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 							var geometry = objects.update( object );
 							var material = object.material;
 
-							currentRenderList.push( object, geometry, material, _vector3.z, null );
+							if ( material.visible ) {
+
+								currentRenderList.push( object, geometry, material, groupOrder, _vector3.z, null );
+
+							}
 
 						}
 
@@ -54573,7 +57209,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 						}
 
-						currentRenderList.push( object, null, object.material, _vector3.z, null );
+						currentRenderList.push( object, null, object.material, groupOrder, _vector3.z, null );
 
 					} else if ( object.isMesh || object.isLine || object.isPoints ) {
 
@@ -54606,7 +57242,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 									if ( groupMaterial && groupMaterial.visible ) {
 
-										currentRenderList.push( object, geometry, groupMaterial, _vector3.z, group );
+										currentRenderList.push( object, geometry, groupMaterial, groupOrder, _vector3.z, group );
 
 									}
 
@@ -54614,7 +57250,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 							} else if ( material.visible ) {
 
-								currentRenderList.push( object, geometry, material, _vector3.z, null );
+								currentRenderList.push( object, geometry, material, groupOrder, _vector3.z, null );
 
 							}
 
@@ -54628,7 +57264,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				for ( var i = 0, l = children.length; i < l; i ++ ) {
 
-					projectObject( children[ i ], camera, sortObjects );
+					projectObject( children[ i ], camera, groupOrder, sortObjects );
 
 				}
 
@@ -54657,22 +57293,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 							if ( object.layers.test( camera2.layers ) ) {
 
-								if ( 'viewport' in camera2 ) { // XR
-
-									state.viewport( _currentViewport.copy( camera2.viewport ) );
-
-								} else {
-
-									var bounds = camera2.bounds;
-
-									var x = bounds.x * _width;
-									var y = bounds.y * _height;
-									var width = bounds.z * _width;
-									var height = bounds.w * _height;
-
-									state.viewport( _currentViewport.set( x, y, width, height ).multiplyScalar( _pixelRatio ) );
-
-								}
+								state.viewport( _currentViewport.copy( camera2.viewport ) );
 
 								currentRenderState.setupLights( camera2 );
 
@@ -54887,6 +57508,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					// wire up the material to this renderer's lighting state
 
 					uniforms.ambientLightColor.value = lights.state.ambient;
+					uniforms.lightProbe.value = lights.state.probe;
 					uniforms.directionalLights.value = lights.state.directional;
 					uniforms.spotLights.value = lights.state.spot;
 					uniforms.rectAreaLights.value = lights.state.rectArea;
@@ -54913,7 +57535,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			function setProgram( camera, fog, material, object ) {
 
-				_usedTextureUnits = 0;
+				textures.resetTextureUnits();
 
 				var materialProperties = properties.get( material );
 				var lights = currentRenderState.state.lights;
@@ -55100,7 +57722,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 							}
 
-							p_uniforms.setValue( _gl, 'boneTexture', skeleton.boneTexture );
+							p_uniforms.setValue( _gl, 'boneTexture', skeleton.boneTexture, textures );
 							p_uniforms.setValue( _gl, 'boneTextureSize', skeleton.boneTextureSize );
 
 						} else {
@@ -55219,7 +57841,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					} else if ( material.isShadowMaterial ) {
 
-						m_uniforms.color.value = material.color;
+						m_uniforms.color.value.copy( material.color );
 						m_uniforms.opacity.value = material.opacity;
 
 					}
@@ -55230,13 +57852,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					if ( m_uniforms.ltc_1 !== undefined ) m_uniforms.ltc_1.value = UniformsLib.LTC_1;
 					if ( m_uniforms.ltc_2 !== undefined ) m_uniforms.ltc_2.value = UniformsLib.LTC_2;
 
-					WebGLUniforms.upload( _gl, materialProperties.uniformsList, m_uniforms, _this );
+					WebGLUniforms.upload( _gl, materialProperties.uniformsList, m_uniforms, textures );
 
 				}
 
 				if ( material.isShaderMaterial && material.uniformsNeedUpdate === true ) {
 
-					WebGLUniforms.upload( _gl, materialProperties.uniformsList, m_uniforms, _this );
+					WebGLUniforms.upload( _gl, materialProperties.uniformsList, m_uniforms, textures );
 					material.uniformsNeedUpdate = false;
 
 				}
@@ -55265,7 +57887,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				if ( material.color ) {
 
-					uniforms.diffuse.value = material.color;
+					uniforms.diffuse.value.copy( material.color );
 
 				}
 
@@ -55395,7 +58017,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			function refreshUniformsLine( uniforms, material ) {
 
-				uniforms.diffuse.value = material.color;
+				uniforms.diffuse.value.copy( material.color );
 				uniforms.opacity.value = material.opacity;
 
 			}
@@ -55410,7 +58032,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			function refreshUniformsPoints( uniforms, material ) {
 
-				uniforms.diffuse.value = material.color;
+				uniforms.diffuse.value.copy( material.color );
 				uniforms.opacity.value = material.opacity;
 				uniforms.size.value = material.size * _pixelRatio;
 				uniforms.scale.value = _height * 0.5;
@@ -55433,7 +58055,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			function refreshUniformsSprites( uniforms, material ) {
 
-				uniforms.diffuse.value = material.color;
+				uniforms.diffuse.value.copy( material.color );
 				uniforms.opacity.value = material.opacity;
 				uniforms.rotation.value = material.rotation;
 				uniforms.map.value = material.map;
@@ -55454,7 +58076,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			function refreshUniformsFog( uniforms, fog ) {
 
-				uniforms.fogColor.value = fog.color;
+				uniforms.fogColor.value.copy( fog.color );
 
 				if ( fog.isFog ) {
 
@@ -55481,7 +58103,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			function refreshUniformsPhong( uniforms, material ) {
 
-				uniforms.specular.value = material.specular;
+				uniforms.specular.value.copy( material.specular );
 				uniforms.shininess.value = Math.max( material.shininess, 1e-4 ); // to prevent pow( 0.0, 0.0 )
 
 				if ( material.emissiveMap ) {
@@ -55690,6 +58312,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			function markUniformsLightsNeedsUpdate( uniforms, value ) {
 
 				uniforms.ambientLightColor.needsUpdate = value;
+				uniforms.lightProbe.needsUpdate = value;
 
 				uniforms.directionalLights.needsUpdate = value;
 				uniforms.pointLights.needsUpdate = value;
@@ -55699,130 +58322,24 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			}
 
-			// Textures
-
-			function allocTextureUnit() {
-
-				var textureUnit = _usedTextureUnits;
-
-				if ( textureUnit >= capabilities.maxTextures ) {
-
-					console.warn( 'THREE.WebGLRenderer: Trying to use ' + textureUnit + ' texture units while this GPU supports only ' + capabilities.maxTextures );
-
-				}
-
-				_usedTextureUnits += 1;
-
-				return textureUnit;
-
-			}
-
-			this.allocTextureUnit = allocTextureUnit;
-
-			// this.setTexture2D = setTexture2D;
-			this.setTexture2D = ( function () {
-
-				var warned = false;
-
-				// backwards compatibility: peel texture.texture
-				return function setTexture2D( texture, slot ) {
-
-					if ( texture && texture.isWebGLRenderTarget ) {
-
-						if ( ! warned ) {
-
-							console.warn( "THREE.WebGLRenderer.setTexture2D: don't use render targets as textures. Use their .texture property instead." );
-							warned = true;
-
-						}
-
-						texture = texture.texture;
-
-					}
-
-					textures.setTexture2D( texture, slot );
-
-				};
-
-			}() );
-
-			this.setTexture3D = ( function () {
-
-				// backwards compatibility: peel texture.texture
-				return function setTexture3D( texture, slot ) {
-
-					textures.setTexture3D( texture, slot );
-
-				};
-
-			}() );
-
-			this.setTexture = ( function () {
-
-				var warned = false;
-
-				return function setTexture( texture, slot ) {
-
-					if ( ! warned ) {
-
-						console.warn( "THREE.WebGLRenderer: .setTexture is deprecated, use setTexture2D instead." );
-						warned = true;
-
-					}
-
-					textures.setTexture2D( texture, slot );
-
-				};
-
-			}() );
-
-			this.setTextureCube = ( function () {
-
-				var warned = false;
-
-				return function setTextureCube( texture, slot ) {
-
-					// backwards compatibility: peel texture.texture
-					if ( texture && texture.isWebGLRenderTargetCube ) {
-
-						if ( ! warned ) {
-
-							console.warn( "THREE.WebGLRenderer.setTextureCube: don't use cube render targets as textures. Use their .texture property instead." );
-							warned = true;
-
-						}
-
-						texture = texture.texture;
-
-					}
-
-					// currently relying on the fact that WebGLRenderTargetCube.texture is a Texture and NOT a CubeTexture
-					// TODO: unify these code paths
-					if ( ( texture && texture.isCubeTexture ) ||
-						( Array.isArray( texture.image ) && texture.image.length === 6 ) ) {
-
-						// CompressedTexture can have Array in image :/
-
-						// this function alone should take care of cube textures
-						textures.setTextureCube( texture, slot );
-
-					} else {
-
-						// assumed: texture property of THREE.WebGLRenderTargetCube
-
-						textures.setTextureCubeDynamic( texture, slot );
-
-					}
-
-				};
-
-			}() );
-
 			//
-
 			this.setFramebuffer = function ( value ) {
 
+				if ( _framebuffer !== value ) _gl.bindFramebuffer( 36160, value );
+
 				_framebuffer = value;
+
+			};
+
+			this.getActiveCubeFace = function () {
+
+				return _currentActiveCubeFace;
+
+			};
+
+			this.getActiveMipMapLevel = function () {
+
+				return _currentActiveMipmapLevel;
 
 			};
 
@@ -55832,9 +58349,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			};
 
-			this.setRenderTarget = function ( renderTarget ) {
+			this.setRenderTarget = function ( renderTarget, activeCubeFace, activeMipMapLevel ) {
 
 				_currentRenderTarget = renderTarget;
+				_currentActiveCubeFace = activeCubeFace;
+				_currentActiveMipmapLevel = activeMipMapLevel;
 
 				if ( renderTarget && properties.get( renderTarget ).__webglFramebuffer === undefined ) {
 
@@ -55851,8 +58370,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					if ( renderTarget.isWebGLRenderTargetCube ) {
 
-						framebuffer = __webglFramebuffer[ renderTarget.activeCubeFace ];
+						framebuffer = __webglFramebuffer[ activeCubeFace || 0 ];
 						isCube = true;
+
+					} else if ( renderTarget.isWebGLMultisampleRenderTarget ) {
+
+						framebuffer = properties.get( renderTarget ).__webglMultisampledFramebuffer;
 
 					} else {
 
@@ -55886,13 +58409,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				if ( isCube ) {
 
 					var textureProperties = properties.get( renderTarget.texture );
-					_gl.framebufferTexture2D( 36160, 36064, 34069 + renderTarget.activeCubeFace, textureProperties.__webglTexture, renderTarget.activeMipMapLevel );
+					_gl.framebufferTexture2D( 36160, 36064, 34069 + ( activeCubeFace || 0 ), textureProperties.__webglTexture, activeMipMapLevel || 0 );
 
 				}
 
 			};
 
-			this.readRenderTargetPixels = function ( renderTarget, x, y, width, height, buffer ) {
+			this.readRenderTargetPixels = function ( renderTarget, x, y, width, height, buffer, activeCubeFaceIndex ) {
 
 				if ( ! ( renderTarget && renderTarget.isWebGLRenderTarget ) ) {
 
@@ -55902,6 +58425,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				}
 
 				var framebuffer = properties.get( renderTarget ).__webglFramebuffer;
+
+				if ( renderTarget.isWebGLRenderTargetCube && activeCubeFaceIndex !== undefined ) {
+
+					framebuffer = framebuffer[ activeCubeFaceIndex ];
+
+				}
 
 				if ( framebuffer ) {
 
@@ -55973,7 +58502,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				var height = texture.image.height;
 				var glFormat = utils.convert( texture.format );
 
-				this.setTexture2D( texture, 0 );
+				textures.setTexture2D( texture, 0 );
 
 				_gl.copyTexImage2D( 3553, level || 0, glFormat, position.x, position.y, width, height, 0 );
 
@@ -55986,7 +58515,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				var glFormat = utils.convert( dstTexture.format );
 				var glType = utils.convert( dstTexture.type );
 
-				this.setTexture2D( dstTexture, 0 );
+				textures.setTexture2D( dstTexture, 0 );
 
 				if ( srcTexture.isDataTexture ) {
 
@@ -55999,6 +58528,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				}
 
 			};
+
+			/*
+			if ( typeof __THREE_DEVTOOLS__ !== undefined ) {
+				__THREE_DEVTOOLS__.dispatchEvent( { type: 'renderer', value: this } );
+			}
+			*/
 
 		}
 
@@ -56016,23 +58551,27 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		}
 
-		FogExp2.prototype.isFogExp2 = true;
+		Object.assign( FogExp2.prototype, {
 
-		FogExp2.prototype.clone = function () {
+			isFogExp2: true,
 
-			return new FogExp2( this.color, this.density );
+			clone: function () {
 
-		};
+				return new FogExp2( this.color, this.density );
 
-		FogExp2.prototype.toJSON = function ( /* meta */ ) {
+			},
 
-			return {
-				type: 'FogExp2',
-				color: this.color.getHex(),
-				density: this.density
-			};
+			toJSON: function ( /* meta */ ) {
 
-		};
+				return {
+					type: 'FogExp2',
+					color: this.color.getHex(),
+					density: this.density
+				};
+
+			}
+
+		} );
 
 		/**
 		 * @author mrdoob / http://mrdoob.com/
@@ -56050,24 +58589,28 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		}
 
-		Fog.prototype.isFog = true;
+		Object.assign( Fog.prototype, {
 
-		Fog.prototype.clone = function () {
+			isFog: true,
 
-			return new Fog( this.color, this.near, this.far );
+			clone: function () {
 
-		};
+				return new Fog( this.color, this.near, this.far );
 
-		Fog.prototype.toJSON = function ( /* meta */ ) {
+			},
 
-			return {
-				type: 'Fog',
-				color: this.color.getHex(),
-				near: this.near,
-				far: this.far
-			};
+			toJSON: function ( /* meta */ ) {
 
-		};
+				return {
+					type: 'Fog',
+					color: this.color.getHex(),
+					near: this.near,
+					far: this.far
+				};
+
+			}
+
+		} );
 
 		/**
 		 * @author mrdoob / http://mrdoob.com/
@@ -56085,11 +58628,19 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			this.autoUpdate = true; // checked by the renderer
 
+			/*
+			if ( typeof __THREE_DEVTOOLS__ !== undefined ) {
+				__THREE_DEVTOOLS__.dispatchEvent( { type: 'scene', value: this } );
+			}
+			*/
+
 		}
 
 		Scene.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 			constructor: Scene,
+
+			isScene: true,
 
 			copy: function ( source, recursive ) {
 
@@ -56114,6 +58665,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				if ( this.fog !== null ) data.object.fog = this.fog.toJSON();
 
 				return data;
+
+			},
+
+			dispose: function () {
+
+				this.dispatchEvent( { type: 'dispose' } );
 
 			}
 
@@ -56608,6 +59165,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			constructor: LOD,
 
+			isLOD: true,
+
 			copy: function ( source ) {
 
 				Object3D.prototype.copy.call( this, source, false );
@@ -56647,6 +59206,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				levels.splice( l, 0, { distance: distance, object: object } );
 
 				this.add( object );
+
+				return this;
 
 			},
 
@@ -57352,20 +59913,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			}() ),
 
-			copy: function ( source ) {
-
-				Object3D.prototype.copy.call( this, source );
-
-				this.geometry.copy( source.geometry );
-				this.material.copy( source.material );
-
-				return this;
-
-			},
-
 			clone: function () {
 
-				return new this.constructor().copy( this );
+				return new this.constructor( this.geometry, this.material ).copy( this );
 
 			}
 
@@ -58908,6 +61458,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		TubeBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
 		TubeBufferGeometry.prototype.constructor = TubeBufferGeometry;
 
+		TubeBufferGeometry.prototype.toJSON = function () {
+
+			var data = BufferGeometry.prototype.toJSON.call( this );
+
+			data.path = this.parameters.path.toJSON();
+
+			return data;
+
+		};
+
 		/**
 		 * @author oosmoxiecode
 		 * @author Mugen87 / https://github.com/Mugen87
@@ -60145,7 +62705,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		 *
 		 *  bevelEnabled: <bool>, // turn on bevel
 		 *  bevelThickness: <float>, // how deep into the original shape bevel goes
-		 *  bevelSize: <float>, // how far from shape outline is bevel
+		 *  bevelSize: <float>, // how far from shape outline (including bevelOffset) is bevel
+		 *  bevelOffset: <float>, // how far from shape outline does bevel start
 		 *  bevelSegments: <int>, // number of bevel layers
 		 *
 		 *  extrudePath: <THREE.Curve> // curve to extrude shape along
@@ -60236,6 +62797,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				var bevelEnabled = options.bevelEnabled !== undefined ? options.bevelEnabled : true;
 				var bevelThickness = options.bevelThickness !== undefined ? options.bevelThickness : 6;
 				var bevelSize = options.bevelSize !== undefined ? options.bevelSize : bevelThickness - 2;
+				var bevelOffset = options.bevelOffset !== undefined ? options.bevelOffset : 0;
 				var bevelSegments = options.bevelSegments !== undefined ? options.bevelSegments : 3;
 
 				var extrudePath = options.extrudePath;
@@ -60284,6 +62846,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					bevelSegments = 0;
 					bevelThickness = 0;
 					bevelSize = 0;
+					bevelOffset = 0;
 
 				}
 
@@ -60520,7 +63083,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					t = b / bevelSegments;
 					z = bevelThickness * Math.cos( t * Math.PI / 2 );
-					bs = bevelSize * Math.sin( t * Math.PI / 2 );
+					bs = bevelSize * Math.sin( t * Math.PI / 2 ) + bevelOffset;
 
 					// contract shape
 
@@ -60551,7 +63114,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				}
 
-				bs = bevelSize;
+				bs = bevelSize + bevelOffset;
 
 				// Back facing vertices
 
@@ -60618,7 +63181,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					t = b / bevelSegments;
 					z = bevelThickness * Math.cos( t * Math.PI / 2 );
-					bs = bevelSize * Math.sin( t * Math.PI / 2 );
+					bs = bevelSize * Math.sin( t * Math.PI / 2 ) + bevelOffset;
 
 					// contract shape
 
@@ -60970,7 +63533,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		 *
 		 *  bevelEnabled: <bool>, // turn on bevel
 		 *  bevelThickness: <float>, // how deep into text bevel goes
-		 *  bevelSize: <float> // how far from text outline is bevel
+		 *  bevelSize: <float>, // how far from text outline (including bevelOffset) is bevel
+		 *  bevelOffset: <float> // how far from text outline does bevel start
 		 * }
 		 */
 
@@ -61092,7 +63656,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			thetaStart = thetaStart !== undefined ? thetaStart : 0;
 			thetaLength = thetaLength !== undefined ? thetaLength : Math.PI;
 
-			var thetaEnd = thetaStart + thetaLength;
+			var thetaEnd = Math.min( thetaStart + thetaLength, Math.PI );
 
 			var ix, iy;
 
@@ -61117,6 +63681,20 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				var v = iy / heightSegments;
 
+				// special case for the poles
+
+				var uOffset = 0;
+
+				if ( iy == 0 && thetaStart == 0 ) {
+
+					uOffset = 0.5 / widthSegments;
+
+				} else if ( iy == heightSegments && thetaEnd == Math.PI ) {
+
+					uOffset = - 0.5 / widthSegments;
+
+				}
+
 				for ( ix = 0; ix <= widthSegments; ix ++ ) {
 
 					var u = ix / widthSegments;
@@ -61131,12 +63709,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					// normal
 
-					normal.set( vertex.x, vertex.y, vertex.z ).normalize();
+					normal.copy( vertex ).normalize();
 					normals.push( normal.x, normal.y, normal.z );
 
 					// uv
 
-					uvs.push( u, 1 - v );
+					uvs.push( u + uOffset, 1 - v );
 
 					verticesRow.push( index ++ );
 
@@ -62565,6 +65143,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		 *
 		 * parameters = {
 		 *  reflectivity: <float>
+		 *  clearCoat: <float>
+		 *  clearCoatRoughness: <float>
 		 * }
 		 */
 
@@ -64270,6 +66850,21 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				return this;
 
+			},
+
+			clone: function () {
+
+				var times = AnimationUtils.arraySlice( this.times, 0 );
+				var values = AnimationUtils.arraySlice( this.values, 0 );
+
+				var TypedKeyframeTrack = this.constructor;
+				var track = new TypedKeyframeTrack( this.name, times, values );
+
+				// Interpolant argument to constructor is not saved, so copy the factory method directly.
+				track.createInterpolant = this.createInterpolant;
+
+				return track;
+
 			}
 
 		} );
@@ -64935,6 +67530,21 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				return this;
 
+			},
+
+
+			clone: function () {
+
+				var tracks = [];
+
+				for ( var i = 0; i < this.tracks.length; i ++ ) {
+
+					tracks.push( this.tracks[ i ].clone() );
+
+				}
+
+				return new AnimationClip( this.name, this.duration, tracks );
+
 			}
 
 		} );
@@ -65419,7 +68029,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			},
 
-			parse: function ( json, onLoad ) {
+			parse: function ( json ) {
 
 				var animations = [];
 
@@ -65431,7 +68041,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				}
 
-				onLoad( animations );
+				return animations;
 
 			},
 
@@ -68605,6 +71215,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 								material.uniforms[ name ].value = new Vector4().fromArray( uniform.value );
 								break;
 
+							case 'm3':
+								material.uniforms[ name ].value = new Matrix3().fromArray( uniform.value );
+
 							case 'm4':
 								material.uniforms[ name ].value = new Matrix4().fromArray( uniform.value );
 								break;
@@ -68644,6 +71257,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				// maps
 
 				if ( json.map !== undefined ) material.map = getTexture( json.map );
+				if ( json.matcap !== undefined ) material.matcap = getTexture( json.matcap );
 
 				if ( json.alphaMap !== undefined ) {
 
@@ -68744,8 +71358,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				}
 
-				// Merges multi-byte utf-8 characters.
-				return decodeURIComponent( escape( s ) );
+				try {
+
+					// merges multi-byte utf-8 characters.
+
+					return decodeURIComponent( escape( s ) );
+
+				} catch ( e ) { // see #16358
+
+					return s;
+
+				}
 
 			},
 
@@ -68760,6 +71383,107 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			}
 
 		};
+
+		/**
+		 * @author benaadams / https://twitter.com/ben_a_adams
+		 */
+
+		function InstancedBufferGeometry() {
+
+			BufferGeometry.call( this );
+
+			this.type = 'InstancedBufferGeometry';
+			this.maxInstancedCount = undefined;
+
+		}
+
+		InstancedBufferGeometry.prototype = Object.assign( Object.create( BufferGeometry.prototype ), {
+
+			constructor: InstancedBufferGeometry,
+
+			isInstancedBufferGeometry: true,
+
+			copy: function ( source ) {
+
+				BufferGeometry.prototype.copy.call( this, source );
+
+				this.maxInstancedCount = source.maxInstancedCount;
+
+				return this;
+
+			},
+
+			clone: function () {
+
+				return new this.constructor().copy( this );
+
+			},
+
+			toJSON: function () {
+
+				var data = BufferGeometry.prototype.toJSON.call( this );
+
+				data.maxInstancedCount = this.maxInstancedCount;
+
+				data.isInstancedBufferGeometry = true;
+
+				return data;
+
+			}
+
+		} );
+
+		/**
+		 * @author benaadams / https://twitter.com/ben_a_adams
+		 */
+
+		function InstancedBufferAttribute( array, itemSize, normalized, meshPerAttribute ) {
+
+			if ( typeof ( normalized ) === 'number' ) {
+
+				meshPerAttribute = normalized;
+
+				normalized = false;
+
+				console.error( 'THREE.InstancedBufferAttribute: The constructor now expects normalized as the third argument.' );
+
+			}
+
+			BufferAttribute.call( this, array, itemSize, normalized );
+
+			this.meshPerAttribute = meshPerAttribute || 1;
+
+		}
+
+		InstancedBufferAttribute.prototype = Object.assign( Object.create( BufferAttribute.prototype ), {
+
+			constructor: InstancedBufferAttribute,
+
+			isInstancedBufferAttribute: true,
+
+			copy: function ( source ) {
+
+				BufferAttribute.prototype.copy.call( this, source );
+
+				this.meshPerAttribute = source.meshPerAttribute;
+
+				return this;
+
+			},
+
+			toJSON: function ()	{
+
+				var data = BufferAttribute.prototype.toJSON.call( this );
+
+				data.meshPerAttribute = this.meshPerAttribute;
+
+				data.isInstancedBufferAttribute = true;
+
+				return data;
+
+			}
+
+		} );
 
 		/**
 		 * @author mrdoob / http://mrdoob.com/
@@ -68789,7 +71513,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			parse: function ( json ) {
 
-				var geometry = new BufferGeometry();
+				var geometry = json.isInstancedBufferGeometry ? new InstancedBufferGeometry() : new BufferGeometry();
 
 				var index = json.data.index;
 
@@ -68806,8 +71530,37 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					var attribute = attributes[ key ];
 					var typedArray = new TYPED_ARRAYS[ attribute.type ]( attribute.array );
+					var bufferAttributeConstr = attribute.isInstancedBufferAttribute ? InstancedBufferAttribute : BufferAttribute;
+					var bufferAttribute = new bufferAttributeConstr( typedArray, attribute.itemSize, attribute.normalized );
+					if ( attribute.name !== undefined ) bufferAttribute.name = attribute.name;
+					geometry.addAttribute( key, bufferAttribute );
 
-					geometry.addAttribute( key, new BufferAttribute( typedArray, attribute.itemSize, attribute.normalized ) );
+				}
+
+				var morphAttributes = json.data.morphAttributes;
+
+				if ( morphAttributes ) {
+
+					for ( var key in morphAttributes ) {
+
+						var attributeArray = morphAttributes[ key ];
+
+						var array = [];
+
+						for ( var i = 0, il = attributeArray.length; i < il; i ++ ) {
+
+							var attribute = attributeArray[ i ];
+							var typedArray = new TYPED_ARRAYS[ attribute.type ]( attribute.array );
+
+							var bufferAttribute = new BufferAttribute( typedArray, attribute.itemSize, attribute.normalized );
+							if ( attribute.name !== undefined ) bufferAttribute.name = attribute.name;
+							array.push( bufferAttribute );
+
+						}
+
+						geometry.morphAttributes[ key ] = array;
+
+					}
 
 				}
 
@@ -69157,6 +71910,21 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 								break;
 
+							case 'TubeGeometry':
+							case 'TubeBufferGeometry':
+
+								// This only works for built-in curves (e.g. CatmullRomCurve3).
+								// User defined curves or instances of CurvePath will not be deserialized.
+								geometry = new Geometries[ data.type ](
+									new Curves[ data.path.type ]().fromJSON( data.path ),
+									data.tubularSegments,
+									data.radius,
+									data.radialSegments,
+									data.closed
+								);
+
+								break;
+
 							case 'LatheGeometry':
 							case 'LatheBufferGeometry':
 
@@ -69231,6 +71999,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 								break;
 
 							case 'BufferGeometry':
+							case 'InstancedBufferGeometry':
 
 								geometry = bufferGeometryLoader.parse( data );
 
@@ -69313,8 +72082,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 						} else {
 
-							materials[ data.uuid ] = loader.parse( data );
-							cache[ data.uuid ] = materials[ data.uuid ];
+							if ( cache[ data.uuid ] === undefined ) {
+
+								cache[ data.uuid ] = loader.parse( data );
+
+							}
+
+							materials[ data.uuid ] = cache[ data.uuid ];
 
 						}
 
@@ -69661,6 +72435,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 						}
 
+						if ( data.drawMode !== undefined ) object.setDrawMode( data.drawMode );
+
 						break;
 
 					case 'LOD':
@@ -69883,7 +72659,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				} ).then( function ( blob ) {
 
-					return createImageBitmap( blob, scope.options );
+					if ( scope.options === undefined ) {
+
+						// Workaround for FireFox. It causes an error if you pass options.
+						return createImageBitmap( blob );
+
+					} else {
+
+						return createImageBitmap( blob, scope.options );
+
+					}
 
 				} ).then( function ( imageBitmap ) {
 
@@ -69901,6 +72686,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 					scope.manager.itemEnd( url );
 
 				} );
+
+				scope.manager.itemStart( url );
 
 			},
 
@@ -70787,6 +73574,376 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		} );
 
 		/**
+		 * @author bhouston / http://clara.io
+		 * @author WestLangley / http://github.com/WestLangley
+		 *
+		 * Primary reference:
+		 *   https://graphics.stanford.edu/papers/envmap/envmap.pdf
+		 *
+		 * Secondary reference:
+		 *   https://www.ppsloan.org/publications/StupidSH36.pdf
+		 */
+
+		// 3-band SH defined by 9 coefficients
+
+		function SphericalHarmonics3() {
+
+			this.coefficients = [];
+
+			for ( var i = 0; i < 9; i ++ ) {
+
+				this.coefficients.push( new Vector3() );
+
+			}
+
+		}
+
+		Object.assign( SphericalHarmonics3.prototype, {
+
+			isSphericalHarmonics3: true,
+
+			set: function ( coefficients ) {
+
+				for ( var i = 0; i < 9; i ++ ) {
+
+					this.coefficients[ i ].copy( coefficients[ i ] );
+
+				}
+
+				return this;
+
+			},
+
+			zero: function () {
+
+				for ( var i = 0; i < 9; i ++ ) {
+
+					this.coefficients[ i ].set( 0, 0, 0 );
+
+				}
+
+				return this;
+
+			},
+
+			// get the radiance in the direction of the normal
+			// target is a Vector3
+			getAt: function ( normal, target ) {
+
+				// normal is assumed to be unit length
+
+				var x = normal.x, y = normal.y, z = normal.z;
+
+				var coeff = this.coefficients;
+
+				// band 0
+				target = coeff[ 0 ] * 0.282095;
+
+				// band 1
+				target += coeff[ 1 ] * 0.488603 * y;
+				target += coeff[ 2 ] * 0.488603 * z;
+				target += coeff[ 3 ] * 0.488603 * x;
+
+				// band 2
+				target += coeff[ 4 ] * 1.092548 * ( x * y );
+				target += coeff[ 5 ] * 1.092548 * ( y * z );
+				target += coeff[ 6 ] * 0.315392 * ( 3.0 * z * z - 1.0 );
+				target += coeff[ 7 ] * 1.092548 * ( x * z );
+				target += coeff[ 8 ] * 0.546274 * ( x * x - y * y );
+
+				return target;
+
+			},
+
+			// get the irradiance (radiance convolved with cosine lobe) in the direction of the normal
+			// target is a Vector3
+			// https://graphics.stanford.edu/papers/envmap/envmap.pdf
+			getIrradianceAt: function ( normal, target ) {
+
+				// normal is assumed to be unit length
+
+				var x = normal.x, y = normal.y, z = normal.z;
+
+				var coeff = this.coefficients;
+
+				// band 0
+				target = coeff[ 0 ] * 0.886227; // π * 0.282095
+
+				// band 1
+				target += coeff[ 1 ] * 2.0 * 0.511664 * y; // ( 2 * π / 3 ) * 0.488603
+				target += coeff[ 2 ] * 2.0 * 0.511664 * z;
+				target += coeff[ 3 ] * 2.0 * 0.511664 * x;
+
+				// band 2
+				target += coeff[ 4 ] * 2.0 * 0.429043 * x * y; // ( π / 4 ) * 1.092548
+				target += coeff[ 5 ] * 2.0 * 0.429043 * y * z;
+				target += coeff[ 6 ] * ( 0.743125 * z * z - 0.247708 ); // ( π / 4 ) * 0.315392 * 3
+				target += coeff[ 7 ] * 2.0 * 0.429043 * x * z;
+				target += coeff[ 8 ] * 0.429043 * ( x * x - y * y ); // ( π / 4 ) * 0.546274
+
+				return target;
+
+			},
+
+			add: function ( sh ) {
+
+				for ( var i = 0; i < 9; i ++ ) {
+
+					this.coefficients[ i ].add( sh.coefficients[ i ] );
+
+				}
+
+				return this;
+
+			},
+
+
+			scale: function ( s ) {
+
+				for ( var i = 0; i < 9; i ++ ) {
+
+					this.coefficients[ i ].multiplyScalar( s );
+
+				}
+
+				return this;
+
+			},
+
+			lerp: function ( sh, alpha ) {
+
+				for ( var i = 0; i < 9; i ++ ) {
+
+					this.coefficients[ i ].lerp( sh.coefficients[ i ], alpha );
+
+				}
+
+				return this;
+
+			},
+
+			equals: function ( sh ) {
+
+				for ( var i = 0; i < 9; i ++ ) {
+
+					if ( ! this.coefficients[ i ].equals( sh.coefficients[ i ] ) ) {
+
+						return false;
+
+					}
+
+				}
+
+				return true;
+
+			},
+
+			copy: function ( sh ) {
+
+				return this.set( sh.coefficients );
+
+			},
+
+			clone: function () {
+
+				return new this.constructor().copy( this );
+
+			},
+
+			fromArray: function ( array ) {
+
+				var coefficients = this.coefficients;
+
+				for ( var i = 0; i < 9; i ++ ) {
+
+					coefficients[ i ].fromArray( array, i * 3 );
+
+				}
+
+				return this;
+
+			},
+
+			toArray: function () {
+
+				var array = [];
+				var coefficients = this.coefficients;
+
+				for ( var i = 0; i < 9; i ++ ) {
+
+					coefficients[ i ].toArray( array, i * 3 );
+
+				}
+
+				return array;
+
+			}
+
+		} );
+
+		Object.assign( SphericalHarmonics3, {
+
+			// evaluate the basis functions
+			// shBasis is an Array[ 9 ]
+			getBasisAt: function ( normal, shBasis ) {
+
+				// normal is assumed to be unit length
+
+				var x = normal.x, y = normal.y, z = normal.z;
+
+				// band 0
+				shBasis[ 0 ] = 0.282095;
+
+				// band 1
+				shBasis[ 1 ] = 0.488603 * y;
+				shBasis[ 2 ] = 0.488603 * z;
+				shBasis[ 3 ] = 0.488603 * x;
+
+				// band 2
+				shBasis[ 4 ] = 1.092548 * x * y;
+				shBasis[ 5 ] = 1.092548 * y * z;
+				shBasis[ 6 ] = 0.315392 * ( 3 * z * z - 1 );
+				shBasis[ 7 ] = 1.092548 * x * z;
+				shBasis[ 8 ] = 0.546274 * ( x * x - y * y );
+
+			}
+
+		} );
+
+		/**
+		 * @author WestLangley / http://github.com/WestLangley
+		 *
+		 * A LightProbe is a source of indirect-diffuse light
+		 */
+
+		function LightProbe( sh, intensity ) {
+
+			Light.call( this, undefined, intensity );
+
+			this.sh = ( sh !== undefined ) ? sh : new SphericalHarmonics3();
+
+		}
+
+		LightProbe.prototype = Object.assign( Object.create( Light.prototype ), {
+
+			constructor: LightProbe,
+
+			isLightProbe: true,
+
+			copy: function ( source ) {
+
+				Light.prototype.copy.call( this, source );
+
+				this.sh.copy( source.sh );
+				this.intensity = source.intensity;
+
+				return this;
+
+			},
+
+			toJSON: function ( meta ) {
+
+				var data = Light.prototype.toJSON.call( this, meta );
+
+				// data.sh = this.sh.toArray(); // todo
+
+				return data;
+
+			}
+
+		} );
+
+		/**
+		 * @author WestLangley / http://github.com/WestLangley
+		 */
+
+		function HemisphereLightProbe( skyColor, groundColor, intensity ) {
+
+			LightProbe.call( this, undefined, intensity );
+
+			var color1 = new Color().set( skyColor );
+			var color2 = new Color().set( groundColor );
+
+			var sky = new Vector3( color1.r, color1.g, color1.b );
+			var ground = new Vector3( color2.r, color2.g, color2.b );
+
+			// without extra factor of PI in the shader, should = 1 / Math.sqrt( Math.PI );
+			var c0 = Math.sqrt( Math.PI );
+			var c1 = c0 * Math.sqrt( 0.75 );
+
+			this.sh.coefficients[ 0 ].copy( sky ).add( ground ).multiplyScalar( c0 );
+			this.sh.coefficients[ 1 ].copy( sky ).sub( ground ).multiplyScalar( c1 );
+
+		}
+
+		HemisphereLightProbe.prototype = Object.assign( Object.create( LightProbe.prototype ), {
+
+			constructor: HemisphereLightProbe,
+
+			isHemisphereLightProbe: true,
+
+			copy: function ( source ) { // modifying colors not currently supported
+
+				LightProbe.prototype.copy.call( this, source );
+
+				return this;
+
+			},
+
+			toJSON: function ( meta ) {
+
+				var data = LightProbe.prototype.toJSON.call( this, meta );
+
+				// data.sh = this.sh.toArray(); // todo
+
+				return data;
+
+			}
+
+		} );
+
+		/**
+		 * @author WestLangley / http://github.com/WestLangley
+		 */
+
+		function AmbientLightProbe( color, intensity ) {
+
+			LightProbe.call( this, undefined, intensity );
+
+			var color1 = new Color().set( color );
+
+			// without extra factor of PI in the shader, would be 2 / Math.sqrt( Math.PI );
+			this.sh.coefficients[ 0 ].set( color1.r, color1.g, color1.b ).multiplyScalar( 2 * Math.sqrt( Math.PI ) );
+
+		}
+
+		AmbientLightProbe.prototype = Object.assign( Object.create( LightProbe.prototype ), {
+
+			constructor: AmbientLightProbe,
+
+			isAmbientLightProbe: true,
+
+			copy: function ( source ) { // modifying color not currently supported
+
+				LightProbe.prototype.copy.call( this, source );
+
+				return this;
+
+			},
+
+			toJSON: function ( meta ) {
+
+				var data = LightProbe.prototype.toJSON.call( this, meta );
+
+				// data.sh = this.sh.toArray(); // todo
+
+				return data;
+
+			}
+
+		} );
+
+		/**
 		 * @author mrdoob / http://mrdoob.com/
 		 */
 
@@ -70885,13 +74042,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		 * @author alteredq / http://alteredqualia.com/
 		 */
 
+		var fov = 90, aspect = 1;
+
 		function CubeCamera( near, far, cubeResolution, options ) {
 
 			Object3D.call( this );
 
 			this.type = 'CubeCamera';
-
-			var fov = 90, aspect = 1;
 
 			var cameraPX = new PerspectiveCamera( fov, aspect, near, far );
 			cameraPX.up.set( 0, - 1, 0 );
@@ -70932,49 +74089,52 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				if ( this.parent === null ) this.updateMatrixWorld();
 
+				var currentRenderTarget = renderer.getRenderTarget();
+
 				var renderTarget = this.renderTarget;
 				var generateMipmaps = renderTarget.texture.generateMipmaps;
 
 				renderTarget.texture.generateMipmaps = false;
 
-				renderTarget.activeCubeFace = 0;
-				renderer.render( scene, cameraPX, renderTarget );
+				renderer.setRenderTarget( renderTarget, 0 );
+				renderer.render( scene, cameraPX );
 
-				renderTarget.activeCubeFace = 1;
-				renderer.render( scene, cameraNX, renderTarget );
+				renderer.setRenderTarget( renderTarget, 1 );
+				renderer.render( scene, cameraNX );
 
-				renderTarget.activeCubeFace = 2;
-				renderer.render( scene, cameraPY, renderTarget );
+				renderer.setRenderTarget( renderTarget, 2 );
+				renderer.render( scene, cameraPY );
 
-				renderTarget.activeCubeFace = 3;
-				renderer.render( scene, cameraNY, renderTarget );
+				renderer.setRenderTarget( renderTarget, 3 );
+				renderer.render( scene, cameraNY );
 
-				renderTarget.activeCubeFace = 4;
-				renderer.render( scene, cameraPZ, renderTarget );
+				renderer.setRenderTarget( renderTarget, 4 );
+				renderer.render( scene, cameraPZ );
 
 				renderTarget.texture.generateMipmaps = generateMipmaps;
 
-				renderTarget.activeCubeFace = 5;
-				renderer.render( scene, cameraNZ, renderTarget );
+				renderer.setRenderTarget( renderTarget, 5 );
+				renderer.render( scene, cameraNZ );
 
-				renderer.setRenderTarget( null );
+				renderer.setRenderTarget( currentRenderTarget );
 
 			};
 
 			this.clear = function ( renderer, color, depth, stencil ) {
 
+				var currentRenderTarget = renderer.getRenderTarget();
+
 				var renderTarget = this.renderTarget;
 
 				for ( var i = 0; i < 6; i ++ ) {
 
-					renderTarget.activeCubeFace = i;
-					renderer.setRenderTarget( renderTarget );
+					renderer.setRenderTarget( renderTarget, i );
 
 					renderer.clear( color, depth, stencil );
 
 				}
 
-				renderer.setRenderTarget( null );
+				renderer.setRenderTarget( currentRenderTarget );
 
 			};
 
@@ -71287,16 +74447,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				var source = this.context.createBufferSource();
 
 				source.buffer = this.buffer;
-				source.detune.value = this.detune;
 				source.loop = this.loop;
 				source.onended = this.onEnded.bind( this );
-				source.playbackRate.setValueAtTime( this.playbackRate, this.startTime );
 				this.startTime = this.context.currentTime;
 				source.start( this.startTime, this.offset );
 
 				this.isPlaying = true;
 
 				this.source = source;
+
+				this.setDetune( this.detune );
+				this.setPlaybackRate( this.playbackRate );
 
 				return this.connect();
 
@@ -71420,6 +74581,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				this.detune = value;
 
+				if ( this.source.detune === undefined ) return; // only set detune when available
+
 				if ( this.isPlaying === true ) {
 
 					this.source.detune.setTargetAtTime( this.detune, this.context.currentTime, 0.01 );
@@ -71540,6 +74703,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			Audio.call( this, listener );
 
 			this.panner = this.context.createPanner();
+			this.panner.panningModel = 'HRTF';
 			this.panner.connect( this.gain );
 
 		}
@@ -71632,7 +74796,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 					Object3D.prototype.updateMatrixWorld.call( this, force );
 
-					if ( this.isPlaying === false ) return;
+					if ( this.hasPlaybackControl === true && this.isPlaying === false ) return;
 
 					this.matrixWorld.decompose( position, quaternion, scale );
 
@@ -72021,7 +75185,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			 * Replaces spaces with underscores and removes unsupported characters from
 			 * node names, to ensure compatibility with parseTrackName().
 			 *
-			 * @param  {string} name Node name to be sanitized.
+			 * @param {string} name Node name to be sanitized.
 			 * @return {string}
 			 */
 			sanitizeNodeName: ( function () {
@@ -73514,10 +76678,18 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 							time = 0;
 
-						} else break handle_stop;
+						} else {
+
+							this.time = time;
+
+							break handle_stop;
+
+						}
 
 						if ( this.clampWhenFinished ) this.paused = true;
 						else this.enabled = false;
+
+						this.time = time;
 
 						this._mixer.dispatchEvent( {
 							type: 'finished', action: this,
@@ -73570,6 +76742,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 							time = deltaTime > 0 ? duration : 0;
 
+							this.time = time;
+
 							this._mixer.dispatchEvent( {
 								type: 'finished', action: this,
 								direction: deltaTime > 0 ? 1 : - 1
@@ -73594,11 +76768,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 							this._loopCount = loopCount;
 
+							this.time = time;
+
 							this._mixer.dispatchEvent( {
 								type: 'loop', action: this, loopDelta: loopDelta
 							} );
 
 						}
+
+					} else {
+
+						this.time = time;
 
 					}
 
@@ -73606,14 +76786,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 						// invert time for the "pong round"
 
-						this.time = time;
 						return duration - time;
 
 					}
 
 				}
 
-				this.time = time;
 				return time;
 
 			},
@@ -74460,43 +77638,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		 * @author benaadams / https://twitter.com/ben_a_adams
 		 */
 
-		function InstancedBufferGeometry() {
-
-			BufferGeometry.call( this );
-
-			this.type = 'InstancedBufferGeometry';
-			this.maxInstancedCount = undefined;
-
-		}
-
-		InstancedBufferGeometry.prototype = Object.assign( Object.create( BufferGeometry.prototype ), {
-
-			constructor: InstancedBufferGeometry,
-
-			isInstancedBufferGeometry: true,
-
-			copy: function ( source ) {
-
-				BufferGeometry.prototype.copy.call( this, source );
-
-				this.maxInstancedCount = source.maxInstancedCount;
-
-				return this;
-
-			},
-
-			clone: function () {
-
-				return new this.constructor().copy( this );
-
-			}
-
-		} );
-
-		/**
-		 * @author benaadams / https://twitter.com/ben_a_adams
-		 */
-
 		function InstancedInterleavedBuffer( array, stride, meshPerAttribute ) {
 
 			InterleavedBuffer.call( this, array, stride );
@@ -74514,46 +77655,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			copy: function ( source ) {
 
 				InterleavedBuffer.prototype.copy.call( this, source );
-
-				this.meshPerAttribute = source.meshPerAttribute;
-
-				return this;
-
-			}
-
-		} );
-
-		/**
-		 * @author benaadams / https://twitter.com/ben_a_adams
-		 */
-
-		function InstancedBufferAttribute( array, itemSize, normalized, meshPerAttribute ) {
-
-			if ( typeof ( normalized ) === 'number' ) {
-
-				meshPerAttribute = normalized;
-
-				normalized = false;
-
-				console.error( 'THREE.InstancedBufferAttribute: The constructor now expects normalized as the third argument.' );
-
-			}
-
-			BufferAttribute.call( this, array, itemSize, normalized );
-
-			this.meshPerAttribute = meshPerAttribute || 1;
-
-		}
-
-		InstancedBufferAttribute.prototype = Object.assign( Object.create( BufferAttribute.prototype ), {
-
-			constructor: InstancedBufferAttribute,
-
-			isInstancedBufferAttribute: true,
-
-			copy: function ( source ) {
-
-				BufferAttribute.prototype.copy.call( this, source );
 
 				this.meshPerAttribute = source.meshPerAttribute;
 
@@ -75720,7 +78821,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			geometry2.addAttribute( 'position', new Float32BufferAttribute( positions2, 3 ) );
 			geometry2.computeBoundingSphere();
 
-			this.add( new Mesh( geometry2, new MeshBasicMaterial( { side: THREE.BackSide, fog: false } ) ) );
+			this.add( new Mesh( geometry2, new MeshBasicMaterial( { side: BackSide, fog: false } ) ) );
 
 			this.update();
 
@@ -75848,6 +78949,156 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		}();
 
 		/**
+		 * @author WestLangley / http://github.com/WestLangley
+		 */
+
+		function LightProbeHelper( lightProbe, size ) {
+
+			this.lightProbe = lightProbe;
+
+			this.size = size;
+
+			var defines = {};
+			defines[ 'GAMMA_OUTPUT' ] = "";
+
+			// material
+			var material = new ShaderMaterial( {
+
+				defines: defines,
+
+				uniforms: {
+
+					sh: { value: this.lightProbe.sh.coefficients }, // by reference
+
+					intensity: { value: this.lightProbe.intensity }
+
+				},
+
+				vertexShader: [
+
+					'varying vec3 vNormal;',
+
+					'void main() {',
+
+					'	vNormal = normalize( normalMatrix * normal );',
+
+					'	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
+
+					'}',
+
+				].join( '\n' ),
+
+				fragmentShader: [
+
+					'#define RECIPROCAL_PI 0.318309886',
+
+					'vec3 inverseTransformDirection( in vec3 normal, in mat4 matrix ) {',
+
+					'	// matrix is assumed to be orthogonal',
+
+					'	return normalize( ( vec4( normal, 0.0 ) * matrix ).xyz );',
+
+					'}',
+
+					'vec3 linearToOutput( in vec3 a ) {',
+
+					'	#ifdef GAMMA_OUTPUT',
+
+					'		return pow( a, vec3( 1.0 / float( GAMMA_FACTOR ) ) );',
+
+					'	#else',
+
+					'		return a;',
+
+					'	#endif',
+
+					'}',
+
+					'// source: https://graphics.stanford.edu/papers/envmap/envmap.pdf',
+					'vec3 shGetIrradianceAt( in vec3 normal, in vec3 shCoefficients[ 9 ] ) {',
+
+					'	// normal is assumed to have unit length',
+
+					'	float x = normal.x, y = normal.y, z = normal.z;',
+
+					'	// band 0',
+					'	vec3 result = shCoefficients[ 0 ] * 0.886227;',
+
+					'	// band 1',
+					'	result += shCoefficients[ 1 ] * 2.0 * 0.511664 * y;',
+					'	result += shCoefficients[ 2 ] * 2.0 * 0.511664 * z;',
+					'	result += shCoefficients[ 3 ] * 2.0 * 0.511664 * x;',
+
+					'	// band 2',
+					'	result += shCoefficients[ 4 ] * 2.0 * 0.429043 * x * y;',
+					'	result += shCoefficients[ 5 ] * 2.0 * 0.429043 * y * z;',
+					'	result += shCoefficients[ 6 ] * ( 0.743125 * z * z - 0.247708 );',
+					'	result += shCoefficients[ 7 ] * 2.0 * 0.429043 * x * z;',
+					'	result += shCoefficients[ 8 ] * 0.429043 * ( x * x - y * y );',
+
+					'	return result;',
+
+					'}',
+
+					'uniform vec3 sh[ 9 ]; // sh coefficients',
+
+					'uniform float intensity; // light probe intensity',
+
+					'varying vec3 vNormal;',
+
+					'void main() {',
+
+					'	vec3 normal = normalize( vNormal );',
+
+					'	vec3 worldNormal = inverseTransformDirection( normal, viewMatrix );',
+
+					'	vec3 irradiance = shGetIrradianceAt( worldNormal, sh );',
+
+					'	vec3 outgoingLight = RECIPROCAL_PI * irradiance * intensity;',
+
+					'	outgoingLight = linearToOutput( outgoingLight );',
+
+					'	gl_FragColor = vec4( outgoingLight, 1.0 );',
+
+					'}'
+
+				].join( '\n' )
+
+			} );
+
+			var geometry = new SphereBufferGeometry( 1, 32, 16 );
+
+			Mesh.call( this, geometry, material );
+
+			this.onBeforeRender();
+
+		}
+
+		LightProbeHelper.prototype = Object.create( Mesh.prototype );
+		LightProbeHelper.prototype.constructor = LightProbeHelper;
+
+		LightProbeHelper.prototype.dispose = function () {
+
+			this.geometry.dispose();
+			this.material.dispose();
+
+		};
+
+		LightProbeHelper.prototype.onBeforeRender = function () {
+
+			return function update() {
+
+				this.position.copy( this.lightProbe.position );
+
+				this.scale.set( 1, 1, 1 ).multiplyScalar( this.size );
+
+				this.material.uniforms.intensity.value = this.lightProbe.intensity;
+
+			};
+
+		}();
+
+		/**
 		 * @author mrdoob / http://mrdoob.com/
 		 */
 
@@ -75888,8 +79139,28 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		}
 
-		GridHelper.prototype = Object.create( LineSegments.prototype );
-		GridHelper.prototype.constructor = GridHelper;
+		GridHelper.prototype = Object.assign( Object.create( LineSegments.prototype ), {
+
+			constructor: GridHelper,
+
+			copy: function ( source ) {
+
+				LineSegments.prototype.copy.call( this, source );
+
+				this.geometry.copy( source.geometry );
+				this.material.copy( source.material );
+
+				return this;
+
+			},
+
+			clone: function () {
+
+				return new this.constructor().copy( this );
+
+			}
+
+		} );
 
 		/**
 		 * @author mrdoob / http://mrdoob.com/
@@ -75977,6 +79248,106 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		PolarGridHelper.prototype = Object.create( LineSegments.prototype );
 		PolarGridHelper.prototype.constructor = PolarGridHelper;
+
+		/**
+		 * @author Mugen87 / http://github.com/Mugen87
+		 */
+
+		function PositionalAudioHelper( audio, range, divisionsInnerAngle, divisionsOuterAngle ) {
+
+			this.audio = audio;
+			this.range = range || 1;
+			this.divisionsInnerAngle = divisionsInnerAngle || 16;
+			this.divisionsOuterAngle = divisionsOuterAngle || 2;
+
+			var geometry = new BufferGeometry();
+			var divisions = this.divisionsInnerAngle + this.divisionsOuterAngle * 2;
+			var positions = new Float32Array( ( divisions * 3 + 3 ) * 3 );
+			geometry.addAttribute( 'position', new BufferAttribute( positions, 3 ) );
+
+			var materialInnerAngle = new LineBasicMaterial( { color: 0x00ff00 } );
+			var materialOuterAngle = new LineBasicMaterial( { color: 0xffff00 } );
+
+			Line.call( this, geometry, [ materialOuterAngle, materialInnerAngle ] );
+
+			this.update();
+
+		}
+
+		PositionalAudioHelper.prototype = Object.create( Line.prototype );
+		PositionalAudioHelper.prototype.constructor = PositionalAudioHelper;
+
+		PositionalAudioHelper.prototype.update = function () {
+
+			var audio = this.audio;
+			var range = this.range;
+			var divisionsInnerAngle = this.divisionsInnerAngle;
+			var divisionsOuterAngle = this.divisionsOuterAngle;
+
+			var coneInnerAngle = _Math.degToRad( audio.panner.coneInnerAngle );
+			var coneOuterAngle = _Math.degToRad( audio.panner.coneOuterAngle );
+
+			var halfConeInnerAngle = coneInnerAngle / 2;
+			var halfConeOuterAngle = coneOuterAngle / 2;
+
+			var start = 0;
+			var count = 0;
+			var i, stride;
+
+			var geometry = this.geometry;
+			var positionAttribute = geometry.attributes.position;
+
+			geometry.clearGroups();
+
+			//
+
+			function generateSegment( from, to, divisions, materialIndex ) {
+
+				var step = ( to - from ) / divisions;
+
+				positionAttribute.setXYZ( start, 0, 0, 0 );
+				count ++;
+
+				for ( i = from; i < to; i += step ) {
+
+					stride = start + count;
+
+					positionAttribute.setXYZ( stride, Math.sin( i ) * range, 0, Math.cos( i ) * range );
+					positionAttribute.setXYZ( stride + 1, Math.sin( Math.min( i + step, to ) ) * range, 0, Math.cos( Math.min( i + step, to ) ) * range );
+					positionAttribute.setXYZ( stride + 2, 0, 0, 0 );
+
+					count += 3;
+
+				}
+
+				geometry.addGroup( start, count, materialIndex );
+
+				start += count;
+				count = 0;
+
+			}
+
+			//
+
+			generateSegment( - halfConeOuterAngle, - halfConeInnerAngle, divisionsOuterAngle, 0 );
+			generateSegment( - halfConeInnerAngle, halfConeInnerAngle, divisionsInnerAngle, 1 );
+			generateSegment( halfConeInnerAngle, halfConeOuterAngle, divisionsOuterAngle, 0 );
+
+			//
+
+			positionAttribute.needsUpdate = true;
+
+			if ( coneInnerAngle === coneOuterAngle ) this.material[ 0 ].visible = false;
+
+		};
+
+		PositionalAudioHelper.prototype.dispose = function () {
+
+			this.geometry.dispose();
+			this.material[ 0 ].dispose();
+			this.material[ 1 ].dispose();
+
+		};
 
 		/**
 		 * @author mrdoob / http://mrdoob.com/
@@ -76327,10 +79698,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 				var w = 1, h = 1;
 
-				// we need just camera projection matrix
+				// we need just camera projection matrix inverse
 				// world matrix must be identity
 
-				camera.projectionMatrix.copy( this.camera.projectionMatrix );
+				camera.projectionMatrixInverse.copy( this.camera.projectionMatrixInverse );
 
 				// center / target
 
@@ -76612,8 +79983,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 			Object3D.call( this );
 
-			if ( dir === undefined ) dir = new THREE.Vector3( 0, 0, 1 );
-			if ( origin === undefined ) origin = new THREE.Vector3( 0, 0, 0 );
+			if ( dir === undefined ) dir = new Vector3( 0, 0, 1 );
+			if ( origin === undefined ) origin = new Vector3( 0, 0, 0 );
 			if ( length === undefined ) length = 1;
 			if ( color === undefined ) color = 0xffff00;
 			if ( headLength === undefined ) headLength = 0.2 * length;
@@ -78043,42 +81414,36 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				this.clear( color, depth, stencil );
 
 			},
-
 			animate: function ( callback ) {
 
 				console.warn( 'THREE.WebGLRenderer: .animate() is now .setAnimationLoop().' );
 				this.setAnimationLoop( callback );
 
 			},
-
 			getCurrentRenderTarget: function () {
 
 				console.warn( 'THREE.WebGLRenderer: .getCurrentRenderTarget() is now .getRenderTarget().' );
 				return this.getRenderTarget();
 
 			},
-
 			getMaxAnisotropy: function () {
 
 				console.warn( 'THREE.WebGLRenderer: .getMaxAnisotropy() is now .capabilities.getMaxAnisotropy().' );
 				return this.capabilities.getMaxAnisotropy();
 
 			},
-
 			getPrecision: function () {
 
 				console.warn( 'THREE.WebGLRenderer: .getPrecision() is now .capabilities.precision.' );
 				return this.capabilities.precision;
 
 			},
-
 			resetGLState: function () {
 
 				console.warn( 'THREE.WebGLRenderer: .resetGLState() is now .state.reset().' );
 				return this.state.reset();
 
 			},
-
 			supportsFloatTextures: function () {
 
 				console.warn( 'THREE.WebGLRenderer: .supportsFloatTextures() is now .extensions.get( \'OES_texture_float\' ).' );
@@ -78156,6 +81521,26 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			setFaceCulling: function () {
 
 				console.warn( 'THREE.WebGLRenderer: .setFaceCulling() has been removed.' );
+
+			},
+			allocTextureUnit: function () {
+
+				console.warn( 'THREE.WebGLRenderer: .allocTextureUnit() has been removed.' );
+
+			},
+			setTexture: function () {
+
+				console.warn( 'THREE.WebGLRenderer: .setTexture() has been removed.' );
+
+			},
+			setTexture2D: function () {
+
+				console.warn( 'THREE.WebGLRenderer: .setTexture2D() has been removed.' );
+
+			},
+			setTextureCube: function () {
+
+				console.warn( 'THREE.WebGLRenderer: .setTextureCube() has been removed.' );
 
 			}
 
@@ -78242,6 +81627,27 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 				set: function () {
 
 					console.warn( 'THREE.WebGLRenderer: .shadowMap.renderSingleSided has been removed. Set Material.shadowSide instead.' );
+
+				}
+			}
+
+		} );
+
+		//
+
+		Object.defineProperties( WebGLRenderTargetCube.prototype, {
+
+			activeCubeFace: {
+				set: function ( /* value */ ) {
+
+					console.warn( 'THREE.WebGLRenderTargetCube: .activeCubeFace has been removed. It is now the second parameter of WebGLRenderer.setRenderTarget().' );
+
+				}
+			},
+			activeMipMapLevel: {
+				set: function ( /* value */ ) {
+
+					console.warn( 'THREE.WebGLRenderTargetCube: .activeMipMapLevel has been removed. It is now the third parameter of WebGLRenderer.setRenderTarget().' );
 
 				}
 			}
@@ -78525,34 +81931,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		//
 
-		function Projector() {
-
-			console.error( 'THREE.Projector has been moved to /examples/js/renderers/Projector.js.' );
-
-			this.projectVector = function ( vector, camera ) {
-
-				console.warn( 'THREE.Projector: .projectVector() is now vector.project().' );
-				vector.project( camera );
-
-			};
-
-			this.unprojectVector = function ( vector, camera ) {
-
-				console.warn( 'THREE.Projector: .unprojectVector() is now vector.unproject().' );
-				vector.unproject( camera );
-
-			};
-
-			this.pickingRay = function () {
-
-				console.error( 'THREE.Projector: .pickingRay() is now raycaster.setFromCamera().' );
-
-			};
-
-		}
-
-		//
-
 		function CanvasRenderer() {
 
 			console.error( 'THREE.CanvasRenderer has been removed' );
@@ -78599,336 +81977,290 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		}
 
-		exports.WebGLRenderTargetCube = WebGLRenderTargetCube;
-		exports.WebGLRenderTarget = WebGLRenderTarget;
-		exports.WebGLRenderer = WebGLRenderer;
-		exports.ShaderLib = ShaderLib;
-		exports.UniformsLib = UniformsLib;
-		exports.UniformsUtils = UniformsUtils;
-		exports.ShaderChunk = ShaderChunk;
-		exports.FogExp2 = FogExp2;
-		exports.Fog = Fog;
-		exports.Scene = Scene;
-		exports.Sprite = Sprite;
-		exports.LOD = LOD;
-		exports.SkinnedMesh = SkinnedMesh;
-		exports.Skeleton = Skeleton;
-		exports.Bone = Bone;
-		exports.Mesh = Mesh;
-		exports.LineSegments = LineSegments;
-		exports.LineLoop = LineLoop;
-		exports.Line = Line;
-		exports.Points = Points;
-		exports.Group = Group;
-		exports.VideoTexture = VideoTexture;
-		exports.DataTexture = DataTexture;
-		exports.DataTexture3D = DataTexture3D;
-		exports.CompressedTexture = CompressedTexture;
-		exports.CubeTexture = CubeTexture;
-		exports.CanvasTexture = CanvasTexture;
-		exports.DepthTexture = DepthTexture;
-		exports.Texture = Texture;
-		exports.AnimationLoader = AnimationLoader;
-		exports.CompressedTextureLoader = CompressedTextureLoader;
-		exports.DataTextureLoader = DataTextureLoader;
-		exports.CubeTextureLoader = CubeTextureLoader;
-		exports.TextureLoader = TextureLoader;
-		exports.ObjectLoader = ObjectLoader;
-		exports.MaterialLoader = MaterialLoader;
-		exports.BufferGeometryLoader = BufferGeometryLoader;
-		exports.DefaultLoadingManager = DefaultLoadingManager;
-		exports.LoadingManager = LoadingManager;
-		exports.ImageLoader = ImageLoader;
-		exports.ImageBitmapLoader = ImageBitmapLoader;
-		exports.FontLoader = FontLoader;
-		exports.FileLoader = FileLoader;
-		exports.Loader = Loader;
-		exports.LoaderUtils = LoaderUtils;
-		exports.Cache = Cache;
-		exports.AudioLoader = AudioLoader;
-		exports.SpotLightShadow = SpotLightShadow;
-		exports.SpotLight = SpotLight;
-		exports.PointLight = PointLight;
-		exports.RectAreaLight = RectAreaLight;
-		exports.HemisphereLight = HemisphereLight;
-		exports.DirectionalLightShadow = DirectionalLightShadow;
-		exports.DirectionalLight = DirectionalLight;
+		exports.ACESFilmicToneMapping = ACESFilmicToneMapping;
+		exports.AddEquation = AddEquation;
+		exports.AddOperation = AddOperation;
+		exports.AdditiveBlending = AdditiveBlending;
+		exports.AlphaFormat = AlphaFormat;
+		exports.AlwaysDepth = AlwaysDepth;
 		exports.AmbientLight = AmbientLight;
-		exports.LightShadow = LightShadow;
-		exports.Light = Light;
-		exports.StereoCamera = StereoCamera;
-		exports.PerspectiveCamera = PerspectiveCamera;
-		exports.OrthographicCamera = OrthographicCamera;
-		exports.CubeCamera = CubeCamera;
-		exports.ArrayCamera = ArrayCamera;
-		exports.Camera = Camera;
-		exports.AudioListener = AudioListener;
-		exports.PositionalAudio = PositionalAudio;
-		exports.AudioContext = AudioContext;
-		exports.AudioAnalyser = AudioAnalyser;
-		exports.Audio = Audio;
-		exports.VectorKeyframeTrack = VectorKeyframeTrack;
-		exports.StringKeyframeTrack = StringKeyframeTrack;
-		exports.QuaternionKeyframeTrack = QuaternionKeyframeTrack;
-		exports.NumberKeyframeTrack = NumberKeyframeTrack;
-		exports.ColorKeyframeTrack = ColorKeyframeTrack;
-		exports.BooleanKeyframeTrack = BooleanKeyframeTrack;
-		exports.PropertyMixer = PropertyMixer;
-		exports.PropertyBinding = PropertyBinding;
-		exports.KeyframeTrack = KeyframeTrack;
-		exports.AnimationUtils = AnimationUtils;
-		exports.AnimationObjectGroup = AnimationObjectGroup;
-		exports.AnimationMixer = AnimationMixer;
+		exports.AmbientLightProbe = AmbientLightProbe;
 		exports.AnimationClip = AnimationClip;
-		exports.Uniform = Uniform;
-		exports.InstancedBufferGeometry = InstancedBufferGeometry;
-		exports.BufferGeometry = BufferGeometry;
-		exports.Geometry = Geometry;
-		exports.InterleavedBufferAttribute = InterleavedBufferAttribute;
-		exports.InstancedInterleavedBuffer = InstancedInterleavedBuffer;
-		exports.InterleavedBuffer = InterleavedBuffer;
-		exports.InstancedBufferAttribute = InstancedBufferAttribute;
-		exports.Face3 = Face3;
-		exports.Object3D = Object3D;
-		exports.Raycaster = Raycaster;
-		exports.Layers = Layers;
-		exports.EventDispatcher = EventDispatcher;
-		exports.Clock = Clock;
-		exports.QuaternionLinearInterpolant = QuaternionLinearInterpolant;
-		exports.LinearInterpolant = LinearInterpolant;
-		exports.DiscreteInterpolant = DiscreteInterpolant;
-		exports.CubicInterpolant = CubicInterpolant;
-		exports.Interpolant = Interpolant;
-		exports.Triangle = Triangle;
-		exports.Math = _Math;
-		exports.Spherical = Spherical;
-		exports.Cylindrical = Cylindrical;
-		exports.Plane = Plane;
-		exports.Frustum = Frustum;
-		exports.Sphere = Sphere;
-		exports.Ray = Ray;
-		exports.Matrix4 = Matrix4;
-		exports.Matrix3 = Matrix3;
-		exports.Box3 = Box3;
-		exports.Box2 = Box2;
-		exports.Line3 = Line3;
-		exports.Euler = Euler;
-		exports.Vector4 = Vector4;
-		exports.Vector3 = Vector3;
-		exports.Vector2 = Vector2;
-		exports.Quaternion = Quaternion;
-		exports.Color = Color;
-		exports.ImmediateRenderObject = ImmediateRenderObject;
-		exports.VertexNormalsHelper = VertexNormalsHelper;
-		exports.SpotLightHelper = SpotLightHelper;
-		exports.SkeletonHelper = SkeletonHelper;
-		exports.PointLightHelper = PointLightHelper;
-		exports.RectAreaLightHelper = RectAreaLightHelper;
-		exports.HemisphereLightHelper = HemisphereLightHelper;
-		exports.GridHelper = GridHelper;
-		exports.PolarGridHelper = PolarGridHelper;
-		exports.FaceNormalsHelper = FaceNormalsHelper;
-		exports.DirectionalLightHelper = DirectionalLightHelper;
-		exports.CameraHelper = CameraHelper;
-		exports.BoxHelper = BoxHelper;
-		exports.Box3Helper = Box3Helper;
-		exports.PlaneHelper = PlaneHelper;
-		exports.ArrowHelper = ArrowHelper;
-		exports.AxesHelper = AxesHelper;
-		exports.Shape = Shape;
-		exports.Path = Path;
-		exports.ShapePath = ShapePath;
-		exports.Font = Font;
-		exports.CurvePath = CurvePath;
-		exports.Curve = Curve;
-		exports.ImageUtils = ImageUtils;
-		exports.ShapeUtils = ShapeUtils;
-		exports.WebGLUtils = WebGLUtils;
-		exports.WireframeGeometry = WireframeGeometry;
-		exports.ParametricGeometry = ParametricGeometry;
-		exports.ParametricBufferGeometry = ParametricBufferGeometry;
-		exports.TetrahedronGeometry = TetrahedronGeometry;
-		exports.TetrahedronBufferGeometry = TetrahedronBufferGeometry;
-		exports.OctahedronGeometry = OctahedronGeometry;
-		exports.OctahedronBufferGeometry = OctahedronBufferGeometry;
-		exports.IcosahedronGeometry = IcosahedronGeometry;
-		exports.IcosahedronBufferGeometry = IcosahedronBufferGeometry;
-		exports.DodecahedronGeometry = DodecahedronGeometry;
-		exports.DodecahedronBufferGeometry = DodecahedronBufferGeometry;
-		exports.PolyhedronGeometry = PolyhedronGeometry;
-		exports.PolyhedronBufferGeometry = PolyhedronBufferGeometry;
-		exports.TubeGeometry = TubeGeometry;
-		exports.TubeBufferGeometry = TubeBufferGeometry;
-		exports.TorusKnotGeometry = TorusKnotGeometry;
-		exports.TorusKnotBufferGeometry = TorusKnotBufferGeometry;
-		exports.TorusGeometry = TorusGeometry;
-		exports.TorusBufferGeometry = TorusBufferGeometry;
-		exports.TextGeometry = TextGeometry;
-		exports.TextBufferGeometry = TextBufferGeometry;
-		exports.SphereGeometry = SphereGeometry;
-		exports.SphereBufferGeometry = SphereBufferGeometry;
-		exports.RingGeometry = RingGeometry;
-		exports.RingBufferGeometry = RingBufferGeometry;
-		exports.PlaneGeometry = PlaneGeometry;
-		exports.PlaneBufferGeometry = PlaneBufferGeometry;
-		exports.LatheGeometry = LatheGeometry;
-		exports.LatheBufferGeometry = LatheBufferGeometry;
-		exports.ShapeGeometry = ShapeGeometry;
-		exports.ShapeBufferGeometry = ShapeBufferGeometry;
-		exports.ExtrudeGeometry = ExtrudeGeometry;
-		exports.ExtrudeBufferGeometry = ExtrudeBufferGeometry;
-		exports.EdgesGeometry = EdgesGeometry;
-		exports.ConeGeometry = ConeGeometry;
-		exports.ConeBufferGeometry = ConeBufferGeometry;
-		exports.CylinderGeometry = CylinderGeometry;
-		exports.CylinderBufferGeometry = CylinderBufferGeometry;
-		exports.CircleGeometry = CircleGeometry;
-		exports.CircleBufferGeometry = CircleBufferGeometry;
-		exports.BoxGeometry = BoxGeometry;
-		exports.BoxBufferGeometry = BoxBufferGeometry;
-		exports.ShadowMaterial = ShadowMaterial;
-		exports.SpriteMaterial = SpriteMaterial;
-		exports.RawShaderMaterial = RawShaderMaterial;
-		exports.ShaderMaterial = ShaderMaterial;
-		exports.PointsMaterial = PointsMaterial;
-		exports.MeshPhysicalMaterial = MeshPhysicalMaterial;
-		exports.MeshStandardMaterial = MeshStandardMaterial;
-		exports.MeshPhongMaterial = MeshPhongMaterial;
-		exports.MeshToonMaterial = MeshToonMaterial;
-		exports.MeshNormalMaterial = MeshNormalMaterial;
-		exports.MeshLambertMaterial = MeshLambertMaterial;
-		exports.MeshDepthMaterial = MeshDepthMaterial;
-		exports.MeshDistanceMaterial = MeshDistanceMaterial;
-		exports.MeshBasicMaterial = MeshBasicMaterial;
-		exports.MeshMatcapMaterial = MeshMatcapMaterial;
-		exports.LineDashedMaterial = LineDashedMaterial;
-		exports.LineBasicMaterial = LineBasicMaterial;
-		exports.Material = Material;
-		exports.Float64BufferAttribute = Float64BufferAttribute;
-		exports.Float32BufferAttribute = Float32BufferAttribute;
-		exports.Uint32BufferAttribute = Uint32BufferAttribute;
-		exports.Int32BufferAttribute = Int32BufferAttribute;
-		exports.Uint16BufferAttribute = Uint16BufferAttribute;
-		exports.Int16BufferAttribute = Int16BufferAttribute;
-		exports.Uint8ClampedBufferAttribute = Uint8ClampedBufferAttribute;
-		exports.Uint8BufferAttribute = Uint8BufferAttribute;
-		exports.Int8BufferAttribute = Int8BufferAttribute;
-		exports.BufferAttribute = BufferAttribute;
+		exports.AnimationLoader = AnimationLoader;
+		exports.AnimationMixer = AnimationMixer;
+		exports.AnimationObjectGroup = AnimationObjectGroup;
+		exports.AnimationUtils = AnimationUtils;
 		exports.ArcCurve = ArcCurve;
+		exports.ArrayCamera = ArrayCamera;
+		exports.ArrowHelper = ArrowHelper;
+		exports.Audio = Audio;
+		exports.AudioAnalyser = AudioAnalyser;
+		exports.AudioContext = AudioContext;
+		exports.AudioListener = AudioListener;
+		exports.AudioLoader = AudioLoader;
+		exports.AxesHelper = AxesHelper;
+		exports.AxisHelper = AxisHelper;
+		exports.BackSide = BackSide;
+		exports.BasicDepthPacking = BasicDepthPacking;
+		exports.BasicShadowMap = BasicShadowMap;
+		exports.BinaryTextureLoader = BinaryTextureLoader;
+		exports.Bone = Bone;
+		exports.BooleanKeyframeTrack = BooleanKeyframeTrack;
+		exports.BoundingBoxHelper = BoundingBoxHelper;
+		exports.Box2 = Box2;
+		exports.Box3 = Box3;
+		exports.Box3Helper = Box3Helper;
+		exports.BoxBufferGeometry = BoxBufferGeometry;
+		exports.BoxGeometry = BoxGeometry;
+		exports.BoxHelper = BoxHelper;
+		exports.BufferAttribute = BufferAttribute;
+		exports.BufferGeometry = BufferGeometry;
+		exports.BufferGeometryLoader = BufferGeometryLoader;
+		exports.ByteType = ByteType;
+		exports.Cache = Cache;
+		exports.Camera = Camera;
+		exports.CameraHelper = CameraHelper;
+		exports.CanvasRenderer = CanvasRenderer;
+		exports.CanvasTexture = CanvasTexture;
 		exports.CatmullRomCurve3 = CatmullRomCurve3;
+		exports.CineonToneMapping = CineonToneMapping;
+		exports.CircleBufferGeometry = CircleBufferGeometry;
+		exports.CircleGeometry = CircleGeometry;
+		exports.ClampToEdgeWrapping = ClampToEdgeWrapping;
+		exports.Clock = Clock;
+		exports.ClosedSplineCurve3 = ClosedSplineCurve3;
+		exports.Color = Color;
+		exports.ColorKeyframeTrack = ColorKeyframeTrack;
+		exports.CompressedTexture = CompressedTexture;
+		exports.CompressedTextureLoader = CompressedTextureLoader;
+		exports.ConeBufferGeometry = ConeBufferGeometry;
+		exports.ConeGeometry = ConeGeometry;
+		exports.CubeCamera = CubeCamera;
+		exports.CubeGeometry = BoxGeometry;
+		exports.CubeReflectionMapping = CubeReflectionMapping;
+		exports.CubeRefractionMapping = CubeRefractionMapping;
+		exports.CubeTexture = CubeTexture;
+		exports.CubeTextureLoader = CubeTextureLoader;
+		exports.CubeUVReflectionMapping = CubeUVReflectionMapping;
+		exports.CubeUVRefractionMapping = CubeUVRefractionMapping;
 		exports.CubicBezierCurve = CubicBezierCurve;
 		exports.CubicBezierCurve3 = CubicBezierCurve3;
-		exports.EllipseCurve = EllipseCurve;
-		exports.LineCurve = LineCurve;
-		exports.LineCurve3 = LineCurve3;
-		exports.QuadraticBezierCurve = QuadraticBezierCurve;
-		exports.QuadraticBezierCurve3 = QuadraticBezierCurve3;
-		exports.SplineCurve = SplineCurve;
-		exports.REVISION = REVISION;
-		exports.MOUSE = MOUSE;
-		exports.CullFaceNone = CullFaceNone;
+		exports.CubicInterpolant = CubicInterpolant;
 		exports.CullFaceBack = CullFaceBack;
 		exports.CullFaceFront = CullFaceFront;
 		exports.CullFaceFrontBack = CullFaceFrontBack;
-		exports.FrontFaceDirectionCW = FrontFaceDirectionCW;
-		exports.FrontFaceDirectionCCW = FrontFaceDirectionCCW;
-		exports.BasicShadowMap = BasicShadowMap;
-		exports.PCFShadowMap = PCFShadowMap;
-		exports.PCFSoftShadowMap = PCFSoftShadowMap;
-		exports.FrontSide = FrontSide;
-		exports.BackSide = BackSide;
-		exports.DoubleSide = DoubleSide;
-		exports.FlatShading = FlatShading;
-		exports.SmoothShading = SmoothShading;
-		exports.NoColors = NoColors;
-		exports.FaceColors = FaceColors;
-		exports.VertexColors = VertexColors;
-		exports.NoBlending = NoBlending;
-		exports.NormalBlending = NormalBlending;
-		exports.AdditiveBlending = AdditiveBlending;
-		exports.SubtractiveBlending = SubtractiveBlending;
-		exports.MultiplyBlending = MultiplyBlending;
+		exports.CullFaceNone = CullFaceNone;
+		exports.Curve = Curve;
+		exports.CurvePath = CurvePath;
 		exports.CustomBlending = CustomBlending;
-		exports.AddEquation = AddEquation;
-		exports.SubtractEquation = SubtractEquation;
-		exports.ReverseSubtractEquation = ReverseSubtractEquation;
-		exports.MinEquation = MinEquation;
-		exports.MaxEquation = MaxEquation;
-		exports.ZeroFactor = ZeroFactor;
-		exports.OneFactor = OneFactor;
-		exports.SrcColorFactor = SrcColorFactor;
-		exports.OneMinusSrcColorFactor = OneMinusSrcColorFactor;
-		exports.SrcAlphaFactor = SrcAlphaFactor;
-		exports.OneMinusSrcAlphaFactor = OneMinusSrcAlphaFactor;
-		exports.DstAlphaFactor = DstAlphaFactor;
-		exports.OneMinusDstAlphaFactor = OneMinusDstAlphaFactor;
-		exports.DstColorFactor = DstColorFactor;
-		exports.OneMinusDstColorFactor = OneMinusDstColorFactor;
-		exports.SrcAlphaSaturateFactor = SrcAlphaSaturateFactor;
-		exports.NeverDepth = NeverDepth;
-		exports.AlwaysDepth = AlwaysDepth;
-		exports.LessDepth = LessDepth;
-		exports.LessEqualDepth = LessEqualDepth;
-		exports.EqualDepth = EqualDepth;
-		exports.GreaterEqualDepth = GreaterEqualDepth;
-		exports.GreaterDepth = GreaterDepth;
-		exports.NotEqualDepth = NotEqualDepth;
-		exports.MultiplyOperation = MultiplyOperation;
-		exports.MixOperation = MixOperation;
-		exports.AddOperation = AddOperation;
-		exports.NoToneMapping = NoToneMapping;
-		exports.LinearToneMapping = LinearToneMapping;
-		exports.ReinhardToneMapping = ReinhardToneMapping;
-		exports.Uncharted2ToneMapping = Uncharted2ToneMapping;
-		exports.CineonToneMapping = CineonToneMapping;
-		exports.ACESFilmicToneMapping = ACESFilmicToneMapping;
-		exports.UVMapping = UVMapping;
-		exports.CubeReflectionMapping = CubeReflectionMapping;
-		exports.CubeRefractionMapping = CubeRefractionMapping;
-		exports.EquirectangularReflectionMapping = EquirectangularReflectionMapping;
-		exports.EquirectangularRefractionMapping = EquirectangularRefractionMapping;
-		exports.SphericalReflectionMapping = SphericalReflectionMapping;
-		exports.CubeUVReflectionMapping = CubeUVReflectionMapping;
-		exports.CubeUVRefractionMapping = CubeUVRefractionMapping;
-		exports.RepeatWrapping = RepeatWrapping;
-		exports.ClampToEdgeWrapping = ClampToEdgeWrapping;
-		exports.MirroredRepeatWrapping = MirroredRepeatWrapping;
-		exports.NearestFilter = NearestFilter;
-		exports.NearestMipMapNearestFilter = NearestMipMapNearestFilter;
-		exports.NearestMipMapLinearFilter = NearestMipMapLinearFilter;
-		exports.LinearFilter = LinearFilter;
-		exports.LinearMipMapNearestFilter = LinearMipMapNearestFilter;
-		exports.LinearMipMapLinearFilter = LinearMipMapLinearFilter;
-		exports.UnsignedByteType = UnsignedByteType;
-		exports.ByteType = ByteType;
-		exports.ShortType = ShortType;
-		exports.UnsignedShortType = UnsignedShortType;
-		exports.IntType = IntType;
-		exports.UnsignedIntType = UnsignedIntType;
-		exports.FloatType = FloatType;
-		exports.HalfFloatType = HalfFloatType;
-		exports.UnsignedShort4444Type = UnsignedShort4444Type;
-		exports.UnsignedShort5551Type = UnsignedShort5551Type;
-		exports.UnsignedShort565Type = UnsignedShort565Type;
-		exports.UnsignedInt248Type = UnsignedInt248Type;
-		exports.AlphaFormat = AlphaFormat;
-		exports.RGBFormat = RGBFormat;
-		exports.RGBAFormat = RGBAFormat;
-		exports.LuminanceFormat = LuminanceFormat;
-		exports.LuminanceAlphaFormat = LuminanceAlphaFormat;
-		exports.RGBEFormat = RGBEFormat;
+		exports.CylinderBufferGeometry = CylinderBufferGeometry;
+		exports.CylinderGeometry = CylinderGeometry;
+		exports.Cylindrical = Cylindrical;
+		exports.DataTexture = DataTexture;
+		exports.DataTexture2DArray = DataTexture2DArray;
+		exports.DataTexture3D = DataTexture3D;
+		exports.DataTextureLoader = DataTextureLoader;
+		exports.DefaultLoadingManager = DefaultLoadingManager;
 		exports.DepthFormat = DepthFormat;
 		exports.DepthStencilFormat = DepthStencilFormat;
-		exports.RedFormat = RedFormat;
-		exports.RGB_S3TC_DXT1_Format = RGB_S3TC_DXT1_Format;
-		exports.RGBA_S3TC_DXT1_Format = RGBA_S3TC_DXT1_Format;
-		exports.RGBA_S3TC_DXT3_Format = RGBA_S3TC_DXT3_Format;
-		exports.RGBA_S3TC_DXT5_Format = RGBA_S3TC_DXT5_Format;
-		exports.RGB_PVRTC_4BPPV1_Format = RGB_PVRTC_4BPPV1_Format;
-		exports.RGB_PVRTC_2BPPV1_Format = RGB_PVRTC_2BPPV1_Format;
-		exports.RGBA_PVRTC_4BPPV1_Format = RGBA_PVRTC_4BPPV1_Format;
-		exports.RGBA_PVRTC_2BPPV1_Format = RGBA_PVRTC_2BPPV1_Format;
-		exports.RGB_ETC1_Format = RGB_ETC1_Format;
+		exports.DepthTexture = DepthTexture;
+		exports.DirectionalLight = DirectionalLight;
+		exports.DirectionalLightHelper = DirectionalLightHelper;
+		exports.DirectionalLightShadow = DirectionalLightShadow;
+		exports.DiscreteInterpolant = DiscreteInterpolant;
+		exports.DodecahedronBufferGeometry = DodecahedronBufferGeometry;
+		exports.DodecahedronGeometry = DodecahedronGeometry;
+		exports.DoubleSide = DoubleSide;
+		exports.DstAlphaFactor = DstAlphaFactor;
+		exports.DstColorFactor = DstColorFactor;
+		exports.DynamicBufferAttribute = DynamicBufferAttribute;
+		exports.EdgesGeometry = EdgesGeometry;
+		exports.EdgesHelper = EdgesHelper;
+		exports.EllipseCurve = EllipseCurve;
+		exports.EqualDepth = EqualDepth;
+		exports.EquirectangularReflectionMapping = EquirectangularReflectionMapping;
+		exports.EquirectangularRefractionMapping = EquirectangularRefractionMapping;
+		exports.Euler = Euler;
+		exports.EventDispatcher = EventDispatcher;
+		exports.ExtrudeBufferGeometry = ExtrudeBufferGeometry;
+		exports.ExtrudeGeometry = ExtrudeGeometry;
+		exports.Face3 = Face3;
+		exports.Face4 = Face4;
+		exports.FaceColors = FaceColors;
+		exports.FaceNormalsHelper = FaceNormalsHelper;
+		exports.FileLoader = FileLoader;
+		exports.FlatShading = FlatShading;
+		exports.Float32Attribute = Float32Attribute;
+		exports.Float32BufferAttribute = Float32BufferAttribute;
+		exports.Float64Attribute = Float64Attribute;
+		exports.Float64BufferAttribute = Float64BufferAttribute;
+		exports.FloatType = FloatType;
+		exports.Fog = Fog;
+		exports.FogExp2 = FogExp2;
+		exports.Font = Font;
+		exports.FontLoader = FontLoader;
+		exports.FrontFaceDirectionCCW = FrontFaceDirectionCCW;
+		exports.FrontFaceDirectionCW = FrontFaceDirectionCW;
+		exports.FrontSide = FrontSide;
+		exports.Frustum = Frustum;
+		exports.GammaEncoding = GammaEncoding;
+		exports.Geometry = Geometry;
+		exports.GeometryUtils = GeometryUtils;
+		exports.GreaterDepth = GreaterDepth;
+		exports.GreaterEqualDepth = GreaterEqualDepth;
+		exports.GridHelper = GridHelper;
+		exports.Group = Group;
+		exports.HalfFloatType = HalfFloatType;
+		exports.HemisphereLight = HemisphereLight;
+		exports.HemisphereLightHelper = HemisphereLightHelper;
+		exports.HemisphereLightProbe = HemisphereLightProbe;
+		exports.IcosahedronBufferGeometry = IcosahedronBufferGeometry;
+		exports.IcosahedronGeometry = IcosahedronGeometry;
+		exports.ImageBitmapLoader = ImageBitmapLoader;
+		exports.ImageLoader = ImageLoader;
+		exports.ImageUtils = ImageUtils;
+		exports.ImmediateRenderObject = ImmediateRenderObject;
+		exports.InstancedBufferAttribute = InstancedBufferAttribute;
+		exports.InstancedBufferGeometry = InstancedBufferGeometry;
+		exports.InstancedInterleavedBuffer = InstancedInterleavedBuffer;
+		exports.Int16Attribute = Int16Attribute;
+		exports.Int16BufferAttribute = Int16BufferAttribute;
+		exports.Int32Attribute = Int32Attribute;
+		exports.Int32BufferAttribute = Int32BufferAttribute;
+		exports.Int8Attribute = Int8Attribute;
+		exports.Int8BufferAttribute = Int8BufferAttribute;
+		exports.IntType = IntType;
+		exports.InterleavedBuffer = InterleavedBuffer;
+		exports.InterleavedBufferAttribute = InterleavedBufferAttribute;
+		exports.Interpolant = Interpolant;
+		exports.InterpolateDiscrete = InterpolateDiscrete;
+		exports.InterpolateLinear = InterpolateLinear;
+		exports.InterpolateSmooth = InterpolateSmooth;
+		exports.JSONLoader = JSONLoader;
+		exports.KeyframeTrack = KeyframeTrack;
+		exports.LOD = LOD;
+		exports.LatheBufferGeometry = LatheBufferGeometry;
+		exports.LatheGeometry = LatheGeometry;
+		exports.Layers = Layers;
+		exports.LensFlare = LensFlare;
+		exports.LessDepth = LessDepth;
+		exports.LessEqualDepth = LessEqualDepth;
+		exports.Light = Light;
+		exports.LightProbe = LightProbe;
+		exports.LightProbeHelper = LightProbeHelper;
+		exports.LightShadow = LightShadow;
+		exports.Line = Line;
+		exports.Line3 = Line3;
+		exports.LineBasicMaterial = LineBasicMaterial;
+		exports.LineCurve = LineCurve;
+		exports.LineCurve3 = LineCurve3;
+		exports.LineDashedMaterial = LineDashedMaterial;
+		exports.LineLoop = LineLoop;
+		exports.LinePieces = LinePieces;
+		exports.LineSegments = LineSegments;
+		exports.LineStrip = LineStrip;
+		exports.LinearEncoding = LinearEncoding;
+		exports.LinearFilter = LinearFilter;
+		exports.LinearInterpolant = LinearInterpolant;
+		exports.LinearMipMapLinearFilter = LinearMipMapLinearFilter;
+		exports.LinearMipMapNearestFilter = LinearMipMapNearestFilter;
+		exports.LinearToneMapping = LinearToneMapping;
+		exports.Loader = Loader;
+		exports.LoaderUtils = LoaderUtils;
+		exports.LoadingManager = LoadingManager;
+		exports.LogLuvEncoding = LogLuvEncoding;
+		exports.LoopOnce = LoopOnce;
+		exports.LoopPingPong = LoopPingPong;
+		exports.LoopRepeat = LoopRepeat;
+		exports.LuminanceAlphaFormat = LuminanceAlphaFormat;
+		exports.LuminanceFormat = LuminanceFormat;
+		exports.MOUSE = MOUSE;
+		exports.Material = Material;
+		exports.MaterialLoader = MaterialLoader;
+		exports.Math = _Math;
+		exports.Matrix3 = Matrix3;
+		exports.Matrix4 = Matrix4;
+		exports.MaxEquation = MaxEquation;
+		exports.Mesh = Mesh;
+		exports.MeshBasicMaterial = MeshBasicMaterial;
+		exports.MeshDepthMaterial = MeshDepthMaterial;
+		exports.MeshDistanceMaterial = MeshDistanceMaterial;
+		exports.MeshFaceMaterial = MeshFaceMaterial;
+		exports.MeshLambertMaterial = MeshLambertMaterial;
+		exports.MeshMatcapMaterial = MeshMatcapMaterial;
+		exports.MeshNormalMaterial = MeshNormalMaterial;
+		exports.MeshPhongMaterial = MeshPhongMaterial;
+		exports.MeshPhysicalMaterial = MeshPhysicalMaterial;
+		exports.MeshStandardMaterial = MeshStandardMaterial;
+		exports.MeshToonMaterial = MeshToonMaterial;
+		exports.MinEquation = MinEquation;
+		exports.MirroredRepeatWrapping = MirroredRepeatWrapping;
+		exports.MixOperation = MixOperation;
+		exports.MultiMaterial = MultiMaterial;
+		exports.MultiplyBlending = MultiplyBlending;
+		exports.MultiplyOperation = MultiplyOperation;
+		exports.NearestFilter = NearestFilter;
+		exports.NearestMipMapLinearFilter = NearestMipMapLinearFilter;
+		exports.NearestMipMapNearestFilter = NearestMipMapNearestFilter;
+		exports.NeverDepth = NeverDepth;
+		exports.NoBlending = NoBlending;
+		exports.NoColors = NoColors;
+		exports.NoToneMapping = NoToneMapping;
+		exports.NormalBlending = NormalBlending;
+		exports.NotEqualDepth = NotEqualDepth;
+		exports.NumberKeyframeTrack = NumberKeyframeTrack;
+		exports.Object3D = Object3D;
+		exports.ObjectLoader = ObjectLoader;
+		exports.ObjectSpaceNormalMap = ObjectSpaceNormalMap;
+		exports.OctahedronBufferGeometry = OctahedronBufferGeometry;
+		exports.OctahedronGeometry = OctahedronGeometry;
+		exports.OneFactor = OneFactor;
+		exports.OneMinusDstAlphaFactor = OneMinusDstAlphaFactor;
+		exports.OneMinusDstColorFactor = OneMinusDstColorFactor;
+		exports.OneMinusSrcAlphaFactor = OneMinusSrcAlphaFactor;
+		exports.OneMinusSrcColorFactor = OneMinusSrcColorFactor;
+		exports.OrthographicCamera = OrthographicCamera;
+		exports.PCFShadowMap = PCFShadowMap;
+		exports.PCFSoftShadowMap = PCFSoftShadowMap;
+		exports.ParametricBufferGeometry = ParametricBufferGeometry;
+		exports.ParametricGeometry = ParametricGeometry;
+		exports.Particle = Particle;
+		exports.ParticleBasicMaterial = ParticleBasicMaterial;
+		exports.ParticleSystem = ParticleSystem;
+		exports.ParticleSystemMaterial = ParticleSystemMaterial;
+		exports.Path = Path;
+		exports.PerspectiveCamera = PerspectiveCamera;
+		exports.Plane = Plane;
+		exports.PlaneBufferGeometry = PlaneBufferGeometry;
+		exports.PlaneGeometry = PlaneGeometry;
+		exports.PlaneHelper = PlaneHelper;
+		exports.PointCloud = PointCloud;
+		exports.PointCloudMaterial = PointCloudMaterial;
+		exports.PointLight = PointLight;
+		exports.PointLightHelper = PointLightHelper;
+		exports.Points = Points;
+		exports.PointsMaterial = PointsMaterial;
+		exports.PolarGridHelper = PolarGridHelper;
+		exports.PolyhedronBufferGeometry = PolyhedronBufferGeometry;
+		exports.PolyhedronGeometry = PolyhedronGeometry;
+		exports.PositionalAudio = PositionalAudio;
+		exports.PositionalAudioHelper = PositionalAudioHelper;
+		exports.PropertyBinding = PropertyBinding;
+		exports.PropertyMixer = PropertyMixer;
+		exports.QuadraticBezierCurve = QuadraticBezierCurve;
+		exports.QuadraticBezierCurve3 = QuadraticBezierCurve3;
+		exports.Quaternion = Quaternion;
+		exports.QuaternionKeyframeTrack = QuaternionKeyframeTrack;
+		exports.QuaternionLinearInterpolant = QuaternionLinearInterpolant;
+		exports.REVISION = REVISION;
+		exports.RGBADepthPacking = RGBADepthPacking;
+		exports.RGBAFormat = RGBAFormat;
+		exports.RGBA_ASTC_10x10_Format = RGBA_ASTC_10x10_Format;
+		exports.RGBA_ASTC_10x5_Format = RGBA_ASTC_10x5_Format;
+		exports.RGBA_ASTC_10x6_Format = RGBA_ASTC_10x6_Format;
+		exports.RGBA_ASTC_10x8_Format = RGBA_ASTC_10x8_Format;
+		exports.RGBA_ASTC_12x10_Format = RGBA_ASTC_12x10_Format;
+		exports.RGBA_ASTC_12x12_Format = RGBA_ASTC_12x12_Format;
 		exports.RGBA_ASTC_4x4_Format = RGBA_ASTC_4x4_Format;
 		exports.RGBA_ASTC_5x4_Format = RGBA_ASTC_5x4_Format;
 		exports.RGBA_ASTC_5x5_Format = RGBA_ASTC_5x5_Format;
@@ -78937,85 +82269,138 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		exports.RGBA_ASTC_8x5_Format = RGBA_ASTC_8x5_Format;
 		exports.RGBA_ASTC_8x6_Format = RGBA_ASTC_8x6_Format;
 		exports.RGBA_ASTC_8x8_Format = RGBA_ASTC_8x8_Format;
-		exports.RGBA_ASTC_10x5_Format = RGBA_ASTC_10x5_Format;
-		exports.RGBA_ASTC_10x6_Format = RGBA_ASTC_10x6_Format;
-		exports.RGBA_ASTC_10x8_Format = RGBA_ASTC_10x8_Format;
-		exports.RGBA_ASTC_10x10_Format = RGBA_ASTC_10x10_Format;
-		exports.RGBA_ASTC_12x10_Format = RGBA_ASTC_12x10_Format;
-		exports.RGBA_ASTC_12x12_Format = RGBA_ASTC_12x12_Format;
-		exports.LoopOnce = LoopOnce;
-		exports.LoopRepeat = LoopRepeat;
-		exports.LoopPingPong = LoopPingPong;
-		exports.InterpolateDiscrete = InterpolateDiscrete;
-		exports.InterpolateLinear = InterpolateLinear;
-		exports.InterpolateSmooth = InterpolateSmooth;
-		exports.ZeroCurvatureEnding = ZeroCurvatureEnding;
-		exports.ZeroSlopeEnding = ZeroSlopeEnding;
-		exports.WrapAroundEnding = WrapAroundEnding;
-		exports.TrianglesDrawMode = TrianglesDrawMode;
-		exports.TriangleStripDrawMode = TriangleStripDrawMode;
-		exports.TriangleFanDrawMode = TriangleFanDrawMode;
-		exports.LinearEncoding = LinearEncoding;
-		exports.sRGBEncoding = sRGBEncoding;
-		exports.GammaEncoding = GammaEncoding;
-		exports.RGBEEncoding = RGBEEncoding;
-		exports.LogLuvEncoding = LogLuvEncoding;
-		exports.RGBM7Encoding = RGBM7Encoding;
-		exports.RGBM16Encoding = RGBM16Encoding;
+		exports.RGBA_PVRTC_2BPPV1_Format = RGBA_PVRTC_2BPPV1_Format;
+		exports.RGBA_PVRTC_4BPPV1_Format = RGBA_PVRTC_4BPPV1_Format;
+		exports.RGBA_S3TC_DXT1_Format = RGBA_S3TC_DXT1_Format;
+		exports.RGBA_S3TC_DXT3_Format = RGBA_S3TC_DXT3_Format;
+		exports.RGBA_S3TC_DXT5_Format = RGBA_S3TC_DXT5_Format;
 		exports.RGBDEncoding = RGBDEncoding;
-		exports.BasicDepthPacking = BasicDepthPacking;
-		exports.RGBADepthPacking = RGBADepthPacking;
-		exports.TangentSpaceNormalMap = TangentSpaceNormalMap;
-		exports.ObjectSpaceNormalMap = ObjectSpaceNormalMap;
-		exports.CubeGeometry = BoxGeometry;
-		exports.Face4 = Face4;
-		exports.LineStrip = LineStrip;
-		exports.LinePieces = LinePieces;
-		exports.MeshFaceMaterial = MeshFaceMaterial;
-		exports.MultiMaterial = MultiMaterial;
-		exports.PointCloud = PointCloud;
-		exports.Particle = Particle;
-		exports.ParticleSystem = ParticleSystem;
-		exports.PointCloudMaterial = PointCloudMaterial;
-		exports.ParticleBasicMaterial = ParticleBasicMaterial;
-		exports.ParticleSystemMaterial = ParticleSystemMaterial;
-		exports.Vertex = Vertex;
-		exports.DynamicBufferAttribute = DynamicBufferAttribute;
-		exports.Int8Attribute = Int8Attribute;
-		exports.Uint8Attribute = Uint8Attribute;
-		exports.Uint8ClampedAttribute = Uint8ClampedAttribute;
-		exports.Int16Attribute = Int16Attribute;
-		exports.Uint16Attribute = Uint16Attribute;
-		exports.Int32Attribute = Int32Attribute;
-		exports.Uint32Attribute = Uint32Attribute;
-		exports.Float32Attribute = Float32Attribute;
-		exports.Float64Attribute = Float64Attribute;
-		exports.ClosedSplineCurve3 = ClosedSplineCurve3;
-		exports.SplineCurve3 = SplineCurve3;
-		exports.Spline = Spline;
-		exports.AxisHelper = AxisHelper;
-		exports.BoundingBoxHelper = BoundingBoxHelper;
-		exports.EdgesHelper = EdgesHelper;
-		exports.WireframeHelper = WireframeHelper;
-		exports.XHRLoader = XHRLoader;
-		exports.BinaryTextureLoader = BinaryTextureLoader;
-		exports.GeometryUtils = GeometryUtils;
-		exports.Projector = Projector;
-		exports.CanvasRenderer = CanvasRenderer;
-		exports.JSONLoader = JSONLoader;
+		exports.RGBEEncoding = RGBEEncoding;
+		exports.RGBEFormat = RGBEFormat;
+		exports.RGBFormat = RGBFormat;
+		exports.RGBM16Encoding = RGBM16Encoding;
+		exports.RGBM7Encoding = RGBM7Encoding;
+		exports.RGB_ETC1_Format = RGB_ETC1_Format;
+		exports.RGB_PVRTC_2BPPV1_Format = RGB_PVRTC_2BPPV1_Format;
+		exports.RGB_PVRTC_4BPPV1_Format = RGB_PVRTC_4BPPV1_Format;
+		exports.RGB_S3TC_DXT1_Format = RGB_S3TC_DXT1_Format;
+		exports.RawShaderMaterial = RawShaderMaterial;
+		exports.Ray = Ray;
+		exports.Raycaster = Raycaster;
+		exports.RectAreaLight = RectAreaLight;
+		exports.RectAreaLightHelper = RectAreaLightHelper;
+		exports.RedFormat = RedFormat;
+		exports.ReinhardToneMapping = ReinhardToneMapping;
+		exports.RepeatWrapping = RepeatWrapping;
+		exports.ReverseSubtractEquation = ReverseSubtractEquation;
+		exports.RingBufferGeometry = RingBufferGeometry;
+		exports.RingGeometry = RingGeometry;
+		exports.Scene = Scene;
 		exports.SceneUtils = SceneUtils;
-		exports.LensFlare = LensFlare;
+		exports.ShaderChunk = ShaderChunk;
+		exports.ShaderLib = ShaderLib;
+		exports.ShaderMaterial = ShaderMaterial;
+		exports.ShadowMaterial = ShadowMaterial;
+		exports.Shape = Shape;
+		exports.ShapeBufferGeometry = ShapeBufferGeometry;
+		exports.ShapeGeometry = ShapeGeometry;
+		exports.ShapePath = ShapePath;
+		exports.ShapeUtils = ShapeUtils;
+		exports.ShortType = ShortType;
+		exports.Skeleton = Skeleton;
+		exports.SkeletonHelper = SkeletonHelper;
+		exports.SkinnedMesh = SkinnedMesh;
+		exports.SmoothShading = SmoothShading;
+		exports.Sphere = Sphere;
+		exports.SphereBufferGeometry = SphereBufferGeometry;
+		exports.SphereGeometry = SphereGeometry;
+		exports.Spherical = Spherical;
+		exports.SphericalHarmonics3 = SphericalHarmonics3;
+		exports.SphericalReflectionMapping = SphericalReflectionMapping;
+		exports.Spline = Spline;
+		exports.SplineCurve = SplineCurve;
+		exports.SplineCurve3 = SplineCurve3;
+		exports.SpotLight = SpotLight;
+		exports.SpotLightHelper = SpotLightHelper;
+		exports.SpotLightShadow = SpotLightShadow;
+		exports.Sprite = Sprite;
+		exports.SpriteMaterial = SpriteMaterial;
+		exports.SrcAlphaFactor = SrcAlphaFactor;
+		exports.SrcAlphaSaturateFactor = SrcAlphaSaturateFactor;
+		exports.SrcColorFactor = SrcColorFactor;
+		exports.StereoCamera = StereoCamera;
+		exports.StringKeyframeTrack = StringKeyframeTrack;
+		exports.SubtractEquation = SubtractEquation;
+		exports.SubtractiveBlending = SubtractiveBlending;
+		exports.TangentSpaceNormalMap = TangentSpaceNormalMap;
+		exports.TetrahedronBufferGeometry = TetrahedronBufferGeometry;
+		exports.TetrahedronGeometry = TetrahedronGeometry;
+		exports.TextBufferGeometry = TextBufferGeometry;
+		exports.TextGeometry = TextGeometry;
+		exports.Texture = Texture;
+		exports.TextureLoader = TextureLoader;
+		exports.TorusBufferGeometry = TorusBufferGeometry;
+		exports.TorusGeometry = TorusGeometry;
+		exports.TorusKnotBufferGeometry = TorusKnotBufferGeometry;
+		exports.TorusKnotGeometry = TorusKnotGeometry;
+		exports.Triangle = Triangle;
+		exports.TriangleFanDrawMode = TriangleFanDrawMode;
+		exports.TriangleStripDrawMode = TriangleStripDrawMode;
+		exports.TrianglesDrawMode = TrianglesDrawMode;
+		exports.TubeBufferGeometry = TubeBufferGeometry;
+		exports.TubeGeometry = TubeGeometry;
+		exports.UVMapping = UVMapping;
+		exports.Uint16Attribute = Uint16Attribute;
+		exports.Uint16BufferAttribute = Uint16BufferAttribute;
+		exports.Uint32Attribute = Uint32Attribute;
+		exports.Uint32BufferAttribute = Uint32BufferAttribute;
+		exports.Uint8Attribute = Uint8Attribute;
+		exports.Uint8BufferAttribute = Uint8BufferAttribute;
+		exports.Uint8ClampedAttribute = Uint8ClampedAttribute;
+		exports.Uint8ClampedBufferAttribute = Uint8ClampedBufferAttribute;
+		exports.Uncharted2ToneMapping = Uncharted2ToneMapping;
+		exports.Uniform = Uniform;
+		exports.UniformsLib = UniformsLib;
+		exports.UniformsUtils = UniformsUtils;
+		exports.UnsignedByteType = UnsignedByteType;
+		exports.UnsignedInt248Type = UnsignedInt248Type;
+		exports.UnsignedIntType = UnsignedIntType;
+		exports.UnsignedShort4444Type = UnsignedShort4444Type;
+		exports.UnsignedShort5551Type = UnsignedShort5551Type;
+		exports.UnsignedShort565Type = UnsignedShort565Type;
+		exports.UnsignedShortType = UnsignedShortType;
+		exports.Vector2 = Vector2;
+		exports.Vector3 = Vector3;
+		exports.Vector4 = Vector4;
+		exports.VectorKeyframeTrack = VectorKeyframeTrack;
+		exports.Vertex = Vertex;
+		exports.VertexColors = VertexColors;
+		exports.VertexNormalsHelper = VertexNormalsHelper;
+		exports.VideoTexture = VideoTexture;
+		exports.WebGLMultisampleRenderTarget = WebGLMultisampleRenderTarget;
+		exports.WebGLRenderTarget = WebGLRenderTarget;
+		exports.WebGLRenderTargetCube = WebGLRenderTargetCube;
+		exports.WebGLRenderer = WebGLRenderer;
+		exports.WebGLUtils = WebGLUtils;
+		exports.WireframeGeometry = WireframeGeometry;
+		exports.WireframeHelper = WireframeHelper;
+		exports.WrapAroundEnding = WrapAroundEnding;
+		exports.XHRLoader = XHRLoader;
+		exports.ZeroCurvatureEnding = ZeroCurvatureEnding;
+		exports.ZeroFactor = ZeroFactor;
+		exports.ZeroSlopeEnding = ZeroSlopeEnding;
+		exports.sRGBEncoding = sRGBEncoding;
 
 		Object.defineProperty(exports, '__esModule', { value: true });
 
-	})));
+	}));
 
 
-/***/ },
-/* 39 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var THREE = __webpack_require__(40);
+	var THREE = __webpack_require__(44);
 
 	/*
 	 * @author zz85 / https://github.com/zz85
@@ -79331,9 +82716,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	module.exports = DragControls;
 
-/***/ },
-/* 40 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	(function (global, factory) {
 		 true ? factory(exports) :
@@ -123447,23 +126832,24 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-	var three = __webpack_require__(40);
-	var d3Force3d = __webpack_require__(42);
-	var graph = _interopDefault(__webpack_require__(45));
-	var forcelayout = _interopDefault(__webpack_require__(47));
-	var forcelayout3d = _interopDefault(__webpack_require__(65));
-	var Kapsule = _interopDefault(__webpack_require__(89));
-	var accessorFn = _interopDefault(__webpack_require__(90));
-	var d3ScaleChromatic = __webpack_require__(33);
-	var tinyColor = _interopDefault(__webpack_require__(91));
+	var three$2 = __webpack_require__(44);
+	var d3Force3d = __webpack_require__(46);
+	var graph = _interopDefault(__webpack_require__(49));
+	var forcelayout = _interopDefault(__webpack_require__(51));
+	var forcelayout3d = _interopDefault(__webpack_require__(68));
+	var Kapsule = _interopDefault(__webpack_require__(97));
+	var accessorFn = _interopDefault(__webpack_require__(99));
+	var d3Scale = __webpack_require__(100);
+	var d3ScaleChromatic = __webpack_require__(37);
+	var tinyColor = _interopDefault(__webpack_require__(102));
 
 	function _typeof(obj) {
 	  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
@@ -123516,6 +126902,36 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  return _setPrototypeOf(o, p);
 	}
 
+	function isNativeReflectConstruct() {
+	  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+	  if (Reflect.construct.sham) return false;
+	  if (typeof Proxy === "function") return true;
+
+	  try {
+	    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
+	    return true;
+	  } catch (e) {
+	    return false;
+	  }
+	}
+
+	function _construct(Parent, args, Class) {
+	  if (isNativeReflectConstruct()) {
+	    _construct = Reflect.construct;
+	  } else {
+	    _construct = function _construct(Parent, args, Class) {
+	      var a = [null];
+	      a.push.apply(a, args);
+	      var Constructor = Function.bind.apply(Parent, a);
+	      var instance = new Constructor();
+	      if (Class) _setPrototypeOf(instance, Class.prototype);
+	      return instance;
+	    };
+	  }
+
+	  return _construct.apply(null, arguments);
+	}
+
 	function _assertThisInitialized(self) {
 	  if (self === void 0) {
 	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -123558,27 +126974,18 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	var colorAlpha = function colorAlpha(str) {
 	  return isNaN(str) ? tinyColor(str).getAlpha() : 1;
-	}; // Autoset attribute colorField by colorByAccessor property
+	};
+
+	var autoColorScale = d3Scale.scaleOrdinal(d3ScaleChromatic.schemePaired); // Autoset attribute colorField by colorByAccessor property
 	// If an object has already a color, don't set it
 	// Objects can be nodes or links
 
-
 	function autoColorObjects(objects, colorByAccessor, colorField) {
 	  if (!colorByAccessor || typeof colorField !== 'string') return;
-	  var colors = d3ScaleChromatic.schemePaired; // Paired color set from color brewer
-
-	  var uncoloredObjects = objects.filter(function (obj) {
+	  objects.filter(function (obj) {
 	    return !obj[colorField];
-	  });
-	  var objGroups = {};
-	  uncoloredObjects.forEach(function (obj) {
-	    objGroups[colorByAccessor(obj)] = null;
-	  });
-	  Object.keys(objGroups).forEach(function (group, idx) {
-	    objGroups[group] = idx;
-	  });
-	  uncoloredObjects.forEach(function (obj) {
-	    obj[colorField] = colors[objGroups[colorByAccessor(obj)] % colors.length];
+	  }).forEach(function (obj) {
+	    obj[colorField] = autoColorScale(colorByAccessor(obj));
 	  });
 	}
 
@@ -123586,9 +126993,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  var nodes = _ref.nodes,
 	      links = _ref.links;
 	  // linked graph
-	  var graph$$1 = {};
+	  var graph = {};
 	  nodes.forEach(function (node) {
-	    return graph$$1[idAccessor(node)] = {
+	    return graph[idAccessor(node)] = {
 	      data: node,
 	      out: [],
 	      depth: -1
@@ -123599,22 +127006,22 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        target = _ref2.target;
 	    var sourceId = getNodeId(source);
 	    var targetId = getNodeId(target);
-	    if (!graph$$1.hasOwnProperty(sourceId)) throw "Missing source node with id: ".concat(sourceId);
-	    if (!graph$$1.hasOwnProperty(targetId)) throw "Missing target node with id: ".concat(targetId);
-	    var sourceNode = graph$$1[sourceId];
-	    var targetNode = graph$$1[targetId];
+	    if (!graph.hasOwnProperty(sourceId)) throw "Missing source node with id: ".concat(sourceId);
+	    if (!graph.hasOwnProperty(targetId)) throw "Missing target node with id: ".concat(targetId);
+	    var sourceNode = graph[sourceId];
+	    var targetNode = graph[targetId];
 	    sourceNode.out.push(targetNode);
 
 	    function getNodeId(node) {
 	      return _typeof(node) === 'object' ? idAccessor(node) : node;
 	    }
 	  });
-	  traverse(Object.values(graph$$1)); // cleanup
+	  traverse(Object.values(graph)); // cleanup
 
-	  Object.keys(graph$$1).forEach(function (id) {
-	    return graph$$1[id] = graph$$1[id].depth;
+	  Object.keys(graph).forEach(function (id) {
+	    return graph[id] = graph[id].depth;
 	  });
-	  return graph$$1;
+	  return graph;
 
 	  function traverse(nodes) {
 	    var nodeStack = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
@@ -123624,7 +127031,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      var node = nodes[i];
 
 	      if (nodeStack.indexOf(node) !== -1) {
-	        throw "Invalid DAG structure! Found cycle from node ".concat(idAccessor(nodeStack[nodeStack.length - 1].data), " to ").concat(idAccessor(node.data));
+	        var loop = [].concat(_toConsumableArray(nodeStack.slice(nodeStack.indexOf(node))), [node]).map(function (d) {
+	          return idAccessor(d.data);
+	        });
+	        throw "Invalid DAG structure! Found cycle in node path: ".concat(loop.join(' -> '), ".");
 	      }
 
 	      if (currentDepth > node.depth) {
@@ -123636,21 +127046,21 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  }
 	}
 
-	var three$1 = window.THREE ? window.THREE // Prefer consumption from global THREE, if exists
+	var three = window.THREE ? window.THREE // Prefer consumption from global THREE, if exists
 	: {
-	  Mesh: three.Mesh,
-	  MeshLambertMaterial: three.MeshLambertMaterial,
-	  BufferGeometry: three.BufferGeometry,
-	  BufferAttribute: three.BufferAttribute,
-	  Matrix4: three.Matrix4,
-	  Vector3: three.Vector3,
-	  SphereGeometry: three.SphereGeometry,
-	  CylinderGeometry: three.CylinderGeometry,
-	  ConeGeometry: three.ConeGeometry,
-	  Line: three.Line,
-	  LineBasicMaterial: three.LineBasicMaterial,
-	  QuadraticBezierCurve3: three.QuadraticBezierCurve3,
-	  CubicBezierCurve3: three.CubicBezierCurve3
+	  Mesh: three$2.Mesh,
+	  MeshLambertMaterial: three$2.MeshLambertMaterial,
+	  BufferGeometry: three$2.BufferGeometry,
+	  BufferAttribute: three$2.BufferAttribute,
+	  Matrix4: three$2.Matrix4,
+	  Vector3: three$2.Vector3,
+	  SphereBufferGeometry: three$2.SphereBufferGeometry,
+	  CylinderBufferGeometry: three$2.CylinderBufferGeometry,
+	  ConeBufferGeometry: three$2.ConeBufferGeometry,
+	  Line: three$2.Line,
+	  LineBasicMaterial: three$2.LineBasicMaterial,
+	  QuadraticBezierCurve3: three$2.QuadraticBezierCurve3,
+	  CubicBezierCurve3: three$2.CubicBezierCurve3
 	};
 	var ngraph = {
 	  graph: graph,
@@ -123681,7 +127091,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      triggerUpdate: false
 	    },
 	    graphData: {
-	      default: {
+	      "default": {
 	        nodes: [],
 	        links: []
 	      },
@@ -123697,7 +127107,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      }
 	    },
 	    numDimensions: {
-	      default: 3,
+	      "default": 3,
 	      onChange: function onChange(numDim, state) {
 	        state.simulationNeedsReheating = true;
 	        var chargeForce = state.d3ForceLayout.force('charge'); // Increase repulsion on 3D mode for improved spatial separation
@@ -123724,44 +127134,48 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      }
 	    },
 	    dagMode: {
-	      onChange: function onChange(_, state) {
+	      onChange: function onChange(dagMode, state) {
+	        // td, bu, lr, rl, zin, zout, radialin, radialout
+	        !dagMode && state.forceEngine === 'd3' && (state.graphData.nodes || []).forEach(function (n) {
+	          return n.fx = n.fy = n.fz = undefined;
+	        }); // unfix nodes when disabling dag mode
+
 	        state.simulationNeedsReheating = true;
 	      }
 	    },
-	    // td, bu, lr, rl, zin, zout, radialin, radialout
 	    dagLevelDistance: {
 	      onChange: function onChange(_, state) {
 	        state.simulationNeedsReheating = true;
 	      }
 	    },
 	    nodeRelSize: {
-	      default: 4,
+	      "default": 4,
 	      onChange: function onChange(_, state) {
 	        state.sceneNeedsRepopulating = true;
 	      }
 	    },
 	    // volume per val unit
 	    nodeId: {
-	      default: 'id',
+	      "default": 'id',
 	      onChange: function onChange(_, state) {
 	        state.simulationNeedsReheating = true;
 	      }
 	    },
 	    nodeVal: {
-	      default: 'val',
+	      "default": 'val',
 	      onChange: function onChange(_, state) {
 	        state.sceneNeedsRepopulating = true;
 	      }
 	    },
 	    nodeResolution: {
-	      default: 8,
+	      "default": 8,
 	      onChange: function onChange(_, state) {
 	        state.sceneNeedsRepopulating = true;
 	      }
 	    },
 	    // how many slice segments in the sphere's circumference
 	    nodeColor: {
-	      default: 'color',
+	      "default": 'color',
 	      onChange: function onChange(_, state) {
 	        state.sceneNeedsRepopulating = true;
 	      }
@@ -123772,7 +127186,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      }
 	    },
 	    nodeOpacity: {
-	      default: 0.75,
+	      "default": 0.75,
 	      onChange: function onChange(_, state) {
 	        state.sceneNeedsRepopulating = true;
 	      }
@@ -123782,26 +127196,32 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        state.sceneNeedsRepopulating = true;
 	      }
 	    },
+	    nodeThreeObjectExtend: {
+	      "default": false,
+	      onChange: function onChange(_, state) {
+	        state.sceneNeedsRepopulating = true;
+	      }
+	    },
 	    linkSource: {
-	      default: 'source',
+	      "default": 'source',
 	      onChange: function onChange(_, state) {
 	        state.simulationNeedsReheating = true;
 	      }
 	    },
 	    linkTarget: {
-	      default: 'target',
+	      "default": 'target',
 	      onChange: function onChange(_, state) {
 	        state.simulationNeedsReheating = true;
 	      }
 	    },
 	    linkVisibility: {
-	      default: true,
+	      "default": true,
 	      onChange: function onChange(_, state) {
 	        state.sceneNeedsRepopulating = true;
 	      }
 	    },
 	    linkColor: {
-	      default: 'color',
+	      "default": 'color',
 	      onChange: function onChange(_, state) {
 	        state.sceneNeedsRepopulating = true;
 	      }
@@ -123812,7 +127232,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      }
 	    },
 	    linkOpacity: {
-	      default: 0.2,
+	      "default": 0.2,
 	      onChange: function onChange(_, state) {
 	        state.sceneNeedsRepopulating = true;
 	      }
@@ -123824,19 +127244,19 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    },
 	    // Rounded to nearest decimal. For falsy values use dimensionless line with 1px regardless of distance.
 	    linkResolution: {
-	      default: 6,
+	      "default": 6,
 	      onChange: function onChange(_, state) {
 	        state.sceneNeedsRepopulating = true;
 	      }
 	    },
 	    // how many radial segments in each line tube's geometry
 	    linkCurvature: {
-	      default: 0,
+	      "default": 0,
 	      triggerUpdate: false
 	    },
 	    // line curvature radius (0: straight, 1: semi-circle)
 	    linkCurveRotation: {
-	      default: 0,
+	      "default": 0,
 	      triggerUpdate: false
 	    },
 	    // line curve rotation along the line axis (0: interection with XY plane, PI: upside down)
@@ -123850,12 +127270,18 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        state.sceneNeedsRepopulating = true;
 	      }
 	    },
+	    linkThreeObjectExtend: {
+	      "default": false,
+	      onChange: function onChange(_, state) {
+	        state.sceneNeedsRepopulating = true;
+	      }
+	    },
 	    linkPositionUpdate: {
 	      triggerUpdate: false
 	    },
 	    // custom function to call for updating the link's position. Signature: (threeObj, { start: { x, y, z},  end: { x, y, z }}, link). If the function returns a truthy value, the regular link position update will not run.
 	    linkDirectionalArrowLength: {
-	      default: 0,
+	      "default": 0,
 	      onChange: function onChange(_, state) {
 	        state.sceneNeedsRepopulating = true;
 	      }
@@ -123866,31 +127292,31 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      }
 	    },
 	    linkDirectionalArrowRelPos: {
-	      default: 0.5,
+	      "default": 0.5,
 	      triggerUpdate: false
 	    },
 	    // value between 0<>1 indicating the relative pos along the (exposed) line
 	    linkDirectionalArrowResolution: {
-	      default: 8,
+	      "default": 8,
 	      onChange: function onChange(_, state) {
 	        state.sceneNeedsRepopulating = true;
 	      }
 	    },
 	    // how many slice segments in the arrow's conic circumference
 	    linkDirectionalParticles: {
-	      default: 0,
+	      "default": 0,
 	      onChange: function onChange(_, state) {
 	        state.sceneNeedsRepopulating = true;
 	      }
 	    },
 	    // animate photons travelling in the link direction
 	    linkDirectionalParticleSpeed: {
-	      default: 0.01,
+	      "default": 0.01,
 	      triggerUpdate: false
 	    },
 	    // in link length ratio per frame
 	    linkDirectionalParticleWidth: {
-	      default: 0.5,
+	      "default": 0.5,
 	      onChange: function onChange(_, state) {
 	        state.sceneNeedsRepopulating = true;
 	      }
@@ -123901,75 +127327,80 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      }
 	    },
 	    linkDirectionalParticleResolution: {
-	      default: 4,
+	      "default": 4,
 	      onChange: function onChange(_, state) {
 	        state.sceneNeedsRepopulating = true;
 	      }
 	    },
 	    // how many slice segments in the particle sphere's circumference
 	    forceEngine: {
-	      default: 'd3',
+	      "default": 'd3',
 	      onChange: function onChange(_, state) {
 	        state.simulationNeedsReheating = true;
 	      }
 	    },
 	    // d3 or ngraph
 	    d3AlphaDecay: {
-	      default: 0.0228,
+	      "default": 0.0228,
 	      triggerUpdate: false,
 	      onChange: function onChange(alphaDecay, state) {
 	        state.d3ForceLayout.alphaDecay(alphaDecay);
 	      }
 	    },
 	    d3AlphaTarget: {
-	      default: 0,
+	      "default": 0,
 	      triggerUpdate: false,
 	      onChange: function onChange(alphaTarget, state) {
 	        state.d3ForceLayout.alphaTarget(alphaTarget);
 	      }
 	    },
 	    d3VelocityDecay: {
-	      default: 0.4,
+	      "default": 0.4,
 	      triggerUpdate: false,
 	      onChange: function onChange(velocityDecay, state) {
 	        state.d3ForceLayout.velocityDecay(velocityDecay);
 	      }
 	    },
 	    warmupTicks: {
-	      default: 0,
+	      "default": 0,
 	      triggerUpdate: false
 	    },
 	    // how many times to tick the force engine at init before starting to render
 	    cooldownTicks: {
-	      default: Infinity,
+	      "default": Infinity,
 	      triggerUpdate: false
 	    },
 	    cooldownTime: {
-	      default: 15000,
+	      "default": 15000,
 	      triggerUpdate: false
 	    },
 	    // ms
 	    onLoading: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onFinishLoading: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onEngineTick: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onEngineStop: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    }
 	  },
-	  aliases: {
-	    autoColorBy: 'nodeAutoColorBy'
-	  },
 	  methods: {
+	    refresh: function refresh(state) {
+	      state.sceneNeedsRepopulating = true;
+	      state.simulationNeedsReheating = true;
+
+	      state._rerender();
+
+	      return this;
+	    },
 	    // Expose d3 forces for external manipulation
 	    d3Force: function d3Force(state, forceName, forceFn) {
 	      if (forceFn === undefined) {
@@ -124022,6 +127453,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	        var linkCurvatureAccessor = accessorFn(state.linkCurvature);
 	        var linkCurveRotationAccessor = accessorFn(state.linkCurveRotation);
+	        var linkThreeObjectExtendAccessor = accessorFn(state.linkThreeObjectExtend);
 	        state.graphData.links.forEach(function (link) {
 	          var line = link.__lineObj;
 	          if (!line) return;
@@ -124030,7 +127462,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	          var end = pos[isD3Sim ? 'target' : 'to'];
 	          if (!start.hasOwnProperty('x') || !end.hasOwnProperty('x')) return; // skip invalid link
 
-	          if (state.linkPositionUpdate && state.linkPositionUpdate(line, {
+	          calcLinkCurve(link); // calculate link curve for all links, including custom replaced, so it can be used in directional functionality
+
+	          var extendedObj = linkThreeObjectExtendAccessor(link);
+
+	          if (state.linkPositionUpdate && state.linkPositionUpdate(extendedObj ? line.children[0] : line, // pass child custom object if extending the default
+	          {
 	            start: {
 	              x: start.x,
 	              y: start.y,
@@ -124041,23 +127478,23 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	              y: end.y,
 	              z: end.z
 	            }
-	          }, link)) {
-	            // exit if successfully custom updated position
+	          }, link) && !extendedObj) {
+	            // exit if successfully custom updated position of non-extended obj
 	            return;
 	          }
 
-	          link.__curve = null; // Wipe curve ref from object
-
 	          if (line.type === 'Line') {
 	            // Update line geometry
-	            var curvature = linkCurvatureAccessor(link);
 	            var curveResolution = 30; // # line segments
 
-	            if (!curvature) {
+	            var curve = link.__curve;
+
+	            if (!curve) {
+	              // straight line
 	              var linePos = line.geometry.getAttribute('position');
 
 	              if (!linePos || !linePos.array || linePos.array.length !== 6) {
-	                line.geometry.addAttribute('position', linePos = new three$1.BufferAttribute(new Float32Array(2 * 3), 3));
+	                line.geometry.addAttribute('position', linePos = new three.BufferAttribute(new Float32Array(2 * 3), 3));
 	              }
 
 	              linePos.array[0] = start.x;
@@ -124069,51 +127506,67 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	              linePos.needsUpdate = true;
 	            } else {
 	              // bezier curve line
-	              var vStart = new three$1.Vector3(start.x, start.y || 0, start.z || 0);
-	              var vEnd = new three$1.Vector3(end.x, end.y || 0, end.z || 0);
-	              var l = vStart.distanceTo(vEnd); // line length
-
-	              var curve;
-	              var curveRotation = linkCurveRotationAccessor(link);
-
-	              if (l > 0) {
-	                var dx = end.x - start.x;
-	                var dy = end.y - start.y || 0;
-	                var vLine = new three$1.Vector3().subVectors(vEnd, vStart);
-	                var cp = vLine.clone().multiplyScalar(curvature).cross(dx !== 0 || dy !== 0 ? new three$1.Vector3(0, 0, 1) : new three$1.Vector3(0, 1, 0)) // avoid cross-product of parallel vectors (prefer Z, fallback to Y)
-	                .applyAxisAngle(vLine.normalize(), curveRotation) // rotate along line axis according to linkCurveRotation
-	                .add(new three$1.Vector3().addVectors(vStart, vEnd).divideScalar(2));
-	                curve = new three$1.QuadraticBezierCurve3(vStart, cp, vEnd);
-	              } else {
-	                // Same point, draw a loop
-	                var d = curvature * 70;
-	                var endAngle = -curveRotation; // Rotate clockwise (from Z angle perspective)
-
-	                var startAngle = endAngle + Math.PI / 2;
-	                curve = new three$1.CubicBezierCurve3(vStart, new three$1.Vector3(d * Math.cos(startAngle), d * Math.sin(startAngle), 0).add(vStart), new three$1.Vector3(d * Math.cos(endAngle), d * Math.sin(endAngle), 0).add(vStart), vEnd);
-	              }
-
 	              line.geometry.setFromPoints(curve.getPoints(curveResolution));
-	              link.__curve = curve;
 	            }
 
 	            line.geometry.computeBoundingSphere();
 	          } else if (line.type === 'Mesh') {
 	            // Update cylinder geometry
 	            // links with width ignore linkCurvature because TubeGeometries can't be updated
-	            var _vStart = new three$1.Vector3(start.x, start.y || 0, start.z || 0);
+	            link.__curve = null; // force reset link curve
 
-	            var _vEnd = new three$1.Vector3(end.x, end.y || 0, end.z || 0);
-
-	            var distance = _vStart.distanceTo(_vEnd);
-
-	            line.position.x = _vStart.x;
-	            line.position.y = _vStart.y;
-	            line.position.z = _vStart.z;
-	            line.lookAt(_vEnd);
+	            var vStart = new three.Vector3(start.x, start.y || 0, start.z || 0);
+	            var vEnd = new three.Vector3(end.x, end.y || 0, end.z || 0);
+	            var distance = vStart.distanceTo(vEnd);
+	            line.position.x = vStart.x;
+	            line.position.y = vStart.y;
+	            line.position.z = vStart.z;
 	            line.scale.z = distance;
+	            line.parent.localToWorld(vEnd); // lookAt requires world coords
+
+	            line.lookAt(vEnd);
 	          }
-	        });
+	        }); //
+
+	        function calcLinkCurve(link) {
+	          var pos = isD3Sim ? link : state.layout.getLinkPosition(state.layout.graph.getLink(link.source, link.target).id);
+	          var start = pos[isD3Sim ? 'source' : 'from'];
+	          var end = pos[isD3Sim ? 'target' : 'to'];
+	          if (!start.hasOwnProperty('x') || !end.hasOwnProperty('x')) return; // skip invalid link
+
+	          var curvature = linkCurvatureAccessor(link);
+
+	          if (!curvature) {
+	            link.__curve = null; // Straight line
+	          } else {
+	            // bezier curve line (only for line types)
+	            var vStart = new three.Vector3(start.x, start.y || 0, start.z || 0);
+	            var vEnd = new three.Vector3(end.x, end.y || 0, end.z || 0);
+	            var l = vStart.distanceTo(vEnd); // line length
+
+	            var curve;
+	            var curveRotation = linkCurveRotationAccessor(link);
+
+	            if (l > 0) {
+	              var dx = end.x - start.x;
+	              var dy = end.y - start.y || 0;
+	              var vLine = new three.Vector3().subVectors(vEnd, vStart);
+	              var cp = vLine.clone().multiplyScalar(curvature).cross(dx !== 0 || dy !== 0 ? new three.Vector3(0, 0, 1) : new three.Vector3(0, 1, 0)) // avoid cross-product of parallel vectors (prefer Z, fallback to Y)
+	              .applyAxisAngle(vLine.normalize(), curveRotation) // rotate along line axis according to linkCurveRotation
+	              .add(new three.Vector3().addVectors(vStart, vEnd).divideScalar(2));
+	              curve = new three.QuadraticBezierCurve3(vStart, cp, vEnd);
+	            } else {
+	              // Same point, draw a loop
+	              var d = curvature * 70;
+	              var endAngle = -curveRotation; // Rotate clockwise (from Z angle perspective)
+
+	              var startAngle = endAngle + Math.PI / 2;
+	              curve = new three.CubicBezierCurve3(vStart, new three.Vector3(d * Math.cos(startAngle), d * Math.sin(startAngle), 0).add(vStart), new three.Vector3(d * Math.cos(endAngle), d * Math.sin(endAngle), 0).add(vStart), vEnd);
+	            }
+
+	            link.__curve = curve;
+	          }
+	        }
 	      }
 
 	      function updateArrows() {
@@ -124159,7 +127612,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	          ['x', 'y', 'z'].forEach(function (dim) {
 	            return arrowObj.position[dim] = arrowTail[dim];
 	          });
-	          arrowObj.lookAt(arrowHead.x, arrowHead.y, arrowHead.z);
+
+	          var headVec = _construct(three.Vector3, _toConsumableArray(['x', 'y', 'z'].map(function (c) {
+	            return arrowHead[c];
+	          })));
+
+	          arrowObj.parent.localToWorld(headVec); // lookAt requires world coords
+
+	          arrowObj.lookAt(headVec);
 	        });
 	      }
 
@@ -124268,6 +127728,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 
 	      var customNodeObjectAccessor = accessorFn(state.nodeThreeObject);
+	      var customNodeObjectExtendAccessor = accessorFn(state.nodeThreeObjectExtend);
 	      var valAccessor = accessorFn(state.nodeVal);
 	      var colorAccessor = accessorFn(state.nodeColor);
 	      var sphereGeometries = {}; // indexed by node value
@@ -124276,34 +127737,40 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	      state.graphData.nodes.forEach(function (node) {
 	        var customObj = customNodeObjectAccessor(node);
+	        var extendObj = customNodeObjectExtendAccessor(node);
+
+	        if (customObj && state.nodeThreeObject === customObj) {
+	          // clone object if it's a shared object among all nodes
+	          customObj = customObj.clone();
+	        }
+
 	        var obj;
 
-	        if (customObj) {
+	        if (customObj && !extendObj) {
 	          obj = customObj;
-
-	          if (state.nodeThreeObject === obj) {
-	            // clone object if it's a shared object among all nodes
-	            obj = obj.clone();
-	          }
 	        } else {
-	          // Default object (sphere mesh)
+	          // Add default object (sphere mesh)
 	          var val = valAccessor(node) || 1;
 
 	          if (!sphereGeometries.hasOwnProperty(val)) {
-	            sphereGeometries[val] = new three$1.SphereGeometry(Math.cbrt(val) * state.nodeRelSize, state.nodeResolution, state.nodeResolution);
+	            sphereGeometries[val] = new three.SphereBufferGeometry(Math.cbrt(val) * state.nodeRelSize, state.nodeResolution, state.nodeResolution);
 	          }
 
 	          var color = colorAccessor(node);
 
 	          if (!sphereMaterials.hasOwnProperty(color)) {
-	            sphereMaterials[color] = new three$1.MeshLambertMaterial({
+	            sphereMaterials[color] = new three.MeshLambertMaterial({
 	              color: colorStr2Hex(color || '#ffffaa'),
 	              transparent: true,
 	              opacity: state.nodeOpacity * colorAlpha(color)
 	            });
 	          }
 
-	          obj = new three$1.Mesh(sphereGeometries[val], sphereMaterials[color]);
+	          obj = new three.Mesh(sphereGeometries[val], sphereMaterials[color]);
+
+	          if (customObj && extendObj) {
+	            obj.add(customObj); // extend default with custom
+	          }
 	        }
 
 	        obj.__graphObjType = 'node'; // Add object type
@@ -124313,6 +127780,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        state.graphScene.add(node.__threeObj = obj);
 	      });
 	      var customLinkObjectAccessor = accessorFn(state.linkThreeObject);
+	      var customLinkObjectExtendAccessor = accessorFn(state.linkThreeObjectExtend);
 	      var customLinkMaterialAccessor = accessorFn(state.linkMaterial);
 	      var linkVisibilityAccessor = accessorFn(state.linkVisibility);
 	      var linkColorAccessor = accessorFn(state.linkColor);
@@ -124339,15 +127807,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	        var color = linkColorAccessor(link);
 	        var customObj = customLinkObjectAccessor(link);
+	        var extendObj = customLinkObjectExtendAccessor(link);
+
+	        if (customObj && state.linkThreeObject === customObj) {
+	          // clone object if it's a shared object among all links
+	          customObj = customObj.clone();
+	        }
+
 	        var lineObj;
 
-	        if (customObj) {
+	        if (customObj && !extendObj) {
 	          lineObj = customObj;
-
-	          if (state.linkThreeObject === lineObj) {
-	            // clone object if it's a shared object among all links
-	            lineObj = lineObj.clone();
-	          }
 	        } else {
 	          // Add default line object
 	          var linkWidth = Math.ceil(linkWidthAccessor(link) * 10) / 10;
@@ -124357,16 +127827,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	          if (useCylinder) {
 	            if (!cylinderGeometries.hasOwnProperty(linkWidth)) {
 	              var r = linkWidth / 2;
-	              geometry = new three$1.CylinderGeometry(r, r, 1, state.linkResolution, 1, false);
-	              geometry.applyMatrix(new three$1.Matrix4().makeTranslation(0, 1 / 2, 0));
-	              geometry.applyMatrix(new three$1.Matrix4().makeRotationX(Math.PI / 2));
+	              geometry = new three.CylinderBufferGeometry(r, r, 1, state.linkResolution, 1, false);
+	              geometry.applyMatrix(new three.Matrix4().makeTranslation(0, 1 / 2, 0));
+	              geometry.applyMatrix(new three.Matrix4().makeRotationX(Math.PI / 2));
 	              cylinderGeometries[linkWidth] = geometry;
 	            }
 
 	            geometry = cylinderGeometries[linkWidth];
 	          } else {
 	            // Use plain line (constant width)
-	            geometry = new three$1.BufferGeometry();
+	            geometry = new three.BufferGeometry();
+	            geometry.addAttribute('position', new three.BufferAttribute(new Float32Array(2 * 3), 3));
 	          }
 
 	          var lineMaterial = customLinkMaterialAccessor(link);
@@ -124374,7 +127845,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	          if (!lineMaterial) {
 	            if (!lineMaterials.hasOwnProperty(color)) {
 	              var lineOpacity = state.linkOpacity * colorAlpha(color);
-	              lineMaterials[color] = new three$1.MeshLambertMaterial({
+	              lineMaterials[color] = new three.MeshLambertMaterial({
 	                color: colorStr2Hex(color || '#f0f0f0'),
 	                transparent: lineOpacity < 1,
 	                opacity: lineOpacity,
@@ -124386,7 +127857,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	            lineMaterial = lineMaterials[color];
 	          }
 
-	          lineObj = new three$1[useCylinder ? 'Mesh' : 'Line'](geometry, lineMaterial);
+	          lineObj = new three[useCylinder ? 'Mesh' : 'Line'](geometry, lineMaterial);
+
+	          if (customObj && extendObj) {
+	            lineObj.add(customObj); // extend default with custom
+	          }
 	        }
 
 	        lineObj.renderOrder = 10; // Prevent visual glitches of dark lines on top of nodes by rendering them last
@@ -124401,11 +127876,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	        if (arrowLength && arrowLength > 0) {
 	          var arrowColor = linkArrowColorAccessor(link) || color || '#f0f0f0';
-	          var coneGeometry = new three$1.ConeGeometry(arrowLength * 0.25, arrowLength, state.linkDirectionalArrowResolution); // Correct orientation
+	          var coneGeometry = new three.ConeBufferGeometry(arrowLength * 0.25, arrowLength, state.linkDirectionalArrowResolution); // Correct orientation
 
 	          coneGeometry.translate(0, arrowLength / 2, 0);
 	          coneGeometry.rotateX(Math.PI / 2);
-	          var arrowObj = new three$1.Mesh(coneGeometry, new three$1.MeshLambertMaterial({
+	          var arrowObj = new three.Mesh(coneGeometry, new three.MeshLambertMaterial({
 	            color: colorStr2Hex(arrowColor),
 	            transparent: true,
 	            opacity: state.linkOpacity * 3
@@ -124419,13 +127894,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        var photonColor = linkParticleColorAccessor(link) || color || '#f0f0f0';
 
 	        if (!particleGeometries.hasOwnProperty(photonR)) {
-	          particleGeometries[photonR] = new three$1.SphereGeometry(photonR, state.linkDirectionalParticleResolution, state.linkDirectionalParticleResolution);
+	          particleGeometries[photonR] = new three.SphereBufferGeometry(photonR, state.linkDirectionalParticleResolution, state.linkDirectionalParticleResolution);
 	        }
 
 	        var particleGeometry = particleGeometries[photonR];
 
 	        if (!particleMaterials.hasOwnProperty(photonColor)) {
-	          particleMaterials[photonColor] = new three$1.MeshLambertMaterial({
+	          particleMaterials[photonColor] = new three.MeshLambertMaterial({
 	            color: colorStr2Hex(photonColor),
 	            transparent: true,
 	            opacity: state.linkOpacity * 3
@@ -124435,7 +127910,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        var particleMaterial = particleMaterials[photonColor];
 
 	        var photons = _toConsumableArray(Array(numPhotons)).map(function () {
-	          return new three$1.Mesh(particleGeometry, particleMaterial);
+	          return new three.Mesh(particleGeometry, particleMaterial);
 	        });
 
 	        photons.forEach(function (photon) {
@@ -124548,7 +128023,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      }
 
 	      _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(FromKapsule)).call.apply(_getPrototypeOf2, [this].concat(args)));
-	      _this.__kapsuleInstance = kapsule().apply(void 0, [].concat(_toConsumableArray(initKapsuleWithSelf ? [_assertThisInitialized(_assertThisInitialized(_this))] : []), args));
+	      _this.__kapsuleInstance = kapsule().apply(void 0, [].concat(_toConsumableArray(initKapsuleWithSelf ? [_assertThisInitialized(_this)] : []), args));
 	      return _this;
 	    }
 
@@ -124569,18 +128044,21 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  return FromKapsule;
 	}
 
-	var threeForcegraph = fromKapsule(ForceGraph, three.Group, true);
+	var three$1 = window.THREE ? window.THREE : {
+	  Group: three$2.Group
+	}; // Prefer consumption from global THREE, if exists
+	var threeForcegraph = fromKapsule(ForceGraph, three$1.Group, true);
 
 	module.exports = threeForcegraph;
 
 
-/***/ },
-/* 42 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://github.com/vasturiano/d3-force-3d v2.0.1 Copyright 2018 Vasco Asturiano
 	(function (global, factory) {
-	 true ? factory(exports, __webpack_require__(43), __webpack_require__(24), __webpack_require__(44), __webpack_require__(10), __webpack_require__(15)) :
+	 true ? factory(exports, __webpack_require__(47), __webpack_require__(27), __webpack_require__(48), __webpack_require__(11), __webpack_require__(16)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'd3-binarytree', 'd3-quadtree', 'd3-octree', 'd3-dispatch', 'd3-timer'], factory) :
 	(factory((global.d3 = global.d3 || {}),global.d3,global.d3,global.d3,global.d3,global.d3));
 	}(this, (function (exports,d3Binarytree,d3Quadtree,d3Octree,d3Dispatch,d3Timer) { 'use strict';
@@ -125398,9 +128876,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 43 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://github.com/vasturiano/d3-binarytree v0.1.4 Copyright 2018 Vasco Asturiano
 	(function (global, factory) {
@@ -125771,9 +129249,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 44 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// https://github.com/vasturiano/d3-octree v0.1.4 Copyright 2018 Vasco Asturiano
 	(function (global, factory) {
@@ -126294,9 +129772,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})));
 
 
-/***/ },
-/* 45 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * @fileOverview Contains definition of the core graph object.
@@ -126315,7 +129793,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 */
 	module.exports = createGraph;
 
-	var eventify = __webpack_require__(46);
+	var eventify = __webpack_require__(50);
 
 	/**
 	 * Creates a new graph
@@ -126901,9 +130379,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 46 */
-/***/ function(module, exports) {
+/***/ }),
+/* 50 */
+/***/ (function(module, exports) {
 
 	module.exports = function(subject) {
 	  validateSubject(subject);
@@ -126995,14 +130473,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 47 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	module.exports = createLayout;
-	module.exports.simulator = __webpack_require__(48);
+	module.exports.simulator = __webpack_require__(52);
 
-	var eventify = __webpack_require__(64);
+	var eventify = __webpack_require__(56);
 
 	/**
 	 * Creates force based layout for a given graph.
@@ -127017,7 +130495,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    throw new Error('Graph structure cannot be undefined');
 	  }
 
-	  var createSimulator = __webpack_require__(48);
+	  var createSimulator = __webpack_require__(52);
 	  var physicsSimulator = createSimulator(physicsSettings);
 
 	  var nodeMass = defaultNodeMass
@@ -127041,7 +130519,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    /**
 	     * Performs one step of iterative layout algorithm
 	     *
-	     * @returns {boolean} true if the system should be considered stable; Flase otherwise.
+	     * @returns {boolean} true if the system should be considered stable; False otherwise.
 	     * The system is stable if no further call to `step()` can improve the layout.
 	     */
 	    step: function() {
@@ -127153,7 +130631,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	     * @param {string} linkId link identifer. If two arguments are passed then
 	     * this argument is treated as formNodeId
 	     * @param {string=} toId when defined this parameter denotes head of the link
-	     * and first argument is trated as tail of the link (fromId)
+	     * and first argument is treated as tail of the link (fromId)
 	     */
 	    getSpring: getSpring,
 
@@ -127168,7 +130646,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    graph: graph,
 
 	    /**
-	     * Gets amount of movement performed during last step opeartion
+	     * Gets amount of movement performed during last step operation
 	     */
 	    lastMove: 0
 	  };
@@ -127341,7 +130819,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	  /**
 	   * Checks whether graph node has in its settings pinned attribute,
-	   * which means layout algorithm cannot move it. Node can be preconfigured
+	   * which means layout algorithm cannot move it. Node can be marked
 	   * as pinned, if it has "isPinned" attribute, or when node.data has it.
 	   *
 	   * @param {Object} node a graph node to check
@@ -127376,9 +130854,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	function noop() { }
 
 
-/***/ },
-/* 48 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * Manages a simulation of physical forces acting on bodies and springs.
@@ -127386,10 +130864,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	module.exports = physicsSimulator;
 
 	function physicsSimulator(settings) {
-	  var Spring = __webpack_require__(49);
-	  var expose = __webpack_require__(50);
-	  var merge = __webpack_require__(51);
-	  var eventify = __webpack_require__(52);
+	  var Spring = __webpack_require__(53);
+	  var expose = __webpack_require__(54);
+	  var merge = __webpack_require__(55);
+	  var eventify = __webpack_require__(56);
 
 	  settings = merge(settings, {
 	      /**
@@ -127429,12 +130907,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  });
 
 	  // We allow clients to override basic factory methods:
-	  var createQuadTree = settings.createQuadTree || __webpack_require__(53);
-	  var createBounds = settings.createBounds || __webpack_require__(58);
-	  var createDragForce = settings.createDragForce || __webpack_require__(59);
-	  var createSpringForce = settings.createSpringForce || __webpack_require__(60);
-	  var integrate = settings.integrator || __webpack_require__(61);
-	  var createBody = settings.createBody || __webpack_require__(62);
+	  var createQuadTree = settings.createQuadTree || __webpack_require__(57);
+	  var createBounds = settings.createBounds || __webpack_require__(62);
+	  var createDragForce = settings.createDragForce || __webpack_require__(63);
+	  var createSpringForce = settings.createSpringForce || __webpack_require__(64);
+	  var integrate = settings.integrator || __webpack_require__(65);
+	  var createBody = settings.createBody || __webpack_require__(66);
 
 	  var bodies = [], // Bodies in this simulation.
 	      springs = [], // Springs in this simulation.
@@ -127658,9 +131136,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 49 */
-/***/ function(module, exports) {
+/***/ }),
+/* 53 */
+/***/ (function(module, exports) {
 
 	module.exports = Spring;
 
@@ -127678,9 +131156,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 50 */
-/***/ function(module, exports) {
+/***/ }),
+/* 54 */
+/***/ (function(module, exports) {
 
 	module.exports = exposeProperties;
 
@@ -127728,9 +131206,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 51 */
-/***/ function(module, exports) {
+/***/ }),
+/* 55 */
+/***/ (function(module, exports) {
 
 	module.exports = merge;
 
@@ -127765,9 +131243,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 52 */
-/***/ function(module, exports) {
+/***/ }),
+/* 56 */
+/***/ (function(module, exports) {
 
 	module.exports = function(subject) {
 	  validateSubject(subject);
@@ -127859,9 +131337,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 53 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * This is Barnes Hut simulation algorithm for 2d case. Implementation
@@ -127876,10 +131354,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  options.theta = typeof options.theta === 'number' ? options.theta : 0.8;
 
 	  // we require deterministic randomness here
-	  var random = __webpack_require__(54).random(1984),
-	    Node = __webpack_require__(55),
-	    InsertStack = __webpack_require__(56),
-	    isSamePosition = __webpack_require__(57);
+	  var random = __webpack_require__(58).random(1984),
+	    Node = __webpack_require__(59),
+	    InsertStack = __webpack_require__(60),
+	    isSamePosition = __webpack_require__(61);
 
 	  var gravity = options.gravity,
 	    updateQueue = [],
@@ -128192,50 +131670,77 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 54 */
-/***/ function(module, exports) {
+/***/ }),
+/* 58 */
+/***/ (function(module, exports) {
 
-	module.exports = {
-	  random: random,
-	  randomIterator: randomIterator
-	};
+	module.exports = random;
+
+	// TODO: Deprecate?
+	module.exports.random = random,
+	module.exports.randomIterator = randomIterator
 
 	/**
 	 * Creates seeded PRNG with two methods:
 	 *   next() and nextDouble()
 	 */
 	function random(inputSeed) {
-	  var seed = typeof inputSeed === 'number' ? inputSeed : (+ new Date());
-	  var randomFunc = function() {
-	      // Robert Jenkins' 32 bit integer hash function.
-	      seed = ((seed + 0x7ed55d16) + (seed << 12))  & 0xffffffff;
-	      seed = ((seed ^ 0xc761c23c) ^ (seed >>> 19)) & 0xffffffff;
-	      seed = ((seed + 0x165667b1) + (seed << 5))   & 0xffffffff;
-	      seed = ((seed + 0xd3a2646c) ^ (seed << 9))   & 0xffffffff;
-	      seed = ((seed + 0xfd7046c5) + (seed << 3))   & 0xffffffff;
-	      seed = ((seed ^ 0xb55a4f09) ^ (seed >>> 16)) & 0xffffffff;
-	      return (seed & 0xfffffff) / 0x10000000;
-	  };
+	  var seed = typeof inputSeed === 'number' ? inputSeed : (+new Date());
+	  return new Generator(seed)
+	}
 
-	  return {
-	      /**
-	       * Generates random integer number in the range from 0 (inclusive) to maxValue (exclusive)
-	       *
-	       * @param maxValue Number REQUIRED. Ommitting this number will result in NaN values from PRNG.
-	       */
-	      next : function (maxValue) {
-	          return Math.floor(randomFunc() * maxValue);
-	      },
+	function Generator(seed) {
+	  this.seed = seed;
+	}
 
-	      /**
-	       * Generates random double number in the range from 0 (inclusive) to 1 (exclusive)
-	       * This function is the same as Math.random() (except that it could be seeded)
-	       */
-	      nextDouble : function () {
-	          return randomFunc();
-	      }
-	  };
+	/**
+	  * Generates random integer number in the range from 0 (inclusive) to maxValue (exclusive)
+	  *
+	  * @param maxValue Number REQUIRED. Omitting this number will result in NaN values from PRNG.
+	  */
+	Generator.prototype.next = next;
+
+	/**
+	  * Generates random double number in the range from 0 (inclusive) to 1 (exclusive)
+	  * This function is the same as Math.random() (except that it could be seeded)
+	  */
+	Generator.prototype.nextDouble = nextDouble;
+
+	/**
+	 * Returns a random real number uniformly in [0, 1)
+	 */
+	Generator.prototype.uniform = nextDouble;
+
+	Generator.prototype.gaussian = gaussian;
+
+	function gaussian() {
+	  // use the polar form of the Box-Muller transform
+	  // based on https://introcs.cs.princeton.edu/java/23recursion/StdRandom.java
+	  var r, x, y;
+	  do {
+	    x = this.nextDouble() * 2 - 1;
+	    y = this.nextDouble() * 2 - 1;
+	    r = x * x + y * y;
+	  } while (r >= 1 || r === 0);
+
+	  return x * Math.sqrt(-2 * Math.log(r)/r);
+	}
+
+	function nextDouble() {
+	  var seed = this.seed;
+	  // Robert Jenkins' 32 bit integer hash function.
+	  seed = ((seed + 0x7ed55d16) + (seed << 12)) & 0xffffffff;
+	  seed = ((seed ^ 0xc761c23c) ^ (seed >>> 19)) & 0xffffffff;
+	  seed = ((seed + 0x165667b1) + (seed << 5)) & 0xffffffff;
+	  seed = ((seed + 0xd3a2646c) ^ (seed << 9)) & 0xffffffff;
+	  seed = ((seed + 0xfd7046c5) + (seed << 3)) & 0xffffffff;
+	  seed = ((seed ^ 0xb55a4f09) ^ (seed >>> 16)) & 0xffffffff;
+	  this.seed = seed;
+	  return (seed & 0xfffffff) / 0x10000000;
+	}
+
+	function next(maxValue) {
+	  return Math.floor(this.nextDouble() * maxValue);
 	}
 
 	/*
@@ -128243,49 +131748,52 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * Time complexity is guaranteed to be O(n);
 	 */
 	function randomIterator(array, customRandom) {
-	    var localRandom = customRandom || random();
-	    if (typeof localRandom.next !== 'function') {
-	      throw new Error('customRandom does not match expected API: next() function is missing');
+	  var localRandom = customRandom || random();
+	  if (typeof localRandom.next !== 'function') {
+	    throw new Error('customRandom does not match expected API: next() function is missing');
+	  }
+
+	  return {
+	    forEach: forEach,
+
+	    /**
+	     * Shuffles array randomly, in place.
+	     */
+	    shuffle: shuffle
+	  };
+
+	  function shuffle() {
+	    var i, j, t;
+	    for (i = array.length - 1; i > 0; --i) {
+	      j = localRandom.next(i + 1); // i inclusive
+	      t = array[j];
+	      array[j] = array[i];
+	      array[i] = t;
 	    }
 
-	    return {
-	        forEach : function (callback) {
-	            var i, j, t;
-	            for (i = array.length - 1; i > 0; --i) {
-	                j = localRandom.next(i + 1); // i inclusive
-	                t = array[j];
-	                array[j] = array[i];
-	                array[i] = t;
+	    return array;
+	  }
 
-	                callback(t);
-	            }
+	  function forEach(callback) {
+	    var i, j, t;
+	    for (i = array.length - 1; i > 0; --i) {
+	      j = localRandom.next(i + 1); // i inclusive
+	      t = array[j];
+	      array[j] = array[i];
+	      array[i] = t;
 
-	            if (array.length) {
-	                callback(array[0]);
-	            }
-	        },
+	      callback(t);
+	    }
 
-	        /**
-	         * Shuffles array randomly, in place.
-	         */
-	        shuffle : function () {
-	            var i, j, t;
-	            for (i = array.length - 1; i > 0; --i) {
-	                j = localRandom.next(i + 1); // i inclusive
-	                t = array[j];
-	                array[j] = array[i];
-	                array[i] = t;
-	            }
-
-	            return array;
-	        }
-	    };
+	    if (array.length) {
+	      callback(array[0]);
+	    }
+	  }
 	}
 
-
-/***/ },
-/* 55 */
-/***/ function(module, exports) {
+/***/ }),
+/* 59 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Internal data structure to represent 2D QuadTree node
@@ -128319,9 +131827,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 56 */
-/***/ function(module, exports) {
+/***/ }),
+/* 60 */
+/***/ (function(module, exports) {
 
 	module.exports = InsertStack;
 
@@ -128367,9 +131875,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 57 */
-/***/ function(module, exports) {
+/***/ }),
+/* 61 */
+/***/ (function(module, exports) {
 
 	module.exports = function isSamePosition(point1, point2) {
 	    var dx = Math.abs(point1.x - point2.x);
@@ -128379,12 +131887,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 58 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	module.exports = function (bodies, settings) {
-	  var random = __webpack_require__(54).random(42);
+	  var random = __webpack_require__(58).random(42);
 	  var boundingBox =  { x1: 0, y1: 0, x2: 0, y2: 0 };
 
 	  return {
@@ -128465,9 +131973,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 59 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * Represents drag force, which reduces force value on each step by given
@@ -128477,8 +131985,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * @param {Number=} options.dragCoeff drag force coefficient. 0.1 by default
 	 */
 	module.exports = function (options) {
-	  var merge = __webpack_require__(51),
-	      expose = __webpack_require__(50);
+	  var merge = __webpack_require__(55),
+	      expose = __webpack_require__(54);
 
 	  options = merge(options, {
 	    dragCoeff: 0.02
@@ -128498,9 +132006,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 60 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * Represents spring force, which updates forces acting on two bodies, conntected
@@ -128511,9 +132019,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * @param {Number=} options.springLength desired length of a spring at rest.
 	 */
 	module.exports = function (options) {
-	  var merge = __webpack_require__(51);
-	  var random = __webpack_require__(54).random(42);
-	  var expose = __webpack_require__(50);
+	  var merge = __webpack_require__(55);
+	  var random = __webpack_require__(58).random(42);
+	  var expose = __webpack_require__(54);
 
 	  options = merge(options, {
 	    springCoeff: 0.0002,
@@ -128554,9 +132062,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 61 */
-/***/ function(module, exports) {
+/***/ }),
+/* 65 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Performs forces integration, using given timestep. Uses Euler method to solve
@@ -128588,6 +132096,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        v = Math.sqrt(vx * vx + vy * vy);
 
 	    if (v > 1) {
+	      // We normalize it so that we move within timeStep range. 
+	      // for the case when v <= 1 - we let velocity to fade out.
 	      body.velocity.x = vx / v;
 	      body.velocity.y = vy / v;
 	    }
@@ -128605,20 +132115,20 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 62 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 66 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var physics = __webpack_require__(63);
+	var physics = __webpack_require__(67);
 
 	module.exports = function(pos) {
 	  return new physics.Body(pos);
 	}
 
 
-/***/ },
-/* 63 */
-/***/ function(module, exports) {
+/***/ }),
+/* 67 */
+/***/ (function(module, exports) {
 
 	module.exports = {
 	  Body: Body,
@@ -128687,103 +132197,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 64 */
-/***/ function(module, exports) {
-
-	module.exports = function(subject) {
-	  validateSubject(subject);
-
-	  var eventsStorage = createEventsStorage(subject);
-	  subject.on = eventsStorage.on;
-	  subject.off = eventsStorage.off;
-	  subject.fire = eventsStorage.fire;
-	  return subject;
-	};
-
-	function createEventsStorage(subject) {
-	  // Store all event listeners to this hash. Key is event name, value is array
-	  // of callback records.
-	  //
-	  // A callback record consists of callback function and its optional context:
-	  // { 'eventName' => [{callback: function, ctx: object}] }
-	  var registeredEvents = Object.create(null);
-
-	  return {
-	    on: function (eventName, callback, ctx) {
-	      if (typeof callback !== 'function') {
-	        throw new Error('callback is expected to be a function');
-	      }
-	      var handlers = registeredEvents[eventName];
-	      if (!handlers) {
-	        handlers = registeredEvents[eventName] = [];
-	      }
-	      handlers.push({callback: callback, ctx: ctx});
-
-	      return subject;
-	    },
-
-	    off: function (eventName, callback) {
-	      var wantToRemoveAll = (typeof eventName === 'undefined');
-	      if (wantToRemoveAll) {
-	        // Killing old events storage should be enough in this case:
-	        registeredEvents = Object.create(null);
-	        return subject;
-	      }
-
-	      if (registeredEvents[eventName]) {
-	        var deleteAllCallbacksForEvent = (typeof callback !== 'function');
-	        if (deleteAllCallbacksForEvent) {
-	          delete registeredEvents[eventName];
-	        } else {
-	          var callbacks = registeredEvents[eventName];
-	          for (var i = 0; i < callbacks.length; ++i) {
-	            if (callbacks[i].callback === callback) {
-	              callbacks.splice(i, 1);
-	            }
-	          }
-	        }
-	      }
-
-	      return subject;
-	    },
-
-	    fire: function (eventName) {
-	      var callbacks = registeredEvents[eventName];
-	      if (!callbacks) {
-	        return subject;
-	      }
-
-	      var fireArguments;
-	      if (arguments.length > 1) {
-	        fireArguments = Array.prototype.splice.call(arguments, 1);
-	      }
-	      for(var i = 0; i < callbacks.length; ++i) {
-	        var callbackInfo = callbacks[i];
-	        callbackInfo.callback.apply(callbackInfo.ctx, fireArguments);
-	      }
-
-	      return subject;
-	    }
-	  };
-	}
-
-	function validateSubject(subject) {
-	  if (!subject) {
-	    throw new Error('Eventify cannot use falsy object as events subject');
-	  }
-	  var reservedWords = ['on', 'fire', 'off'];
-	  for (var i = 0; i < reservedWords.length; ++i) {
-	    if (subject.hasOwnProperty(reservedWords[i])) {
-	      throw new Error("Subject cannot be eventified, since it already has property '" + reservedWords[i] + "'");
-	    }
-	  }
-	}
-
-
-/***/ },
-/* 65 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * This module provides all required forces to regular ngraph.physics.simulator
@@ -128792,17 +132208,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * I was doing it wrong, will see if I can refactor/throw away this module.
 	 */
 	module.exports = createLayout;
-	createLayout.get2dLayout = __webpack_require__(66);
+	createLayout.get2dLayout = __webpack_require__(69);
 
 	function createLayout(graph, physicsSettings) {
-	  var merge = __webpack_require__(51);
+	  var merge = __webpack_require__(73);
 	  physicsSettings = merge(physicsSettings, {
-	        createQuadTree: __webpack_require__(79),
-	        createBounds: __webpack_require__(83),
-	        createDragForce: __webpack_require__(84),
-	        createSpringForce: __webpack_require__(85),
+	        createQuadTree: __webpack_require__(86),
+	        createBounds: __webpack_require__(91),
+	        createDragForce: __webpack_require__(92),
+	        createSpringForce: __webpack_require__(93),
 	        integrator: getIntegrator(physicsSettings),
-	        createBody: __webpack_require__(86)
+	        createBody: __webpack_require__(94)
 	      });
 
 	  return createLayout.get2dLayout(graph, physicsSettings);
@@ -128810,21 +132226,21 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	function getIntegrator(physicsSettings) {
 	  if (physicsSettings && physicsSettings.integrator === 'verlet') {
-	    return __webpack_require__(87);
+	    return __webpack_require__(95);
 	  }
 
-	  return __webpack_require__(88)
+	  return __webpack_require__(96)
 	}
 
 
-/***/ },
-/* 66 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	module.exports = createLayout;
-	module.exports.simulator = __webpack_require__(67);
+	module.exports.simulator = __webpack_require__(70);
 
-	var eventify = __webpack_require__(69);
+	var eventify = __webpack_require__(74);
 
 	/**
 	 * Creates force based layout for a given graph.
@@ -128838,7 +132254,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    throw new Error('Graph structure cannot be undefined');
 	  }
 
-	  var createSimulator = __webpack_require__(67);
+	  var createSimulator = __webpack_require__(70);
 	  var physicsSimulator = createSimulator(physicsSettings);
 
 	  var nodeBodies = typeof Object.create === 'function' ? Object.create(null) : {};
@@ -129136,9 +132552,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	function noop() { }
 
 
-/***/ },
-/* 67 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * Manages a simulation of physical forces acting on bodies and springs.
@@ -129146,10 +132562,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	module.exports = physicsSimulator;
 
 	function physicsSimulator(settings) {
-	  var Spring = __webpack_require__(68);
-	  var expose = __webpack_require__(50);
-	  var merge = __webpack_require__(51);
-	  var eventify = __webpack_require__(69);
+	  var Spring = __webpack_require__(71);
+	  var expose = __webpack_require__(72);
+	  var merge = __webpack_require__(73);
+	  var eventify = __webpack_require__(74);
 
 	  settings = merge(settings, {
 	      /**
@@ -129194,12 +132610,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  });
 
 	  // We allow clients to override basic factory methods:
-	  var createQuadTree = settings.createQuadTree || __webpack_require__(70);
-	  var createBounds = settings.createBounds || __webpack_require__(74);
-	  var createDragForce = settings.createDragForce || __webpack_require__(75);
-	  var createSpringForce = settings.createSpringForce || __webpack_require__(76);
-	  var integrate = settings.integrator || __webpack_require__(77);
-	  var createBody = settings.createBody || __webpack_require__(78);
+	  var createQuadTree = settings.createQuadTree || __webpack_require__(75);
+	  var createBounds = settings.createBounds || __webpack_require__(80);
+	  var createDragForce = settings.createDragForce || __webpack_require__(81);
+	  var createSpringForce = settings.createSpringForce || __webpack_require__(82);
+	  var integrate = settings.integrator || __webpack_require__(83);
+	  var createBody = settings.createBody || __webpack_require__(84);
 
 	  var bodies = [], // Bodies in this simulation.
 	      springs = [], // Springs in this simulation.
@@ -129418,9 +132834,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 68 */
-/***/ function(module, exports) {
+/***/ }),
+/* 71 */
+/***/ (function(module, exports) {
 
 	module.exports = Spring;
 
@@ -129438,9 +132854,96 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 69 */
-/***/ function(module, exports) {
+/***/ }),
+/* 72 */
+/***/ (function(module, exports) {
+
+	module.exports = exposeProperties;
+
+	/**
+	 * Augments `target` object with getter/setter functions, which modify settings
+	 *
+	 * @example
+	 *  var target = {};
+	 *  exposeProperties({ age: 42}, target);
+	 *  target.age(); // returns 42
+	 *  target.age(24); // make age 24;
+	 *
+	 *  var filteredTarget = {};
+	 *  exposeProperties({ age: 42, name: 'John'}, filteredTarget, ['name']);
+	 *  filteredTarget.name(); // returns 'John'
+	 *  filteredTarget.age === undefined; // true
+	 */
+	function exposeProperties(settings, target, filter) {
+	  var needsFilter = Object.prototype.toString.call(filter) === '[object Array]';
+	  if (needsFilter) {
+	    for (var i = 0; i < filter.length; ++i) {
+	      augment(settings, target, filter[i]);
+	    }
+	  } else {
+	    for (var key in settings) {
+	      augment(settings, target, key);
+	    }
+	  }
+	}
+
+	function augment(source, target, key) {
+	  if (source.hasOwnProperty(key)) {
+	    if (typeof target[key] === 'function') {
+	      // this accessor is already defined. Ignore it
+	      return;
+	    }
+	    target[key] = function (value) {
+	      if (value !== undefined) {
+	        source[key] = value;
+	        return target;
+	      }
+	      return source[key];
+	    }
+	  }
+	}
+
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports) {
+
+	module.exports = merge;
+
+	/**
+	 * Augments `target` with properties in `options`. Does not override
+	 * target's properties if they are defined and matches expected type in 
+	 * options
+	 *
+	 * @returns {Object} merged object
+	 */
+	function merge(target, options) {
+	  var key;
+	  if (!target) { target = {}; }
+	  if (options) {
+	    for (key in options) {
+	      if (options.hasOwnProperty(key)) {
+	        var targetHasIt = target.hasOwnProperty(key),
+	            optionsValueType = typeof options[key],
+	            shouldReplace = !targetHasIt || (typeof target[key] !== optionsValueType);
+
+	        if (shouldReplace) {
+	          target[key] = options[key];
+	        } else if (optionsValueType === 'object') {
+	          // go deep, don't care about loops here, we are simple API!:
+	          target[key] = merge(target[key], options[key]);
+	        }
+	      }
+	    }
+	  }
+
+	  return target;
+	}
+
+
+/***/ }),
+/* 74 */
+/***/ (function(module, exports) {
 
 	module.exports = function(subject) {
 	  validateSubject(subject);
@@ -129532,9 +133035,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 70 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 75 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * This is Barnes Hut simulation algorithm for 2d case. Implementation
@@ -129549,10 +133052,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  options.theta = typeof options.theta === 'number' ? options.theta : 0.8;
 
 	  // we require deterministic randomness here
-	  var random = __webpack_require__(54).random(1984),
-	    Node = __webpack_require__(71),
-	    InsertStack = __webpack_require__(72),
-	    isSamePosition = __webpack_require__(73);
+	  var random = __webpack_require__(76).random(1984),
+	    Node = __webpack_require__(77),
+	    InsertStack = __webpack_require__(78),
+	    isSamePosition = __webpack_require__(79);
 
 	  var gravity = options.gravity,
 	    updateQueue = [],
@@ -129862,9 +133365,100 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 71 */
-/***/ function(module, exports) {
+/***/ }),
+/* 76 */
+/***/ (function(module, exports) {
+
+	module.exports = {
+	  random: random,
+	  randomIterator: randomIterator
+	};
+
+	/**
+	 * Creates seeded PRNG with two methods:
+	 *   next() and nextDouble()
+	 */
+	function random(inputSeed) {
+	  var seed = typeof inputSeed === 'number' ? inputSeed : (+ new Date());
+	  var randomFunc = function() {
+	      // Robert Jenkins' 32 bit integer hash function.
+	      seed = ((seed + 0x7ed55d16) + (seed << 12))  & 0xffffffff;
+	      seed = ((seed ^ 0xc761c23c) ^ (seed >>> 19)) & 0xffffffff;
+	      seed = ((seed + 0x165667b1) + (seed << 5))   & 0xffffffff;
+	      seed = ((seed + 0xd3a2646c) ^ (seed << 9))   & 0xffffffff;
+	      seed = ((seed + 0xfd7046c5) + (seed << 3))   & 0xffffffff;
+	      seed = ((seed ^ 0xb55a4f09) ^ (seed >>> 16)) & 0xffffffff;
+	      return (seed & 0xfffffff) / 0x10000000;
+	  };
+
+	  return {
+	      /**
+	       * Generates random integer number in the range from 0 (inclusive) to maxValue (exclusive)
+	       *
+	       * @param maxValue Number REQUIRED. Ommitting this number will result in NaN values from PRNG.
+	       */
+	      next : function (maxValue) {
+	          return Math.floor(randomFunc() * maxValue);
+	      },
+
+	      /**
+	       * Generates random double number in the range from 0 (inclusive) to 1 (exclusive)
+	       * This function is the same as Math.random() (except that it could be seeded)
+	       */
+	      nextDouble : function () {
+	          return randomFunc();
+	      }
+	  };
+	}
+
+	/*
+	 * Creates iterator over array, which returns items of array in random order
+	 * Time complexity is guaranteed to be O(n);
+	 */
+	function randomIterator(array, customRandom) {
+	    var localRandom = customRandom || random();
+	    if (typeof localRandom.next !== 'function') {
+	      throw new Error('customRandom does not match expected API: next() function is missing');
+	    }
+
+	    return {
+	        forEach : function (callback) {
+	            var i, j, t;
+	            for (i = array.length - 1; i > 0; --i) {
+	                j = localRandom.next(i + 1); // i inclusive
+	                t = array[j];
+	                array[j] = array[i];
+	                array[i] = t;
+
+	                callback(t);
+	            }
+
+	            if (array.length) {
+	                callback(array[0]);
+	            }
+	        },
+
+	        /**
+	         * Shuffles array randomly, in place.
+	         */
+	        shuffle : function () {
+	            var i, j, t;
+	            for (i = array.length - 1; i > 0; --i) {
+	                j = localRandom.next(i + 1); // i inclusive
+	                t = array[j];
+	                array[j] = array[i];
+	                array[i] = t;
+	            }
+
+	            return array;
+	        }
+	    };
+	}
+
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Internal data structure to represent 2D QuadTree node
@@ -129898,9 +133492,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 72 */
-/***/ function(module, exports) {
+/***/ }),
+/* 78 */
+/***/ (function(module, exports) {
 
 	module.exports = InsertStack;
 
@@ -129946,9 +133540,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 73 */
-/***/ function(module, exports) {
+/***/ }),
+/* 79 */
+/***/ (function(module, exports) {
 
 	module.exports = function isSamePosition(point1, point2) {
 	    var dx = Math.abs(point1.x - point2.x);
@@ -129958,12 +133552,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 74 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	module.exports = function (bodies, settings) {
-	  var random = __webpack_require__(54).random(42);
+	  var random = __webpack_require__(76).random(42);
 	  var boundingBox =  { x1: 0, y1: 0, x2: 0, y2: 0 };
 
 	  return {
@@ -130044,9 +133638,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 75 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * Represents drag force, which reduces force value on each step by given
@@ -130056,8 +133650,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * @param {Number=} options.dragCoeff drag force coefficient. 0.1 by default
 	 */
 	module.exports = function (options) {
-	  var merge = __webpack_require__(51),
-	      expose = __webpack_require__(50);
+	  var merge = __webpack_require__(73),
+	      expose = __webpack_require__(72);
 
 	  options = merge(options, {
 	    dragCoeff: 0.02
@@ -130077,9 +133671,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 76 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 82 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * Represents spring force, which updates forces acting on two bodies, conntected
@@ -130090,9 +133684,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * @param {Number=} options.springLength desired length of a spring at rest.
 	 */
 	module.exports = function (options) {
-	  var merge = __webpack_require__(51);
-	  var random = __webpack_require__(54).random(42);
-	  var expose = __webpack_require__(50);
+	  var merge = __webpack_require__(73);
+	  var random = __webpack_require__(76).random(42);
+	  var expose = __webpack_require__(72);
 
 	  options = merge(options, {
 	    springCoeff: 0.0002,
@@ -130133,9 +133727,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 77 */
-/***/ function(module, exports) {
+/***/ }),
+/* 83 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Performs forces integration, using given timestep. Uses Euler method to solve
@@ -130184,20 +133778,91 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 78 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 84 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var physics = __webpack_require__(63);
+	var physics = __webpack_require__(85);
 
 	module.exports = function(pos) {
 	  return new physics.Body(pos);
 	}
 
 
-/***/ },
-/* 79 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 85 */
+/***/ (function(module, exports) {
+
+	module.exports = {
+	  Body: Body,
+	  Vector2d: Vector2d,
+	  Body3d: Body3d,
+	  Vector3d: Vector3d
+	};
+
+	function Body(x, y) {
+	  this.pos = new Vector2d(x, y);
+	  this.prevPos = new Vector2d(x, y);
+	  this.force = new Vector2d();
+	  this.velocity = new Vector2d();
+	  this.mass = 1;
+	}
+
+	Body.prototype.setPosition = function (x, y) {
+	  this.prevPos.x = this.pos.x = x;
+	  this.prevPos.y = this.pos.y = y;
+	};
+
+	function Vector2d(x, y) {
+	  if (x && typeof x !== 'number') {
+	    // could be another vector
+	    this.x = typeof x.x === 'number' ? x.x : 0;
+	    this.y = typeof x.y === 'number' ? x.y : 0;
+	  } else {
+	    this.x = typeof x === 'number' ? x : 0;
+	    this.y = typeof y === 'number' ? y : 0;
+	  }
+	}
+
+	Vector2d.prototype.reset = function () {
+	  this.x = this.y = 0;
+	};
+
+	function Body3d(x, y, z) {
+	  this.pos = new Vector3d(x, y, z);
+	  this.prevPos = new Vector3d(x, y, z);
+	  this.force = new Vector3d();
+	  this.velocity = new Vector3d();
+	  this.mass = 1;
+	}
+
+	Body3d.prototype.setPosition = function (x, y, z) {
+	  this.prevPos.x = this.pos.x = x;
+	  this.prevPos.y = this.pos.y = y;
+	  this.prevPos.z = this.pos.z = z;
+	};
+
+	function Vector3d(x, y, z) {
+	  if (x && typeof x !== 'number') {
+	    // could be another vector
+	    this.x = typeof x.x === 'number' ? x.x : 0;
+	    this.y = typeof x.y === 'number' ? x.y : 0;
+	    this.z = typeof x.z === 'number' ? x.z : 0;
+	  } else {
+	    this.x = typeof x === 'number' ? x : 0;
+	    this.y = typeof y === 'number' ? y : 0;
+	    this.z = typeof z === 'number' ? z : 0;
+	  }
+	};
+
+	Vector3d.prototype.reset = function () {
+	  this.x = this.y = this.z = 0;
+	};
+
+
+/***/ }),
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * This is Barnes Hut simulation algorithm for 3d case. Implementation
@@ -130217,10 +133882,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  options.theta = typeof options.theta === 'number' ? options.theta : 0.8;
 
 	  // we require deterministic randomness here
-	  var random = __webpack_require__(54).random(1984),
-	    Node = __webpack_require__(80),
-	    InsertStack = __webpack_require__(81),
-	    isSamePosition = __webpack_require__(82);
+	  var random = __webpack_require__(87).random(1984),
+	    Node = __webpack_require__(88),
+	    InsertStack = __webpack_require__(89),
+	    isSamePosition = __webpack_require__(90);
 
 	  var gravity = options.gravity,
 	    updateQueue = [],
@@ -130594,9 +134259,100 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 80 */
-/***/ function(module, exports) {
+/***/ }),
+/* 87 */
+/***/ (function(module, exports) {
+
+	module.exports = {
+	  random: random,
+	  randomIterator: randomIterator
+	};
+
+	/**
+	 * Creates seeded PRNG with two methods:
+	 *   next() and nextDouble()
+	 */
+	function random(inputSeed) {
+	  var seed = typeof inputSeed === 'number' ? inputSeed : (+ new Date());
+	  var randomFunc = function() {
+	      // Robert Jenkins' 32 bit integer hash function.
+	      seed = ((seed + 0x7ed55d16) + (seed << 12))  & 0xffffffff;
+	      seed = ((seed ^ 0xc761c23c) ^ (seed >>> 19)) & 0xffffffff;
+	      seed = ((seed + 0x165667b1) + (seed << 5))   & 0xffffffff;
+	      seed = ((seed + 0xd3a2646c) ^ (seed << 9))   & 0xffffffff;
+	      seed = ((seed + 0xfd7046c5) + (seed << 3))   & 0xffffffff;
+	      seed = ((seed ^ 0xb55a4f09) ^ (seed >>> 16)) & 0xffffffff;
+	      return (seed & 0xfffffff) / 0x10000000;
+	  };
+
+	  return {
+	      /**
+	       * Generates random integer number in the range from 0 (inclusive) to maxValue (exclusive)
+	       *
+	       * @param maxValue Number REQUIRED. Ommitting this number will result in NaN values from PRNG.
+	       */
+	      next : function (maxValue) {
+	          return Math.floor(randomFunc() * maxValue);
+	      },
+
+	      /**
+	       * Generates random double number in the range from 0 (inclusive) to 1 (exclusive)
+	       * This function is the same as Math.random() (except that it could be seeded)
+	       */
+	      nextDouble : function () {
+	          return randomFunc();
+	      }
+	  };
+	}
+
+	/*
+	 * Creates iterator over array, which returns items of array in random order
+	 * Time complexity is guaranteed to be O(n);
+	 */
+	function randomIterator(array, customRandom) {
+	    var localRandom = customRandom || random();
+	    if (typeof localRandom.next !== 'function') {
+	      throw new Error('customRandom does not match expected API: next() function is missing');
+	    }
+
+	    return {
+	        forEach : function (callback) {
+	            var i, j, t;
+	            for (i = array.length - 1; i > 0; --i) {
+	                j = localRandom.next(i + 1); // i inclusive
+	                t = array[j];
+	                array[j] = array[i];
+	                array[i] = t;
+
+	                callback(t);
+	            }
+
+	            if (array.length) {
+	                callback(array[0]);
+	            }
+	        },
+
+	        /**
+	         * Shuffles array randomly, in place.
+	         */
+	        shuffle : function () {
+	            var i, j, t;
+	            for (i = array.length - 1; i > 0; --i) {
+	                j = localRandom.next(i + 1); // i inclusive
+	                t = array[j];
+	                array[j] = array[i];
+	                array[i] = t;
+	            }
+
+	            return array;
+	        }
+	    };
+	}
+
+
+/***/ }),
+/* 88 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Internal data structure to represent 3D QuadTree node
@@ -130642,9 +134398,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 81 */
-/***/ function(module, exports) {
+/***/ }),
+/* 89 */
+/***/ (function(module, exports) {
 
 	module.exports = InsertStack;
 
@@ -130690,9 +134446,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 82 */
-/***/ function(module, exports) {
+/***/ }),
+/* 90 */
+/***/ (function(module, exports) {
 
 	module.exports = function isSamePosition(point1, point2) {
 	    var dx = Math.abs(point1.x - point2.x);
@@ -130703,12 +134459,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 83 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 91 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	module.exports = function (bodies, settings) {
-	  var random = __webpack_require__(54).random(42);
+	  var random = __webpack_require__(76).random(42);
 	  var boundingBox =  { x1: 0, y1: 0, z1: 0, x2: 0, y2: 0, z2: 0 };
 
 	  return {
@@ -130806,9 +134562,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 84 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 92 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * Represents 3d drag force, which reduces force value on each step by given
@@ -130818,8 +134574,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * @param {Number=} options.dragCoeff drag force coefficient. 0.1 by default
 	 */
 	module.exports = function (options) {
-	  var merge = __webpack_require__(51),
-	      expose = __webpack_require__(50);
+	  var merge = __webpack_require__(73),
+	      expose = __webpack_require__(72);
 
 	  options = merge(options, {
 	    dragCoeff: 0.02
@@ -130840,9 +134596,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 85 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 93 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * Represents 3d spring force, which updates forces acting on two bodies, conntected
@@ -130853,9 +134609,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * @param {Number=} options.springLength desired length of a spring at rest.
 	 */
 	module.exports = function (options) {
-	  var merge = __webpack_require__(51);
-	  var random = __webpack_require__(54).random(42);
-	  var expose = __webpack_require__(50);
+	  var merge = __webpack_require__(73);
+	  var random = __webpack_require__(76).random(42);
+	  var expose = __webpack_require__(72);
 
 	  options = merge(options, {
 	    springCoeff: 0.0002,
@@ -130900,20 +134656,20 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 86 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 94 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var physics = __webpack_require__(63);
+	var physics = __webpack_require__(85);
 
 	module.exports = function(pos) {
 	  return new physics.Body3d(pos);
 	}
 
 
-/***/ },
-/* 87 */
-/***/ function(module, exports) {
+/***/ }),
+/* 95 */
+/***/ (function(module, exports) {
 
 	module.exports = integrate;
 
@@ -130938,9 +134694,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 88 */
-/***/ function(module, exports) {
+/***/ }),
+/* 96 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Performs 3d forces integration, using given timestep. Uses Euler method to solve
@@ -130992,21 +134748,2195 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 
-/***/ },
-/* 89 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 97 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	!function(n,t){ true?module.exports=t():"function"==typeof define&&define.amd?define([],t):"object"==typeof exports?exports.Kapsule=t():n.Kapsule=t()}("undefined"!=typeof self?self:this,function(){return function(n){var t={};function e(r){if(t[r])return t[r].exports;var o=t[r]={i:r,l:!1,exports:{}};return n[r].call(o.exports,o,o.exports,e),o.l=!0,o.exports}return e.m=n,e.c=t,e.d=function(n,t,r){e.o(n,t)||Object.defineProperty(n,t,{configurable:!1,enumerable:!0,get:r})},e.n=function(n){var t=n&&n.__esModule?function(){return n.default}:function(){return n};return e.d(t,"a",t),t},e.o=function(n,t){return Object.prototype.hasOwnProperty.call(n,t)},e.p="",e(e.s=0)}([function(n,t,e){var r,o,i;u=function(n,t,e){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.default=function(n){var t=n.stateInit,e=void 0===t?function(){return{}}:t,r=n.props,a=void 0===r?{}:r,f=n.methods,l=void 0===f?{}:f,c=n.aliases,s=void 0===c?{}:c,d=n.init,p=void 0===d?function(){}:d,v=n.update,h=void 0===v?function(){}:v,y=Object.keys(a).map(function(n){return new u(n,a[n])});return function(){var n=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=Object.assign({},e instanceof Function?e(n):e,{initialised:!1});function r(t){return u(t,n),a(),r}var u=function(n,e){p.call(r,n,t,e),t.initialised=!0},a=(0,o.default)(function(){t.initialised&&h.call(r,t)},1);return y.forEach(function(n){r[n.name]=function(n){var e=arguments.length>1&&void 0!==arguments[1]&&arguments[1],o=arguments.length>2&&void 0!==arguments[2]?arguments[2]:function(n,t){};return function(i){return arguments.length?(t[n]=i,o.call(r,i,t),e&&a(),r):t[n]}}(n.name,n.triggerUpdate,n.onChange)}),Object.keys(l).forEach(function(n){r[n]=function(){for(var e,o=arguments.length,i=Array(o),u=0;u<o;u++)i[u]=arguments[u];return(e=l[n]).call.apply(e,[r,t].concat(i))}}),Object.entries(s).forEach(function(n){var t=i(n,2),e=t[0],o=t[1];return r[e]=r[o]}),r.resetProps=function(){return y.forEach(function(n){r[n.name](n.defaultVal)}),r},r.resetProps(),t._rerender=a,r}};var r,o=(r=e,r&&r.__esModule?r:{default:r});var i=function(){return function(n,t){if(Array.isArray(n))return n;if(Symbol.iterator in Object(n))return function(n,t){var e=[],r=!0,o=!1,i=void 0;try{for(var u,a=n[Symbol.iterator]();!(r=(u=a.next()).done)&&(e.push(u.value),!t||e.length!==t);r=!0);}catch(n){o=!0,i=n}finally{try{!r&&a.return&&a.return()}finally{if(o)throw i}}return e}(n,t);throw new TypeError("Invalid attempt to destructure non-iterable instance")}}();var u=function n(t,e){var r=e.default,o=void 0===r?null:r,i=e.triggerUpdate,u=void 0===i||i,a=e.onChange,f=void 0===a?function(n,t){}:a;!function(n,t){if(!(n instanceof t))throw new TypeError("Cannot call a class as a function")}(this,n),this.name=t,this.defaultVal=o,this.triggerUpdate=u,this.onChange=f};n.exports=t.default},o=[n,t,e(1)],void 0===(i="function"==typeof(r=u)?r.apply(t,o):r)||(n.exports=i);var u},function(n,t){n.exports=function(n,t,e){var r,o,i,u,a;null==t&&(t=100);function f(){var l=Date.now()-u;l<t&&l>=0?r=setTimeout(f,t-l):(r=null,e||(a=n.apply(i,o),i=o=null))}var l=function(){i=this,o=arguments,u=Date.now();var l=e&&!r;return r||(r=setTimeout(f,t)),l&&(a=n.apply(i,o),i=o=null),a};return l.clear=function(){r&&(clearTimeout(r),r=null)},l.flush=function(){r&&(a=n.apply(i,o),i=o=null,clearTimeout(r),r=null)},l}}])});
+	'use strict';
 
-/***/ },
-/* 90 */
-/***/ function(module, exports, __webpack_require__) {
+	function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+	var debounce = _interopDefault(__webpack_require__(98));
+
+	function _classCallCheck(instance, Constructor) {
+	  if (!(instance instanceof Constructor)) {
+	    throw new TypeError("Cannot call a class as a function");
+	  }
+	}
+
+	function _slicedToArray(arr, i) {
+	  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
+	}
+
+	function _arrayWithHoles(arr) {
+	  if (Array.isArray(arr)) return arr;
+	}
+
+	function _iterableToArrayLimit(arr, i) {
+	  var _arr = [];
+	  var _n = true;
+	  var _d = false;
+	  var _e = undefined;
+
+	  try {
+	    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+	      _arr.push(_s.value);
+
+	      if (i && _arr.length === i) break;
+	    }
+	  } catch (err) {
+	    _d = true;
+	    _e = err;
+	  } finally {
+	    try {
+	      if (!_n && _i["return"] != null) _i["return"]();
+	    } finally {
+	      if (_d) throw _e;
+	    }
+	  }
+
+	  return _arr;
+	}
+
+	function _nonIterableRest() {
+	  throw new TypeError("Invalid attempt to destructure non-iterable instance");
+	}
+
+	var Prop = function Prop(name, _ref) {
+	  var _ref$default = _ref["default"],
+	      defaultVal = _ref$default === void 0 ? null : _ref$default,
+	      _ref$triggerUpdate = _ref.triggerUpdate,
+	      triggerUpdate = _ref$triggerUpdate === void 0 ? true : _ref$triggerUpdate,
+	      _ref$onChange = _ref.onChange,
+	      onChange = _ref$onChange === void 0 ? function (newVal, state) {} : _ref$onChange;
+
+	  _classCallCheck(this, Prop);
+
+	  this.name = name;
+	  this.defaultVal = defaultVal;
+	  this.triggerUpdate = triggerUpdate;
+	  this.onChange = onChange;
+	};
+
+	function index (_ref2) {
+	  var _ref2$stateInit = _ref2.stateInit,
+	      stateInit = _ref2$stateInit === void 0 ? function () {
+	    return {};
+	  } : _ref2$stateInit,
+	      _ref2$props = _ref2.props,
+	      rawProps = _ref2$props === void 0 ? {} : _ref2$props,
+	      _ref2$methods = _ref2.methods,
+	      methods = _ref2$methods === void 0 ? {} : _ref2$methods,
+	      _ref2$aliases = _ref2.aliases,
+	      aliases = _ref2$aliases === void 0 ? {} : _ref2$aliases,
+	      _ref2$init = _ref2.init,
+	      initFn = _ref2$init === void 0 ? function () {} : _ref2$init,
+	      _ref2$update = _ref2.update,
+	      updateFn = _ref2$update === void 0 ? function () {} : _ref2$update;
+	  // Parse props into Prop instances
+	  var props = Object.keys(rawProps).map(function (propName) {
+	    return new Prop(propName, rawProps[propName]);
+	  });
+	  return function () {
+	    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	    // Holds component state
+	    var state = Object.assign({}, stateInit instanceof Function ? stateInit(options) : stateInit, // Support plain objects for backwards compatibility
+	    {
+	      initialised: false
+	    }); // Component constructor
+
+	    function comp(nodeElement) {
+	      initStatic(nodeElement, options);
+	      digest();
+	      return comp;
+	    }
+
+	    var initStatic = function initStatic(nodeElement, options) {
+	      initFn.call(comp, nodeElement, state, options);
+	      state.initialised = true;
+	    };
+
+	    var digest = debounce(function () {
+	      if (!state.initialised) {
+	        return;
+	      }
+
+	      updateFn.call(comp, state);
+	    }, 1); // Getter/setter methods
+
+	    props.forEach(function (prop) {
+	      comp[prop.name] = getSetProp(prop.name, prop.triggerUpdate, prop.onChange);
+
+	      function getSetProp(prop) {
+	        var redigest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+	        var onChange = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function (newVal, state) {};
+	        return function (_) {
+	          var curVal = state[prop];
+
+	          if (!arguments.length) {
+	            return curVal;
+	          } // Getter mode
+
+
+	          state[prop] = _;
+	          onChange.call(comp, _, state, curVal);
+
+	          if (redigest) {
+	            digest();
+	          }
+
+	          return comp;
+	        };
+	      }
+	    }); // Other methods
+
+	    Object.keys(methods).forEach(function (methodName) {
+	      comp[methodName] = function () {
+	        var _methods$methodName;
+
+	        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+	          args[_key] = arguments[_key];
+	        }
+
+	        return (_methods$methodName = methods[methodName]).call.apply(_methods$methodName, [comp, state].concat(args));
+	      };
+	    }); // Link aliases
+
+	    Object.entries(aliases).forEach(function (_ref3) {
+	      var _ref4 = _slicedToArray(_ref3, 2),
+	          alias = _ref4[0],
+	          target = _ref4[1];
+
+	      return comp[alias] = comp[target];
+	    }); // Reset all component props to their default value
+
+	    comp.resetProps = function () {
+	      props.forEach(function (prop) {
+	        comp[prop.name](prop.defaultVal);
+	      });
+	      return comp;
+	    }; //
+
+
+	    comp.resetProps(); // Apply all prop defaults
+
+	    state._rerender = digest; // Expose digest method
+
+	    return comp;
+	  };
+	}
+
+	module.exports = index;
+
+
+/***/ }),
+/* 98 */
+/***/ (function(module, exports) {
+
+	/**
+	 * Returns a function, that, as long as it continues to be invoked, will not
+	 * be triggered. The function will be called after it stops being called for
+	 * N milliseconds. If `immediate` is passed, trigger the function on the
+	 * leading edge, instead of the trailing. The function also has a property 'clear' 
+	 * that is a function which will clear the timer to prevent previously scheduled executions. 
+	 *
+	 * @source underscore.js
+	 * @see http://unscriptable.com/2009/03/20/debouncing-javascript-methods/
+	 * @param {Function} function to wrap
+	 * @param {Number} timeout in ms (`100`)
+	 * @param {Boolean} whether to execute at the beginning (`false`)
+	 * @api public
+	 */
+	function debounce(func, wait, immediate){
+	  var timeout, args, context, timestamp, result;
+	  if (null == wait) wait = 100;
+
+	  function later() {
+	    var last = Date.now() - timestamp;
+
+	    if (last < wait && last >= 0) {
+	      timeout = setTimeout(later, wait - last);
+	    } else {
+	      timeout = null;
+	      if (!immediate) {
+	        result = func.apply(context, args);
+	        context = args = null;
+	      }
+	    }
+	  };
+
+	  var debounced = function(){
+	    context = this;
+	    args = arguments;
+	    timestamp = Date.now();
+	    var callNow = immediate && !timeout;
+	    if (!timeout) timeout = setTimeout(later, wait);
+	    if (callNow) {
+	      result = func.apply(context, args);
+	      context = args = null;
+	    }
+
+	    return result;
+	  };
+
+	  debounced.clear = function() {
+	    if (timeout) {
+	      clearTimeout(timeout);
+	      timeout = null;
+	    }
+	  };
+	  
+	  debounced.flush = function() {
+	    if (timeout) {
+	      result = func.apply(context, args);
+	      context = args = null;
+	      
+	      clearTimeout(timeout);
+	      timeout = null;
+	    }
+	  };
+
+	  return debounced;
+	};
+
+	// Adds compatibility for ES modules
+	debounce.debounce = debounce;
+
+	module.exports = debounce;
+
+
+/***/ }),
+/* 99 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	!function(e,t){ true?module.exports=t():"function"==typeof define&&define.amd?define([],t):"object"==typeof exports?exports.accessorFn=t():e.accessorFn=t()}(this,function(){return function(e){function t(o){if(n[o])return n[o].exports;var r=n[o]={i:o,l:!1,exports:{}};return e[o].call(r.exports,r,r.exports,t),r.l=!0,r.exports}var n={};return t.m=e,t.c=n,t.d=function(e,n,o){t.o(e,n)||Object.defineProperty(e,n,{configurable:!1,enumerable:!0,get:o})},t.n=function(e){var n=e&&e.__esModule?function(){return e.default}:function(){return e};return t.d(n,"a",n),n},t.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},t.p="",t(t.s=0)}([function(e,t,n){var o,r,u;!function(n,c){r=[e,t],void 0!==(u="function"==typeof(o=c)?o.apply(t,r):o)&&(e.exports=u)}(0,function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.default=function(e){return e instanceof Function?e:"string"==typeof e?function(t){return t[e]}:function(t){return e}},e.exports=t.default})}])});
 
-/***/ },
-/* 91 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 100 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// https://d3js.org/d3-scale/ v3.0.0 Copyright 2019 Mike Bostock
+	(function (global, factory) {
+	 true ? factory(exports, __webpack_require__(101), __webpack_require__(13), __webpack_require__(28), __webpack_require__(35), __webpack_require__(36)) :
+	typeof define === 'function' && define.amd ? define(['exports', 'd3-array', 'd3-interpolate', 'd3-format', 'd3-time', 'd3-time-format'], factory) :
+	(factory((global.d3 = global.d3 || {}),global.d3,global.d3,global.d3,global.d3,global.d3));
+	}(this, (function (exports,d3Array,d3Interpolate,d3Format,d3Time,d3TimeFormat) { 'use strict';
+
+	function initRange(domain, range) {
+	  switch (arguments.length) {
+	    case 0: break;
+	    case 1: this.range(domain); break;
+	    default: this.range(range).domain(domain); break;
+	  }
+	  return this;
+	}
+
+	function initInterpolator(domain, interpolator) {
+	  switch (arguments.length) {
+	    case 0: break;
+	    case 1: this.interpolator(domain); break;
+	    default: this.interpolator(interpolator).domain(domain); break;
+	  }
+	  return this;
+	}
+
+	const implicit = Symbol("implicit");
+
+	function ordinal() {
+	  var index = new Map(),
+	      domain = [],
+	      range = [],
+	      unknown = implicit;
+
+	  function scale(d) {
+	    var key = d + "", i = index.get(key);
+	    if (!i) {
+	      if (unknown !== implicit) return unknown;
+	      index.set(key, i = domain.push(d));
+	    }
+	    return range[(i - 1) % range.length];
+	  }
+
+	  scale.domain = function(_) {
+	    if (!arguments.length) return domain.slice();
+	    domain = [], index = new Map();
+	    for (const value of _) {
+	      const key = value + "";
+	      if (index.has(key)) continue;
+	      index.set(key, domain.push(value));
+	    }
+	    return scale;
+	  };
+
+	  scale.range = function(_) {
+	    return arguments.length ? (range = Array.from(_), scale) : range.slice();
+	  };
+
+	  scale.unknown = function(_) {
+	    return arguments.length ? (unknown = _, scale) : unknown;
+	  };
+
+	  scale.copy = function() {
+	    return ordinal(domain, range).unknown(unknown);
+	  };
+
+	  initRange.apply(scale, arguments);
+
+	  return scale;
+	}
+
+	function band() {
+	  var scale = ordinal().unknown(undefined),
+	      domain = scale.domain,
+	      ordinalRange = scale.range,
+	      r0 = 0,
+	      r1 = 1,
+	      step,
+	      bandwidth,
+	      round = false,
+	      paddingInner = 0,
+	      paddingOuter = 0,
+	      align = 0.5;
+
+	  delete scale.unknown;
+
+	  function rescale() {
+	    var n = domain().length,
+	        reverse = r1 < r0,
+	        start = reverse ? r1 : r0,
+	        stop = reverse ? r0 : r1;
+	    step = (stop - start) / Math.max(1, n - paddingInner + paddingOuter * 2);
+	    if (round) step = Math.floor(step);
+	    start += (stop - start - step * (n - paddingInner)) * align;
+	    bandwidth = step * (1 - paddingInner);
+	    if (round) start = Math.round(start), bandwidth = Math.round(bandwidth);
+	    var values = d3Array.range(n).map(function(i) { return start + step * i; });
+	    return ordinalRange(reverse ? values.reverse() : values);
+	  }
+
+	  scale.domain = function(_) {
+	    return arguments.length ? (domain(_), rescale()) : domain();
+	  };
+
+	  scale.range = function(_) {
+	    return arguments.length ? ([r0, r1] = _, r0 = +r0, r1 = +r1, rescale()) : [r0, r1];
+	  };
+
+	  scale.rangeRound = function(_) {
+	    return [r0, r1] = _, r0 = +r0, r1 = +r1, round = true, rescale();
+	  };
+
+	  scale.bandwidth = function() {
+	    return bandwidth;
+	  };
+
+	  scale.step = function() {
+	    return step;
+	  };
+
+	  scale.round = function(_) {
+	    return arguments.length ? (round = !!_, rescale()) : round;
+	  };
+
+	  scale.padding = function(_) {
+	    return arguments.length ? (paddingInner = Math.min(1, paddingOuter = +_), rescale()) : paddingInner;
+	  };
+
+	  scale.paddingInner = function(_) {
+	    return arguments.length ? (paddingInner = Math.min(1, _), rescale()) : paddingInner;
+	  };
+
+	  scale.paddingOuter = function(_) {
+	    return arguments.length ? (paddingOuter = +_, rescale()) : paddingOuter;
+	  };
+
+	  scale.align = function(_) {
+	    return arguments.length ? (align = Math.max(0, Math.min(1, _)), rescale()) : align;
+	  };
+
+	  scale.copy = function() {
+	    return band(domain(), [r0, r1])
+	        .round(round)
+	        .paddingInner(paddingInner)
+	        .paddingOuter(paddingOuter)
+	        .align(align);
+	  };
+
+	  return initRange.apply(rescale(), arguments);
+	}
+
+	function pointish(scale) {
+	  var copy = scale.copy;
+
+	  scale.padding = scale.paddingOuter;
+	  delete scale.paddingInner;
+	  delete scale.paddingOuter;
+
+	  scale.copy = function() {
+	    return pointish(copy());
+	  };
+
+	  return scale;
+	}
+
+	function point() {
+	  return pointish(band.apply(null, arguments).paddingInner(1));
+	}
+
+	function constant(x) {
+	  return function() {
+	    return x;
+	  };
+	}
+
+	function number(x) {
+	  return +x;
+	}
+
+	var unit = [0, 1];
+
+	function identity(x) {
+	  return x;
+	}
+
+	function normalize(a, b) {
+	  return (b -= (a = +a))
+	      ? function(x) { return (x - a) / b; }
+	      : constant(isNaN(b) ? NaN : 0.5);
+	}
+
+	function clamper(domain) {
+	  var a = domain[0], b = domain[domain.length - 1], t;
+	  if (a > b) t = a, a = b, b = t;
+	  return function(x) { return Math.max(a, Math.min(b, x)); };
+	}
+
+	// normalize(a, b)(x) takes a domain value x in [a,b] and returns the corresponding parameter t in [0,1].
+	// interpolate(a, b)(t) takes a parameter t in [0,1] and returns the corresponding range value x in [a,b].
+	function bimap(domain, range, interpolate) {
+	  var d0 = domain[0], d1 = domain[1], r0 = range[0], r1 = range[1];
+	  if (d1 < d0) d0 = normalize(d1, d0), r0 = interpolate(r1, r0);
+	  else d0 = normalize(d0, d1), r0 = interpolate(r0, r1);
+	  return function(x) { return r0(d0(x)); };
+	}
+
+	function polymap(domain, range, interpolate) {
+	  var j = Math.min(domain.length, range.length) - 1,
+	      d = new Array(j),
+	      r = new Array(j),
+	      i = -1;
+
+	  // Reverse descending domains.
+	  if (domain[j] < domain[0]) {
+	    domain = domain.slice().reverse();
+	    range = range.slice().reverse();
+	  }
+
+	  while (++i < j) {
+	    d[i] = normalize(domain[i], domain[i + 1]);
+	    r[i] = interpolate(range[i], range[i + 1]);
+	  }
+
+	  return function(x) {
+	    var i = d3Array.bisect(domain, x, 1, j) - 1;
+	    return r[i](d[i](x));
+	  };
+	}
+
+	function copy(source, target) {
+	  return target
+	      .domain(source.domain())
+	      .range(source.range())
+	      .interpolate(source.interpolate())
+	      .clamp(source.clamp())
+	      .unknown(source.unknown());
+	}
+
+	function transformer() {
+	  var domain = unit,
+	      range = unit,
+	      interpolate = d3Interpolate.interpolate,
+	      transform,
+	      untransform,
+	      unknown,
+	      clamp = identity,
+	      piecewise,
+	      output,
+	      input;
+
+	  function rescale() {
+	    piecewise = Math.min(domain.length, range.length) > 2 ? polymap : bimap;
+	    output = input = null;
+	    return scale;
+	  }
+
+	  function scale(x) {
+	    return isNaN(x = +x) ? unknown : (output || (output = piecewise(domain.map(transform), range, interpolate)))(transform(clamp(x)));
+	  }
+
+	  scale.invert = function(y) {
+	    return clamp(untransform((input || (input = piecewise(range, domain.map(transform), d3Interpolate.interpolateNumber)))(y)));
+	  };
+
+	  scale.domain = function(_) {
+	    return arguments.length ? (domain = Array.from(_, number), clamp === identity || (clamp = clamper(domain)), rescale()) : domain.slice();
+	  };
+
+	  scale.range = function(_) {
+	    return arguments.length ? (range = Array.from(_), rescale()) : range.slice();
+	  };
+
+	  scale.rangeRound = function(_) {
+	    return range = Array.from(_), interpolate = d3Interpolate.interpolateRound, rescale();
+	  };
+
+	  scale.clamp = function(_) {
+	    return arguments.length ? (clamp = _ ? clamper(domain) : identity, scale) : clamp !== identity;
+	  };
+
+	  scale.interpolate = function(_) {
+	    return arguments.length ? (interpolate = _, rescale()) : interpolate;
+	  };
+
+	  scale.unknown = function(_) {
+	    return arguments.length ? (unknown = _, scale) : unknown;
+	  };
+
+	  return function(t, u) {
+	    transform = t, untransform = u;
+	    return rescale();
+	  };
+	}
+
+	function continuous(transform, untransform) {
+	  return transformer()(transform, untransform);
+	}
+
+	function tickFormat(start, stop, count, specifier) {
+	  var step = d3Array.tickStep(start, stop, count),
+	      precision;
+	  specifier = d3Format.formatSpecifier(specifier == null ? ",f" : specifier);
+	  switch (specifier.type) {
+	    case "s": {
+	      var value = Math.max(Math.abs(start), Math.abs(stop));
+	      if (specifier.precision == null && !isNaN(precision = d3Format.precisionPrefix(step, value))) specifier.precision = precision;
+	      return d3Format.formatPrefix(specifier, value);
+	    }
+	    case "":
+	    case "e":
+	    case "g":
+	    case "p":
+	    case "r": {
+	      if (specifier.precision == null && !isNaN(precision = d3Format.precisionRound(step, Math.max(Math.abs(start), Math.abs(stop))))) specifier.precision = precision - (specifier.type === "e");
+	      break;
+	    }
+	    case "f":
+	    case "%": {
+	      if (specifier.precision == null && !isNaN(precision = d3Format.precisionFixed(step))) specifier.precision = precision - (specifier.type === "%") * 2;
+	      break;
+	    }
+	  }
+	  return d3Format.format(specifier);
+	}
+
+	function linearish(scale) {
+	  var domain = scale.domain;
+
+	  scale.ticks = function(count) {
+	    var d = domain();
+	    return d3Array.ticks(d[0], d[d.length - 1], count == null ? 10 : count);
+	  };
+
+	  scale.tickFormat = function(count, specifier) {
+	    var d = domain();
+	    return tickFormat(d[0], d[d.length - 1], count == null ? 10 : count, specifier);
+	  };
+
+	  scale.nice = function(count) {
+	    if (count == null) count = 10;
+
+	    var d = domain(),
+	        i0 = 0,
+	        i1 = d.length - 1,
+	        start = d[i0],
+	        stop = d[i1],
+	        step;
+
+	    if (stop < start) {
+	      step = start, start = stop, stop = step;
+	      step = i0, i0 = i1, i1 = step;
+	    }
+
+	    step = d3Array.tickIncrement(start, stop, count);
+
+	    if (step > 0) {
+	      start = Math.floor(start / step) * step;
+	      stop = Math.ceil(stop / step) * step;
+	      step = d3Array.tickIncrement(start, stop, count);
+	    } else if (step < 0) {
+	      start = Math.ceil(start * step) / step;
+	      stop = Math.floor(stop * step) / step;
+	      step = d3Array.tickIncrement(start, stop, count);
+	    }
+
+	    if (step > 0) {
+	      d[i0] = Math.floor(start / step) * step;
+	      d[i1] = Math.ceil(stop / step) * step;
+	      domain(d);
+	    } else if (step < 0) {
+	      d[i0] = Math.ceil(start * step) / step;
+	      d[i1] = Math.floor(stop * step) / step;
+	      domain(d);
+	    }
+
+	    return scale;
+	  };
+
+	  return scale;
+	}
+
+	function linear() {
+	  var scale = continuous(identity, identity);
+
+	  scale.copy = function() {
+	    return copy(scale, linear());
+	  };
+
+	  initRange.apply(scale, arguments);
+
+	  return linearish(scale);
+	}
+
+	function identity$1(domain) {
+	  var unknown;
+
+	  function scale(x) {
+	    return isNaN(x = +x) ? unknown : x;
+	  }
+
+	  scale.invert = scale;
+
+	  scale.domain = scale.range = function(_) {
+	    return arguments.length ? (domain = Array.from(_, number), scale) : domain.slice();
+	  };
+
+	  scale.unknown = function(_) {
+	    return arguments.length ? (unknown = _, scale) : unknown;
+	  };
+
+	  scale.copy = function() {
+	    return identity$1(domain).unknown(unknown);
+	  };
+
+	  domain = arguments.length ? Array.from(domain, number) : [0, 1];
+
+	  return linearish(scale);
+	}
+
+	function nice(domain, interval) {
+	  domain = domain.slice();
+
+	  var i0 = 0,
+	      i1 = domain.length - 1,
+	      x0 = domain[i0],
+	      x1 = domain[i1],
+	      t;
+
+	  if (x1 < x0) {
+	    t = i0, i0 = i1, i1 = t;
+	    t = x0, x0 = x1, x1 = t;
+	  }
+
+	  domain[i0] = interval.floor(x0);
+	  domain[i1] = interval.ceil(x1);
+	  return domain;
+	}
+
+	function transformLog(x) {
+	  return Math.log(x);
+	}
+
+	function transformExp(x) {
+	  return Math.exp(x);
+	}
+
+	function transformLogn(x) {
+	  return -Math.log(-x);
+	}
+
+	function transformExpn(x) {
+	  return -Math.exp(-x);
+	}
+
+	function pow10(x) {
+	  return isFinite(x) ? +("1e" + x) : x < 0 ? 0 : x;
+	}
+
+	function powp(base) {
+	  return base === 10 ? pow10
+	      : base === Math.E ? Math.exp
+	      : function(x) { return Math.pow(base, x); };
+	}
+
+	function logp(base) {
+	  return base === Math.E ? Math.log
+	      : base === 10 && Math.log10
+	      || base === 2 && Math.log2
+	      || (base = Math.log(base), function(x) { return Math.log(x) / base; });
+	}
+
+	function reflect(f) {
+	  return function(x) {
+	    return -f(-x);
+	  };
+	}
+
+	function loggish(transform) {
+	  var scale = transform(transformLog, transformExp),
+	      domain = scale.domain,
+	      base = 10,
+	      logs,
+	      pows;
+
+	  function rescale() {
+	    logs = logp(base), pows = powp(base);
+	    if (domain()[0] < 0) {
+	      logs = reflect(logs), pows = reflect(pows);
+	      transform(transformLogn, transformExpn);
+	    } else {
+	      transform(transformLog, transformExp);
+	    }
+	    return scale;
+	  }
+
+	  scale.base = function(_) {
+	    return arguments.length ? (base = +_, rescale()) : base;
+	  };
+
+	  scale.domain = function(_) {
+	    return arguments.length ? (domain(_), rescale()) : domain();
+	  };
+
+	  scale.ticks = function(count) {
+	    var d = domain(),
+	        u = d[0],
+	        v = d[d.length - 1],
+	        r;
+
+	    if (r = v < u) i = u, u = v, v = i;
+
+	    var i = logs(u),
+	        j = logs(v),
+	        p,
+	        k,
+	        t,
+	        n = count == null ? 10 : +count,
+	        z = [];
+
+	    if (!(base % 1) && j - i < n) {
+	      i = Math.round(i) - 1, j = Math.round(j) + 1;
+	      if (u > 0) for (; i < j; ++i) {
+	        for (k = 1, p = pows(i); k < base; ++k) {
+	          t = p * k;
+	          if (t < u) continue;
+	          if (t > v) break;
+	          z.push(t);
+	        }
+	      } else for (; i < j; ++i) {
+	        for (k = base - 1, p = pows(i); k >= 1; --k) {
+	          t = p * k;
+	          if (t < u) continue;
+	          if (t > v) break;
+	          z.push(t);
+	        }
+	      }
+	    } else {
+	      z = d3Array.ticks(i, j, Math.min(j - i, n)).map(pows);
+	    }
+
+	    return r ? z.reverse() : z;
+	  };
+
+	  scale.tickFormat = function(count, specifier) {
+	    if (specifier == null) specifier = base === 10 ? ".0e" : ",";
+	    if (typeof specifier !== "function") specifier = d3Format.format(specifier);
+	    if (count === Infinity) return specifier;
+	    if (count == null) count = 10;
+	    var k = Math.max(1, base * count / scale.ticks().length); // TODO fast estimate?
+	    return function(d) {
+	      var i = d / pows(Math.round(logs(d)));
+	      if (i * base < base - 0.5) i *= base;
+	      return i <= k ? specifier(d) : "";
+	    };
+	  };
+
+	  scale.nice = function() {
+	    return domain(nice(domain(), {
+	      floor: function(x) { return pows(Math.floor(logs(x))); },
+	      ceil: function(x) { return pows(Math.ceil(logs(x))); }
+	    }));
+	  };
+
+	  return scale;
+	}
+
+	function log() {
+	  var scale = loggish(transformer()).domain([1, 10]);
+
+	  scale.copy = function() {
+	    return copy(scale, log()).base(scale.base());
+	  };
+
+	  initRange.apply(scale, arguments);
+
+	  return scale;
+	}
+
+	function transformSymlog(c) {
+	  return function(x) {
+	    return Math.sign(x) * Math.log1p(Math.abs(x / c));
+	  };
+	}
+
+	function transformSymexp(c) {
+	  return function(x) {
+	    return Math.sign(x) * Math.expm1(Math.abs(x)) * c;
+	  };
+	}
+
+	function symlogish(transform) {
+	  var c = 1, scale = transform(transformSymlog(c), transformSymexp(c));
+
+	  scale.constant = function(_) {
+	    return arguments.length ? transform(transformSymlog(c = +_), transformSymexp(c)) : c;
+	  };
+
+	  return linearish(scale);
+	}
+
+	function symlog() {
+	  var scale = symlogish(transformer());
+
+	  scale.copy = function() {
+	    return copy(scale, symlog()).constant(scale.constant());
+	  };
+
+	  return initRange.apply(scale, arguments);
+	}
+
+	function transformPow(exponent) {
+	  return function(x) {
+	    return x < 0 ? -Math.pow(-x, exponent) : Math.pow(x, exponent);
+	  };
+	}
+
+	function transformSqrt(x) {
+	  return x < 0 ? -Math.sqrt(-x) : Math.sqrt(x);
+	}
+
+	function transformSquare(x) {
+	  return x < 0 ? -x * x : x * x;
+	}
+
+	function powish(transform) {
+	  var scale = transform(identity, identity),
+	      exponent = 1;
+
+	  function rescale() {
+	    return exponent === 1 ? transform(identity, identity)
+	        : exponent === 0.5 ? transform(transformSqrt, transformSquare)
+	        : transform(transformPow(exponent), transformPow(1 / exponent));
+	  }
+
+	  scale.exponent = function(_) {
+	    return arguments.length ? (exponent = +_, rescale()) : exponent;
+	  };
+
+	  return linearish(scale);
+	}
+
+	function pow() {
+	  var scale = powish(transformer());
+
+	  scale.copy = function() {
+	    return copy(scale, pow()).exponent(scale.exponent());
+	  };
+
+	  initRange.apply(scale, arguments);
+
+	  return scale;
+	}
+
+	function sqrt() {
+	  return pow.apply(null, arguments).exponent(0.5);
+	}
+
+	function quantile() {
+	  var domain = [],
+	      range = [],
+	      thresholds = [],
+	      unknown;
+
+	  function rescale() {
+	    var i = 0, n = Math.max(1, range.length);
+	    thresholds = new Array(n - 1);
+	    while (++i < n) thresholds[i - 1] = d3Array.quantile(domain, i / n);
+	    return scale;
+	  }
+
+	  function scale(x) {
+	    return isNaN(x = +x) ? unknown : range[d3Array.bisect(thresholds, x)];
+	  }
+
+	  scale.invertExtent = function(y) {
+	    var i = range.indexOf(y);
+	    return i < 0 ? [NaN, NaN] : [
+	      i > 0 ? thresholds[i - 1] : domain[0],
+	      i < thresholds.length ? thresholds[i] : domain[domain.length - 1]
+	    ];
+	  };
+
+	  scale.domain = function(_) {
+	    if (!arguments.length) return domain.slice();
+	    domain = [];
+	    for (let d of _) if (d != null && !isNaN(d = +d)) domain.push(d);
+	    domain.sort(d3Array.ascending);
+	    return rescale();
+	  };
+
+	  scale.range = function(_) {
+	    return arguments.length ? (range = Array.from(_), rescale()) : range.slice();
+	  };
+
+	  scale.unknown = function(_) {
+	    return arguments.length ? (unknown = _, scale) : unknown;
+	  };
+
+	  scale.quantiles = function() {
+	    return thresholds.slice();
+	  };
+
+	  scale.copy = function() {
+	    return quantile()
+	        .domain(domain)
+	        .range(range)
+	        .unknown(unknown);
+	  };
+
+	  return initRange.apply(scale, arguments);
+	}
+
+	function quantize() {
+	  var x0 = 0,
+	      x1 = 1,
+	      n = 1,
+	      domain = [0.5],
+	      range = [0, 1],
+	      unknown;
+
+	  function scale(x) {
+	    return x <= x ? range[d3Array.bisect(domain, x, 0, n)] : unknown;
+	  }
+
+	  function rescale() {
+	    var i = -1;
+	    domain = new Array(n);
+	    while (++i < n) domain[i] = ((i + 1) * x1 - (i - n) * x0) / (n + 1);
+	    return scale;
+	  }
+
+	  scale.domain = function(_) {
+	    return arguments.length ? ([x0, x1] = _, x0 = +x0, x1 = +x1, rescale()) : [x0, x1];
+	  };
+
+	  scale.range = function(_) {
+	    return arguments.length ? (n = (range = Array.from(_)).length - 1, rescale()) : range.slice();
+	  };
+
+	  scale.invertExtent = function(y) {
+	    var i = range.indexOf(y);
+	    return i < 0 ? [NaN, NaN]
+	        : i < 1 ? [x0, domain[0]]
+	        : i >= n ? [domain[n - 1], x1]
+	        : [domain[i - 1], domain[i]];
+	  };
+
+	  scale.unknown = function(_) {
+	    return arguments.length ? (unknown = _, scale) : scale;
+	  };
+
+	  scale.thresholds = function() {
+	    return domain.slice();
+	  };
+
+	  scale.copy = function() {
+	    return quantize()
+	        .domain([x0, x1])
+	        .range(range)
+	        .unknown(unknown);
+	  };
+
+	  return initRange.apply(linearish(scale), arguments);
+	}
+
+	function threshold() {
+	  var domain = [0.5],
+	      range = [0, 1],
+	      unknown,
+	      n = 1;
+
+	  function scale(x) {
+	    return x <= x ? range[d3Array.bisect(domain, x, 0, n)] : unknown;
+	  }
+
+	  scale.domain = function(_) {
+	    return arguments.length ? (domain = Array.from(_), n = Math.min(domain.length, range.length - 1), scale) : domain.slice();
+	  };
+
+	  scale.range = function(_) {
+	    return arguments.length ? (range = Array.from(_), n = Math.min(domain.length, range.length - 1), scale) : range.slice();
+	  };
+
+	  scale.invertExtent = function(y) {
+	    var i = range.indexOf(y);
+	    return [domain[i - 1], domain[i]];
+	  };
+
+	  scale.unknown = function(_) {
+	    return arguments.length ? (unknown = _, scale) : unknown;
+	  };
+
+	  scale.copy = function() {
+	    return threshold()
+	        .domain(domain)
+	        .range(range)
+	        .unknown(unknown);
+	  };
+
+	  return initRange.apply(scale, arguments);
+	}
+
+	var durationSecond = 1000,
+	    durationMinute = durationSecond * 60,
+	    durationHour = durationMinute * 60,
+	    durationDay = durationHour * 24,
+	    durationWeek = durationDay * 7,
+	    durationMonth = durationDay * 30,
+	    durationYear = durationDay * 365;
+
+	function date(t) {
+	  return new Date(t);
+	}
+
+	function number$1(t) {
+	  return t instanceof Date ? +t : +new Date(+t);
+	}
+
+	function calendar(year, month, week, day, hour, minute, second, millisecond, format) {
+	  var scale = continuous(identity, identity),
+	      invert = scale.invert,
+	      domain = scale.domain;
+
+	  var formatMillisecond = format(".%L"),
+	      formatSecond = format(":%S"),
+	      formatMinute = format("%I:%M"),
+	      formatHour = format("%I %p"),
+	      formatDay = format("%a %d"),
+	      formatWeek = format("%b %d"),
+	      formatMonth = format("%B"),
+	      formatYear = format("%Y");
+
+	  var tickIntervals = [
+	    [second,  1,      durationSecond],
+	    [second,  5,  5 * durationSecond],
+	    [second, 15, 15 * durationSecond],
+	    [second, 30, 30 * durationSecond],
+	    [minute,  1,      durationMinute],
+	    [minute,  5,  5 * durationMinute],
+	    [minute, 15, 15 * durationMinute],
+	    [minute, 30, 30 * durationMinute],
+	    [  hour,  1,      durationHour  ],
+	    [  hour,  3,  3 * durationHour  ],
+	    [  hour,  6,  6 * durationHour  ],
+	    [  hour, 12, 12 * durationHour  ],
+	    [   day,  1,      durationDay   ],
+	    [   day,  2,  2 * durationDay   ],
+	    [  week,  1,      durationWeek  ],
+	    [ month,  1,      durationMonth ],
+	    [ month,  3,  3 * durationMonth ],
+	    [  year,  1,      durationYear  ]
+	  ];
+
+	  function tickFormat(date) {
+	    return (second(date) < date ? formatMillisecond
+	        : minute(date) < date ? formatSecond
+	        : hour(date) < date ? formatMinute
+	        : day(date) < date ? formatHour
+	        : month(date) < date ? (week(date) < date ? formatDay : formatWeek)
+	        : year(date) < date ? formatMonth
+	        : formatYear)(date);
+	  }
+
+	  function tickInterval(interval, start, stop, step) {
+	    if (interval == null) interval = 10;
+
+	    // If a desired tick count is specified, pick a reasonable tick interval
+	    // based on the extent of the domain and a rough estimate of tick size.
+	    // Otherwise, assume interval is already a time interval and use it.
+	    if (typeof interval === "number") {
+	      var target = Math.abs(stop - start) / interval,
+	          i = d3Array.bisector(function(i) { return i[2]; }).right(tickIntervals, target);
+	      if (i === tickIntervals.length) {
+	        step = d3Array.tickStep(start / durationYear, stop / durationYear, interval);
+	        interval = year;
+	      } else if (i) {
+	        i = tickIntervals[target / tickIntervals[i - 1][2] < tickIntervals[i][2] / target ? i - 1 : i];
+	        step = i[1];
+	        interval = i[0];
+	      } else {
+	        step = Math.max(d3Array.tickStep(start, stop, interval), 1);
+	        interval = millisecond;
+	      }
+	    }
+
+	    return step == null ? interval : interval.every(step);
+	  }
+
+	  scale.invert = function(y) {
+	    return new Date(invert(y));
+	  };
+
+	  scale.domain = function(_) {
+	    return arguments.length ? domain(Array.from(_, number$1)) : domain().map(date);
+	  };
+
+	  scale.ticks = function(interval, step) {
+	    var d = domain(),
+	        t0 = d[0],
+	        t1 = d[d.length - 1],
+	        r = t1 < t0,
+	        t;
+	    if (r) t = t0, t0 = t1, t1 = t;
+	    t = tickInterval(interval, t0, t1, step);
+	    t = t ? t.range(t0, t1 + 1) : []; // inclusive stop
+	    return r ? t.reverse() : t;
+	  };
+
+	  scale.tickFormat = function(count, specifier) {
+	    return specifier == null ? tickFormat : format(specifier);
+	  };
+
+	  scale.nice = function(interval, step) {
+	    var d = domain();
+	    return (interval = tickInterval(interval, d[0], d[d.length - 1], step))
+	        ? domain(nice(d, interval))
+	        : scale;
+	  };
+
+	  scale.copy = function() {
+	    return copy(scale, calendar(year, month, week, day, hour, minute, second, millisecond, format));
+	  };
+
+	  return scale;
+	}
+
+	function time() {
+	  return initRange.apply(calendar(d3Time.timeYear, d3Time.timeMonth, d3Time.timeWeek, d3Time.timeDay, d3Time.timeHour, d3Time.timeMinute, d3Time.timeSecond, d3Time.timeMillisecond, d3TimeFormat.timeFormat).domain([new Date(2000, 0, 1), new Date(2000, 0, 2)]), arguments);
+	}
+
+	function utcTime() {
+	  return initRange.apply(calendar(d3Time.utcYear, d3Time.utcMonth, d3Time.utcWeek, d3Time.utcDay, d3Time.utcHour, d3Time.utcMinute, d3Time.utcSecond, d3Time.utcMillisecond, d3TimeFormat.utcFormat).domain([Date.UTC(2000, 0, 1), Date.UTC(2000, 0, 2)]), arguments);
+	}
+
+	function transformer$1() {
+	  var x0 = 0,
+	      x1 = 1,
+	      t0,
+	      t1,
+	      k10,
+	      transform,
+	      interpolator = identity,
+	      clamp = false,
+	      unknown;
+
+	  function scale(x) {
+	    return isNaN(x = +x) ? unknown : interpolator(k10 === 0 ? 0.5 : (x = (transform(x) - t0) * k10, clamp ? Math.max(0, Math.min(1, x)) : x));
+	  }
+
+	  scale.domain = function(_) {
+	    return arguments.length ? ([x0, x1] = _, t0 = transform(x0 = +x0), t1 = transform(x1 = +x1), k10 = t0 === t1 ? 0 : 1 / (t1 - t0), scale) : [x0, x1];
+	  };
+
+	  scale.clamp = function(_) {
+	    return arguments.length ? (clamp = !!_, scale) : clamp;
+	  };
+
+	  scale.interpolator = function(_) {
+	    return arguments.length ? (interpolator = _, scale) : interpolator;
+	  };
+
+	  scale.unknown = function(_) {
+	    return arguments.length ? (unknown = _, scale) : unknown;
+	  };
+
+	  return function(t) {
+	    transform = t, t0 = t(x0), t1 = t(x1), k10 = t0 === t1 ? 0 : 1 / (t1 - t0);
+	    return scale;
+	  };
+	}
+
+	function copy$1(source, target) {
+	  return target
+	      .domain(source.domain())
+	      .interpolator(source.interpolator())
+	      .clamp(source.clamp())
+	      .unknown(source.unknown());
+	}
+
+	function sequential() {
+	  var scale = linearish(transformer$1()(identity));
+
+	  scale.copy = function() {
+	    return copy$1(scale, sequential());
+	  };
+
+	  return initInterpolator.apply(scale, arguments);
+	}
+
+	function sequentialLog() {
+	  var scale = loggish(transformer$1()).domain([1, 10]);
+
+	  scale.copy = function() {
+	    return copy$1(scale, sequentialLog()).base(scale.base());
+	  };
+
+	  return initInterpolator.apply(scale, arguments);
+	}
+
+	function sequentialSymlog() {
+	  var scale = symlogish(transformer$1());
+
+	  scale.copy = function() {
+	    return copy$1(scale, sequentialSymlog()).constant(scale.constant());
+	  };
+
+	  return initInterpolator.apply(scale, arguments);
+	}
+
+	function sequentialPow() {
+	  var scale = powish(transformer$1());
+
+	  scale.copy = function() {
+	    return copy$1(scale, sequentialPow()).exponent(scale.exponent());
+	  };
+
+	  return initInterpolator.apply(scale, arguments);
+	}
+
+	function sequentialSqrt() {
+	  return sequentialPow.apply(null, arguments).exponent(0.5);
+	}
+
+	function sequentialQuantile() {
+	  var domain = [],
+	      interpolator = identity;
+
+	  function scale(x) {
+	    if (!isNaN(x = +x)) return interpolator((d3Array.bisect(domain, x) - 1) / (domain.length - 1));
+	  }
+
+	  scale.domain = function(_) {
+	    if (!arguments.length) return domain.slice();
+	    domain = [];
+	    for (let d of _) if (d != null && !isNaN(d = +d)) domain.push(d);
+	    domain.sort(d3Array.ascending);
+	    return scale;
+	  };
+
+	  scale.interpolator = function(_) {
+	    return arguments.length ? (interpolator = _, scale) : interpolator;
+	  };
+
+	  scale.copy = function() {
+	    return sequentialQuantile(interpolator).domain(domain);
+	  };
+
+	  return initInterpolator.apply(scale, arguments);
+	}
+
+	function transformer$2() {
+	  var x0 = 0,
+	      x1 = 0.5,
+	      x2 = 1,
+	      t0,
+	      t1,
+	      t2,
+	      k10,
+	      k21,
+	      interpolator = identity,
+	      transform,
+	      clamp = false,
+	      unknown;
+
+	  function scale(x) {
+	    return isNaN(x = +x) ? unknown : (x = 0.5 + ((x = +transform(x)) - t1) * (x < t1 ? k10 : k21), interpolator(clamp ? Math.max(0, Math.min(1, x)) : x));
+	  }
+
+	  scale.domain = function(_) {
+	    return arguments.length ? ([x0, x1, x2] = _, t0 = transform(x0 = +x0), t1 = transform(x1 = +x1), t2 = transform(x2 = +x2), k10 = t0 === t1 ? 0 : 0.5 / (t1 - t0), k21 = t1 === t2 ? 0 : 0.5 / (t2 - t1), scale) : [x0, x1, x2];
+	  };
+
+	  scale.clamp = function(_) {
+	    return arguments.length ? (clamp = !!_, scale) : clamp;
+	  };
+
+	  scale.interpolator = function(_) {
+	    return arguments.length ? (interpolator = _, scale) : interpolator;
+	  };
+
+	  scale.unknown = function(_) {
+	    return arguments.length ? (unknown = _, scale) : unknown;
+	  };
+
+	  return function(t) {
+	    transform = t, t0 = t(x0), t1 = t(x1), t2 = t(x2), k10 = t0 === t1 ? 0 : 0.5 / (t1 - t0), k21 = t1 === t2 ? 0 : 0.5 / (t2 - t1);
+	    return scale;
+	  };
+	}
+
+	function diverging() {
+	  var scale = linearish(transformer$2()(identity));
+
+	  scale.copy = function() {
+	    return copy$1(scale, diverging());
+	  };
+
+	  return initInterpolator.apply(scale, arguments);
+	}
+
+	function divergingLog() {
+	  var scale = loggish(transformer$2()).domain([0.1, 1, 10]);
+
+	  scale.copy = function() {
+	    return copy$1(scale, divergingLog()).base(scale.base());
+	  };
+
+	  return initInterpolator.apply(scale, arguments);
+	}
+
+	function divergingSymlog() {
+	  var scale = symlogish(transformer$2());
+
+	  scale.copy = function() {
+	    return copy$1(scale, divergingSymlog()).constant(scale.constant());
+	  };
+
+	  return initInterpolator.apply(scale, arguments);
+	}
+
+	function divergingPow() {
+	  var scale = powish(transformer$2());
+
+	  scale.copy = function() {
+	    return copy$1(scale, divergingPow()).exponent(scale.exponent());
+	  };
+
+	  return initInterpolator.apply(scale, arguments);
+	}
+
+	function divergingSqrt() {
+	  return divergingPow.apply(null, arguments).exponent(0.5);
+	}
+
+	exports.scaleBand = band;
+	exports.scalePoint = point;
+	exports.scaleIdentity = identity$1;
+	exports.scaleLinear = linear;
+	exports.scaleLog = log;
+	exports.scaleSymlog = symlog;
+	exports.scaleOrdinal = ordinal;
+	exports.scaleImplicit = implicit;
+	exports.scalePow = pow;
+	exports.scaleSqrt = sqrt;
+	exports.scaleQuantile = quantile;
+	exports.scaleQuantize = quantize;
+	exports.scaleThreshold = threshold;
+	exports.scaleTime = time;
+	exports.scaleUtc = utcTime;
+	exports.scaleSequential = sequential;
+	exports.scaleSequentialLog = sequentialLog;
+	exports.scaleSequentialPow = sequentialPow;
+	exports.scaleSequentialSqrt = sequentialSqrt;
+	exports.scaleSequentialSymlog = sequentialSymlog;
+	exports.scaleSequentialQuantile = sequentialQuantile;
+	exports.scaleDiverging = diverging;
+	exports.scaleDivergingLog = divergingLog;
+	exports.scaleDivergingPow = divergingPow;
+	exports.scaleDivergingSqrt = divergingSqrt;
+	exports.scaleDivergingSymlog = divergingSymlog;
+	exports.tickFormat = tickFormat;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	})));
+
+
+/***/ }),
+/* 101 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// https://d3js.org/d3-array/ v2.2.0 Copyright 2019 Mike Bostock
+	(function (global, factory) {
+	 true ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(factory((global.d3 = global.d3 || {})));
+	}(this, (function (exports) { 'use strict';
+
+	function ascending(a, b) {
+	  return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
+	}
+
+	function bisector(compare) {
+	  if (compare.length === 1) compare = ascendingComparator(compare);
+	  return {
+	    left: function(a, x, lo, hi) {
+	      if (lo == null) lo = 0;
+	      if (hi == null) hi = a.length;
+	      while (lo < hi) {
+	        var mid = lo + hi >>> 1;
+	        if (compare(a[mid], x) < 0) lo = mid + 1;
+	        else hi = mid;
+	      }
+	      return lo;
+	    },
+	    right: function(a, x, lo, hi) {
+	      if (lo == null) lo = 0;
+	      if (hi == null) hi = a.length;
+	      while (lo < hi) {
+	        var mid = lo + hi >>> 1;
+	        if (compare(a[mid], x) > 0) hi = mid;
+	        else lo = mid + 1;
+	      }
+	      return lo;
+	    }
+	  };
+	}
+
+	function ascendingComparator(f) {
+	  return function(d, x) {
+	    return ascending(f(d), x);
+	  };
+	}
+
+	var ascendingBisect = bisector(ascending);
+	var bisectRight = ascendingBisect.right;
+	var bisectLeft = ascendingBisect.left;
+
+	function count(values, valueof) {
+	  let count = 0;
+	  if (valueof === undefined) {
+	    for (const value of values) {
+	      if (value != null && value >= value) {
+	        ++count;
+	      }
+	    }
+	  } else {
+	    let index = -1;
+	    for (let value of values) {
+	      if ((value = valueof(value, ++index, values)) != null && value >= value) {
+	        ++count;
+	      }
+	    }
+	  }
+	  return count;
+	}
+
+	function length(array) {
+	  return array.length | 0;
+	}
+
+	function empty(length) {
+	  return !(length > 0);
+	}
+
+	function arrayify(values) {
+	  return typeof values !== "object" || "length" in values ? values : Array.from(values);
+	}
+
+	function reducer(reduce) {
+	  return values => reduce(...values);
+	}
+
+	function cross(...values) {
+	  const reduce = typeof values[values.length - 1] === "function" && reducer(values.pop());
+	  values = values.map(arrayify);
+	  const lengths = values.map(length);
+	  const j = values.length - 1;
+	  const index = new Array(j + 1).fill(0);
+	  const product = [];
+	  if (j < 0 || lengths.some(empty)) return product;
+	  while (true) {
+	    product.push(index.map((j, i) => values[i][j]));
+	    let i = j;
+	    while (++index[i] === lengths[i]) {
+	      if (i === 0) return reduce ? product.map(reduce) : product;
+	      index[i--] = 0;
+	    }
+	  }
+	}
+
+	function descending(a, b) {
+	  return b < a ? -1 : b > a ? 1 : b >= a ? 0 : NaN;
+	}
+
+	function variance(values, valueof) {
+	  let count = 0;
+	  let delta;
+	  let mean = 0;
+	  let sum = 0;
+	  if (valueof === undefined) {
+	    for (let value of values) {
+	      if (value != null && (value = +value) >= value) {
+	        delta = value - mean;
+	        mean += delta / ++count;
+	        sum += delta * (value - mean);
+	      }
+	    }
+	  } else {
+	    let index = -1;
+	    for (let value of values) {
+	      if ((value = valueof(value, ++index, values)) != null && (value = +value) >= value) {
+	        delta = value - mean;
+	        mean += delta / ++count;
+	        sum += delta * (value - mean);
+	      }
+	    }
+	  }
+	  if (count > 1) return sum / (count - 1);
+	}
+
+	function deviation(values, valueof) {
+	  const v = variance(values, valueof);
+	  return v ? Math.sqrt(v) : v;
+	}
+
+	function extent(values, valueof) {
+	  let min;
+	  let max;
+	  if (valueof === undefined) {
+	    for (const value of values) {
+	      if (value != null) {
+	        if (min === undefined) {
+	          if (value >= value) min = max = value;
+	        } else {
+	          if (min > value) min = value;
+	          if (max < value) max = value;
+	        }
+	      }
+	    }
+	  } else {
+	    let index = -1;
+	    for (let value of values) {
+	      if ((value = valueof(value, ++index, values)) != null) {
+	        if (min === undefined) {
+	          if (value >= value) min = max = value;
+	        } else {
+	          if (min > value) min = value;
+	          if (max < value) max = value;
+	        }
+	      }
+	    }
+	  }
+	  return [min, max];
+	}
+
+	function identity(x) {
+	  return x;
+	}
+
+	function group(values, ...keys) {
+	  return nest(values, identity, identity, keys);
+	}
+
+	function groups(values, ...keys) {
+	  return nest(values, Array.from, identity, keys);
+	}
+
+	function rollup(values, reduce, ...keys) {
+	  return nest(values, identity, reduce, keys);
+	}
+
+	function rollups(values, reduce, ...keys) {
+	  return nest(values, Array.from, reduce, keys);
+	}
+
+	function nest(values, map, reduce, keys) {
+	  return (function regroup(values, i) {
+	    if (i >= keys.length) return reduce(values);
+	    const groups = new Map();
+	    const keyof = keys[i++];
+	    let index = -1;
+	    for (const value of values) {
+	      const key = keyof(value, ++index, values);
+	      const group = groups.get(key);
+	      if (group) group.push(value);
+	      else groups.set(key, [value]);
+	    }
+	    for (const [key, values] of groups) {
+	      groups.set(key, regroup(values, i));
+	    }
+	    return map(groups);
+	  })(values, 0);
+	}
+
+	var array = Array.prototype;
+
+	var slice = array.slice;
+	var map = array.map;
+
+	function constant(x) {
+	  return function() {
+	    return x;
+	  };
+	}
+
+	function range(start, stop, step) {
+	  start = +start, stop = +stop, step = (n = arguments.length) < 2 ? (stop = start, start = 0, 1) : n < 3 ? 1 : +step;
+
+	  var i = -1,
+	      n = Math.max(0, Math.ceil((stop - start) / step)) | 0,
+	      range = new Array(n);
+
+	  while (++i < n) {
+	    range[i] = start + i * step;
+	  }
+
+	  return range;
+	}
+
+	var e10 = Math.sqrt(50),
+	    e5 = Math.sqrt(10),
+	    e2 = Math.sqrt(2);
+
+	function ticks(start, stop, count) {
+	  var reverse,
+	      i = -1,
+	      n,
+	      ticks,
+	      step;
+
+	  stop = +stop, start = +start, count = +count;
+	  if (start === stop && count > 0) return [start];
+	  if (reverse = stop < start) n = start, start = stop, stop = n;
+	  if ((step = tickIncrement(start, stop, count)) === 0 || !isFinite(step)) return [];
+
+	  if (step > 0) {
+	    start = Math.ceil(start / step);
+	    stop = Math.floor(stop / step);
+	    ticks = new Array(n = Math.ceil(stop - start + 1));
+	    while (++i < n) ticks[i] = (start + i) * step;
+	  } else {
+	    start = Math.floor(start * step);
+	    stop = Math.ceil(stop * step);
+	    ticks = new Array(n = Math.ceil(start - stop + 1));
+	    while (++i < n) ticks[i] = (start - i) / step;
+	  }
+
+	  if (reverse) ticks.reverse();
+
+	  return ticks;
+	}
+
+	function tickIncrement(start, stop, count) {
+	  var step = (stop - start) / Math.max(0, count),
+	      power = Math.floor(Math.log(step) / Math.LN10),
+	      error = step / Math.pow(10, power);
+	  return power >= 0
+	      ? (error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1) * Math.pow(10, power)
+	      : -Math.pow(10, -power) / (error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1);
+	}
+
+	function tickStep(start, stop, count) {
+	  var step0 = Math.abs(stop - start) / Math.max(0, count),
+	      step1 = Math.pow(10, Math.floor(Math.log(step0) / Math.LN10)),
+	      error = step0 / step1;
+	  if (error >= e10) step1 *= 10;
+	  else if (error >= e5) step1 *= 5;
+	  else if (error >= e2) step1 *= 2;
+	  return stop < start ? -step1 : step1;
+	}
+
+	function sturges(values) {
+	  return Math.ceil(Math.log(values.length) / Math.LN2) + 1;
+	}
+
+	function bin() {
+	  var value = identity,
+	      domain = extent,
+	      threshold = sturges;
+
+	  function histogram(data) {
+	    if (!Array.isArray(data)) data = Array.from(data);
+
+	    var i,
+	        n = data.length,
+	        x,
+	        values = new Array(n);
+
+	    for (i = 0; i < n; ++i) {
+	      values[i] = value(data[i], i, data);
+	    }
+
+	    var xz = domain(values),
+	        x0 = xz[0],
+	        x1 = xz[1],
+	        tz = threshold(values, x0, x1);
+
+	    // Convert number of thresholds into uniform thresholds.
+	    if (!Array.isArray(tz)) {
+	      tz = tickStep(x0, x1, tz);
+	      tz = range(Math.ceil(x0 / tz) * tz, x1, tz); // exclusive
+	    }
+
+	    // Remove any thresholds outside the domain.
+	    var m = tz.length;
+	    while (tz[0] <= x0) tz.shift(), --m;
+	    while (tz[m - 1] > x1) tz.pop(), --m;
+
+	    var bins = new Array(m + 1),
+	        bin;
+
+	    // Initialize bins.
+	    for (i = 0; i <= m; ++i) {
+	      bin = bins[i] = [];
+	      bin.x0 = i > 0 ? tz[i - 1] : x0;
+	      bin.x1 = i < m ? tz[i] : x1;
+	    }
+
+	    // Assign data to bins by value, ignoring any outside the domain.
+	    for (i = 0; i < n; ++i) {
+	      x = values[i];
+	      if (x0 <= x && x <= x1) {
+	        bins[bisectRight(tz, x, 0, m)].push(data[i]);
+	      }
+	    }
+
+	    return bins;
+	  }
+
+	  histogram.value = function(_) {
+	    return arguments.length ? (value = typeof _ === "function" ? _ : constant(_), histogram) : value;
+	  };
+
+	  histogram.domain = function(_) {
+	    return arguments.length ? (domain = typeof _ === "function" ? _ : constant([_[0], _[1]]), histogram) : domain;
+	  };
+
+	  histogram.thresholds = function(_) {
+	    return arguments.length ? (threshold = typeof _ === "function" ? _ : Array.isArray(_) ? constant(slice.call(_)) : constant(_), histogram) : threshold;
+	  };
+
+	  return histogram;
+	}
+
+	function number(x) {
+	  return x === null ? NaN : +x;
+	}
+
+	function quantile(values, p, valueof = number) {
+	  if (!(n = values.length)) return;
+	  if ((p = +p) <= 0 || n < 2) return +valueof(values[0], 0, values);
+	  if (p >= 1) return +valueof(values[n - 1], n - 1, values);
+	  var n,
+	      i = (n - 1) * p,
+	      i0 = Math.floor(i),
+	      value0 = +valueof(values[i0], i0, values),
+	      value1 = +valueof(values[i0 + 1], i0 + 1, values);
+	  return value0 + (value1 - value0) * (i - i0);
+	}
+
+	function freedmanDiaconis(values, min, max) {
+	  values = map.call(values, number).sort(ascending);
+	  return Math.ceil((max - min) / (2 * (quantile(values, 0.75) - quantile(values, 0.25)) * Math.pow(values.length, -1 / 3)));
+	}
+
+	function scott(values, min, max) {
+	  return Math.ceil((max - min) / (3.5 * deviation(values) * Math.pow(values.length, -1 / 3)));
+	}
+
+	function max(values, valueof) {
+	  let max;
+	  if (valueof === undefined) {
+	    for (const value of values) {
+	      if (value != null
+	          && (max < value || (max === undefined && value >= value))) {
+	        max = value;
+	      }
+	    }
+	  } else {
+	    let index = -1;
+	    for (let value of values) {
+	      if ((value = valueof(value, ++index, values)) != null
+	          && (max < value || (max === undefined && value >= value))) {
+	        max = value;
+	      }
+	    }
+	  }
+	  return max;
+	}
+
+	function maxIndex(values, valueof) {
+	  let max;
+	  let maxIndex = -1;
+	  let index = -1;
+	  if (valueof === undefined) {
+	    for (const value of values) {
+	      ++index;
+	      if (value != null
+	          && (max < value || (max === undefined && value >= value))) {
+	        max = value, maxIndex = index;
+	      }
+	    }
+	  } else {
+	    for (let value of values) {
+	      if ((value = valueof(value, ++index, values)) != null
+	          && (max < value || (max === undefined && value >= value))) {
+	        max = value, maxIndex = index;
+	      }
+	    }
+	  }
+	  return maxIndex;
+	}
+
+	function mean(values, valueof) {
+	  let count = 0;
+	  let sum = 0;
+	  if (valueof === undefined) {
+	    for (let value of values) {
+	      if (value != null && (value = +value) >= value) {
+	        ++count, sum += value;
+	      }
+	    }
+	  } else {
+	    let index = -1;
+	    for (let value of values) {
+	      if ((value = valueof(value, ++index, values)) != null && (value = +value) >= value) {
+	        ++count, sum += value;
+	      }
+	    }
+	  }
+	  if (count) return sum / count;
+	}
+
+	// Based on https://github.com/mourner/quickselect
+	// ISC license, Copyright 2018 Vladimir Agafonkin.
+	function quickselect(array, k, left = 0, right = array.length - 1, compare = ascending) {
+	  while (right > left) {
+	    if (right - left > 600) {
+	      const n = right - left + 1;
+	      const m = k - left + 1;
+	      const z = Math.log(n);
+	      const s = 0.5 * Math.exp(2 * z / 3);
+	      const sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
+	      const newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
+	      const newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
+	      quickselect(array, k, newLeft, newRight, compare);
+	    }
+
+	    const t = array[k];
+	    let i = left;
+	    let j = right;
+
+	    swap(array, left, k);
+	    if (compare(array[right], t) > 0) swap(array, left, right);
+
+	    while (i < j) {
+	      swap(array, i, j), ++i, --j;
+	      while (compare(array[i], t) < 0) ++i;
+	      while (compare(array[j], t) > 0) --j;
+	    }
+
+	    if (compare(array[left], t) === 0) swap(array, left, j);
+	    else ++j, swap(array, j, right);
+
+	    if (j <= k) left = j + 1;
+	    if (k <= j) right = j - 1;
+	  }
+	  return array;
+	}
+
+	function swap(array, i, j) {
+	  const t = array[i];
+	  array[i] = array[j];
+	  array[j] = t;
+	}
+
+	function* numbers(values, valueof) {
+	  if (valueof === undefined) {
+	    for (let value of values) {
+	      if (value != null && (value = +value) >= value) {
+	        yield value;
+	      }
+	    }
+	  } else {
+	    let index = -1;
+	    for (let value of values) {
+	      if ((value = valueof(value, ++index, values)) != null && (value = +value) >= value) {
+	        yield value;
+	      }
+	    }
+	  }
+	}
+
+	function median(values, valueof) {
+	  values = Float64Array.from(numbers(values, valueof));
+	  if (!values.length) return;
+	  const n = values.length;
+	  const i = n >> 1;
+	  quickselect(values, i - 1, 0);
+	  if ((n & 1) === 0) quickselect(values, i, i);
+	  return quantile(values, 0.5);
+	}
+
+	function* flatten(arrays) {
+	  for (const array of arrays) {
+	    yield* array;
+	  }
+	}
+
+	function merge(arrays) {
+	  return Array.from(flatten(arrays));
+	}
+
+	function min(values, valueof) {
+	  let min;
+	  if (valueof === undefined) {
+	    for (const value of values) {
+	      if (value != null
+	          && (min > value || (min === undefined && value >= value))) {
+	        min = value;
+	      }
+	    }
+	  } else {
+	    let index = -1;
+	    for (let value of values) {
+	      if ((value = valueof(value, ++index, values)) != null
+	          && (min > value || (min === undefined && value >= value))) {
+	        min = value;
+	      }
+	    }
+	  }
+	  return min;
+	}
+
+	function minIndex(values, valueof) {
+	  let min;
+	  let minIndex = -1;
+	  let index = -1;
+	  if (valueof === undefined) {
+	    for (const value of values) {
+	      ++index;
+	      if (value != null
+	          && (min > value || (min === undefined && value >= value))) {
+	        min = value, minIndex = index;
+	      }
+	    }
+	  } else {
+	    for (let value of values) {
+	      if ((value = valueof(value, ++index, values)) != null
+	          && (min > value || (min === undefined && value >= value))) {
+	        min = value, minIndex = index;
+	      }
+	    }
+	  }
+	  return minIndex;
+	}
+
+	function pairs(values, pairof = pair) {
+	  const pairs = [];
+	  let previous;
+	  let first = false;
+	  for (const value of values) {
+	    if (first) pairs.push(pairof(previous, value));
+	    previous = value;
+	    first = true;
+	  }
+	  return pairs;
+	}
+
+	function pair(a, b) {
+	  return [a, b];
+	}
+
+	function permute(source, keys) {
+	  return Array.from(keys, key => source[key]);
+	}
+
+	function least(values, compare = ascending) {
+	  let min;
+	  let defined = false;
+	  if (compare.length === 1) {
+	    let minValue;
+	    for (const element of values) {
+	      const value = compare(element);
+	      if (defined
+	          ? ascending(value, minValue) < 0
+	          : ascending(value, value) === 0) {
+	        min = element;
+	        minValue = value;
+	        defined = true;
+	      }
+	    }
+	  } else {
+	    for (const value of values) {
+	      if (defined
+	          ? compare(value, min) < 0
+	          : compare(value, value) === 0) {
+	        min = value;
+	        defined = true;
+	      }
+	    }
+	  }
+	  return min;
+	}
+
+	function leastIndex(values, compare = ascending) {
+	  let min;
+	  let minIndex = -1;
+	  let index = -1;
+	  if (compare.length === 1) {
+	    for (const element of values) {
+	      ++index;
+	      const value = compare(element);
+	      if (minIndex < 0
+	          ? ascending(value, value) === 0
+	          : ascending(value, min) < 0) {
+	        min = value;
+	        minIndex = index;
+	      }
+	    }
+	  } else {
+	    for (const value of values) {
+	      ++index;
+	      if (minIndex < 0
+	          ? compare(value, value) === 0
+	          : compare(value, min) < 0) {
+	        min = value;
+	        minIndex = index;
+	      }
+	    }
+	  }
+	  return minIndex;
+	}
+
+	function scan(values, compare) {
+	  const index = leastIndex(values, compare);
+	  return index < 0 ? undefined : index;
+	}
+
+	function shuffle(array, i0 = 0, i1 = array.length) {
+	  var m = i1 - (i0 = +i0),
+	      t,
+	      i;
+
+	  while (m) {
+	    i = Math.random() * m-- | 0;
+	    t = array[m + i0];
+	    array[m + i0] = array[i + i0];
+	    array[i + i0] = t;
+	  }
+
+	  return array;
+	}
+
+	function sum(values, valueof) {
+	  let sum = 0;
+	  if (valueof === undefined) {
+	    for (let value of values) {
+	      if (value = +value) {
+	        sum += value;
+	      }
+	    }
+	  } else {
+	    let index = -1;
+	    for (let value of values) {
+	      if (value = +valueof(value, ++index, values)) {
+	        sum += value;
+	      }
+	    }
+	  }
+	  return sum;
+	}
+
+	function transpose(matrix) {
+	  if (!(n = matrix.length)) return [];
+	  for (var i = -1, m = min(matrix, length$1), transpose = new Array(m); ++i < m;) {
+	    for (var j = -1, n, row = transpose[i] = new Array(n); ++j < n;) {
+	      row[j] = matrix[j][i];
+	    }
+	  }
+	  return transpose;
+	}
+
+	function length$1(d) {
+	  return d.length;
+	}
+
+	function zip() {
+	  return transpose(arguments);
+	}
+
+	exports.bisect = bisectRight;
+	exports.bisectRight = bisectRight;
+	exports.bisectLeft = bisectLeft;
+	exports.ascending = ascending;
+	exports.bisector = bisector;
+	exports.count = count;
+	exports.cross = cross;
+	exports.descending = descending;
+	exports.deviation = deviation;
+	exports.extent = extent;
+	exports.group = group;
+	exports.groups = groups;
+	exports.rollup = rollup;
+	exports.rollups = rollups;
+	exports.bin = bin;
+	exports.histogram = bin;
+	exports.thresholdFreedmanDiaconis = freedmanDiaconis;
+	exports.thresholdScott = scott;
+	exports.thresholdSturges = sturges;
+	exports.max = max;
+	exports.maxIndex = maxIndex;
+	exports.mean = mean;
+	exports.median = median;
+	exports.merge = merge;
+	exports.min = min;
+	exports.minIndex = minIndex;
+	exports.pairs = pairs;
+	exports.permute = permute;
+	exports.quantile = quantile;
+	exports.quickselect = quickselect;
+	exports.range = range;
+	exports.least = least;
+	exports.leastIndex = leastIndex;
+	exports.scan = scan;
+	exports.shuffle = shuffle;
+	exports.sum = sum;
+	exports.ticks = ticks;
+	exports.tickIncrement = tickIncrement;
+	exports.tickStep = tickStep;
+	exports.transpose = transpose;
+	exports.variance = variance;
+	exports.zip = zip;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	})));
+
+
+/***/ }),
+/* 102 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;// TinyColor v1.4.1
 	// https://github.com/bgrins/TinyColor
@@ -132205,22 +138135,22 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})(Math);
 
 
-/***/ },
-/* 92 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 103 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-	var three = __webpack_require__(40);
-	var ThreeTrackballControls = _interopDefault(__webpack_require__(93));
-	var OrbitControlsWrapper = _interopDefault(__webpack_require__(94));
-	var FlyControlsWrapper = _interopDefault(__webpack_require__(95));
-	var polished = __webpack_require__(96);
-	var TWEEN = _interopDefault(__webpack_require__(172));
-	var accessorFn = _interopDefault(__webpack_require__(90));
-	var Kapsule = _interopDefault(__webpack_require__(89));
+	var three$1 = __webpack_require__(44);
+	var ThreeTrackballControls = _interopDefault(__webpack_require__(104));
+	var OrbitControlsWrapper = _interopDefault(__webpack_require__(105));
+	var FlyControlsWrapper = _interopDefault(__webpack_require__(106));
+	var polished = __webpack_require__(107);
+	var TWEEN = _interopDefault(__webpack_require__(191));
+	var accessorFn = _interopDefault(__webpack_require__(99));
+	var Kapsule = _interopDefault(__webpack_require__(97));
 
 	function styleInject(css, ref) {
 	  if (ref === void 0) ref = {};
@@ -132251,49 +138181,55 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  }
 	}
 
-	var css = ".scene-nav-info {\n  bottom: 5px;\n  width: 100%;\n  text-align: center;\n  color: slategrey;\n  opacity: 0.7;\n  font-size: 10px;\n  pointer-events: none;\n}\n\n.scene-tooltip {\n  color: lavender;\n  font-size: 18px;\n  transform: translate(-50%, 25px);\n}\n\n.scene-nav-info, .scene-tooltip {\n  position: absolute;\n  font-family: Sans-serif;\n}";
+	var css = ".scene-nav-info {\n  bottom: 5px;\n  width: 100%;\n  text-align: center;\n  color: slategrey;\n  opacity: 0.7;\n  font-size: 10px;\n}\n\n.scene-tooltip {\n  color: lavender;\n  font-size: 15px;\n}\n\n.scene-nav-info, .scene-tooltip {\n  position: absolute;\n  font-family: sans-serif;\n  pointer-events: none;\n}";
 	styleInject(css);
 
-	var three$1 = window.THREE ? window.THREE // Prefer consumption from global THREE, if exists
+	var three = window.THREE ? window.THREE // Prefer consumption from global THREE, if exists
 	: {
-	  WebGLRenderer: three.WebGLRenderer,
-	  Scene: three.Scene,
-	  PerspectiveCamera: three.PerspectiveCamera,
-	  Raycaster: three.Raycaster,
-	  Vector2: three.Vector2,
-	  Vector3: three.Vector3,
-	  Color: three.Color,
-	  EventDispatcher: three.EventDispatcher,
-	  MOUSE: three.MOUSE,
-	  Quaternion: three.Quaternion,
-	  Spherical: three.Spherical
+	  WebGLRenderer: three$1.WebGLRenderer,
+	  Scene: three$1.Scene,
+	  PerspectiveCamera: three$1.PerspectiveCamera,
+	  Raycaster: three$1.Raycaster,
+	  Vector2: three$1.Vector2,
+	  Vector3: three$1.Vector3,
+	  Color: three$1.Color,
+	  EventDispatcher: three$1.EventDispatcher,
+	  MOUSE: three$1.MOUSE,
+	  Quaternion: three$1.Quaternion,
+	  Spherical: three$1.Spherical
 	};
-	var ThreeOrbitControls = OrbitControlsWrapper(three$1);
-	var ThreeFlyControls = (FlyControlsWrapper(three$1), three$1.FlyControls);
+	var ThreeOrbitControls = OrbitControlsWrapper(three);
+	var ThreeFlyControls = (FlyControlsWrapper(three), three.FlyControls);
 	var threeRenderObjects = Kapsule({
 	  props: {
 	    width: {
-	      default: window.innerWidth
+	      "default": window.innerWidth,
+	      onChange: function onChange(width, state, prevWidth) {
+	        isNaN(width) && (state.width = prevWidth);
+	      }
 	    },
 	    height: {
-	      default: window.innerHeight
+	      "default": window.innerHeight,
+	      onChange: function onChange(height, state, prevHeight) {
+	        isNaN(height) && (state.height = prevHeight);
+	      }
 	    },
 	    backgroundColor: {
-	      default: '#000011',
+	      "default": '#000011',
 	      onChange: function onChange(bckgColor, state) {
 	        if (state.renderer) {
 	          var alpha = polished.parseToRgb(bckgColor).alpha;
 	          if (alpha === undefined) alpha = 1;
-	          state.renderer.setClearColor(new three$1.Color(polished.opacify(1, bckgColor)), alpha);
+	          state.renderer.setClearColor(new three.Color(polished.opacify(1, bckgColor)), alpha);
 	        }
 	      },
 	      triggerUpdate: false
 	    },
 	    showNavInfo: {
-	      default: true
+	      "default": true
 	    },
 	    objects: {
-	      default: [],
+	      "default": [],
 	      onChange: function onChange(objs, state) {
 	        (state.prevObjs || []).forEach(function (obj) {
 	          return state.scene.remove(obj);
@@ -132307,7 +138243,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      triggerUpdate: false
 	    },
 	    enablePointerInteraction: {
-	      default: true,
+	      "default": true,
 	      onChange: function onChange(_, state) {
 	        // Reset hover state
 	        state.hoverObj = null;
@@ -132316,11 +138252,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      triggerUpdate: false
 	    },
 	    lineHoverPrecision: {
-	      default: 1,
+	      "default": 1,
 	      triggerUpdate: false
 	    },
 	    hoverOrderComparator: {
-	      default: function _default() {
+	      "default": function _default() {
 	        return -1;
 	      },
 	      triggerUpdate: false
@@ -132330,11 +138266,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      triggerUpdate: false
 	    },
 	    onHover: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onClick: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onRightClick: {
@@ -132352,7 +138288,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	          var topObject = null;
 
 	          if (!state.controlsDragging) {
-	            var raycaster = new three$1.Raycaster();
+	            var raycaster = new three.Raycaster();
 	            raycaster.linePrecision = state.lineHoverPrecision;
 	            raycaster.setFromCamera(state.mousePos, state.camera);
 	            var intersects = raycaster.intersectObjects(state.objects, true).map(function (_ref) {
@@ -132415,11 +138351,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      }
 
 	      function setLookAt(lookAt) {
-	        state.controls.target = new three$1.Vector3(lookAt.x, lookAt.y, lookAt.z);
+	        state.controls.target = new three.Vector3(lookAt.x, lookAt.y, lookAt.z);
 	      }
 
 	      function getLookAt() {
-	        return Object.assign(new three$1.Vector3(0, 0, -1000).applyQuaternion(camera.quaternion).add(camera.position));
+	        return Object.assign(new three.Vector3(0, 0, -1000).applyQuaternion(camera.quaternion).add(camera.position));
 	      }
 	    },
 	    renderer: function renderer(state) {
@@ -132441,8 +138377,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  },
 	  stateInit: function stateInit() {
 	    return {
-	      scene: new three$1.Scene(),
-	      camera: new three$1.PerspectiveCamera()
+	      scene: new three.Scene(),
+	      camera: new three.PerspectiveCamera()
 	    };
 	  },
 	  init: function init(domNode, state, _ref2) {
@@ -132462,13 +138398,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      orbit: 'Left-click: rotate, Mouse-wheel/middle-click: zoom, Right-click: pan',
 	      trackball: 'Left-click: rotate, Mouse-wheel/middle-click: zoom, Right-click: pan',
 	      fly: 'WASD: move, R|F: up | down, Q|E: roll, up|down: pitch, left|right: yaw'
-	    }[controlType] || ''; // Setup tooltip
+	    }[controlType] || '';
+	    state.navInfo.style.display = state.showNavInfo ? null : 'none'; // Setup tooltip
 
 	    state.toolTipElem = document.createElement('div');
 	    state.toolTipElem.classList.add('scene-tooltip');
 	    state.container.appendChild(state.toolTipElem); // Capture mouse coords on move
 
-	    state.mousePos = new three$1.Vector2();
+	    state.mousePos = new three.Vector2();
 	    state.mousePos.x = -2; // Initialize off canvas
 
 	    state.mousePos.y = -2;
@@ -132485,6 +138422,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	        state.toolTipElem.style.top = "".concat(relPos.y, "px");
 	        state.toolTipElem.style.left = "".concat(relPos.x, "px");
+	        state.toolTipElem.style.transform = "translate(-".concat(relPos.x / state.width * 100, "%, 21px)"); // adjust horizontal position to not exceed canvas boundaries
 	      }
 
 	      function getOffset(el) {
@@ -132522,13 +138460,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      return false;
 	    }, false); // Setup renderer, camera and controls
 
-	    state.renderer = new three$1.WebGLRenderer(Object.assign({
+	    state.renderer = new three.WebGLRenderer(Object.assign({
+	      antialias: true,
 	      alpha: true
 	    }, rendererConfig));
 	    state.renderer.setPixelRatio(window.devicePixelRatio);
 	    var bckgAlpha = polished.parseToRgb(state.backgroundColor).alpha;
 	    if (bckgAlpha === undefined) bckgAlpha = 1;
-	    state.renderer.setClearColor(new three$1.Color(polished.opacify(1, state.backgroundColor)), bckgAlpha);
+	    state.renderer.setClearColor(new three.Color(polished.opacify(1, state.backgroundColor)), bckgAlpha);
 	    state.container.appendChild(state.renderer.domElement); // configure controls
 
 	    state.controls = new {
@@ -132560,6 +138499,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    }
 
 	    state.renderer.setSize(state.width, state.height);
+	    state.camera.aspect = state.width / state.height;
+	    state.camera.updateProjectionMatrix();
 	    state.camera.position.z = 1000;
 	    state.camera.far = 50000;
 	    window.scene = state.scene;
@@ -132581,9 +138522,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	module.exports = threeRenderObjects;
 
 
-/***/ },
-/* 93 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 104 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * @author Eberhard Graether / http://egraether.com/
@@ -132595,7 +138536,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 ** @author Jon Lim / http://jonlim.ca
 	 */
 
-	var THREE = window.THREE || __webpack_require__(40);
+	var THREE = window.THREE || __webpack_require__(44);
 
 	var TrackballControls;
 	module.exports = TrackballControls = function ( object, domElement ) {
@@ -133243,9 +139184,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	TrackballControls.prototype = Object.create( THREE.EventDispatcher.prototype );
 
 
-/***/ },
-/* 94 */
-/***/ function(module, exports) {
+/***/ }),
+/* 105 */
+/***/ (function(module, exports) {
 
 	module.exports = function( THREE ) {
 		/**
@@ -134269,9 +140210,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 
-/***/ },
-/* 95 */
-/***/ function(module, exports) {
+/***/ }),
+/* 106 */
+/***/ (function(module, exports) {
 
 	
 
@@ -134578,536 +140519,1325 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	};
 
-/***/ },
-/* 96 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 107 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
 
-	var _directionalProperty =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(97));
-
-	exports.directionalProperty = _directionalProperty.default;
-
-	var _em =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(99));
-
-	exports.em = _em.default;
-
-	var _getValueAndUnit =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(103));
-
-	exports.getValueAndUnit = _getValueAndUnit.default;
-
-	var _modularScale =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(104));
-
-	exports.modularScale = _modularScale.default;
-
-	var _rem =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(105));
-
-	exports.rem = _rem.default;
-
-	var _stripUnit =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(102));
-
-	exports.stripUnit = _stripUnit.default;
-
-	var _between =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(106));
-
-	exports.between = _between.default;
-
-	var _clearFix =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(107));
-
-	exports.clearFix = _clearFix.default;
-
-	var _cover =
+	var _math =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(108));
 
-	exports.cover = _cover.default;
+	exports.math = _math["default"];
 
-	var _ellipsis =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(109));
-
-	exports.ellipsis = _ellipsis.default;
-
-	var _fluidRange =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(110));
-
-	exports.fluidRange = _fluidRange.default;
-
-	var _fontFace =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(111));
-
-	exports.fontFace = _fontFace.default;
-
-	var _hideText =
+	var _directionalProperty =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(112));
 
-	exports.hideText = _hideText.default;
+	exports.directionalProperty = _directionalProperty["default"];
 
-	var _hideVisually =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(113));
-
-	exports.hideVisually = _hideVisually.default;
-
-	var _hiDPI =
+	var _em =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(114));
 
-	exports.hiDPI = _hiDPI.default;
+	exports.em = _em["default"];
 
-	var _normalize =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(115));
-
-	exports.normalize = _normalize.default;
-
-	var _placeholder =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(116));
-
-	exports.placeholder = _placeholder.default;
-
-	var _radialGradient =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(117));
-
-	exports.radialGradient = _radialGradient.default;
-
-	var _retinaImage =
+	var _getValueAndUnit =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(118));
 
-	exports.retinaImage = _retinaImage.default;
+	exports.getValueAndUnit = _getValueAndUnit["default"];
 
-	var _selection =
+	var _modularScale =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(119));
 
-	exports.selection = _selection.default;
+	exports.modularScale = _modularScale["default"];
 
-	var _timingFunctions =
+	var _rem =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(120));
 
-	exports.timingFunctions = _timingFunctions.default;
+	exports.rem = _rem["default"];
 
-	var _triangle =
+	var _stripUnit =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(117));
+
+	exports.stripUnit = _stripUnit["default"];
+
+	var _between =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(121));
 
-	exports.triangle = _triangle.default;
+	exports.between = _between["default"];
 
-	var _wordWrap =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(123));
-
-	exports.wordWrap = _wordWrap.default;
-
-	var _adjustHue =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(124));
-
-	exports.adjustHue = _adjustHue.default;
-
-	var _complement =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(139));
-
-	exports.complement = _complement.default;
-
-	var _darken =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(140));
-
-	exports.darken = _darken.default;
-
-	var _desaturate =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(142));
-
-	exports.desaturate = _desaturate.default;
-
-	var _getLuminance =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(143));
-
-	exports.getLuminance = _getLuminance.default;
-
-	var _grayscale =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(144));
-
-	exports.grayscale = _grayscale.default;
-
-	var _hsl =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(131));
-
-	exports.hsl = _hsl.default;
-
-	var _hsla =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(135));
-
-	exports.hsla = _hsla.default;
-
-	var _invert =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(145));
-
-	exports.invert = _invert.default;
-
-	var _lighten =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(146));
-
-	exports.lighten = _lighten.default;
-
-	var _mix =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(147));
-
-	exports.mix = _mix.default;
-
-	var _opacify =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(148));
-
-	exports.opacify = _opacify.default;
-
-	var _parseToHsl =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(125));
-
-	exports.parseToHsl = _parseToHsl.default;
-
-	var _parseToRgb =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(126));
-
-	exports.parseToRgb = _parseToRgb.default;
-
-	var _readableColor =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(149));
-
-	exports.readableColor = _readableColor.default;
-
-	var _rgb =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(136));
-
-	exports.rgb = _rgb.default;
-
-	var _rgba =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(137));
-
-	exports.rgba = _rgba.default;
-
-	var _saturate =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(150));
-
-	exports.saturate = _saturate.default;
-
-	var _setHue =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(151));
-
-	exports.setHue = _setHue.default;
-
-	var _setLightness =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(152));
-
-	exports.setLightness = _setLightness.default;
-
-	var _setSaturation =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(153));
-
-	exports.setSaturation = _setSaturation.default;
-
-	var _shade =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(154));
-
-	exports.shade = _shade.default;
-
-	var _tint =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(155));
-
-	exports.tint = _tint.default;
-
-	var _toColorString =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(130));
-
-	exports.toColorString = _toColorString.default;
-
-	var _transparentize =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(156));
-
-	exports.transparentize = _transparentize.default;
-
-	var _animation =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(157));
-
-	exports.animation = _animation.default;
-
-	var _backgroundImages =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(158));
-
-	exports.backgroundImages = _backgroundImages.default;
-
-	var _backgrounds =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(159));
-
-	exports.backgrounds = _backgrounds.default;
-
-	var _border =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(160));
-
-	exports.border = _border.default;
-
-	var _borderColor =
+	var _clearFix =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(122));
 
-	exports.borderColor = _borderColor.default;
+	exports.clearFix = _clearFix["default"];
 
-	var _borderRadius =
+	var _cover =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(123));
+
+	exports.cover = _cover["default"];
+
+	var _ellipsis =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(124));
+
+	exports.ellipsis = _ellipsis["default"];
+
+	var _fluidRange =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(125));
+
+	exports.fluidRange = _fluidRange["default"];
+
+	var _fontFace =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(126));
+
+	exports.fontFace = _fontFace["default"];
+
+	var _hideText =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(127));
+
+	exports.hideText = _hideText["default"];
+
+	var _hideVisually =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(128));
+
+	exports.hideVisually = _hideVisually["default"];
+
+	var _hiDPI =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(129));
+
+	exports.hiDPI = _hiDPI["default"];
+
+	var _linearGradient =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(130));
+
+	exports.linearGradient = _linearGradient["default"];
+
+	var _normalize =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(132));
+
+	exports.normalize = _normalize["default"];
+
+	var _radialGradient =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(133));
+
+	exports.radialGradient = _radialGradient["default"];
+
+	var _retinaImage =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(134));
+
+	exports.retinaImage = _retinaImage["default"];
+
+	var _timingFunctions =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(135));
+
+	exports.timingFunctions = _timingFunctions["default"];
+
+	var _triangle =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(136));
+
+	exports.triangle = _triangle["default"];
+
+	var _wordWrap =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(137));
+
+	exports.wordWrap = _wordWrap["default"];
+
+	var _adjustHue =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(138));
+
+	exports.adjustHue = _adjustHue["default"];
+
+	var _complement =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(153));
+
+	exports.complement = _complement["default"];
+
+	var _darken =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(154));
+
+	exports.darken = _darken["default"];
+
+	var _desaturate =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(156));
+
+	exports.desaturate = _desaturate["default"];
+
+	var _getContrast =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(157));
+
+	exports.getContrast = _getContrast["default"];
+
+	var _getLuminance =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(158));
+
+	exports.getLuminance = _getLuminance["default"];
+
+	var _grayscale =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(159));
+
+	exports.grayscale = _grayscale["default"];
+
+	var _hsl =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(145));
+
+	exports.hsl = _hsl["default"];
+
+	var _hsla =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(149));
+
+	exports.hsla = _hsla["default"];
+
+	var _hslToColorString =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(160));
+
+	exports.hslToColorString = _hslToColorString["default"];
+
+	var _invert =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(161));
 
-	exports.borderRadius = _borderRadius.default;
+	exports.invert = _invert["default"];
 
-	var _borderStyle =
+	var _lighten =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(162));
 
-	exports.borderStyle = _borderStyle.default;
+	exports.lighten = _lighten["default"];
 
-	var _borderWidth =
+	var _meetsContrastGuidelines =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(163));
 
-	exports.borderWidth = _borderWidth.default;
+	exports.meetsContrastGuidelines = _meetsContrastGuidelines["default"];
 
-	var _buttons =
+	var _mix =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(164));
 
-	exports.buttons = _buttons.default;
+	exports.mix = _mix["default"];
 
-	var _margin =
+	var _opacify =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(165));
+
+	exports.opacify = _opacify["default"];
+
+	var _parseToHsl =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(139));
+
+	exports.parseToHsl = _parseToHsl["default"];
+
+	var _parseToRgb =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(140));
+
+	exports.parseToRgb = _parseToRgb["default"];
+
+	var _readableColor =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(166));
 
-	exports.margin = _margin.default;
+	exports.readableColor = _readableColor["default"];
 
-	var _padding =
+	var _rgb =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(150));
+
+	exports.rgb = _rgb["default"];
+
+	var _rgba =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(151));
+
+	exports.rgba = _rgba["default"];
+
+	var _rgbToColorString =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(167));
 
-	exports.padding = _padding.default;
+	exports.rgbToColorString = _rgbToColorString["default"];
 
-	var _position =
+	var _saturate =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(168));
 
-	exports.position = _position.default;
+	exports.saturate = _saturate["default"];
 
-	var _size =
+	var _setHue =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(169));
 
-	exports.size = _size.default;
+	exports.setHue = _setHue["default"];
 
-	var _textInputs =
+	var _setLightness =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(170));
 
-	exports.textInputs = _textInputs.default;
+	exports.setLightness = _setLightness["default"];
 
-	var _transitions =
+	var _setSaturation =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
 	__webpack_require__(171));
 
-	exports.transitions = _transitions.default;
+	exports.setSaturation = _setSaturation["default"];
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _shade =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(172));
 
-/***/ },
-/* 97 */
-/***/ function(module, exports, __webpack_require__) {
+	exports.shade = _shade["default"];
+
+	var _tint =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(173));
+
+	exports.tint = _tint["default"];
+
+	var _toColorString =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(144));
+
+	exports.toColorString = _toColorString["default"];
+
+	var _transparentize =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(174));
+
+	exports.transparentize = _transparentize["default"];
+
+	var _animation =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(175));
+
+	exports.animation = _animation["default"];
+
+	var _backgroundImages =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(176));
+
+	exports.backgroundImages = _backgroundImages["default"];
+
+	var _backgrounds =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(177));
+
+	exports.backgrounds = _backgrounds["default"];
+
+	var _border =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(178));
+
+	exports.border = _border["default"];
+
+	var _borderColor =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(179));
+
+	exports.borderColor = _borderColor["default"];
+
+	var _borderRadius =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(180));
+
+	exports.borderRadius = _borderRadius["default"];
+
+	var _borderStyle =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(181));
+
+	exports.borderStyle = _borderStyle["default"];
+
+	var _borderWidth =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(182));
+
+	exports.borderWidth = _borderWidth["default"];
+
+	var _buttons =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(183));
+
+	exports.buttons = _buttons["default"];
+
+	var _margin =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(185));
+
+	exports.margin = _margin["default"];
+
+	var _padding =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(186));
+
+	exports.padding = _padding["default"];
+
+	var _position =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(187));
+
+	exports.position = _position["default"];
+
+	var _size =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(188));
+
+	exports.size = _size["default"];
+
+	var _textInputs =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(189));
+
+	exports.textInputs = _textInputs["default"];
+
+	var _transitions =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(190));
+
+	exports.transitions = _transitions["default"];
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+/***/ }),
+/* 108 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = math;
+
+	var _defaultMathSymbols =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(109));
+
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+	var unitRegExp = /((?!\w)a|na|hc|mc|dg|me[r]?|xe|ni(?![a-zA-Z])|mm|cp|tp|xp|q(?!s)|hv|xamv|nimv|wv|sm|s(?!\D|$)|ged|darg?|nrut)/g; // Merges additional math functionality into the defaults.
+
+	function mergeSymbolMaps(additionalSymbols) {
+	  var symbolMap = {};
+	  symbolMap.symbols = additionalSymbols ? _extends({}, _defaultMathSymbols["default"].symbols, additionalSymbols.symbols) : _extends({}, _defaultMathSymbols["default"].symbols);
+	  return symbolMap;
+	}
+
+	function exec(operators, values) {
+	  var _ref;
+
+	  var op = operators.pop();
+	  values.push(op.f.apply(op, (_ref = []).concat.apply(_ref, values.splice(-op.argCount))));
+	  return op.precedence;
+	}
+
+	function calculate(expression, additionalSymbols) {
+	  var symbolMap = mergeSymbolMaps(additionalSymbols);
+	  var match;
+	  var operators = [symbolMap.symbols['('].prefix];
+	  var values = [];
+	  var pattern = new RegExp( // Pattern for numbers
+	  "\\d+(?:\\.\\d+)?|" + // ...and patterns for individual operators/function names
+	  Object.keys(symbolMap.symbols).map(function (key) {
+	    return symbolMap.symbols[key];
+	  }) // longer symbols should be listed first
+	  // $FlowFixMe
+	  .sort(function (a, b) {
+	    return b.symbol.length - a.symbol.length;
+	  }) // $FlowFixMe
+	  .map(function (val) {
+	    return val.regSymbol;
+	  }).join('|') + "|(\\S)", 'g');
+	  pattern.lastIndex = 0; // Reset regular expression object
+
+	  var afterValue = false;
+
+	  do {
+	    match = pattern.exec(expression);
+
+	    var _ref2 = match || [')', undefined],
+	        token = _ref2[0],
+	        bad = _ref2[1];
+
+	    var notNumber = symbolMap.symbols[token];
+	    var notNewValue = notNumber && !notNumber.prefix && !notNumber.func;
+	    var notAfterValue = !notNumber || !notNumber.postfix && !notNumber.infix; // Check for syntax errors:
+
+	    if (bad || (afterValue ? notAfterValue : notNewValue)) {
+	      throw new _errors["default"](37, match ? match.index : expression.length, expression);
+	    }
+
+	    if (afterValue) {
+	      // We either have an infix or postfix operator (they should be mutually exclusive)
+	      var curr = notNumber.postfix || notNumber.infix;
+
+	      do {
+	        var prev = operators[operators.length - 1];
+	        if ((curr.precedence - prev.precedence || prev.rightToLeft) > 0) break; // Apply previous operator, since it has precedence over current one
+	      } while (exec(operators, values)); // Exit loop after executing an opening parenthesis or function
+
+
+	      afterValue = curr.notation === 'postfix';
+
+	      if (curr.symbol !== ')') {
+	        operators.push(curr); // Postfix always has precedence over any operator that follows after it
+
+	        if (afterValue) exec(operators, values);
+	      }
+	    } else if (notNumber) {
+	      // prefix operator or function
+	      operators.push(notNumber.prefix || notNumber.func);
+
+	      if (notNumber.func) {
+	        // Require an opening parenthesis
+	        match = pattern.exec(expression);
+
+	        if (!match || match[0] !== '(') {
+	          throw new _errors["default"](38, match ? match.index : expression.length, expression);
+	        }
+	      }
+	    } else {
+	      // number
+	      values.push(+token);
+	      afterValue = true;
+	    }
+	  } while (match && operators.length);
+
+	  if (operators.length) {
+	    throw new _errors["default"](39, match ? match.index : expression.length, expression);
+	  } else if (match) {
+	    throw new _errors["default"](40, match ? match.index : expression.length, expression);
+	  } else {
+	    return values.pop();
+	  }
+	}
+
+	function reverseString(str) {
+	  return str.split('').reverse().join('');
+	}
+	/**
+	 * Helper for doing math with CSS Units. Accepts a formula as a string. All values in the formula must have the same unit (or be unitless). Supports complex formulas utliziing addition, subtraction, multiplication, division, square root, powers, factorial, min, max, as well as parentheses for order of operation.
+	 *
+	 *In cases where you need to do calculations with mixed units where one unit is a [relative length unit](https://developer.mozilla.org/en-US/docs/Web/CSS/length#Relative_length_units), you will want to use [CSS Calc](https://developer.mozilla.org/en-US/docs/Web/CSS/calc).
+	 *
+	 * *warning* While we've done everything possible to ensure math safely evalutes formulas expressed as strings, you should always use extreme caution when passing `math` user provided values.
+	 * @example
+	 * // Styles as object usage
+	 * const styles = {
+	 *   fontSize: math('12rem + 8rem'),
+	 *   fontSize: math('(12px + 2px) * 3'),
+	 *   fontSize: math('3px^2 + sqrt(4)'),
+	 * }
+	 *
+	 * // styled-components usage
+	 * const div = styled.div`
+	 *   fontSize: ${math('12rem + 8rem')};
+	 *   fontSize: ${math('(12px + 2px) * 3')};
+	 *   fontSize: ${math('3px^2 + sqrt(4)')};
+	 * `
+	 *
+	 * // CSS as JS Output
+	 *
+	 * div: {
+	 *   fontSize: '20rem',
+	 *   fontSize: '42px',
+	 *   fontSize: '11px',
+	 * }
+	 */
+
+
+	function math(formula, additionalSymbols) {
+	  var reversedFormula = reverseString(formula);
+	  var formulaMatch = reversedFormula.match(unitRegExp); // Check that all units are the same
+
+	  if (formulaMatch && !formulaMatch.every(function (unit) {
+	    return unit === formulaMatch[0];
+	  })) {
+	    throw new _errors["default"](41);
+	  }
+
+	  var cleanFormula = reverseString(reversedFormula.replace(unitRegExp, ''));
+	  return "" + calculate(cleanFormula, additionalSymbols) + (formulaMatch ? reverseString(formulaMatch[0]) : '');
+	}
+
+	module.exports = exports.default;
+
+/***/ }),
+/* 109 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	exports.__esModule = true;
+	exports["default"] = void 0;
+
+	function last() {
+	  var _ref;
+
+	  return _ref = arguments.length - 1, _ref < 0 || arguments.length <= _ref ? undefined : arguments[_ref];
+	}
+
+	function negation(a) {
+	  return -a;
+	}
+
+	function addition(a, b) {
+	  return a + b;
+	}
+
+	function subtraction(a, b) {
+	  return a - b;
+	}
+
+	function multiplication(a, b) {
+	  return a * b;
+	}
+
+	function division(a, b) {
+	  return a / b;
+	}
+
+	function factorial(a) {
+	  if (a % 1 || !(+a >= 0)) return NaN;
+	  if (a > 170) return Infinity;else if (a === 0) return 1;else {
+	    return a * factorial(a - 1);
+	  }
+	}
+
+	function power(a, b) {
+	  return Math.pow(a, b);
+	}
+
+	function sqrt(a) {
+	  return Math.sqrt(a);
+	}
+
+	function max() {
+	  return Math.max.apply(Math, arguments);
+	}
+
+	function min() {
+	  return Math.min.apply(Math, arguments);
+	}
+
+	function comma() {
+	  return Array.of.apply(Array, arguments);
+	}
+
+	var defaultMathSymbols = {
+	  symbols: {
+	    '!': {
+	      postfix: {
+	        symbol: '!',
+	        f: factorial,
+	        notation: 'postfix',
+	        precedence: 6,
+	        rightToLeft: 0,
+	        argCount: 1
+	      },
+	      symbol: '!',
+	      regSymbol: '!'
+	    },
+	    '^': {
+	      infix: {
+	        symbol: '^',
+	        f: power,
+	        notation: 'infix',
+	        precedence: 5,
+	        rightToLeft: 1,
+	        argCount: 2
+	      },
+	      symbol: '^',
+	      regSymbol: '\\^'
+	    },
+	    '*': {
+	      infix: {
+	        symbol: '*',
+	        f: multiplication,
+	        notation: 'infix',
+	        precedence: 4,
+	        rightToLeft: 0,
+	        argCount: 2
+	      },
+	      symbol: '*',
+	      regSymbol: '\\*'
+	    },
+	    '/': {
+	      infix: {
+	        symbol: '/',
+	        f: division,
+	        notation: 'infix',
+	        precedence: 4,
+	        rightToLeft: 0,
+	        argCount: 2
+	      },
+	      symbol: '/',
+	      regSymbol: '/'
+	    },
+	    '+': {
+	      infix: {
+	        symbol: '+',
+	        f: addition,
+	        notation: 'infix',
+	        precedence: 2,
+	        rightToLeft: 0,
+	        argCount: 2
+	      },
+	      prefix: {
+	        symbol: '+',
+	        f: last,
+	        notation: 'prefix',
+	        precedence: 3,
+	        rightToLeft: 0,
+	        argCount: 1
+	      },
+	      symbol: '+',
+	      regSymbol: '\\+'
+	    },
+	    '-': {
+	      infix: {
+	        symbol: '-',
+	        f: subtraction,
+	        notation: 'infix',
+	        precedence: 2,
+	        rightToLeft: 0,
+	        argCount: 2
+	      },
+	      prefix: {
+	        symbol: '-',
+	        f: negation,
+	        notation: 'prefix',
+	        precedence: 3,
+	        rightToLeft: 0,
+	        argCount: 1
+	      },
+	      symbol: '-',
+	      regSymbol: '-'
+	    },
+	    ',': {
+	      infix: {
+	        symbol: ',',
+	        f: comma,
+	        notation: 'infix',
+	        precedence: 1,
+	        rightToLeft: 0,
+	        argCount: 2
+	      },
+	      symbol: ',',
+	      regSymbol: ','
+	    },
+	    '(': {
+	      prefix: {
+	        symbol: '(',
+	        f: last,
+	        notation: 'prefix',
+	        precedence: 0,
+	        rightToLeft: 0,
+	        argCount: 1
+	      },
+	      symbol: '(',
+	      regSymbol: '\\('
+	    },
+	    ')': {
+	      postfix: {
+	        symbol: ')',
+	        f: undefined,
+	        notation: 'postfix',
+	        precedence: 0,
+	        rightToLeft: 0,
+	        argCount: 1
+	      },
+	      symbol: ')',
+	      regSymbol: '\\)'
+	    },
+	    min: {
+	      func: {
+	        symbol: 'min',
+	        f: min,
+	        notation: 'func',
+	        precedence: 0,
+	        rightToLeft: 0,
+	        argCount: 1
+	      },
+	      symbol: 'min',
+	      regSymbol: 'min\\b'
+	    },
+	    max: {
+	      func: {
+	        symbol: 'max',
+	        f: max,
+	        notation: 'func',
+	        precedence: 0,
+	        rightToLeft: 0,
+	        argCount: 1
+	      },
+	      symbol: 'max',
+	      regSymbol: 'max\\b'
+	    },
+	    sqrt: {
+	      func: {
+	        symbol: 'sqrt',
+	        f: sqrt,
+	        notation: 'func',
+	        precedence: 0,
+	        rightToLeft: 0,
+	        argCount: 1
+	      },
+	      symbol: 'sqrt',
+	      regSymbol: 'sqrt\\b'
+	    }
+	  }
+	};
+	var _default = defaultMathSymbols;
+	exports["default"] = _default;
+	module.exports = exports.default;
+
+/***/ }),
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {"use strict";
+
+	exports.__esModule = true;
+	exports["default"] = void 0;
+
+	function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+	function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
+
+	function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
+
+	function isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+	function _construct(Parent, args, Class) { if (isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
+
+	function _isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
+
+	function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+	function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+	// based on https://github.com/styled-components/styled-components/blob/fcf6f3804c57a14dd7984dfab7bc06ee2edca044/src/utils/error.js
+
+	/**
+	 * Parse errors.md and turn it into a simple hash of code: message
+	 * @private
+	 */
+	var ERRORS = {
+	  "1": "Passed invalid arguments to hsl, please pass multiple numbers e.g. hsl(360, 0.75, 0.4) or an object e.g. rgb({ hue: 255, saturation: 0.4, lightness: 0.75 }).\n\n",
+	  "2": "Passed invalid arguments to hsla, please pass multiple numbers e.g. hsla(360, 0.75, 0.4, 0.7) or an object e.g. rgb({ hue: 255, saturation: 0.4, lightness: 0.75, alpha: 0.7 }).\n\n",
+	  "3": "Passed an incorrect argument to a color function, please pass a string representation of a color.\n\n",
+	  "4": "Couldn't generate valid rgb string from %s, it returned %s.\n\n",
+	  "5": "Couldn't parse the color string. Please provide the color as a string in hex, rgb, rgba, hsl or hsla notation.\n\n",
+	  "6": "Passed invalid arguments to rgb, please pass multiple numbers e.g. rgb(255, 205, 100) or an object e.g. rgb({ red: 255, green: 205, blue: 100 }).\n\n",
+	  "7": "Passed invalid arguments to rgba, please pass multiple numbers e.g. rgb(255, 205, 100, 0.75) or an object e.g. rgb({ red: 255, green: 205, blue: 100, alpha: 0.75 }).\n\n",
+	  "8": "Passed invalid argument to toColorString, please pass a RgbColor, RgbaColor, HslColor or HslaColor object.\n\n",
+	  "9": "Please provide a number of steps to the modularScale helper.\n\n",
+	  "10": "Please pass a number or one of the predefined scales to the modularScale helper as the ratio.\n\n",
+	  "11": "Invalid value passed as base to modularScale, expected number or em string but got \"%s\"\n\n",
+	  "12": "Expected a string ending in \"px\" or a number passed as the first argument to %s(), got \"%s\" instead.\n\n",
+	  "13": "Expected a string ending in \"px\" or a number passed as the second argument to %s(), got \"%s\" instead.\n\n",
+	  "14": "Passed invalid pixel value (\"%s\") to %s(), please pass a value like \"12px\" or 12.\n\n",
+	  "15": "Passed invalid base value (\"%s\") to %s(), please pass a value like \"12px\" or 12.\n\n",
+	  "16": "You must provide a template to this method.\n\n",
+	  "17": "You passed an unsupported selector state to this method.\n\n",
+	  "18": "minScreen and maxScreen must be provided as stringified numbers with the same units.\n\n",
+	  "19": "fromSize and toSize must be provided as stringified numbers with the same units.\n\n",
+	  "20": "expects either an array of objects or a single object with the properties prop, fromSize, and toSize.\n\n",
+	  "21": "expects the objects in the first argument array to have the properties `prop`, `fromSize`, and `toSize`.\n\n",
+	  "22": "expects the first argument object to have the properties `prop`, `fromSize`, and `toSize`.\n\n",
+	  "23": "fontFace expects a name of a font-family.\n\n",
+	  "24": "fontFace expects either the path to the font file(s) or a name of a local copy.\n\n",
+	  "25": "fontFace expects localFonts to be an array.\n\n",
+	  "26": "fontFace expects fileFormats to be an array.\n\n",
+	  "27": "radialGradient requries at least 2 color-stops to properly render.\n\n",
+	  "28": "Please supply a filename to retinaImage() as the first argument.\n\n",
+	  "29": "Passed invalid argument to triangle, please pass correct pointingDirection e.g. 'right'.\n\n",
+	  "30": "Passed an invalid value to `height` or `width`. Please provide a pixel based unit.\n\n",
+	  "31": "The animation shorthand only takes 8 arguments. See the specification for more information: http://mdn.io/animation\n\n",
+	  "32": "To pass multiple animations please supply them in arrays, e.g. animation(['rotate', '2s'], ['move', '1s'])\nTo pass a single animation please supply them in simple values, e.g. animation('rotate', '2s')\n\n",
+	  "33": "The animation shorthand arrays can only have 8 elements. See the specification for more information: http://mdn.io/animation\n\n",
+	  "34": "borderRadius expects a radius value as a string or number as the second argument.\n\n",
+	  "35": "borderRadius expects one of \"top\", \"bottom\", \"left\" or \"right\" as the first argument.\n\n",
+	  "36": "Property must be a string value.\n\n",
+	  "37": "Syntax Error at %s.\n\n",
+	  "38": "Formula contains a function that needs parentheses at %s.\n\n",
+	  "39": "Formula is missing closing parenthesis at %s.\n\n",
+	  "40": "Formula has too many closing parentheses at %s.\n\n",
+	  "41": "All values in a formula must have the same unit or be unitless.\n\n",
+	  "42": "Please provide a number of steps to the modularScale helper.\n\n",
+	  "43": "Please pass a number or one of the predefined scales to the modularScale helper as the ratio.\n\n",
+	  "44": "Invalid value passed as base to modularScale, expected number or em/rem string but got %s.\n\n",
+	  "45": "Passed invalid argument to hslToColorString, please pass a HslColor or HslaColor object.\n\n",
+	  "46": "Passed invalid argument to rgbToColorString, please pass a RgbColor or RgbaColor object.\n\n",
+	  "47": "minScreen and maxScreen must be provided as stringified numbers with the same units.\n\n",
+	  "48": "fromSize and toSize must be provided as stringified numbers with the same units.\n\n",
+	  "49": "Expects either an array of objects or a single object with the properties prop, fromSize, and toSize.\n\n",
+	  "50": "Expects the objects in the first argument array to have the properties prop, fromSize, and toSize.\n\n",
+	  "51": "Expects the first argument object to have the properties prop, fromSize, and toSize.\n\n",
+	  "52": "fontFace expects either the path to the font file(s) or a name of a local copy.\n\n",
+	  "53": "fontFace expects localFonts to be an array.\n\n",
+	  "54": "fontFace expects fileFormats to be an array.\n\n",
+	  "55": "fontFace expects a name of a font-family.\n\n",
+	  "56": "linearGradient requries at least 2 color-stops to properly render.\n\n",
+	  "57": "radialGradient requries at least 2 color-stops to properly render.\n\n",
+	  "58": "Please supply a filename to retinaImage() as the first argument.\n\n",
+	  "59": "Passed invalid argument to triangle, please pass correct pointingDirection e.g. 'right'.\n\n",
+	  "60": "Passed an invalid value to `height` or `width`. Please provide a pixel based unit.\n\n",
+	  "61": "Property must be a string value.\n\n",
+	  "62": "borderRadius expects a radius value as a string or number as the second argument.\n\n",
+	  "63": "borderRadius expects one of \"top\", \"bottom\", \"left\" or \"right\" as the first argument.\n\n",
+	  "64": "The animation shorthand only takes 8 arguments. See the specification for more information: http://mdn.io/animation.\n\n",
+	  "65": "To pass multiple animations please supply them in arrays, e.g. animation(['rotate', '2s'], ['move', '1s'])\\nTo pass a single animation please supply them in simple values, e.g. animation('rotate', '2s').\n\n",
+	  "66": "The animation shorthand arrays can only have 8 elements. See the specification for more information: http://mdn.io/animation.\n\n",
+	  "67": "You must provide a template to this method.\n\n",
+	  "68": "You passed an unsupported selector state to this method.\n\n",
+	  "69": "Expected a string ending in \"px\" or a number passed as the first argument to %s(), got %s instead.\n\n",
+	  "70": "Expected a string ending in \"px\" or a number passed as the second argument to %s(), got %s instead.\n\n",
+	  "71": "Passed invalid pixel value %s to %s(), please pass a value like \"12px\" or 12.\n\n",
+	  "72": "Passed invalid base value %s to %s(), please pass a value like \"12px\" or 12.\n"
+	};
+	/**
+	 * super basic version of sprintf
+	 * @private
+	 */
+
+	function format() {
+	  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+	    args[_key] = arguments[_key];
+	  }
+
+	  var a = args[0];
+	  var b = [];
+	  var c;
+
+	  for (c = 1; c < args.length; c += 1) {
+	    b.push(args[c]);
+	  }
+
+	  b.forEach(function (d) {
+	    a = a.replace(/%[a-z]/, d);
+	  });
+	  return a;
+	}
+	/**
+	 * Create an error file out of errors.md for development and a simple web link to the full errors
+	 * in production mode.
+	 * @private
+	 */
+
+
+	var PolishedError =
+	/*#__PURE__*/
+	function (_Error) {
+	  _inheritsLoose(PolishedError, _Error);
+
+	  function PolishedError(code) {
+	    var _this;
+
+	    if (process.env.NODE_ENV === 'production') {
+	      _this = _Error.call(this, "An error occurred. See https://github.com/styled-components/polished/blob/master/src/internalHelpers/errors.md#" + code + " for more information.") || this;
+	    } else {
+	      for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+	        args[_key2 - 1] = arguments[_key2];
+	      }
+
+	      _this = _Error.call(this, format.apply(void 0, [ERRORS[code]].concat(args))) || this;
+	    }
+
+	    return _assertThisInitialized(_this);
+	  }
+
+	  return PolishedError;
+	}(
+	/*#__PURE__*/
+	_wrapNativeSuper(Error));
+
+	exports["default"] = PolishedError;
+	module.exports = exports.default;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(111)))
+
+/***/ }),
+/* 111 */
+/***/ (function(module, exports) {
+
+	// shim for using process in browser
+	var process = module.exports = {};
+
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
+	(function () {
+	    try {
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
+	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
+	    }
+	    try {
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
+	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
+	    }
+	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+
+
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+
+
+
+	}
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+
+	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = runTimeout(cleanUpNextTick);
+	    draining = true;
+
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    runClearTimeout(timeout);
+	}
+
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        runTimeout(drainQueue);
+	    }
+	};
+
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+	process.prependListener = noop;
+	process.prependOnceListener = noop;
+
+	process.listeners = function (name) { return [] }
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 112 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports.__esModule = true;
+	exports["default"] = directionalProperty;
 
 	var _capitalizeString =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(98));
+	__webpack_require__(113));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	var positionMap = ['Top', 'Right', 'Bottom', 'Left'];
 
@@ -135118,7 +141848,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  if (splitProperty.length > 1) {
 	    splitProperty.splice(1, 0, position);
 	    return splitProperty.reduce(function (acc, val) {
-	      return "" + acc + (0, _capitalizeString.default)(val);
+	      return "" + acc + (0, _capitalizeString["default"])(val);
 	    });
 	  }
 
@@ -135178,18 +141908,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  return generateStyles(property, valuesWithDefaults);
 	}
 
-	var _default = directionalProperty;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 98 */
-/***/ function(module, exports) {
+/***/ }),
+/* 113 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	// @private
 	function capitalizeString(string) {
@@ -135197,25 +141925,25 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 	var _default = capitalizeString;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 99 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 114 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	var _pxto =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(100));
+	__webpack_require__(115));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Convert pixel value to ems. The default base value is 16px, but can be changed by passing a
@@ -135242,33 +141970,39 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 */
 	var em =
 	/*#__PURE__*/
-	(0, _pxto.default)('em');
+	(0, _pxto["default"])('em');
 	var _default = em;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 100 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 115 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	var _endsWith =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(101));
+	__webpack_require__(116));
 
 	var _stripUnit =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(102));
+	__webpack_require__(117));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Factory function that creates pixel-to-x converters
@@ -135284,27 +142018,27 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    var newBase = base;
 
 	    if (typeof pxval === 'string') {
-	      if (!(0, _endsWith.default)(pxval, 'px')) {
-	        throw new Error("Expected a string ending in \"px\" or a number passed as the first argument to " + to + "(), got \"" + pxval + "\" instead.");
+	      if (!(0, _endsWith["default"])(pxval, 'px')) {
+	        throw new _errors["default"](69, to, pxval);
 	      }
 
-	      newPxval = (0, _stripUnit.default)(pxval);
+	      newPxval = (0, _stripUnit["default"])(pxval);
 	    }
 
 	    if (typeof base === 'string') {
-	      if (!(0, _endsWith.default)(base, 'px')) {
-	        throw new Error("Expected a string ending in \"px\" or a number passed as the second argument to " + to + "(), got \"" + base + "\" instead.");
+	      if (!(0, _endsWith["default"])(base, 'px')) {
+	        throw new _errors["default"](70, to, base);
 	      }
 
-	      newBase = (0, _stripUnit.default)(base);
+	      newBase = (0, _stripUnit["default"])(base);
 	    }
 
 	    if (typeof newPxval === 'string') {
-	      throw new Error("Passed invalid pixel value (\"" + pxval + "\") to " + to + "(), please pass a value like \"12px\" or 12.");
+	      throw new _errors["default"](71, pxval, to);
 	    }
 
 	    if (typeof newBase === 'string') {
-	      throw new Error("Passed invalid base value (\"" + base + "\") to " + to + "(), please pass a value like \"12px\" or 12.");
+	      throw new _errors["default"](72, base, to);
 	    }
 
 	    return "" + newPxval / newBase + to;
@@ -135312,123 +142046,145 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 	var _default = pxtoFactory;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 101 */
-/***/ function(module, exports) {
+/***/ }),
+/* 116 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = _default;
+	exports["default"] = _default;
 
+	/**
+	 * Check if a string ends with something
+	 * @private
+	 */
 	function _default(string, suffix) {
 	  return string.substr(-suffix.length) === suffix;
 	}
 
 	module.exports = exports.default;
 
-/***/ },
-/* 102 */
-/***/ function(module, exports) {
+/***/ }),
+/* 117 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
-
+	exports["default"] = stripUnit;
+	var cssRegex = /^([+-]?(?:\d+|\d*\.\d+))([a-z]*|%)$/;
 	/**
-	 * Returns a given CSS value minus its unit (or the original value if an invalid string is passed).
+	 * Returns a given CSS value minus its unit (or the original value if an invalid string is passed). Optionally returns an array containing the stripped value and the original unit of measure.
 	 *
 	 * @example
 	 * // Styles as object usage
 	 * const styles = {
-	 *   '--dimension': stripUnit('100px')
+	 *   '--dimension': stripUnit('100px'),
+	 *   '--unit': stripUnit('100px')[1],
 	 * }
 	 *
 	 * // styled-components usage
 	 * const div = styled.div`
-	 *   --dimension: ${stripUnit('100px')}
+	 *   --dimension: ${stripUnit('100px')};
+	 *   --unit: ${stripUnit('100px')[1]};
 	 * `
 	 *
 	 * // CSS in JS Output
 	 *
 	 * element {
-	 *   '--dimension': 100
+	 *   '--dimension': 100,
+	 *   '--unit': 'px',
 	 * }
 	 */
-	function stripUnit(value) {
-	  var unitlessValue = parseFloat(value);
-	  if (isNaN(unitlessValue)) return value;
-	  return unitlessValue;
+
+	function stripUnit(value, unitReturn) {
+	  if (typeof value !== 'string') return unitReturn ? [value, undefined] : value;
+	  var matchedValue = value.match(cssRegex);
+
+	  if (unitReturn) {
+	    if (matchedValue) return [parseFloat(value), matchedValue[2]];
+	    return [value, undefined];
+	  }
+
+	  if (matchedValue) return parseFloat(value);
+	  return value;
 	}
 
-	var _default = stripUnit;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 103 */
-/***/ function(module, exports) {
+/***/ }),
+/* 118 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = getValueAndUnit;
 	var cssRegex = /^([+-]?(?:\d+|\d*\.\d+))([a-z]*|%)$/;
 	/**
 	 * Returns a given CSS value and its unit as elements of an array.
 	 *
+	 * @deprecated - getValueAndUnit has been marked for deprecation in polished 3.0 and will be fully deprecated in 4.0. It's functionality has been been moved to stripUnit as an optional return.
+	 *
 	 * @example
 	 * // Styles as object usage
 	 * const styles = {
-	 *   '--dimension': getValueAndUnit('100px')[0]
-	 *   '--unit': getValueAndUnit('100px')[1]
+	 *   '--dimension': getValueAndUnit('100px')[0],
+	 *   '--unit': getValueAndUnit('100px')[1],
 	 * }
 	 *
 	 * // styled-components usage
 	 * const div = styled.div`
-	 *   --dimension: ${getValueAndUnit('100px')[0]}
-	 *   --unit: ${getValueAndUnit('100px')[1]}
+	 *   --dimension: ${getValueAndUnit('100px')[0]};
+	 *   --unit: ${getValueAndUnit('100px')[1]};
 	 * `
 	 *
 	 * // CSS in JS Output
 	 *
 	 * element {
-	 *   '--dimension': 100
-	 *   '--unit': 'px'
+	 *   '--dimension': 100,
+	 *   '--unit': 'px',
 	 * }
 	 */
 
 	function getValueAndUnit(value) {
+	  // eslint-disable-next-line no-console
+	  console.warn("getValueAndUnit has been marked for deprecation in polished 3.0 and will be fully deprecated in 4.0. It's functionality has been been moved to stripUnit as an optional return.");
 	  if (typeof value !== 'string') return [value, ''];
 	  var matchedValue = value.match(cssRegex);
 	  if (matchedValue) return [parseFloat(value), matchedValue[2]];
 	  return [value, undefined];
 	}
 
-	var _default = getValueAndUnit;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 104 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 119 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = exports.ratioNames = void 0;
+	exports["default"] = modularScale;
+	exports.ratioNames = void 0;
 
 	var _stripUnit =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(102));
+	__webpack_require__(117));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	var ratioNames = {
 	  minorSecond: 1.067,
@@ -135455,7 +142211,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  return ratioNames[ratioName];
 	}
 	/**
-	 * Establish consistent measurements and spacial relationships throughout your projects by incrementing up or down a defined scale. We provide a list of commonly used scales as pre-defined variables.
+	 * Establish consistent measurements and spacial relationships throughout your projects by incrementing an em or rem value up or down a defined scale. We provide a list of commonly used scales as pre-defined variables.
 	 * @example
 	 * // Styles as object usage
 	 * const styles = {
@@ -135483,46 +142239,46 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  }
 
 	  if (ratio === void 0) {
-	    ratio = 'perfectFourth';
+	    ratio = 1.333;
 	  }
 
 	  if (typeof steps !== 'number') {
-	    throw new Error('Please provide a number of steps to the modularScale helper.');
+	    throw new _errors["default"](42);
 	  }
 
 	  if (typeof ratio === 'string' && !ratioNames[ratio]) {
-	    throw new Error('Please pass a number or one of the predefined scales to the modularScale helper as the ratio.');
+	    throw new _errors["default"](43);
 	  }
 
-	  var realBase = typeof base === 'string' ? (0, _stripUnit.default)(base) : base;
+	  var _ref = typeof base === 'string' ? (0, _stripUnit["default"])(base, true) : [base, ''],
+	      realBase = _ref[0],
+	      unit = _ref[1];
+
 	  var realRatio = typeof ratio === 'string' ? getRatio(ratio) : ratio;
 
 	  if (typeof realBase === 'string') {
-	    throw new Error("Invalid value passed as base to modularScale, expected number or em string but got \"" + base + "\"");
+	    throw new _errors["default"](44, base);
 	  }
 
-	  return realBase * Math.pow(realRatio, steps) + "em";
+	  return "" + realBase * Math.pow(realRatio, steps) + unit;
 	}
 
-	var _default = modularScale;
-	exports.default = _default;
-
-/***/ },
-/* 105 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	var _pxto =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(100));
+	__webpack_require__(115));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Convert pixel value to rems. The default base value is 16px, but can be changed by passing a
@@ -135549,27 +142305,33 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 */
 	var rem =
 	/*#__PURE__*/
-	(0, _pxto.default)('rem');
+	(0, _pxto["default"])('rem');
 	var _default = rem;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 106 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 121 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = between;
 
-	var _getValueAndUnit5 =
+	var _stripUnit5 =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(103));
+	__webpack_require__(117));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Returns a CSS calc formula for linear interpolation of a property between two values. Accepts optional minScreen (defaults to '320px') and maxScreen (defaults to '1200px').
@@ -135603,47 +142365,45 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    maxScreen = '1200px';
 	  }
 
-	  var _getValueAndUnit = (0, _getValueAndUnit5.default)(fromSize),
-	      unitlessFromSize = _getValueAndUnit[0],
-	      fromSizeUnit = _getValueAndUnit[1];
+	  var _stripUnit = (0, _stripUnit5["default"])(fromSize, true),
+	      unitlessFromSize = _stripUnit[0],
+	      fromSizeUnit = _stripUnit[1];
 
-	  var _getValueAndUnit2 = (0, _getValueAndUnit5.default)(toSize),
-	      unitlessToSize = _getValueAndUnit2[0],
-	      toSizeUnit = _getValueAndUnit2[1];
+	  var _stripUnit2 = (0, _stripUnit5["default"])(toSize, true),
+	      unitlessToSize = _stripUnit2[0],
+	      toSizeUnit = _stripUnit2[1];
 
-	  var _getValueAndUnit3 = (0, _getValueAndUnit5.default)(minScreen),
-	      unitlessMinScreen = _getValueAndUnit3[0],
-	      minScreenUnit = _getValueAndUnit3[1];
+	  var _stripUnit3 = (0, _stripUnit5["default"])(minScreen, true),
+	      unitlessMinScreen = _stripUnit3[0],
+	      minScreenUnit = _stripUnit3[1];
 
-	  var _getValueAndUnit4 = (0, _getValueAndUnit5.default)(maxScreen),
-	      unitlessMaxScreen = _getValueAndUnit4[0],
-	      maxScreenUnit = _getValueAndUnit4[1];
+	  var _stripUnit4 = (0, _stripUnit5["default"])(maxScreen, true),
+	      unitlessMaxScreen = _stripUnit4[0],
+	      maxScreenUnit = _stripUnit4[1];
 
 	  if (typeof unitlessMinScreen !== 'number' || typeof unitlessMaxScreen !== 'number' || !minScreenUnit || !maxScreenUnit || minScreenUnit !== maxScreenUnit) {
-	    throw new Error('minScreen and maxScreen must be provided as stringified numbers with the same units.');
+	    throw new _errors["default"](47);
 	  }
 
-	  if (typeof unitlessFromSize !== 'number' || typeof unitlessToSize !== 'number' || !fromSizeUnit || !toSizeUnit || fromSizeUnit !== toSizeUnit) {
-	    throw new Error('fromSize and toSize must be provided as stringified numbers with the same units.');
+	  if (typeof unitlessFromSize !== 'number' || typeof unitlessToSize !== 'number' || fromSizeUnit !== toSizeUnit) {
+	    throw new _errors["default"](48);
 	  }
 
 	  var slope = (unitlessFromSize - unitlessToSize) / (unitlessMinScreen - unitlessMaxScreen);
 	  var base = unitlessToSize - slope * unitlessMaxScreen;
-	  return "calc(" + base.toFixed(2) + fromSizeUnit + " + " + (100 * slope).toFixed(2) + "vw)";
+	  return "calc(" + base.toFixed(2) + (fromSizeUnit || '') + " + " + (100 * slope).toFixed(2) + "vw)";
 	}
 
-	var _default = between;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 107 */
-/***/ function(module, exports) {
+/***/ }),
+/* 122 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = clearFix;
 
 	/**
 	 * CSS to contain a float (credit to CSSMojo).
@@ -135682,18 +142442,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  }, _ref;
 	}
 
-	var _default = clearFix;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 108 */
-/***/ function(module, exports) {
+/***/ }),
+/* 123 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = cover;
 
 	/**
 	 * CSS to fully cover an area. Can optionally be passed an offset to act as a "padding".
@@ -135733,18 +142491,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 	}
 
-	var _default = cover;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 109 */
-/***/ function(module, exports) {
+/***/ }),
+/* 124 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = ellipsis;
 
 	/**
 	 * CSS to represent truncated text with an ellipsis.
@@ -135786,26 +142542,30 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 	}
 
-	var _default = ellipsis;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 110 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 125 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = fluidRange;
 
 	var _between =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(106));
+	__webpack_require__(121));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -135861,7 +142621,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  }
 
 	  if (!Array.isArray(cssProp) && typeof cssProp !== 'object' || cssProp === null) {
-	    throw new Error('expects either an array of objects or a single object with the properties prop, fromSize, and toSize.');
+	    throw new _errors["default"](49);
 	  }
 
 	  if (Array.isArray(cssProp)) {
@@ -135885,11 +142645,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      var obj = _ref;
 
 	      if (!obj.prop || !obj.fromSize || !obj.toSize) {
-	        throw new Error('expects the objects in the first argument array to have the properties `prop`, `fromSize`, and `toSize`.');
+	        throw new _errors["default"](50);
 	      }
 
 	      fallbacks[obj.prop] = obj.fromSize;
-	      mediaQueries["@media (min-width: " + minScreen + ")"] = _extends({}, mediaQueries["@media (min-width: " + minScreen + ")"], (_extends2 = {}, _extends2[obj.prop] = (0, _between.default)(obj.fromSize, obj.toSize, minScreen, maxScreen), _extends2));
+	      mediaQueries["@media (min-width: " + minScreen + ")"] = _extends({}, mediaQueries["@media (min-width: " + minScreen + ")"], (_extends2 = {}, _extends2[obj.prop] = (0, _between["default"])(obj.fromSize, obj.toSize, minScreen, maxScreen), _extends2));
 	      mediaQueries["@media (min-width: " + maxScreen + ")"] = _extends({}, mediaQueries["@media (min-width: " + maxScreen + ")"], (_extends3 = {}, _extends3[obj.prop] = obj.toSize, _extends3));
 	    }
 
@@ -135898,29 +142658,59 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    var _ref2, _ref3, _ref4;
 
 	    if (!cssProp.prop || !cssProp.fromSize || !cssProp.toSize) {
-	      throw new Error('expects the first argument object to have the properties `prop`, `fromSize`, and `toSize`.');
+	      throw new _errors["default"](51);
 	    }
 
-	    return _ref4 = {}, _ref4[cssProp.prop] = cssProp.fromSize, _ref4["@media (min-width: " + minScreen + ")"] = (_ref2 = {}, _ref2[cssProp.prop] = (0, _between.default)(cssProp.fromSize, cssProp.toSize, minScreen, maxScreen), _ref2), _ref4["@media (min-width: " + maxScreen + ")"] = (_ref3 = {}, _ref3[cssProp.prop] = cssProp.toSize, _ref3), _ref4;
+	    return _ref4 = {}, _ref4[cssProp.prop] = cssProp.fromSize, _ref4["@media (min-width: " + minScreen + ")"] = (_ref2 = {}, _ref2[cssProp.prop] = (0, _between["default"])(cssProp.fromSize, cssProp.toSize, minScreen, maxScreen), _ref2), _ref4["@media (min-width: " + maxScreen + ")"] = (_ref3 = {}, _ref3[cssProp.prop] = cssProp.toSize, _ref3), _ref4;
 	  }
 	}
 
-	var _default = fluidRange;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 111 */
-/***/ function(module, exports) {
+/***/ }),
+/* 126 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = fontFace;
 
-	function generateFileReferences(fontFilePath, fileFormats) {
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	var dataURIRegex = /^\s*data:([a-z]+\/[a-z-]+(;[a-z-]+=[a-z-]+)?)?(;charset=[a-z0-9-]+)?(;base64)?,[a-z0-9!$&',()*+,;=\-._~:@/?%\s]*\s*$/i;
+	var formatHintMap = {
+	  woff: 'woff',
+	  woff2: 'woff2',
+	  ttf: 'truetype',
+	  otf: 'opentype',
+	  eot: 'embedded-opentype',
+	  svg: 'svg',
+	  svgz: 'svg'
+	};
+
+	function generateFormatHint(format, formatHint) {
+	  if (!formatHint) return '';
+	  return " format(\"" + formatHintMap[format] + "\")";
+	}
+
+	function isDataURI(fontFilePath) {
+	  return !!fontFilePath.match(dataURIRegex);
+	}
+
+	function generateFileReferences(fontFilePath, fileFormats, formatHint) {
+	  if (isDataURI(fontFilePath)) {
+	    return "url(\"" + fontFilePath + "\")" + generateFormatHint(fileFormats[0], formatHint);
+	  }
+
 	  var fileFontReferences = fileFormats.map(function (format) {
-	    return "url(\"" + fontFilePath + "." + format + "\")";
+	    return "url(\"" + fontFilePath + "." + format + "\")" + generateFormatHint(format, formatHint);
 	  });
 	  return fileFontReferences.join(', ');
 	}
@@ -135932,12 +142722,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  return localFontReferences.join(', ');
 	}
 
-	function generateSources(fontFilePath, localFonts, fileFormats) {
+	function generateSources(fontFilePath, localFonts, fileFormats, formatHint) {
 	  var fontReferences = [];
 	  if (localFonts) fontReferences.push(generateLocalReferences(localFonts));
 
 	  if (fontFilePath) {
-	    fontReferences.push(generateFileReferences(fontFilePath, fileFormats));
+	    fontReferences.push(generateFileReferences(fontFilePath, fileFormats, formatHint));
 	  }
 
 	  return fontReferences.join(', ');
@@ -135980,30 +142770,32 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      fontWeight = _ref.fontWeight,
 	      _ref$fileFormats = _ref.fileFormats,
 	      fileFormats = _ref$fileFormats === void 0 ? ['eot', 'woff2', 'woff', 'ttf', 'svg'] : _ref$fileFormats,
+	      _ref$formatHint = _ref.formatHint,
+	      formatHint = _ref$formatHint === void 0 ? false : _ref$formatHint,
 	      localFonts = _ref.localFonts,
 	      unicodeRange = _ref.unicodeRange,
 	      fontDisplay = _ref.fontDisplay,
 	      fontVariationSettings = _ref.fontVariationSettings,
 	      fontFeatureSettings = _ref.fontFeatureSettings;
 	  // Error Handling
-	  if (!fontFamily) throw new Error('fontFace expects a name of a font-family.');
+	  if (!fontFamily) throw new _errors["default"](55);
 
 	  if (!fontFilePath && !localFonts) {
-	    throw new Error('fontFace expects either the path to the font file(s) or a name of a local copy.');
+	    throw new _errors["default"](52);
 	  }
 
 	  if (localFonts && !Array.isArray(localFonts)) {
-	    throw new Error('fontFace expects localFonts to be an array.');
+	    throw new _errors["default"](53);
 	  }
 
 	  if (!Array.isArray(fileFormats)) {
-	    throw new Error('fontFace expects fileFormats to be an array.');
+	    throw new _errors["default"](54);
 	  }
 
 	  var fontFaceDeclaration = {
 	    '@font-face': {
 	      fontFamily: fontFamily,
-	      src: generateSources(fontFilePath, localFonts, fileFormats),
+	      src: generateSources(fontFilePath, localFonts, fileFormats, formatHint),
 	      unicodeRange: unicodeRange,
 	      fontStretch: fontStretch,
 	      fontStyle: fontStyle,
@@ -136018,18 +142810,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  return JSON.parse(JSON.stringify(fontFaceDeclaration));
 	}
 
-	var _default = fontFace;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 112 */
-/***/ function(module, exports) {
+/***/ }),
+/* 127 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = hideText;
 
 	/**
 	 * CSS to hide text to show a background image in a SEO-friendly way.
@@ -136064,18 +142854,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 	}
 
-	var _default = hideText;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 113 */
-/***/ function(module, exports) {
+/***/ }),
+/* 128 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = hideVisually;
 
 	/**
 	 * CSS to hide content visually but remain accessible to screen readers.
@@ -136122,18 +142910,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 	}
 
-	var _default = hideVisually;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 114 */
-/***/ function(module, exports) {
+/***/ }),
+/* 129 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = hiDPI;
 
 	/**
 	 * Generates a media query to target HiDPI devices.
@@ -136171,18 +142957,140 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  return "\n    @media only screen and (-webkit-min-device-pixel-ratio: " + ratio + "),\n    only screen and (min--moz-device-pixel-ratio: " + ratio + "),\n    only screen and (-o-min-device-pixel-ratio: " + ratio + "/1),\n    only screen and (min-resolution: " + Math.round(ratio * 96) + "dpi),\n    only screen and (min-resolution: " + ratio + "dppx)\n  ";
 	}
 
-	var _default = hiDPI;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 115 */
-/***/ function(module, exports) {
+/***/ }),
+/* 130 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = linearGradient;
+
+	var _constructGradientValue =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(131));
+
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	function _templateObject() {
+	  var data = _taggedTemplateLiteralLoose(["linear-gradient(", "", ")"]);
+
+	  _templateObject = function _templateObject() {
+	    return data;
+	  };
+
+	  return data;
+	}
+
+	function _taggedTemplateLiteralLoose(strings, raw) { if (!raw) { raw = strings.slice(0); } strings.raw = raw; return strings; }
+
+	/**
+	 * CSS for declaring a linear gradient, including a fallback background-color. The fallback is either the first color-stop or an explicitly passed fallback color.
+	 *
+	 * @example
+	 * // Styles as object usage
+	 * const styles = {
+	 *   ...linearGradient({
+	        colorStops: ['#00FFFF 0%', 'rgba(0, 0, 255, 0) 50%', '#0000FF 95%'],
+	        toDirection: 'to top right',
+	        fallback: '#FFF',
+	      })
+	 * }
+	 *
+	 * // styled-components usage
+	 * const div = styled.div`
+	 *   ${linearGradient({
+	        colorStops: ['#00FFFF 0%', 'rgba(0, 0, 255, 0) 50%', '#0000FF 95%'],
+	        toDirection: 'to top right',
+	        fallback: '#FFF',
+	      })}
+	 *`
+	 *
+	 * // CSS as JS Output
+	 *
+	 * div: {
+	 *   'backgroundColor': '#FFF',
+	 *   'backgroundImage': 'linear-gradient(to top right, #00FFFF 0%, rgba(0, 0, 255, 0) 50%, #0000FF 95%)',
+	 * }
+	 */
+	function linearGradient(_ref) {
+	  var colorStops = _ref.colorStops,
+	      fallback = _ref.fallback,
+	      _ref$toDirection = _ref.toDirection,
+	      toDirection = _ref$toDirection === void 0 ? '' : _ref$toDirection;
+
+	  if (!colorStops || colorStops.length < 2) {
+	    throw new _errors["default"](56);
+	  }
+
+	  return {
+	    backgroundColor: fallback || colorStops[0].split(' ')[0],
+	    backgroundImage: (0, _constructGradientValue["default"])(_templateObject(), toDirection, colorStops.join(', '))
+	  };
+	}
+
+	module.exports = exports.default;
+
+/***/ }),
+/* 131 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	exports.__esModule = true;
+	exports["default"] = void 0;
+
+	function constructGradientValue(literals) {
+	  var template = '';
+
+	  for (var _len = arguments.length, substitutions = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	    substitutions[_key - 1] = arguments[_key];
+	  }
+
+	  for (var i = 0; i < literals.length; i += 1) {
+	    template += literals[i];
+
+	    if (i === substitutions.length - 1 && substitutions[i]) {
+	      var definedValues = substitutions.filter(function (substitute) {
+	        return !!substitute;
+	      }); // Adds leading coma if properties preceed color-stops
+
+	      if (definedValues.length > 1) {
+	        template = template.slice(0, -1);
+	        template += ", " + substitutions[i]; // No trailing space if color-stops is the only param provided
+	      } else if (definedValues.length === 1) {
+	        template += "" + substitutions[i];
+	      }
+	    } else if (substitutions[i]) {
+	      template += substitutions[i] + " ";
+	    }
+	  }
+
+	  return template.trim();
+	}
+
+	var _default = constructGradientValue;
+	exports["default"] = _default;
+	module.exports = exports.default;
+
+/***/ }),
+/* 132 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	exports.__esModule = true;
+	exports["default"] = normalize;
 
 	/**
 	 * CSS to normalize abnormalities across browsers (normalize.css v8.0.0 | MIT License | github.com/necolas/normalize.css)
@@ -136309,76 +143217,30 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  }];
 	}
 
-	var _default = normalize;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 116 */
-/***/ function(module, exports) {
+/***/ }),
+/* 133 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = radialGradient;
 
-	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+	var _constructGradientValue =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(131));
 
-	/**
-	 * CSS to style the placeholder pseudo-element.
-	 *
-	 * @deprecated - placeholder has been marked for deprecation in polished 2.0 and will be fully deprecated in 3.0. It is no longer needed and can safely be replaced with the non-prefixed placeholder pseudo-element.
-	 *
-	 * @example
-	 * // Styles as object usage
-	 * const styles = {
-	 *   ...placeholder({'color': 'blue'})
-	 * }
-	 *
-	 * // styled-components usage
-	 * const div = styled.input`
-	 *    ${placeholder({'color': 'blue'})}
-	 * `
-	 *
-	 * // CSS as JS Output
-	 *
-	 * 'input': {
-	 *   '&:-moz-placeholder': {
-	 *     'color': 'blue',
-	 *   },
-	 *   '&:-ms-input-placeholder': {
-	 *     'color': 'blue',
-	 *   },
-	 *   '&::-moz-placeholder': {
-	 *     'color': 'blue',
-	 *   },
-	 *   '&::-webkit-input-placeholder': {
-	 *     'color': 'blue',
-	 *   },
-	 * },
-	 */
-	function placeholder(styles, parent) {
-	  var _ref;
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
 
-	  if (parent === void 0) {
-	    parent = '&';
-	  }
-
-	  return _ref = {}, _ref[parent + "::-webkit-input-placeholder"] = _extends({}, styles), _ref[parent + ":-moz-placeholder"] = _extends({}, styles), _ref[parent + "::-moz-placeholder"] = _extends({}, styles), _ref[parent + ":-ms-input-placeholder"] = _extends({}, styles), _ref;
-	}
-
-	var _default = placeholder;
-	exports.default = _default;
-	module.exports = exports.default;
-
-/***/ },
-/* 117 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	exports.__esModule = true;
-	exports.default = void 0;
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _templateObject() {
 	  var data = _taggedTemplateLiteralLoose(["radial-gradient(", "", "", "", ")"]);
@@ -136392,28 +143254,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	function _taggedTemplateLiteralLoose(strings, raw) { if (!raw) { raw = strings.slice(0); } strings.raw = raw; return strings; }
 
-	function parseFallback(colorStops) {
-	  return colorStops[0].split(' ')[0];
-	}
-
-	function constructGradientValue(literals) {
-	  var template = '';
-
-	  for (var i = 0; i < literals.length; i += 1) {
-	    template += literals[i]; // Adds leading coma if properties preceed color-stops
-
-	    if (i === 3 && (i + 1 < 1 || arguments.length <= i + 1 ? undefined : arguments[i + 1]) && ((arguments.length <= 1 ? undefined : arguments[1]) || (arguments.length <= 2 ? undefined : arguments[2]) || (arguments.length <= 3 ? undefined : arguments[3]))) {
-	      template = template.slice(0, -1);
-	      template += ", " + (i + 1 < 1 || arguments.length <= i + 1 ? undefined : arguments[i + 1]); // No trailing space if color-stops is the only param provided
-	    } else if (i === 3 && (i + 1 < 1 || arguments.length <= i + 1 ? undefined : arguments[i + 1]) && !(arguments.length <= 1 ? undefined : arguments[1]) && !(arguments.length <= 2 ? undefined : arguments[2]) && !(arguments.length <= 3 ? undefined : arguments[3])) {
-	      template += "" + (i + 1 < 1 || arguments.length <= i + 1 ? undefined : arguments[i + 1]); // Only adds substitution if it is defined
-	    } else if (i + 1 < 1 || arguments.length <= i + 1 ? undefined : arguments[i + 1]) {
-	      template += (i + 1 < 1 || arguments.length <= i + 1 ? undefined : arguments[i + 1]) + " ";
-	    }
-	  }
-
-	  return template.trim();
-	}
 	/**
 	 * CSS for declaring a radial gradient, including a fallback background-color. The fallback is either the first color-stop or an explicitly passed fallback color.
 	 *
@@ -136445,45 +143285,50 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 *   'backgroundImage': 'radial-gradient(center ellipse farthest-corner at 45px 45px, #00FFFF 0%, rgba(0, 0, 255, 0) 50%, #0000FF 95%)',
 	 * }
 	 */
-
-
 	function radialGradient(_ref) {
 	  var colorStops = _ref.colorStops,
-	      extent = _ref.extent,
+	      _ref$extent = _ref.extent,
+	      extent = _ref$extent === void 0 ? '' : _ref$extent,
 	      fallback = _ref.fallback,
-	      position = _ref.position,
-	      shape = _ref.shape;
+	      _ref$position = _ref.position,
+	      position = _ref$position === void 0 ? '' : _ref$position,
+	      _ref$shape = _ref.shape,
+	      shape = _ref$shape === void 0 ? '' : _ref$shape;
 
 	  if (!colorStops || colorStops.length < 2) {
-	    throw new Error('radialGradient requries at least 2 color-stops to properly render.');
+	    throw new _errors["default"](57);
 	  }
 
 	  return {
-	    backgroundColor: fallback || parseFallback(colorStops),
-	    backgroundImage: constructGradientValue(_templateObject(), position, shape, extent, colorStops.join(', '))
+	    backgroundColor: fallback || colorStops[0].split(' ')[0],
+	    backgroundImage: (0, _constructGradientValue["default"])(_templateObject(), position, shape, extent, colorStops.join(', '))
 	  };
 	}
 
-	var _default = radialGradient;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 118 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 134 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = retinaImage;
 
 	var _hiDPI =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(114));
+	__webpack_require__(129));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -136527,7 +143372,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  }
 
 	  if (!filename) {
-	    throw new Error('Please supply a filename to retinaImage() as the first argument.');
+	    throw new _errors["default"](58);
 	  } // Replace the dot at the beginning of the passed extension if one exists
 
 
@@ -136535,79 +143380,23 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  var rFilename = retinaFilename ? retinaFilename + "." + ext : "" + filename + retinaSuffix + "." + ext;
 	  return _ref = {
 	    backgroundImage: "url(" + filename + "." + ext + ")"
-	  }, _ref[(0, _hiDPI.default)()] = _extends({
+	  }, _ref[(0, _hiDPI["default"])()] = _extends({
 	    backgroundImage: "url(" + rFilename + ")"
 	  }, backgroundSize ? {
 	    backgroundSize: backgroundSize
 	  } : {}), _ref;
 	}
 
-	var _default = retinaImage;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 119 */
-/***/ function(module, exports) {
+/***/ }),
+/* 135 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
-
-	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-
-	/**
-	 * CSS to style the selection pseudo-element.
-	 *
-	 * @deprecated - selection has been marked for deprecation in polished 2.0 and will be fully deprecated in 3.0. It is no longer needed and can safely be replaced with the non-prefixed selection pseudo-element.
-	 *
-	 * @example
-	 * // Styles as object usage
-	 * const styles = {
-	 *   ...selection({
-	 *     'backgroundColor': 'blue'
-	 *   }, 'section')
-	 * }
-	 *
-	 * // styled-components usage
-	 * const div = styled.div`
-	 *   ${selection({'backgroundColor': 'blue'}, 'section')}
-	 * `
-	 *
-	 * // CSS as JS Output
-	 *
-	 * 'div': {
-	 *   'section::-moz-selection': {
-	 *     'backgroundColor':'blue',
-	 *   },
-	 *   'section::selection': {
-	 *     'backgroundColor': 'blue',
-	 *   }
-	 * }
-	 */
-	function selection(styles, parent) {
-	  var _ref;
-
-	  if (parent === void 0) {
-	    parent = '';
-	  }
-
-	  return _ref = {}, _ref[parent + "::-moz-selection"] = _extends({}, styles), _ref[parent + "::selection"] = _extends({}, styles), _ref;
-	}
-
-	var _default = selection;
-	exports.default = _default;
-	module.exports = exports.default;
-
-/***/ },
-/* 120 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = timingFunctions;
 
 	/* eslint-disable key-spacing */
 	var functionsMap = {
@@ -136668,53 +143457,89 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  return getTimingFunction(timingFunction);
 	}
 
-	var _default = timingFunctions;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 121 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 136 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = triangle;
 
-	var _borderColor =
+	var _stripUnit =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(122));
+	__webpack_require__(117));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
 
-	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	var getBorderWidth = function getBorderWidth(pointingDirection, height, width) {
+	  var fullWidth = "" + width[0] + (width[1] || '');
+	  var halfWidth = "" + width[0] / 2 + (width[1] || '');
+	  var fullHeight = "" + height[0] + (height[1] || '');
+	  var halfHeight = "" + height[0] / 2 + (height[1] || '');
+
 	  switch (pointingDirection) {
 	    case 'top':
-	      return "0 " + width[0] / 2 + width[1] + " " + height[0] + height[1] + " " + width[0] / 2 + width[1];
+	      return "0 " + halfWidth + " " + fullHeight + " " + halfWidth;
+
+	    case 'topLeft':
+	      return fullWidth + " " + fullHeight + " 0 0";
 
 	    case 'left':
-	      return "" + height[0] / 2 + height[1] + " " + width[0] + width[1] + " " + height[0] / 2 + height[1] + " 0";
+	      return halfHeight + " " + fullWidth + " " + halfHeight + " 0";
+
+	    case 'bottomLeft':
+	      return fullWidth + " 0 0 " + fullHeight;
 
 	    case 'bottom':
-	      return "" + height[0] + height[1] + " " + width[0] / 2 + width[1] + " 0 " + width[0] / 2 + width[1];
+	      return fullHeight + " " + halfWidth + " 0 " + halfWidth;
+
+	    case 'bottomRight':
+	      return "0 0 " + fullWidth + " " + fullHeight;
 
 	    case 'right':
-	      return "" + height[0] / 2 + height[1] + " 0 " + height[0] / 2 + height[1] + " " + width[0] + width[1];
+	      return halfHeight + " 0 " + halfHeight + " " + fullWidth;
+
+	    case 'topRight':
+	    default:
+	      return "0 " + fullWidth + " " + fullHeight + " 0";
+	  }
+	};
+
+	var getBorderColor = function getBorderColor(pointingDirection, foregroundColor, backgroundColor) {
+	  switch (pointingDirection) {
+	    case 'top':
+	    case 'bottomRight':
+	      return backgroundColor + " " + backgroundColor + " " + foregroundColor + " " + backgroundColor;
+
+	    case 'right':
+	    case 'bottomLeft':
+	      return backgroundColor + " " + backgroundColor + " " + backgroundColor + " " + foregroundColor;
+
+	    case 'bottom':
+	    case 'topLeft':
+	      return foregroundColor + " " + backgroundColor + " " + backgroundColor + " " + backgroundColor;
+
+	    case 'left':
+	    case 'topRight':
+	      return backgroundColor + " " + foregroundColor + " " + backgroundColor + " " + backgroundColor;
 
 	    default:
-	      throw new Error("Passed invalid argument to triangle, please pass correct pointingDirection e.g. 'right'.");
+	      throw new _errors["default"](59);
 	  }
-	}; // needed for border-color
-
-
-	var reverseDirection = ['bottom', 'left', 'top', 'right'];
-	var NUMBER_AND_FLOAT = /(\d*\.?\d*)/;
+	};
 	/**
-	 * CSS to represent triangle with any pointing direction with an optional background color. Accepts number or px values for height and width.
+	 * CSS to represent triangle with any pointing direction with an optional background color.
 	 *
 	 * @example
 	 * // Styles as object usage
@@ -136732,14 +143557,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * // CSS as JS Output
 	 *
 	 * div: {
-	 *  'borderColor': 'transparent',
-	 *  'borderLeftColor': 'red !important',
+	 *  'borderColor': 'transparent transparent transparent red',
 	 *  'borderStyle': 'solid',
 	 *  'borderWidth': '50px 0 50px 100px',
 	 *  'height': '0',
 	 *  'width': '0',
 	 * }
 	 */
+
 
 	function triangle(_ref) {
 	  var pointingDirection = _ref.pointingDirection,
@@ -136748,89 +143573,32 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      foregroundColor = _ref.foregroundColor,
 	      _ref$backgroundColor = _ref.backgroundColor,
 	      backgroundColor = _ref$backgroundColor === void 0 ? 'transparent' : _ref$backgroundColor;
-	  var widthAndUnit = [parseFloat(width), String(width).replace(NUMBER_AND_FLOAT, '') || 'px'];
-	  var heightAndUnit = [parseFloat(height), String(height).replace(NUMBER_AND_FLOAT, '') || 'px'];
+	  var widthAndUnit = (0, _stripUnit["default"])(width, true);
+	  var heightAndUnit = (0, _stripUnit["default"])(height, true);
 
 	  if (isNaN(heightAndUnit[0]) || isNaN(widthAndUnit[0])) {
-	    throw new Error('Passed an invalid value to `height` or `width`. Please provide a pixel based unit');
+	    throw new _errors["default"](60);
 	  }
 
-	  var reverseDirectionIndex = reverseDirection.indexOf(pointingDirection);
-	  return _extends({
+	  return {
 	    width: '0',
 	    height: '0',
-	    borderWidth: getBorderWidth(pointingDirection, heightAndUnit, widthAndUnit),
-	    borderStyle: 'solid'
-	  }, _borderColor.default.apply(void 0, Array.from({
-	    length: 4
-	  }).map(function (_, index) {
-	    return index === reverseDirectionIndex ? foregroundColor : backgroundColor;
-	  })));
+	    borderColor: getBorderColor(pointingDirection, foregroundColor, backgroundColor),
+	    borderStyle: 'solid',
+	    borderWidth: getBorderWidth(pointingDirection, heightAndUnit, widthAndUnit)
+	  };
 	}
 
-	var _default = triangle;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 122 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 137 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
-
-	var _directionalProperty =
-	/*#__PURE__*/
-	_interopRequireDefault(
-	/*#__PURE__*/
-	__webpack_require__(97));
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	/**
-	 * Shorthand that accepts up to four values, including null to skip a value, and maps them to their respective directions.
-	 * @example
-	 * // Styles as object usage
-	 * const styles = {
-	 *   ...borderColor('red', 'green', 'blue', 'yellow')
-	 * }
-	 *
-	 * // styled-components usage
-	 * const div = styled.div`
-	 *   ${borderColor('red', 'green', 'blue', 'yellow')}
-	 * `
-	 *
-	 * // CSS as JS Output
-	 *
-	 * div {
-	 *   'borderTopColor': 'red',
-	 *   'borderRightColor': 'green',
-	 *   'borderBottomColor': 'blue',
-	 *   'borderLeftColor': 'yellow'
-	 * }
-	 */
-	function borderColor() {
-	  for (var _len = arguments.length, values = new Array(_len), _key = 0; _key < _len; _key++) {
-	    values[_key] = arguments[_key];
-	  }
-
-	  return _directionalProperty.default.apply(void 0, ['borderColor'].concat(values));
-	}
-
-	var _default = borderColor;
-	exports.default = _default;
-	module.exports = exports.default;
-
-/***/ },
-/* 123 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = wordWrap;
 
 	/**
 	 * Provides an easy way to change the `wordWrap` property.
@@ -136867,45 +143635,43 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 	}
 
-	var _default = wordWrap;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 124 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 138 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	var _parseToHsl =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(125));
+	__webpack_require__(139));
 
 	var _toColorString =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(130));
+	__webpack_require__(144));
 
 	var _curry =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(138));
+	__webpack_require__(152));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 	/**
 	 * Changes the hue of the color. Hue is a number between 0 to 360. The first
-	 * argument for adjustHue is the amount of degrees the color is rotated along
-	 * the color wheel.
+	 * argument for adjustHue is the amount of degrees the color is rotated around
+	 * the color wheel, always producing a positive hue value.
 	 *
 	 * @example
 	 * // Styles as object usage
@@ -136927,44 +143693,45 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function adjustHue(degree, color) {
-	  var hslColor = (0, _parseToHsl.default)(color);
-	  return (0, _toColorString.default)(_extends({}, hslColor, {
-	    hue: (hslColor.hue + parseFloat(degree)) % 360
+	  if (color === 'transparent') return color;
+	  var hslColor = (0, _parseToHsl["default"])(color);
+	  return (0, _toColorString["default"])(_extends({}, hslColor, {
+	    hue: hslColor.hue + parseFloat(degree)
 	  }));
 	} // prettier-ignore
 
 
 	var curriedAdjustHue =
 	/*#__PURE__*/
-	(0, _curry.default
+	(0, _curry["default"]
 	/* ::<number | string, string, string> */
 	)(adjustHue);
 	var _default = curriedAdjustHue;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 125 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 139 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = parseToHsl;
 
 	var _parseToRgb =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(126));
+	__webpack_require__(140));
 
 	var _rgbToHsl =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(129));
+	__webpack_require__(143));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Returns an HslColor or HslaColor object. This utility function is only useful
@@ -136980,44 +143747,48 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	function parseToHsl(color) {
 	  // Note: At a later stage we can optimize this function as right now a hsl
 	  // color would be parsed converted to rgb values and converted back to hsl.
-	  return (0, _rgbToHsl.default)((0, _parseToRgb.default)(color));
+	  return (0, _rgbToHsl["default"])((0, _parseToRgb["default"])(color));
 	}
 
-	var _default = parseToHsl;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 126 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 140 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = parseToRgb;
 
 	var _hslToRgb =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(127));
+	__webpack_require__(141));
 
 	var _nameToHex =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(128));
+	__webpack_require__(142));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	var hexRegex = /^#[a-fA-F0-9]{6}$/;
 	var hexRgbaRegex = /^#[a-fA-F0-9]{8}$/;
 	var reducedHexRegex = /^#[a-fA-F0-9]{3}$/;
 	var reducedRgbaHexRegex = /^#[a-fA-F0-9]{4}$/;
-	var rgbRegex = /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/;
-	var rgbaRegex = /^rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*([-+]?[0-9]*[.]?[0-9]+)\s*\)$/;
-	var hslRegex = /^hsl\(\s*(\d{0,3}[.]?[0-9]+)\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)$/;
-	var hslaRegex = /^hsla\(\s*(\d{0,3}[.]?[0-9]+)\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*([-+]?[0-9]*[.]?[0-9]+)\s*\)$/;
+	var rgbRegex = /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/i;
+	var rgbaRegex = /^rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*([-+]?[0-9]*[.]?[0-9]+)\s*\)$/i;
+	var hslRegex = /^hsl\(\s*(\d{0,3}[.]?[0-9]+)\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)$/i;
+	var hslaRegex = /^hsla\(\s*(\d{0,3}[.]?[0-9]+)\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*([-+]?[0-9]*[.]?[0-9]+)\s*\)$/i;
 	/**
 	 * Returns an RgbColor or RgbaColor object. This utility function is only useful
 	 * if want to extract a color component. With the color util `toColorString` you
@@ -137032,10 +143803,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	function parseToRgb(color) {
 	  if (typeof color !== 'string') {
-	    throw new Error('Passed an incorrect argument to a color function, please pass a string representation of a color.');
+	    throw new _errors["default"](3);
 	  }
 
-	  var normalizedColor = (0, _nameToHex.default)(color);
+	  var normalizedColor = (0, _nameToHex["default"])(color);
 
 	  if (normalizedColor.match(hexRegex)) {
 	    return {
@@ -137101,11 +143872,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    var hue = parseInt("" + hslMatched[1], 10);
 	    var saturation = parseInt("" + hslMatched[2], 10) / 100;
 	    var lightness = parseInt("" + hslMatched[3], 10) / 100;
-	    var rgbColorString = "rgb(" + (0, _hslToRgb.default)(hue, saturation, lightness) + ")";
+	    var rgbColorString = "rgb(" + (0, _hslToRgb["default"])(hue, saturation, lightness) + ")";
 	    var hslRgbMatched = rgbRegex.exec(rgbColorString);
 
 	    if (!hslRgbMatched) {
-	      throw new Error("Couldn't generate valid rgb string from " + normalizedColor + ", it returned " + rgbColorString + ".");
+	      throw new _errors["default"](4, normalizedColor, rgbColorString);
 	    }
 
 	    return {
@@ -137124,12 +143895,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	    var _lightness = parseInt("" + hslaMatched[3], 10) / 100;
 
-	    var _rgbColorString = "rgb(" + (0, _hslToRgb.default)(_hue, _saturation, _lightness) + ")";
+	    var _rgbColorString = "rgb(" + (0, _hslToRgb["default"])(_hue, _saturation, _lightness) + ")";
 
 	    var _hslRgbMatched = rgbRegex.exec(_rgbColorString);
 
 	    if (!_hslRgbMatched) {
-	      throw new Error("Couldn't generate valid rgb string from " + normalizedColor + ", it returned " + _rgbColorString + ".");
+	      throw new _errors["default"](4, normalizedColor, _rgbColorString);
 	    }
 
 	    return {
@@ -137140,21 +143911,19 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    };
 	  }
 
-	  throw new Error("Couldn't parse the color string. Please provide the color as a string in hex, rgb, rgba, hsl or hsla notation.");
+	  throw new _errors["default"](5);
 	}
 
-	var _default = parseToRgb;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 127 */
-/***/ function(module, exports) {
+/***/ }),
+/* 141 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	function colorToInt(color) {
 	  return Math.round(color * 255);
@@ -137172,10 +143941,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  if (saturation === 0) {
 	    // achromatic
 	    return convert(lightness, lightness, lightness);
-	  } // formular from https://en.wikipedia.org/wiki/HSL_and_HSV
+	  } // formulae from https://en.wikipedia.org/wiki/HSL_and_HSV
 
 
-	  var huePrime = hue % 360 / 60;
+	  var huePrime = (hue % 360 + 360) % 360 / 60;
 	  var chroma = (1 - Math.abs(2 * lightness - 1)) * saturation;
 	  var secondComponent = chroma * (1 - Math.abs(huePrime % 2 - 1));
 	  var red = 0;
@@ -137210,17 +143979,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 	var _default = hslToRgb;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 128 */
-/***/ function(module, exports) {
+/***/ }),
+/* 142 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 	var namedColorMap = {
 	  aliceblue: 'f0f8ff',
 	  antiquewhite: 'faebd7',
@@ -137384,17 +144153,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 	var _default = nameToHex;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 129 */
-/***/ function(module, exports) {
+/***/ }),
+/* 143 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	function rgbToHsl(color) {
 	  // make sure rgb are contained in a set of [0, 255]
@@ -137461,43 +144230,49 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 	var _default = rgbToHsl;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 130 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 144 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = toColorString;
 
 	var _hsl =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(131));
+	__webpack_require__(145));
 
 	var _hsla =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(135));
+	__webpack_require__(149));
 
 	var _rgb =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(136));
+	__webpack_require__(150));
 
 	var _rgba =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(137));
+	__webpack_require__(151));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	var isRgb = function isRgb(color) {
 	  return typeof color.red === 'number' && typeof color.green === 'number' && typeof color.blue === 'number' && (typeof color.alpha !== 'number' || typeof color.alpha === 'undefined');
@@ -137514,8 +144289,6 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	var isHsla = function isHsla(color) {
 	  return typeof color.hue === 'number' && typeof color.saturation === 'number' && typeof color.lightness === 'number' && typeof color.alpha === 'number';
 	};
-
-	var errMsg = 'Passed invalid argument to toColorString, please pass a RgbColor, RgbaColor, HslColor or HslaColor object.';
 	/**
 	 * Converts a RgbColor, RgbaColor, HslColor or HslaColor object to a color string.
 	 * This util is useful in case you only know on runtime which color object is
@@ -137547,35 +144320,40 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 
+
 	function toColorString(color) {
-	  if (typeof color !== 'object') throw new Error(errMsg);
-	  if (isRgba(color)) return (0, _rgba.default)(color);
-	  if (isRgb(color)) return (0, _rgb.default)(color);
-	  if (isHsla(color)) return (0, _hsla.default)(color);
-	  if (isHsl(color)) return (0, _hsl.default)(color);
-	  throw new Error(errMsg);
+	  if (typeof color !== 'object') throw new _errors["default"](8);
+	  if (isRgba(color)) return (0, _rgba["default"])(color);
+	  if (isRgb(color)) return (0, _rgb["default"])(color);
+	  if (isHsla(color)) return (0, _hsla["default"])(color);
+	  if (isHsl(color)) return (0, _hsl["default"])(color);
+	  throw new _errors["default"](8);
 	}
 
-	var _default = toColorString;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 131 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 145 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = hsl;
 
 	var _hslToHex =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(132));
+	__webpack_require__(146));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Returns a string value for the color. The returned result is the smallest possible hex notation.
@@ -137602,71 +144380,69 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 */
 	function hsl(value, saturation, lightness) {
 	  if (typeof value === 'number' && typeof saturation === 'number' && typeof lightness === 'number') {
-	    return (0, _hslToHex.default)(value, saturation, lightness);
+	    return (0, _hslToHex["default"])(value, saturation, lightness);
 	  } else if (typeof value === 'object' && saturation === undefined && lightness === undefined) {
-	    return (0, _hslToHex.default)(value.hue, value.saturation, value.lightness);
+	    return (0, _hslToHex["default"])(value.hue, value.saturation, value.lightness);
 	  }
 
-	  throw new Error('Passed invalid arguments to hsl, please pass multiple numbers e.g. hsl(360, 0.75, 0.4) or an object e.g. rgb({ hue: 255, saturation: 0.4, lightness: 0.75 }).');
+	  throw new _errors["default"](1);
 	}
 
-	var _default = hsl;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 132 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 146 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	var _hslToRgb =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(127));
+	__webpack_require__(141));
 
 	var _reduceHexValue =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(133));
+	__webpack_require__(147));
 
 	var _numberToHex =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(134));
+	__webpack_require__(148));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function colorToHex(color) {
-	  return (0, _numberToHex.default)(Math.round(color * 255));
+	  return (0, _numberToHex["default"])(Math.round(color * 255));
 	}
 
 	function convertToHex(red, green, blue) {
-	  return (0, _reduceHexValue.default)("#" + colorToHex(red) + colorToHex(green) + colorToHex(blue));
+	  return (0, _reduceHexValue["default"])("#" + colorToHex(red) + colorToHex(green) + colorToHex(blue));
 	}
 
 	function hslToHex(hue, saturation, lightness) {
-	  return (0, _hslToRgb.default)(hue, saturation, lightness, convertToHex);
+	  return (0, _hslToRgb["default"])(hue, saturation, lightness, convertToHex);
 	}
 
 	var _default = hslToHex;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 133 */
-/***/ function(module, exports) {
+/***/ }),
+/* 147 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	/**
 	 * Reduces hex values if possible e.g. #ff8866 to #f86
@@ -137681,17 +144457,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 	var _default = reduceHexValue;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 134 */
-/***/ function(module, exports) {
+/***/ }),
+/* 148 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	function numberToHex(value) {
 	  var hex = value.toString(16);
@@ -137699,31 +144475,37 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 	var _default = numberToHex;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 135 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 149 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = hsla;
 
 	var _hslToHex =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(132));
+	__webpack_require__(146));
 
 	var _hslToRgb =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(127));
+	__webpack_require__(141));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Returns a string value for the color. The returned result is the smallest possible rgba or hex notation.
@@ -137753,40 +144535,44 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 */
 	function hsla(value, saturation, lightness, alpha) {
 	  if (typeof value === 'number' && typeof saturation === 'number' && typeof lightness === 'number' && typeof alpha === 'number') {
-	    return alpha >= 1 ? (0, _hslToHex.default)(value, saturation, lightness) : "rgba(" + (0, _hslToRgb.default)(value, saturation, lightness) + "," + alpha + ")";
+	    return alpha >= 1 ? (0, _hslToHex["default"])(value, saturation, lightness) : "rgba(" + (0, _hslToRgb["default"])(value, saturation, lightness) + "," + alpha + ")";
 	  } else if (typeof value === 'object' && saturation === undefined && lightness === undefined && alpha === undefined) {
-	    return value.alpha >= 1 ? (0, _hslToHex.default)(value.hue, value.saturation, value.lightness) : "rgba(" + (0, _hslToRgb.default)(value.hue, value.saturation, value.lightness) + "," + value.alpha + ")";
+	    return value.alpha >= 1 ? (0, _hslToHex["default"])(value.hue, value.saturation, value.lightness) : "rgba(" + (0, _hslToRgb["default"])(value.hue, value.saturation, value.lightness) + "," + value.alpha + ")";
 	  }
 
-	  throw new Error('Passed invalid arguments to hsla, please pass multiple numbers e.g. hsl(360, 0.75, 0.4, 0.7) or an object e.g. rgb({ hue: 255, saturation: 0.4, lightness: 0.75, alpha: 0.7 }).');
+	  throw new _errors["default"](2);
 	}
 
-	var _default = hsla;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 136 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 150 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = rgb;
 
 	var _reduceHexValue =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(133));
+	__webpack_require__(147));
 
 	var _numberToHex =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(134));
+	__webpack_require__(148));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Returns a string value for the color. The returned result is the smallest possible hex notation.
@@ -137813,40 +144599,44 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 */
 	function rgb(value, green, blue) {
 	  if (typeof value === 'number' && typeof green === 'number' && typeof blue === 'number') {
-	    return (0, _reduceHexValue.default)("#" + (0, _numberToHex.default)(value) + (0, _numberToHex.default)(green) + (0, _numberToHex.default)(blue));
+	    return (0, _reduceHexValue["default"])("#" + (0, _numberToHex["default"])(value) + (0, _numberToHex["default"])(green) + (0, _numberToHex["default"])(blue));
 	  } else if (typeof value === 'object' && green === undefined && blue === undefined) {
-	    return (0, _reduceHexValue.default)("#" + (0, _numberToHex.default)(value.red) + (0, _numberToHex.default)(value.green) + (0, _numberToHex.default)(value.blue));
+	    return (0, _reduceHexValue["default"])("#" + (0, _numberToHex["default"])(value.red) + (0, _numberToHex["default"])(value.green) + (0, _numberToHex["default"])(value.blue));
 	  }
 
-	  throw new Error('Passed invalid arguments to rgb, please pass multiple numbers e.g. rgb(255, 205, 100) or an object e.g. rgb({ red: 255, green: 205, blue: 100 }).');
+	  throw new _errors["default"](6);
 	}
 
-	var _default = rgb;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 137 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 151 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = rgba;
 
 	var _parseToRgb =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(126));
+	__webpack_require__(140));
 
 	var _rgb =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(136));
+	__webpack_require__(150));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Returns a string value for the color. The returned result is the smallest possible rgba or hex notation.
@@ -137884,29 +144674,27 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 */
 	function rgba(firstValue, secondValue, thirdValue, fourthValue) {
 	  if (typeof firstValue === 'string' && typeof secondValue === 'number') {
-	    var rgbValue = (0, _parseToRgb.default)(firstValue);
+	    var rgbValue = (0, _parseToRgb["default"])(firstValue);
 	    return "rgba(" + rgbValue.red + "," + rgbValue.green + "," + rgbValue.blue + "," + secondValue + ")";
 	  } else if (typeof firstValue === 'number' && typeof secondValue === 'number' && typeof thirdValue === 'number' && typeof fourthValue === 'number') {
-	    return fourthValue >= 1 ? (0, _rgb.default)(firstValue, secondValue, thirdValue) : "rgba(" + firstValue + "," + secondValue + "," + thirdValue + "," + fourthValue + ")";
+	    return fourthValue >= 1 ? (0, _rgb["default"])(firstValue, secondValue, thirdValue) : "rgba(" + firstValue + "," + secondValue + "," + thirdValue + "," + fourthValue + ")";
 	  } else if (typeof firstValue === 'object' && secondValue === undefined && thirdValue === undefined && fourthValue === undefined) {
-	    return firstValue.alpha >= 1 ? (0, _rgb.default)(firstValue.red, firstValue.green, firstValue.blue) : "rgba(" + firstValue.red + "," + firstValue.green + "," + firstValue.blue + "," + firstValue.alpha + ")";
+	    return firstValue.alpha >= 1 ? (0, _rgb["default"])(firstValue.red, firstValue.green, firstValue.blue) : "rgba(" + firstValue.red + "," + firstValue.green + "," + firstValue.blue + "," + firstValue.alpha + ")";
 	  }
 
-	  throw new Error('Passed invalid arguments to rgba, please pass multiple numbers e.g. rgb(255, 205, 100, 0.75) or an object e.g. rgb({ red: 255, green: 205, blue: 100, alpha: 0.75 }).');
+	  throw new _errors["default"](7);
 	}
 
-	var _default = rgba;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 138 */
-/***/ function(module, exports) {
+/***/ }),
+/* 152 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = curry;
+	exports["default"] = curry;
 
 	// Type definitions taken from https://github.com/gcanti/flow-static-land/blob/master/src/Fun.js
 	// eslint-disable-next-line no-unused-vars
@@ -137928,28 +144716,28 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	module.exports = exports.default;
 
-/***/ },
-/* 139 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 153 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = complement;
 
 	var _parseToHsl =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(125));
+	__webpack_require__(139));
 
 	var _toColorString =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(130));
+	__webpack_require__(144));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -137976,50 +144764,49 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function complement(color) {
-	  var hslColor = (0, _parseToHsl.default)(color);
-	  return (0, _toColorString.default)(_extends({}, hslColor, {
+	  if (color === 'transparent') return color;
+	  var hslColor = (0, _parseToHsl["default"])(color);
+	  return (0, _toColorString["default"])(_extends({}, hslColor, {
 	    hue: (hslColor.hue + 180) % 360
 	  }));
 	}
 
-	var _default = complement;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 140 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	var _curry =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(138));
+	__webpack_require__(152));
 
 	var _guard =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(141));
+	__webpack_require__(155));
 
 	var _parseToHsl =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(125));
+	__webpack_require__(139));
 
 	var _toColorString =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(130));
+	__webpack_require__(144));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -138047,73 +144834,74 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function darken(amount, color) {
-	  var hslColor = (0, _parseToHsl.default)(color);
-	  return (0, _toColorString.default)(_extends({}, hslColor, {
-	    lightness: (0, _guard.default)(0, 1, hslColor.lightness - parseFloat(amount))
+	  if (color === 'transparent') return color;
+	  var hslColor = (0, _parseToHsl["default"])(color);
+	  return (0, _toColorString["default"])(_extends({}, hslColor, {
+	    lightness: (0, _guard["default"])(0, 1, hslColor.lightness - parseFloat(amount))
 	  }));
 	} // prettier-ignore
 
 
 	var curriedDarken =
 	/*#__PURE__*/
-	(0, _curry.default
+	(0, _curry["default"]
 	/* ::<number | string, string, string> */
 	)(darken);
 	var _default = curriedDarken;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 141 */
-/***/ function(module, exports) {
+/***/ }),
+/* 155 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	function guard(lowerBoundary, upperBoundary, value) {
 	  return Math.max(lowerBoundary, Math.min(upperBoundary, value));
 	}
 
 	var _default = guard;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 142 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 156 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	var _curry =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(138));
+	__webpack_require__(152));
 
 	var _guard =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(141));
+	__webpack_require__(155));
 
 	var _parseToHsl =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(125));
+	__webpack_require__(139));
 
 	var _toColorString =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(130));
+	__webpack_require__(144));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -138142,38 +144930,71 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function desaturate(amount, color) {
-	  var hslColor = (0, _parseToHsl.default)(color);
-	  return (0, _toColorString.default)(_extends({}, hslColor, {
-	    saturation: (0, _guard.default)(0, 1, hslColor.saturation - parseFloat(amount))
+	  if (color === 'transparent') return color;
+	  var hslColor = (0, _parseToHsl["default"])(color);
+	  return (0, _toColorString["default"])(_extends({}, hslColor, {
+	    saturation: (0, _guard["default"])(0, 1, hslColor.saturation - parseFloat(amount))
 	  }));
 	} // prettier-ignore
 
 
 	var curriedDesaturate =
 	/*#__PURE__*/
-	(0, _curry.default
+	(0, _curry["default"]
 	/* ::<number | string, string, string> */
 	)(desaturate);
 	var _default = curriedDesaturate;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 143 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 157 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = getContrast;
+
+	var _getLuminance =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(158));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	/**
+	 * Returns the contrast ratio between two colors based on
+	 * [W3's recommended equation for calculating contrast](http://www.w3.org/TR/WCAG20/#contrast-ratiodef).
+	 *
+	 * @example
+	 * const contrastRatio = getContrast('#444', '#fff');
+	 */
+	function getContrast(color1, color2) {
+	  var luminance1 = (0, _getLuminance["default"])(color1);
+	  var luminance2 = (0, _getLuminance["default"])(color2);
+	  return parseFloat((luminance1 > luminance2 ? (luminance1 + 0.05) / (luminance2 + 0.05) : (luminance2 + 0.05) / (luminance1 + 0.05)).toFixed(2));
+	}
+
+	module.exports = exports.default;
+
+/***/ }),
+/* 158 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports.__esModule = true;
+	exports["default"] = getLuminance;
 
 	var _parseToRgb =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(126));
+	__webpack_require__(140));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Returns a number (float) representing the luminance of a color.
@@ -138202,7 +145023,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function getLuminance(color) {
-	  var rgbColor = (0, _parseToRgb.default)(color);
+	  if (color === 'transparent') return 0;
+	  var rgbColor = (0, _parseToRgb["default"])(color);
 
 	  var _Object$keys$map = Object.keys(rgbColor).map(function (key) {
 	    var channel = rgbColor[key] / 255;
@@ -138215,32 +145037,30 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  return parseFloat((0.2126 * r + 0.7152 * g + 0.0722 * b).toFixed(3));
 	}
 
-	var _default = getLuminance;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 144 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 159 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = grayscale;
 
 	var _parseToHsl =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(125));
+	__webpack_require__(139));
 
 	var _toColorString =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(130));
+	__webpack_require__(144));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -138267,37 +145087,112 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function grayscale(color) {
-	  return (0, _toColorString.default)(_extends({}, (0, _parseToHsl.default)(color), {
+	  if (color === 'transparent') return color;
+	  return (0, _toColorString["default"])(_extends({}, (0, _parseToHsl["default"])(color), {
 	    saturation: 0
 	  }));
 	}
 
-	var _default = grayscale;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 145 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 160 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = hslToColorString;
+
+	var _hsl =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(145));
+
+	var _hsla =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(149));
+
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	/**
+	 * Converts a HslColor or HslaColor object to a color string.
+	 * This util is useful in case you only know on runtime which color object is
+	 * used. Otherwise we recommend to rely on `hsl` or `hsla`.
+	 *
+	 * @example
+	 * // Styles as object usage
+	 * const styles = {
+	 *   background: hslToColorString({ hue: 240, saturation: 1, lightness: 0.5 }),
+	 *   background: hslToColorString({ hue: 360, saturation: 0.75, lightness: 0.4, alpha: 0.72 }),
+	 * }
+	 *
+	 * // styled-components usage
+	 * const div = styled.div`
+	 *   background: ${hslToColorString({ hue: 240, saturation: 1, lightness: 0.5 })};
+	 *   background: ${hslToColorString({ hue: 360, saturation: 0.75, lightness: 0.4, alpha: 0.72 })};
+	 * `
+	 *
+	 * // CSS in JS Output
+	 * element {
+	 *   background: "#00f";
+	 *   background: "rgba(179,25,25,0.72)";
+	 * }
+	 */
+	function hslToColorString(color) {
+	  if (typeof color === 'object' && typeof color.hue === 'number' && typeof color.saturation === 'number' && typeof color.lightness === 'number') {
+	    if (color.alpha && typeof color.alpha === 'number') {
+	      return (0, _hsla["default"])({
+	        hue: color.hue,
+	        saturation: color.saturation,
+	        lightness: color.lightness,
+	        alpha: color.alpha
+	      });
+	    }
+
+	    return (0, _hsl["default"])({
+	      hue: color.hue,
+	      saturation: color.saturation,
+	      lightness: color.lightness
+	    });
+	  }
+
+	  throw new _errors["default"](45);
+	}
+
+	module.exports = exports.default;
+
+/***/ }),
+/* 161 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports.__esModule = true;
+	exports["default"] = invert;
 
 	var _parseToRgb =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(126));
+	__webpack_require__(140));
 
 	var _toColorString =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(130));
+	__webpack_require__(144));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -138325,53 +145220,52 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function invert(color) {
-	  // parse color string to rgb
-	  var value = (0, _parseToRgb.default)(color);
-	  return (0, _toColorString.default)(_extends({}, value, {
+	  if (color === 'transparent') return color; // parse color string to rgb
+
+	  var value = (0, _parseToRgb["default"])(color);
+	  return (0, _toColorString["default"])(_extends({}, value, {
 	    red: 255 - value.red,
 	    green: 255 - value.green,
 	    blue: 255 - value.blue
 	  }));
 	}
 
-	var _default = invert;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 146 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 162 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	var _curry =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(138));
+	__webpack_require__(152));
 
 	var _guard =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(141));
+	__webpack_require__(155));
 
 	var _parseToHsl =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(125));
+	__webpack_require__(139));
 
 	var _toColorString =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(130));
+	__webpack_require__(144));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -138399,50 +145293,87 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function lighten(amount, color) {
-	  var hslColor = (0, _parseToHsl.default)(color);
-	  return (0, _toColorString.default)(_extends({}, hslColor, {
-	    lightness: (0, _guard.default)(0, 1, hslColor.lightness + parseFloat(amount))
+	  if (color === 'transparent') return color;
+	  var hslColor = (0, _parseToHsl["default"])(color);
+	  return (0, _toColorString["default"])(_extends({}, hslColor, {
+	    lightness: (0, _guard["default"])(0, 1, hslColor.lightness + parseFloat(amount))
 	  }));
 	} // prettier-ignore
 
 
 	var curriedLighten =
 	/*#__PURE__*/
-	(0, _curry.default
+	(0, _curry["default"]
 	/* ::<number | string, string, string> */
 	)(lighten);
 	var _default = curriedLighten;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 147 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 163 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = meetsContrastGuidelines;
+
+	var _getContrast =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(157));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	/**
+	 * Determines which contrast guidelines have been met for two colors.
+	 * Based on the [contrast calculations recommended by W3](https://www.w3.org/WAI/WCAG21/Understanding/contrast-enhanced.html).
+	 *
+	 * @example
+	 * const scores = meetsContrastGuidelines('#444', '#fff');
+	 */
+	function meetsContrastGuidelines(color1, color2) {
+	  var contrastRatio = (0, _getContrast["default"])(color1, color2);
+	  return {
+	    AA: contrastRatio >= 4.5,
+	    AALarge: contrastRatio >= 3,
+	    AAA: contrastRatio >= 7,
+	    AAALarge: contrastRatio >= 4.5
+	  };
+	}
+
+	module.exports = exports.default;
+
+/***/ }),
+/* 164 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports.__esModule = true;
+	exports["default"] = void 0;
 
 	var _curry =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(138));
+	__webpack_require__(152));
 
 	var _rgba =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(137));
+	__webpack_require__(151));
 
 	var _parseToRgb =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(126));
+	__webpack_require__(140));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -138473,13 +145404,15 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function mix(weight, color, otherColor) {
-	  var parsedColor1 = (0, _parseToRgb.default)(color);
+	  if (color === 'transparent') return otherColor;
+	  if (otherColor === 'transparent') return color;
+	  var parsedColor1 = (0, _parseToRgb["default"])(color);
 
 	  var color1 = _extends({}, parsedColor1, {
 	    alpha: typeof parsedColor1.alpha === 'number' ? parsedColor1.alpha : 1
 	  });
 
-	  var parsedColor2 = (0, _parseToRgb.default)(otherColor);
+	  var parsedColor2 = (0, _parseToRgb["default"])(otherColor);
 
 	  var color2 = _extends({}, parsedColor2, {
 	    alpha: typeof parsedColor2.alpha === 'number' ? parsedColor2.alpha : 1 // The formular is copied from the original Sass implementation:
@@ -138499,53 +145432,53 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    blue: Math.floor(color1.blue * weight1 + color2.blue * weight2),
 	    alpha: color1.alpha + (color2.alpha - color1.alpha) * (parseFloat(weight) / 1.0)
 	  };
-	  return (0, _rgba.default)(mixedColor);
+	  return (0, _rgba["default"])(mixedColor);
 	} // prettier-ignore
 
 
 	var curriedMix =
 	/*#__PURE__*/
-	(0, _curry.default
+	(0, _curry["default"]
 	/* ::<number | string, string, string, string> */
 	)(mix);
 	var _default = curriedMix;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 148 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 165 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	var _curry =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(138));
+	__webpack_require__(152));
 
 	var _guard =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(141));
+	__webpack_require__(155));
 
 	var _rgba =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(137));
+	__webpack_require__(151));
 
 	var _parseToRgb =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(126));
+	__webpack_require__(140));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -138577,112 +145510,195 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function opacify(amount, color) {
-	  var parsedColor = (0, _parseToRgb.default)(color);
+	  if (color === 'transparent') return color;
+	  var parsedColor = (0, _parseToRgb["default"])(color);
 	  var alpha = typeof parsedColor.alpha === 'number' ? parsedColor.alpha : 1;
 
 	  var colorWithAlpha = _extends({}, parsedColor, {
-	    alpha: (0, _guard.default)(0, 1, (alpha * 100 + parseFloat(amount) * 100) / 100)
+	    alpha: (0, _guard["default"])(0, 1, (alpha * 100 + parseFloat(amount) * 100) / 100)
 	  });
 
-	  return (0, _rgba.default)(colorWithAlpha);
+	  return (0, _rgba["default"])(colorWithAlpha);
 	} // prettier-ignore
 
 
 	var curriedOpacify =
 	/*#__PURE__*/
-	(0, _curry.default
+	(0, _curry["default"]
 	/* ::<number | string, string, string> */
 	)(opacify);
 	var _default = curriedOpacify;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 149 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 166 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = readableColor;
 
 	var _getLuminance =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(143));
+	__webpack_require__(158));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
-	 * Returns black or white for best contrast depending on the luminosity of the given color.
-	 * Follows W3C specs for readability at https://www.w3.org/TR/WCAG20-TECHS/G18.html
+	 * Returns black or white (or optional light and dark return colors) for best contrast depending on the luminosity of the given color.
+	 * Follows [W3C specs for readability](https://www.w3.org/TR/WCAG20-TECHS/G18.html).
 	 *
 	 * @example
 	 * // Styles as object usage
 	 * const styles = {
 	 *   color: readableColor('#000'),
-	 *   color: readableColor('papayawhip'),
-	 *   color: readableColor('rgb(255,0,0)'),
+	 *   color: readableColor('black', '#001', '#ff8'),
+	 *   color: readableColor('white', '#001', '#ff8'),
 	 * }
 	 *
 	 * // styled-components usage
 	 * const div = styled.div`
 	 *   color: ${readableColor('#000')};
-	 *   color: ${readableColor('papayawhip')};
-	 *   color: ${readableColor('rgb(255,0,0)')};
+	 *   color: ${readableColor('black', '#001', '#ff8')};
+	 *   color: ${readableColor('white', '#001', '#ff8')};
 	 * `
 	 *
 	 * // CSS in JS Output
 	 *
 	 * element {
 	 *   color: "#fff";
-	 *   color: "#fff";
-	 *   color: "#000";
+	 *   color: "#ff8";
+	 *   color: "#001";
 	 * }
 	 */
-	function readableColor(color) {
-	  return (0, _getLuminance.default)(color) > 0.179 ? '#000' : '#fff';
+	function readableColor(color, lightReturnColor, darkReturnColor) {
+	  if (lightReturnColor === void 0) {
+	    lightReturnColor = '#000';
+	  }
+
+	  if (darkReturnColor === void 0) {
+	    darkReturnColor = '#fff';
+	  }
+
+	  return (0, _getLuminance["default"])(color) > 0.179 ? lightReturnColor : darkReturnColor;
 	}
 
-	var _default = readableColor;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 150 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 167 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = rgbToColorString;
+
+	var _rgb =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(150));
+
+	var _rgba =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(151));
+
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	/**
+	 * Converts a RgbColor or RgbaColor object to a color string.
+	 * This util is useful in case you only know on runtime which color object is
+	 * used. Otherwise we recommend to rely on `rgb` or `rgba`.
+	 *
+	 * @example
+	 * // Styles as object usage
+	 * const styles = {
+	 *   background: rgbToColorString({ red: 255, green: 205, blue: 100 }),
+	 *   background: rgbToColorString({ red: 255, green: 205, blue: 100, alpha: 0.72 }),
+	 * }
+	 *
+	 * // styled-components usage
+	 * const div = styled.div`
+	 *   background: ${rgbToColorString({ red: 255, green: 205, blue: 100 })};
+	 *   background: ${rgbToColorString({ red: 255, green: 205, blue: 100, alpha: 0.72 })};
+	 * `
+	 *
+	 * // CSS in JS Output
+	 * element {
+	 *   background: "#ffcd64";
+	 *   background: "rgba(255,205,100,0.72)";
+	 * }
+	 */
+	function rgbToColorString(color) {
+	  if (typeof color === 'object' && typeof color.red === 'number' && typeof color.green === 'number' && typeof color.blue === 'number') {
+	    if (color.alpha && typeof color.alpha === 'number') {
+	      return (0, _rgba["default"])({
+	        red: color.red,
+	        green: color.green,
+	        blue: color.blue,
+	        alpha: color.alpha
+	      });
+	    }
+
+	    return (0, _rgb["default"])({
+	      red: color.red,
+	      green: color.green,
+	      blue: color.blue
+	    });
+	  }
+
+	  throw new _errors["default"](46);
+	}
+
+	module.exports = exports.default;
+
+/***/ }),
+/* 168 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports.__esModule = true;
+	exports["default"] = void 0;
 
 	var _curry =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(138));
+	__webpack_require__(152));
 
 	var _guard =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(141));
+	__webpack_require__(155));
 
 	var _parseToHsl =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(125));
+	__webpack_require__(139));
 
 	var _toColorString =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(130));
+	__webpack_require__(144));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -138712,50 +145728,51 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function saturate(amount, color) {
-	  var hslColor = (0, _parseToHsl.default)(color);
-	  return (0, _toColorString.default)(_extends({}, hslColor, {
-	    saturation: (0, _guard.default)(0, 1, hslColor.saturation + parseFloat(amount))
+	  if (color === 'transparent') return color;
+	  var hslColor = (0, _parseToHsl["default"])(color);
+	  return (0, _toColorString["default"])(_extends({}, hslColor, {
+	    saturation: (0, _guard["default"])(0, 1, hslColor.saturation + parseFloat(amount))
 	  }));
 	} // prettier-ignore
 
 
 	var curriedSaturate =
 	/*#__PURE__*/
-	(0, _curry.default
+	(0, _curry["default"]
 	/* ::<number | string, string, string> */
 	)(saturate);
 	var _default = curriedSaturate;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 151 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 169 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	var _curry =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(138));
+	__webpack_require__(152));
 
 	var _parseToHsl =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(125));
+	__webpack_require__(139));
 
 	var _toColorString =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(130));
+	__webpack_require__(144));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -138783,7 +145800,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function setHue(hue, color) {
-	  return (0, _toColorString.default)(_extends({}, (0, _parseToHsl.default)(color), {
+	  if (color === 'transparent') return color;
+	  return (0, _toColorString["default"])(_extends({}, (0, _parseToHsl["default"])(color), {
 	    hue: parseFloat(hue)
 	  }));
 	} // prettier-ignore
@@ -138791,41 +145809,41 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	var curriedSetHue =
 	/*#__PURE__*/
-	(0, _curry.default
+	(0, _curry["default"]
 	/* ::<number | string, string, string> */
 	)(setHue);
 	var _default = curriedSetHue;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 152 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 170 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	var _curry =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(138));
+	__webpack_require__(152));
 
 	var _parseToHsl =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(125));
+	__webpack_require__(139));
 
 	var _toColorString =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(130));
+	__webpack_require__(144));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -138853,7 +145871,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function setLightness(lightness, color) {
-	  return (0, _toColorString.default)(_extends({}, (0, _parseToHsl.default)(color), {
+	  if (color === 'transparent') return color;
+	  return (0, _toColorString["default"])(_extends({}, (0, _parseToHsl["default"])(color), {
 	    lightness: parseFloat(lightness)
 	  }));
 	} // prettier-ignore
@@ -138861,46 +145880,46 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	var curriedSetLightness =
 	/*#__PURE__*/
-	(0, _curry.default
+	(0, _curry["default"]
 	/* ::<number | string, string, string> */
 	)(setLightness);
 	var _default = curriedSetLightness;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 153 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 171 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	var _curry =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(138));
+	__webpack_require__(152));
 
 	var _parseToHsl =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(125));
+	__webpack_require__(139));
 
 	var _toColorString =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(130));
+	__webpack_require__(144));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 	/**
-	 * Sets the saturation of a color to the provided value. The lightness range can be
+	 * Sets the saturation of a color to the provided value. The saturation range can be
 	 * from 0 and 1.
 	 *
 	 * @example
@@ -138923,7 +145942,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function setSaturation(saturation, color) {
-	  return (0, _toColorString.default)(_extends({}, (0, _parseToHsl.default)(color), {
+	  if (color === 'transparent') return color;
+	  return (0, _toColorString["default"])(_extends({}, (0, _parseToHsl["default"])(color), {
 	    saturation: parseFloat(saturation)
 	  }));
 	} // prettier-ignore
@@ -138931,35 +145951,35 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	var curriedSetSaturation =
 	/*#__PURE__*/
-	(0, _curry.default
+	(0, _curry["default"]
 	/* ::<number | string, string, string> */
 	)(setSaturation);
 	var _default = curriedSetSaturation;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 154 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 172 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	var _curry =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(138));
+	__webpack_require__(152));
 
 	var _mix =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(147));
+	__webpack_require__(164));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Shades a color by mixing it with black. `shade` can produce
@@ -138984,41 +146004,42 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function shade(percentage, color) {
-	  return (0, _mix.default)(parseFloat(percentage), 'rgb(0, 0, 0)', color);
+	  if (color === 'transparent') return color;
+	  return (0, _mix["default"])(parseFloat(percentage), 'rgb(0, 0, 0)', color);
 	} // prettier-ignore
 
 
 	var curriedShade =
 	/*#__PURE__*/
-	(0, _curry.default
+	(0, _curry["default"]
 	/* ::<number | string, string, string> */
 	)(shade);
 	var _default = curriedShade;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 155 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 173 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	var _curry =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(138));
+	__webpack_require__(152));
 
 	var _mix =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(147));
+	__webpack_require__(164));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Tints a color by mixing it with white. `tint` can produce
@@ -139043,53 +146064,54 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function tint(percentage, color) {
-	  return (0, _mix.default)(parseFloat(percentage), 'rgb(255, 255, 255)', color);
+	  if (color === 'transparent') return color;
+	  return (0, _mix["default"])(parseFloat(percentage), 'rgb(255, 255, 255)', color);
 	} // prettier-ignore
 
 
 	var curriedTint =
 	/*#__PURE__*/
-	(0, _curry.default
+	(0, _curry["default"]
 	/* ::<number | string, string, string> */
 	)(tint);
 	var _default = curriedTint;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 156 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 174 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
 
 	var _curry =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(138));
+	__webpack_require__(152));
 
 	var _guard =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(141));
+	__webpack_require__(155));
 
 	var _rgba =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(137));
+	__webpack_require__(151));
 
 	var _parseToRgb =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(126));
+	__webpack_require__(140));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -139121,34 +146143,43 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function transparentize(amount, color) {
-	  var parsedColor = (0, _parseToRgb.default)(color);
+	  if (color === 'transparent') return color;
+	  var parsedColor = (0, _parseToRgb["default"])(color);
 	  var alpha = typeof parsedColor.alpha === 'number' ? parsedColor.alpha : 1;
 
 	  var colorWithAlpha = _extends({}, parsedColor, {
-	    alpha: (0, _guard.default)(0, 1, (alpha * 100 - parseFloat(amount) * 100) / 100)
+	    alpha: (0, _guard["default"])(0, 1, (alpha * 100 - parseFloat(amount) * 100) / 100)
 	  });
 
-	  return (0, _rgba.default)(colorWithAlpha);
+	  return (0, _rgba["default"])(colorWithAlpha);
 	} // prettier-ignore
 
 
 	var curriedTransparentize =
 	/*#__PURE__*/
-	(0, _curry.default
+	(0, _curry["default"]
 	/* ::<number | string, string, string> */
 	)(transparentize);
 	var _default = curriedTransparentize;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 157 */
-/***/ function(module, exports) {
+/***/ }),
+/* 175 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = animation;
+
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Shorthand for easily setting the animation property. Allows either multiple arrays with animations
@@ -139195,16 +146226,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  var multiMode = Array.isArray(args[0]);
 
 	  if (!multiMode && args.length > 8) {
-	    throw new Error('The animation shorthand only takes 8 arguments. See the specification for more information: http://mdn.io/animation');
+	    throw new _errors["default"](64);
 	  }
 
 	  var code = args.map(function (arg) {
 	    if (multiMode && !Array.isArray(arg) || !multiMode && Array.isArray(arg)) {
-	      throw new Error("To pass multiple animations please supply them in arrays, e.g. animation(['rotate', '2s'], ['move', '1s'])\nTo pass a single animation please supply them in simple values, e.g. animation('rotate', '2s')");
+	      throw new _errors["default"](65);
 	    }
 
 	    if (Array.isArray(arg) && arg.length > 8) {
-	      throw new Error('The animation shorthand arrays can only have 8 elements. See the specification for more information: http://mdn.io/animation');
+	      throw new _errors["default"](66);
 	    }
 
 	    return Array.isArray(arg) ? arg.join(' ') : arg;
@@ -139214,18 +146245,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 	}
 
-	var _default = animation;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 158 */
-/***/ function(module, exports) {
+/***/ }),
+/* 176 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = backgroundImages;
 
 	/**
 	 * Shorthand that accepts any number of backgroundImage values as parameters for creating a single background statement.
@@ -139256,18 +146285,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 	}
 
-	var _default = backgroundImages;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 159 */
-/***/ function(module, exports) {
+/***/ }),
+/* 177 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = backgrounds;
 
 	/**
 	 * Shorthand that accepts any number of background values as parameters for creating a single background statement.
@@ -139298,26 +146325,24 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 	}
 
-	var _default = backgrounds;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 160 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 178 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = border;
 
 	var _capitalizeString =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(98));
+	__webpack_require__(113));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	var sideMap = ['top', 'right', 'bottom', 'left'];
 	/**
@@ -139369,7 +146394,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  if (typeof sideKeyword === 'string' && sideMap.indexOf(sideKeyword) >= 0) {
 	    var _ref;
 
-	    return _ref = {}, _ref["border" + (0, _capitalizeString.default)(sideKeyword) + "Width"] = values[0], _ref["border" + (0, _capitalizeString.default)(sideKeyword) + "Style"] = values[1], _ref["border" + (0, _capitalizeString.default)(sideKeyword) + "Color"] = values[2], _ref;
+	    return _ref = {}, _ref["border" + (0, _capitalizeString["default"])(sideKeyword) + "Width"] = values[0], _ref["border" + (0, _capitalizeString["default"])(sideKeyword) + "Style"] = values[1], _ref["border" + (0, _capitalizeString["default"])(sideKeyword) + "Color"] = values[2], _ref;
 	  } else {
 	    values.unshift(sideKeyword);
 	    return {
@@ -139380,26 +146405,79 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  }
 	}
 
-	var _default = border;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 161 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 179 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = borderColor;
+
+	var _directionalProperty =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(112));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+	/**
+	 * Shorthand that accepts up to four values, including null to skip a value, and maps them to their respective directions.
+	 * @example
+	 * // Styles as object usage
+	 * const styles = {
+	 *   ...borderColor('red', 'green', 'blue', 'yellow')
+	 * }
+	 *
+	 * // styled-components usage
+	 * const div = styled.div`
+	 *   ${borderColor('red', 'green', 'blue', 'yellow')}
+	 * `
+	 *
+	 * // CSS as JS Output
+	 *
+	 * div {
+	 *   'borderTopColor': 'red',
+	 *   'borderRightColor': 'green',
+	 *   'borderBottomColor': 'blue',
+	 *   'borderLeftColor': 'yellow'
+	 * }
+	 */
+	function borderColor() {
+	  for (var _len = arguments.length, values = new Array(_len), _key = 0; _key < _len; _key++) {
+	    values[_key] = arguments[_key];
+	  }
+
+	  return _directionalProperty["default"].apply(void 0, ['borderColor'].concat(values));
+	}
+
+	module.exports = exports.default;
+
+/***/ }),
+/* 180 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports.__esModule = true;
+	exports["default"] = borderRadius;
 
 	var _capitalizeString =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(98));
+	__webpack_require__(113));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Shorthand that accepts a value for side and a value for radius and applies the radius value to both corners of the side.
@@ -139422,10 +146500,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	 * }
 	 */
 	function borderRadius(side, radius) {
-	  var uppercaseSide = (0, _capitalizeString.default)(side);
+	  var uppercaseSide = (0, _capitalizeString["default"])(side);
 
 	  if (!radius && radius !== 0) {
-	    throw new Error('borderRadius expects a radius value as a string or number as the second argument.');
+	    throw new _errors["default"](62);
 	  }
 
 	  if (uppercaseSide === 'Top' || uppercaseSide === 'Bottom') {
@@ -139440,29 +146518,27 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    return _ref2 = {}, _ref2["borderTop" + uppercaseSide + "Radius"] = radius, _ref2["borderBottom" + uppercaseSide + "Radius"] = radius, _ref2;
 	  }
 
-	  throw new Error('borderRadius expects one of "top", "bottom", "left" or "right" as the first argument.');
+	  throw new _errors["default"](63);
 	}
 
-	var _default = borderRadius;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 162 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 181 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = borderStyle;
 
 	var _directionalProperty =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(97));
+	__webpack_require__(112));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Shorthand that accepts up to four values, including null to skip a value, and maps them to their respective directions.
@@ -139491,29 +146567,27 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    values[_key] = arguments[_key];
 	  }
 
-	  return _directionalProperty.default.apply(void 0, ['borderStyle'].concat(values));
+	  return _directionalProperty["default"].apply(void 0, ['borderStyle'].concat(values));
 	}
 
-	var _default = borderStyle;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 163 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 182 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = borderWidth;
 
 	var _directionalProperty =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(97));
+	__webpack_require__(112));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Shorthand that accepts up to four values, including null to skip a value, and maps them to their respective directions.
@@ -139542,29 +146616,27 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    values[_key] = arguments[_key];
 	  }
 
-	  return _directionalProperty.default.apply(void 0, ['borderWidth'].concat(values));
+	  return _directionalProperty["default"].apply(void 0, ['borderWidth'].concat(values));
 	}
 
-	var _default = borderWidth;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 164 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 183 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = buttons;
 
 	var _statefulSelectors =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(165));
+	__webpack_require__(184));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	var stateMap = [undefined, null, 'active', 'focus', 'hover'];
 
@@ -139604,21 +146676,27 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    states[_key] = arguments[_key];
 	  }
 
-	  return (0, _statefulSelectors.default)(states, template, stateMap);
+	  return (0, _statefulSelectors["default"])(states, template, stateMap);
 	}
 
-	var _default = buttons;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 165 */
-/***/ function(module, exports) {
+/***/ }),
+/* 184 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = void 0;
+
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function generateSelectors(template, state) {
 	  var stateSuffix = state ? ":" + state : '';
@@ -139631,13 +146709,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 
 	function statefulSelectors(states, template, stateMap) {
-	  if (!template) throw new Error('You must provide a template to this method.');
+	  if (!template) throw new _errors["default"](67);
 	  if (states.length === 0) return generateSelectors(template, null);
 	  var selectors = [];
 
 	  for (var i = 0; i < states.length; i += 1) {
 	    if (stateMap && stateMap.indexOf(states[i]) < 0) {
-	      throw new Error('You passed an unsupported selector state to this method.');
+	      throw new _errors["default"](68);
 	    }
 
 	    selectors.push(generateSelectors(template, states[i]));
@@ -139648,25 +146726,25 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	}
 
 	var _default = statefulSelectors;
-	exports.default = _default;
+	exports["default"] = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 166 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 185 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = margin;
 
 	var _directionalProperty =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(97));
+	__webpack_require__(112));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Shorthand that accepts up to four values, including null to skip a value, and maps them to their respective directions.
@@ -139695,29 +146773,27 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    values[_key] = arguments[_key];
 	  }
 
-	  return _directionalProperty.default.apply(void 0, ['margin'].concat(values));
+	  return _directionalProperty["default"].apply(void 0, ['margin'].concat(values));
 	}
 
-	var _default = margin;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 167 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 186 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = padding;
 
 	var _directionalProperty =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(97));
+	__webpack_require__(112));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
 	 * Shorthand that accepts up to four values, including null to skip a value, and maps them to their respective directions.
@@ -139746,29 +146822,27 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    values[_key] = arguments[_key];
 	  }
 
-	  return _directionalProperty.default.apply(void 0, ['padding'].concat(values));
+	  return _directionalProperty["default"].apply(void 0, ['padding'].concat(values));
 	}
 
-	var _default = padding;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 168 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 187 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = position;
 
 	var _directionalProperty =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(97));
+	__webpack_require__(112));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -139824,26 +146898,24 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  if (positionMap.indexOf(positionKeyword) >= 0) {
 	    return _extends({
 	      position: positionKeyword
-	    }, _directionalProperty.default.apply(void 0, [''].concat(values)));
+	    }, _directionalProperty["default"].apply(void 0, [''].concat(values)));
 	  } else {
 	    var firstValue = positionKeyword; // in this case position is actually the first value
 
-	    return _directionalProperty.default.apply(void 0, ['', firstValue].concat(values));
+	    return _directionalProperty["default"].apply(void 0, ['', firstValue].concat(values));
 	  }
 	}
 
-	var _default = position;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 169 */
-/***/ function(module, exports) {
+/***/ }),
+/* 188 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = size;
 
 	/**
 	 * Shorthand to set the height and width properties in a single statement.
@@ -139876,26 +146948,24 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  };
 	}
 
-	var _default = size;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 170 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 189 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = textInputs;
 
 	var _statefulSelectors =
 	/*#__PURE__*/
 	_interopRequireDefault(
 	/*#__PURE__*/
-	__webpack_require__(165));
+	__webpack_require__(184));
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	var stateMap = [undefined, null, 'active', 'focus', 'hover'];
 
@@ -139947,24 +147017,30 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    states[_key] = arguments[_key];
 	  }
 
-	  return (0, _statefulSelectors.default)(states, template, stateMap);
+	  return (0, _statefulSelectors["default"])(states, template, stateMap);
 	}
 
-	var _default = textInputs;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 171 */
-/***/ function(module, exports) {
+/***/ }),
+/* 190 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
-	exports.default = void 0;
+	exports["default"] = transitions;
+
+	var _errors =
+	/*#__PURE__*/
+	_interopRequireDefault(
+	/*#__PURE__*/
+	__webpack_require__(110));
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 	/**
-	 * Accepts any number of transition values as parameters for creating a single transition statement. You may also pass an array of properties as the first parameter that you would like to apply the same tranisition values to (second parameter).
+	 * Accepts any number of transition values as parameters for creating a single transition statement. You may also pass an array of properties as the first parameter that you would like to apply the same transition values to (second parameter).
 	 * @example
 	 * // Styles as object usage
 	 * const styles = {
@@ -139994,7 +147070,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    var value = properties[1];
 
 	    if (typeof value !== 'string') {
-	      throw new Error('Property must be a string value.');
+	      throw new _errors["default"](61);
 	    }
 
 	    var transitionsString = properties[0].map(function (property) {
@@ -140010,13 +147086,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  }
 	}
 
-	var _default = transitions;
-	exports.default = _default;
 	module.exports = exports.default;
 
-/***/ },
-/* 172 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 191 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process) {/**
 	 * Tween.js - Licensed under the MIT license
@@ -140111,7 +147185,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	// Include a performance.now polyfill.
 	// In node.js, use process.hrtime.
-	if (typeof (window) === 'undefined' && typeof (process) !== 'undefined' && process.hrtime) {
+	if (typeof (self) === 'undefined' && typeof (process) !== 'undefined' && process.hrtime) {
 		TWEEN.now = function () {
 			var time = process.hrtime();
 
@@ -140119,13 +147193,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			return time[0] * 1000 + time[1] / 1000000;
 		};
 	}
-	// In a browser, use window.performance.now if it is available.
-	else if (typeof (window) !== 'undefined' &&
-	         window.performance !== undefined &&
-			 window.performance.now !== undefined) {
+	// In a browser, use self.performance.now if it is available.
+	else if (typeof (self) !== 'undefined' &&
+	         self.performance !== undefined &&
+			 self.performance.now !== undefined) {
 		// This must be bound, because directly assigning this function
 		// leads to an invocation exception in Chrome.
-		TWEEN.now = window.performance.now.bind(window.performance);
+		TWEEN.now = self.performance.now.bind(self.performance);
 	}
 	// Use Date.now if it is available.
 	else if (Date.now !== undefined) {
@@ -140158,6 +147232,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 		this._onStartCallback = null;
 		this._onStartCallbackFired = false;
 		this._onUpdateCallback = null;
+		this._onRepeatCallback = null;
 		this._onCompleteCallback = null;
 		this._onStopCallback = null;
 		this._group = group || TWEEN;
@@ -140166,17 +147241,17 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	};
 
 	TWEEN.Tween.prototype = {
-		getId: function getId() {
+		getId: function () {
 			return this._id;
 		},
 
-		isPlaying: function isPlaying() {
+		isPlaying: function () {
 			return this._isPlaying;
 		},
 
-		to: function to(properties, duration) {
+		to: function (properties, duration) {
 
-			this._valuesEnd = properties;
+			this._valuesEnd = Object.create(properties);
 
 			if (duration !== undefined) {
 				this._duration = duration;
@@ -140186,7 +147261,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		},
 
-		start: function start(time) {
+		duration: function duration(d) {
+			this._duration = d;
+			return this;
+		},
+
+		start: function (time) {
 
 			this._group.add(this);
 
@@ -140232,7 +147312,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		},
 
-		stop: function stop() {
+		stop: function () {
 
 			if (!this._isPlaying) {
 				return this;
@@ -140250,14 +147330,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		},
 
-		end: function end() {
+		end: function () {
 
-			this.update(this._startTime + this._duration);
+			this.update(Infinity);
 			return this;
 
 		},
 
-		stopChainedTweens: function stopChainedTweens() {
+		stopChainedTweens: function () {
 
 			for (var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++) {
 				this._chainedTweens[i].stop();
@@ -140265,89 +147345,96 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 		},
 
-		group: function group(group) {
+		group: function (group) {
 			this._group = group;
 			return this;
 		},
 
-		delay: function delay(amount) {
+		delay: function (amount) {
 
 			this._delayTime = amount;
 			return this;
 
 		},
 
-		repeat: function repeat(times) {
+		repeat: function (times) {
 
 			this._repeat = times;
 			return this;
 
 		},
 
-		repeatDelay: function repeatDelay(amount) {
+		repeatDelay: function (amount) {
 
 			this._repeatDelayTime = amount;
 			return this;
 
 		},
 
-		yoyo: function yoyo(yy) {
+		yoyo: function (yoyo) {
 
-			this._yoyo = yy;
+			this._yoyo = yoyo;
 			return this;
 
 		},
 
-		easing: function easing(eas) {
+		easing: function (easingFunction) {
 
-			this._easingFunction = eas;
+			this._easingFunction = easingFunction;
 			return this;
 
 		},
 
-		interpolation: function interpolation(inter) {
+		interpolation: function (interpolationFunction) {
 
-			this._interpolationFunction = inter;
+			this._interpolationFunction = interpolationFunction;
 			return this;
 
 		},
 
-		chain: function chain() {
+		chain: function () {
 
 			this._chainedTweens = arguments;
 			return this;
 
 		},
 
-		onStart: function onStart(callback) {
+		onStart: function (callback) {
 
 			this._onStartCallback = callback;
 			return this;
 
 		},
 
-		onUpdate: function onUpdate(callback) {
+		onUpdate: function (callback) {
 
 			this._onUpdateCallback = callback;
 			return this;
 
 		},
 
-		onComplete: function onComplete(callback) {
+		onRepeat: function onRepeat(callback) {
+
+			this._onRepeatCallback = callback;
+			return this;
+
+		},
+
+		onComplete: function (callback) {
 
 			this._onCompleteCallback = callback;
 			return this;
 
 		},
 
-		onStop: function onStop(callback) {
+		onStop: function (callback) {
 
 			this._onStopCallback = callback;
 			return this;
 
 		},
 
-		update: function update(time) {
+		update: function (time) {
 
 			var property;
 			var elapsed;
@@ -140407,7 +147494,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 			}
 
 			if (this._onUpdateCallback !== null) {
-				this._onUpdateCallback(this._object);
+				this._onUpdateCallback(this._object, elapsed);
 			}
 
 			if (elapsed === 1) {
@@ -140444,6 +147531,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 						this._startTime = time + this._repeatDelayTime;
 					} else {
 						this._startTime = time + this._delayTime;
+					}
+
+					if (this._onRepeatCallback !== null) {
+						this._onRepeatCallback(this._object);
 					}
 
 					return true;
@@ -140936,194 +148027,29 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	})(this);
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(173)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(111)))
 
-/***/ },
-/* 173 */
-/***/ function(module, exports) {
-
-	// shim for using process in browser
-	var process = module.exports = {};
-
-	// cached from whatever global is present so that test runners that stub it
-	// don't break things.  But we need to wrap it in a try catch in case it is
-	// wrapped in strict mode code which doesn't define any globals.  It's inside a
-	// function because try/catches deoptimize in certain engines.
-
-	var cachedSetTimeout;
-	var cachedClearTimeout;
-
-	(function () {
-	    try {
-	        cachedSetTimeout = setTimeout;
-	    } catch (e) {
-	        cachedSetTimeout = function () {
-	            throw new Error('setTimeout is not defined');
-	        }
-	    }
-	    try {
-	        cachedClearTimeout = clearTimeout;
-	    } catch (e) {
-	        cachedClearTimeout = function () {
-	            throw new Error('clearTimeout is not defined');
-	        }
-	    }
-	} ())
-	function runTimeout(fun) {
-	    if (cachedSetTimeout === setTimeout) {
-	        //normal enviroments in sane situations
-	        return setTimeout(fun, 0);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedSetTimeout(fun, 0);
-	    } catch(e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-	            return cachedSetTimeout.call(null, fun, 0);
-	        } catch(e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-	            return cachedSetTimeout.call(this, fun, 0);
-	        }
-	    }
-
-
-	}
-	function runClearTimeout(marker) {
-	    if (cachedClearTimeout === clearTimeout) {
-	        //normal enviroments in sane situations
-	        return clearTimeout(marker);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedClearTimeout(marker);
-	    } catch (e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-	            return cachedClearTimeout.call(null, marker);
-	        } catch (e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-	            return cachedClearTimeout.call(this, marker);
-	        }
-	    }
-
-
-
-	}
-	var queue = [];
-	var draining = false;
-	var currentQueue;
-	var queueIndex = -1;
-
-	function cleanUpNextTick() {
-	    if (!draining || !currentQueue) {
-	        return;
-	    }
-	    draining = false;
-	    if (currentQueue.length) {
-	        queue = currentQueue.concat(queue);
-	    } else {
-	        queueIndex = -1;
-	    }
-	    if (queue.length) {
-	        drainQueue();
-	    }
-	}
-
-	function drainQueue() {
-	    if (draining) {
-	        return;
-	    }
-	    var timeout = runTimeout(cleanUpNextTick);
-	    draining = true;
-
-	    var len = queue.length;
-	    while(len) {
-	        currentQueue = queue;
-	        queue = [];
-	        while (++queueIndex < len) {
-	            if (currentQueue) {
-	                currentQueue[queueIndex].run();
-	            }
-	        }
-	        queueIndex = -1;
-	        len = queue.length;
-	    }
-	    currentQueue = null;
-	    draining = false;
-	    runClearTimeout(timeout);
-	}
-
-	process.nextTick = function (fun) {
-	    var args = new Array(arguments.length - 1);
-	    if (arguments.length > 1) {
-	        for (var i = 1; i < arguments.length; i++) {
-	            args[i - 1] = arguments[i];
-	        }
-	    }
-	    queue.push(new Item(fun, args));
-	    if (queue.length === 1 && !draining) {
-	        runTimeout(drainQueue);
-	    }
-	};
-
-	// v8 likes predictible objects
-	function Item(fun, array) {
-	    this.fun = fun;
-	    this.array = array;
-	}
-	Item.prototype.run = function () {
-	    this.fun.apply(null, this.array);
-	};
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-	process.version = ''; // empty string to avoid regexp issues
-	process.versions = {};
-
-	function noop() {}
-
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	};
-
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
-	process.umask = function() { return 0; };
-
-
-/***/ },
-/* 174 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 192 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-	var d3Selection = __webpack_require__(9);
-	var d3Zoom = __webpack_require__(36);
-	var d3Drag = __webpack_require__(11);
-	var throttle = _interopDefault(__webpack_require__(175));
-	var TWEEN = _interopDefault(__webpack_require__(172));
-	var Kapsule = _interopDefault(__webpack_require__(89));
-	var accessorFn = _interopDefault(__webpack_require__(90));
-	var ColorTracker = _interopDefault(__webpack_require__(176));
-	var d3Force3d = __webpack_require__(42);
-	var Bezier = _interopDefault(__webpack_require__(177));
-	var indexBy = _interopDefault(__webpack_require__(183));
-	var d3ScaleChromatic = __webpack_require__(33);
+	var d3Selection = __webpack_require__(10);
+	var d3Zoom = __webpack_require__(40);
+	var d3Drag = __webpack_require__(12);
+	var throttle = _interopDefault(__webpack_require__(193));
+	var TWEEN = _interopDefault(__webpack_require__(191));
+	var Kapsule = _interopDefault(__webpack_require__(97));
+	var accessorFn = _interopDefault(__webpack_require__(99));
+	var ColorTracker = _interopDefault(__webpack_require__(194));
+	var d3Force3d = __webpack_require__(46);
+	var Bezier = _interopDefault(__webpack_require__(195));
+	var indexBy = _interopDefault(__webpack_require__(201));
+	var d3Scale = __webpack_require__(100);
+	var d3ScaleChromatic = __webpack_require__(37);
 
 	function styleInject(css, ref) {
 	  if (ref === void 0) ref = {};
@@ -141154,7 +148080,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  }
 	}
 
-	var css = ".graph-tooltip {\n  position: absolute;\n  transform: translate(-50%, 25px);\n  font-family: Sans-serif;\n  font-size: 16px;\n  padding: 4px;\n  border-radius: 3px;\n  color: #eee;\n  background: rgba(0,0,0,0.65);\n  visibility: hidden; /* by default */\n}\n\n.grabbable {\n  cursor: move;\n  cursor: grab;\n  cursor: -moz-grab;\n  cursor: -webkit-grab;\n}\n\n.grabbable:active {\n  cursor: grabbing;\n  cursor: -moz-grabbing;\n  cursor: -webkit-grabbing;\n}\n";
+	var css = ".graph-tooltip {\n  position: absolute;\n  transform: translate(-50%, 25px);\n  font-family: sans-serif;\n  font-size: 16px;\n  padding: 4px;\n  border-radius: 3px;\n  color: #eee;\n  background: rgba(0,0,0,0.65);\n  visibility: hidden; /* by default */\n}\n\n.grabbable {\n  cursor: move;\n  cursor: grab;\n  cursor: -moz-grab;\n  cursor: -webkit-grab;\n}\n\n.grabbable:active {\n  cursor: grabbing;\n  cursor: -moz-grabbing;\n  cursor: -webkit-grabbing;\n}\n";
 	styleInject(css);
 
 	function _typeof(obj) {
@@ -141302,25 +148228,16 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	  throw new TypeError("Invalid attempt to destructure non-iterable instance");
 	}
 
+	var autoColorScale = d3Scale.scaleOrdinal(d3ScaleChromatic.schemePaired); // Autoset attribute colorField by colorByAccessor property
 	// If an object has already a color, don't set it
 	// Objects can be nodes or links
 
 	function autoColorObjects(objects, colorByAccessor, colorField) {
 	  if (!colorByAccessor || typeof colorField !== 'string') return;
-	  var colors = d3ScaleChromatic.schemePaired; // Paired color set from color brewer
-
-	  var uncoloredObjects = objects.filter(function (obj) {
+	  objects.filter(function (obj) {
 	    return !obj[colorField];
-	  });
-	  var objGroups = {};
-	  uncoloredObjects.forEach(function (obj) {
-	    objGroups[colorByAccessor(obj)] = null;
-	  });
-	  Object.keys(objGroups).forEach(function (group, idx) {
-	    objGroups[group] = idx;
-	  });
-	  uncoloredObjects.forEach(function (obj) {
-	    obj[colorField] = colors[objGroups[colorByAccessor(obj)] % colors.length];
+	  }).forEach(function (obj) {
+	    obj[colorField] = autoColorScale(colorByAccessor(obj));
 	  });
 	}
 
@@ -141366,7 +148283,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      var node = nodes[i];
 
 	      if (nodeStack.indexOf(node) !== -1) {
-	        throw "Invalid DAG structure! Found cycle from node ".concat(idAccessor(nodeStack[nodeStack.length - 1].data), " to ").concat(idAccessor(node.data));
+	        var loop = [].concat(_toConsumableArray(nodeStack.slice(nodeStack.indexOf(node))), [node]).map(function (d) {
+	          return idAccessor(d.data);
+	        });
+	        throw "Invalid DAG structure! Found cycle in node path: ".concat(loop.join(' -> '), ".");
 	      }
 
 	      if (currentDepth > node.depth) {
@@ -141382,7 +148302,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	var CanvasForceGraph = Kapsule({
 	  props: {
 	    graphData: {
-	      default: {
+	      "default": {
 	        nodes: [],
 	        links: []
 	      },
@@ -141391,144 +148311,167 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      } // Pause simulation
 
 	    },
-	    dagMode: {},
-	    // td, bu, lr, rl, radialin, radialout
+	    dagMode: {
+	      onChange: function onChange(dagMode, state) {
+	        // td, bu, lr, rl, radialin, radialout
+	        !dagMode && (state.graphData.nodes || []).forEach(function (n) {
+	          return n.fx = n.fy = undefined;
+	        }); // unfix nodes when disabling dag mode
+	      }
+	    },
 	    dagLevelDistance: {},
 	    nodeRelSize: {
-	      default: 4,
+	      "default": 4,
 	      triggerUpdate: false
 	    },
 	    // area per val unit
 	    nodeId: {
-	      default: 'id'
+	      "default": 'id'
 	    },
 	    nodeVal: {
-	      default: 'val',
+	      "default": 'val',
 	      triggerUpdate: false
 	    },
 	    nodeColor: {
-	      default: 'color',
+	      "default": 'color',
 	      triggerUpdate: false
 	    },
 	    nodeAutoColorBy: {},
 	    nodeCanvasObject: {
 	      triggerUpdate: false
 	    },
+	    nodeCanvasObjectMode: {
+	      "default": function _default() {
+	        return 'replace';
+	      },
+	      triggerUpdate: false
+	    },
 	    linkSource: {
-	      default: 'source'
+	      "default": 'source'
 	    },
 	    linkTarget: {
-	      default: 'target'
+	      "default": 'target'
 	    },
 	    linkVisibility: {
-	      default: true,
+	      "default": true,
 	      triggerUpdate: false
 	    },
 	    linkColor: {
-	      default: 'color',
+	      "default": 'color',
 	      triggerUpdate: false
 	    },
 	    linkAutoColorBy: {},
 	    linkWidth: {
-	      default: 1,
+	      "default": 1,
 	      triggerUpdate: false
 	    },
 	    linkCurvature: {
-	      default: 0,
+	      "default": 0,
 	      triggerUpdate: false
 	    },
 	    linkCanvasObject: {
 	      triggerUpdate: false
 	    },
+	    linkCanvasObjectMode: {
+	      "default": function _default() {
+	        return 'replace';
+	      },
+	      triggerUpdate: false
+	    },
 	    linkDirectionalArrowLength: {
-	      default: 0,
+	      "default": 0,
 	      triggerUpdate: false
 	    },
 	    linkDirectionalArrowColor: {
 	      triggerUpdate: false
 	    },
 	    linkDirectionalArrowRelPos: {
-	      default: 0.5,
+	      "default": 0.5,
 	      triggerUpdate: false
 	    },
 	    // value between 0<>1 indicating the relative pos along the (exposed) line
 	    linkDirectionalParticles: {
-	      default: 0
+	      "default": 0
 	    },
 	    // animate photons travelling in the link direction
 	    linkDirectionalParticleSpeed: {
-	      default: 0.01,
+	      "default": 0.01,
 	      triggerUpdate: false
 	    },
 	    // in link length ratio per frame
 	    linkDirectionalParticleWidth: {
-	      default: 4,
+	      "default": 4,
 	      triggerUpdate: false
 	    },
 	    linkDirectionalParticleColor: {
 	      triggerUpdate: false
 	    },
 	    globalScale: {
-	      default: 1,
+	      "default": 1,
 	      triggerUpdate: false
 	    },
 	    d3AlphaDecay: {
-	      default: 0.0228,
+	      "default": 0.0228,
 	      triggerUpdate: false,
 	      onChange: function onChange(alphaDecay, state) {
 	        state.forceLayout.alphaDecay(alphaDecay);
 	      }
 	    },
 	    d3AlphaTarget: {
-	      default: 0,
+	      "default": 0,
 	      triggerUpdate: false,
 	      onChange: function onChange(alphaTarget, state) {
 	        state.forceLayout.alphaTarget(alphaTarget);
 	      }
 	    },
 	    d3VelocityDecay: {
-	      default: 0.4,
+	      "default": 0.4,
 	      triggerUpdate: false,
 	      onChange: function onChange(velocityDecay, state) {
 	        state.forceLayout.velocityDecay(velocityDecay);
 	      }
 	    },
 	    warmupTicks: {
-	      default: 0,
+	      "default": 0,
 	      triggerUpdate: false
 	    },
 	    // how many times to tick the force engine at init before starting to render
 	    cooldownTicks: {
-	      default: Infinity,
+	      "default": Infinity,
 	      triggerUpdate: false
 	    },
 	    cooldownTime: {
-	      default: 15000,
+	      "default": 15000,
 	      triggerUpdate: false
 	    },
 	    // ms
 	    onLoading: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onFinishLoading: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onEngineTick: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onEngineStop: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    isShadow: {
-	      default: false,
+	      "default": false,
 	      triggerUpdate: false
 	    }
 	  },
 	  methods: {
+	    refresh: function refresh(state) {
+	      state._rerender();
+
+	      return this;
+	    },
 	    // Expose d3 forces for external manipulation
 	    d3Force: function d3Force(state, forceName, forceFn) {
 	      if (forceFn === undefined) {
@@ -141571,15 +148514,22 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      function paintNodes() {
 	        var getVal = accessorFn(state.nodeVal);
 	        var getColor = accessorFn(state.nodeColor);
+	        var getNodeCanvasObjectMode = accessorFn(state.nodeCanvasObjectMode);
 	        var ctx = state.ctx; // Draw wider nodes by 1px on shadow canvas for more precise hovering (due to boundary anti-aliasing)
 
 	        var padAmount = state.isShadow / state.globalScale;
 	        ctx.save();
 	        state.graphData.nodes.forEach(function (node) {
-	          if (state.nodeCanvasObject) {
-	            // Custom node paint
-	            state.nodeCanvasObject(node, state.ctx, state.globalScale);
-	            return;
+	          var nodeCanvasObjectMode = getNodeCanvasObjectMode(node);
+
+	          if (state.nodeCanvasObject && (nodeCanvasObjectMode === 'before' || nodeCanvasObjectMode === 'replace')) {
+	            // Custom node before/replace paint
+	            state.nodeCanvasObject(node, ctx, state.globalScale);
+
+	            if (nodeCanvasObjectMode === 'replace') {
+	              ctx.restore();
+	              return;
+	            }
 	          } // Draw wider nodes by 1px on shadow canvas for more precise hovering (due to boundary anti-aliasing)
 
 
@@ -141588,6 +148538,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	          ctx.arc(node.x, node.y, r, 0, 2 * Math.PI, false);
 	          ctx.fillStyle = getColor(node) || 'rgba(31, 120, 180, 0.92)';
 	          ctx.fill();
+
+	          if (state.nodeCanvasObject && nodeCanvasObjectMode === 'after') {
+	            // Custom node after paint
+	            state.nodeCanvasObject(node, state.ctx, state.globalScale);
+	          }
 	        });
 	        ctx.restore();
 	      }
@@ -141597,22 +148552,40 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        var getColor = accessorFn(state.linkColor);
 	        var getWidth = accessorFn(state.linkWidth);
 	        var getCurvature = accessorFn(state.linkCurvature);
+	        var getLinkCanvasObjectMode = accessorFn(state.linkCanvasObjectMode);
 	        var ctx = state.ctx; // Draw wider lines by 2px on shadow canvas for more precise hovering (due to boundary anti-aliasing)
 
 	        var padAmount = state.isShadow * 2;
-	        ctx.save();
 	        var visibleLinks = state.graphData.links.filter(getVisibility);
+	        visibleLinks.forEach(calcLinkControlPoints); // calculate curvature control points for all visible links
+
+	        var beforeCustomLinks = [],
+	            afterCustomLinks = [],
+	            defaultPaintLinks = visibleLinks;
 
 	        if (state.linkCanvasObject) {
-	          // Custom link paints
-	          visibleLinks.forEach(function (link) {
-	            return state.linkCanvasObject(link, state.ctx, state.globalScale);
+	          var replaceCustomLinks = [],
+	              otherCustomLinks = [];
+	          visibleLinks.forEach(function (d) {
+	            return ({
+	              before: beforeCustomLinks,
+	              after: afterCustomLinks,
+	              replace: replaceCustomLinks
+	            }[getLinkCanvasObjectMode(d)] || otherCustomLinks).push(d);
 	          });
-	          return;
-	        } // Bundle strokes per unique color/width for performance optimization
+	          defaultPaintLinks = [].concat(_toConsumableArray(beforeCustomLinks), afterCustomLinks, otherCustomLinks);
+	          beforeCustomLinks = beforeCustomLinks.concat(replaceCustomLinks);
+	        } // Custom link before paints
 
 
-	        var linksPerColor = indexBy(visibleLinks, [getColor, getWidth]);
+	        ctx.save();
+	        beforeCustomLinks.forEach(function (link) {
+	          return state.linkCanvasObject(link, ctx, state.globalScale);
+	        });
+	        ctx.restore(); // Bundle strokes per unique color/width for performance optimization
+
+	        var linksPerColor = indexBy(defaultPaintLinks, [getColor, getWidth]);
+	        ctx.save();
 	        Object.entries(linksPerColor).forEach(function (_ref) {
 	          var _ref2 = _slicedToArray(_ref, 2),
 	              color = _ref2[0],
@@ -141631,37 +148604,15 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	              var end = link.target;
 	              if (!start.hasOwnProperty('x') || !end.hasOwnProperty('x')) return; // skip invalid link
 
-	              var curvature = getCurvature(link);
 	              ctx.moveTo(start.x, start.y);
+	              var controlPoints = link.__controlPoints;
 
-	              if (!curvature) {
+	              if (!controlPoints) {
 	                // Straight line
 	                ctx.lineTo(end.x, end.y);
-	                link.__controlPoints = null;
-	                return;
-	              }
-
-	              var l = Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2)); // line length
-
-	              if (l > 0) {
-	                var a = Math.atan2(end.y - start.y, end.x - start.x); // line angle
-
-	                var d = l * curvature; // control point distance
-
-	                var cp = {
-	                  // control point
-	                  x: (start.x + end.x) / 2 + d * Math.cos(a - Math.PI / 2),
-	                  y: (start.y + end.y) / 2 + d * Math.sin(a - Math.PI / 2)
-	                };
-	                ctx.quadraticCurveTo(cp.x, cp.y, end.x, end.y);
-	                link.__controlPoints = [cp.x, cp.y];
 	              } else {
-	                // Same point, draw a loop
-	                var _d = curvature * 70;
-
-	                var cps = [end.x, end.y - _d, end.x + _d, end.y];
-	                ctx.bezierCurveTo.apply(ctx, cps.concat([end.x, end.y]));
-	                link.__controlPoints = cps;
+	                // Use quadratic curves for regular lines and bezier for loops
+	                ctx[controlPoints.length === 2 ? 'quadraticCurveTo' : 'bezierCurveTo'].apply(ctx, _toConsumableArray(controlPoints).concat([end.x, end.y]));
 	              }
 	            });
 	            ctx.strokeStyle = lineColor;
@@ -141669,7 +148620,47 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	            ctx.stroke();
 	          });
 	        });
-	        ctx.restore();
+	        ctx.restore(); // Custom link after paints
+
+	        ctx.save();
+	        afterCustomLinks.forEach(function (link) {
+	          return state.linkCanvasObject(link, ctx, state.globalScale);
+	        });
+	        ctx.restore(); //
+
+	        function calcLinkControlPoints(link) {
+	          var curvature = getCurvature(link);
+
+	          if (!curvature) {
+	            // straight line
+	            link.__controlPoints = null;
+	            return;
+	          }
+
+	          var start = link.source;
+	          var end = link.target;
+	          if (!start.hasOwnProperty('x') || !end.hasOwnProperty('x')) return; // skip invalid link
+
+	          var l = Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2)); // line length
+
+	          if (l > 0) {
+	            var a = Math.atan2(end.y - start.y, end.x - start.x); // line angle
+
+	            var d = l * curvature; // control point distance
+
+	            var cp = {
+	              // control point
+	              x: (start.x + end.x) / 2 + d * Math.cos(a - Math.PI / 2),
+	              y: (start.y + end.y) / 2 + d * Math.sin(a - Math.PI / 2)
+	            };
+	            link.__controlPoints = [cp.x, cp.y];
+	          } else {
+	            // Same point, draw a loop
+	            var _d = curvature * 70;
+
+	            link.__controlPoints = [end.x, end.y - _d, end.x + _d, end.y];
+	          }
+	        }
 	      }
 
 	      function paintArrows() {
@@ -141835,7 +148826,8 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        node.fx = fxFn(node);
 	        node.fy = fyFn(node);
 	      });
-	    }
+	    } // Use radial force for radial dags
+
 
 	    state.forceLayout.force('dagRadial', ['radialin', 'radialout'].indexOf(state.dagMode) !== -1 ? d3Force3d.forceRadial(function (node) {
 	      var nodeDepth = nodeDepths[node[state.nodeId]];
@@ -141860,7 +148852,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    linkProp: function linkProp(prop) {
 	      // link property config
 	      return {
-	        default: dummyK[prop](),
+	        "default": dummyK[prop](),
 	        onChange: function onChange(v, state) {
 	          propNames.forEach(function (propName) {
 	            return state[propName][prop](v);
@@ -141897,12 +148889,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	var bindFG = linkKapsule('forceGraph', CanvasForceGraph);
 	var bindBoth = linkKapsule(['forceGraph', 'shadowGraph'], CanvasForceGraph);
-	var linkedProps = Object.assign.apply(Object, _toConsumableArray(['nodeColor', 'nodeAutoColorBy', 'nodeCanvasObject', 'linkColor', 'linkAutoColorBy', 'linkWidth', 'linkCanvasObject', 'linkDirectionalArrowLength', 'linkDirectionalArrowColor', 'linkDirectionalArrowRelPos', 'linkDirectionalParticles', 'linkDirectionalParticleSpeed', 'linkDirectionalParticleWidth', 'linkDirectionalParticleColor', 'dagMode', 'dagLevelDistance', 'd3AlphaDecay', 'd3VelocityDecay', 'warmupTicks', 'cooldownTicks', 'cooldownTime', 'onEngineTick', 'onEngineStop'].map(function (p) {
+	var linkedProps = Object.assign.apply(Object, _toConsumableArray(['nodeColor', 'nodeAutoColorBy', 'nodeCanvasObject', 'nodeCanvasObjectMode', 'linkColor', 'linkAutoColorBy', 'linkWidth', 'linkCanvasObject', 'linkCanvasObjectMode', 'linkDirectionalArrowLength', 'linkDirectionalArrowColor', 'linkDirectionalArrowRelPos', 'linkDirectionalParticles', 'linkDirectionalParticleSpeed', 'linkDirectionalParticleWidth', 'linkDirectionalParticleColor', 'dagMode', 'dagLevelDistance', 'd3AlphaDecay', 'd3VelocityDecay', 'warmupTicks', 'cooldownTicks', 'cooldownTime', 'onEngineTick', 'onEngineStop'].map(function (p) {
 	  return _defineProperty({}, p, bindFG.linkProp(p));
 	})).concat(_toConsumableArray(['nodeRelSize', 'nodeId', 'nodeVal', 'linkSource', 'linkTarget', 'linkVisibility', 'linkCurvature'].map(function (p) {
 	  return _defineProperty({}, p, bindBoth.linkProp(p));
 	}))));
-	var linkedMethods = Object.assign.apply(Object, _toConsumableArray(['d3Force'].map(function (p) {
+	var linkedMethods = Object.assign.apply(Object, _toConsumableArray(['d3Force', 'refresh'].map(function (p) {
 	  return _defineProperty({}, p, bindFG.linkMethod(p));
 	})));
 
@@ -141956,21 +148948,21 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	var forceGraph = Kapsule({
 	  props: _objectSpread({
 	    width: {
-	      default: window.innerWidth,
+	      "default": window.innerWidth,
 	      onChange: function onChange(_, state) {
 	        return adjustCanvasSize(state);
 	      },
 	      triggerUpdate: false
 	    },
 	    height: {
-	      default: window.innerHeight,
+	      "default": window.innerHeight,
 	      onChange: function onChange(_, state) {
 	        return adjustCanvasSize(state);
 	      },
 	      triggerUpdate: false
 	    },
 	    graphData: {
-	      default: {
+	      "default": {
 	        nodes: [],
 	        links: []
 	      },
@@ -141993,7 +148985,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	          var type = _ref4.type,
 	              objs = _ref4.objs;
 	          objs.filter(function (d) {
-	            return !d.hasOwnProperty('__indexColor');
+	            return !d.hasOwnProperty('__indexColor') || d !== state.colorTracker.lookup(d.__indexColor);
 	          }).forEach(function (d) {
 	            // store object lookup color
 	            d.__indexColor = state.colorTracker.register({
@@ -142012,60 +149004,64 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      triggerUpdate: false
 	    },
 	    nodeLabel: {
-	      default: 'name',
+	      "default": 'name',
 	      triggerUpdate: false
 	    },
 	    linkLabel: {
-	      default: 'name',
+	      "default": 'name',
 	      triggerUpdate: false
 	    },
 	    linkHoverPrecision: {
-	      default: 4,
+	      "default": 4,
 	      triggerUpdate: false
 	    },
 	    enableNodeDrag: {
-	      default: true,
+	      "default": true,
 	      triggerUpdate: false
 	    },
 	    enableZoomPanInteraction: {
-	      default: true,
+	      "default": true,
 	      triggerUpdate: false
 	    },
 	    enablePointerInteraction: {
-	      default: true,
+	      "default": true,
 	      onChange: function onChange(_, state) {
 	        state.hoverObj = null;
 	      },
 	      triggerUpdate: false
 	    },
 	    onNodeDrag: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onNodeDragEnd: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onNodeClick: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onNodeRightClick: {
 	      triggerUpdate: false
 	    },
 	    onNodeHover: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onLinkClick: {
-	      default: function _default() {},
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    },
 	    onLinkRightClick: {
 	      triggerUpdate: false
 	    },
 	    onLinkHover: {
-	      default: function _default() {},
+	      "default": function _default() {},
+	      triggerUpdate: false
+	    },
+	    onZoom: {
+	      "default": function _default() {},
 	      triggerUpdate: false
 	    }
 	  }, linkedProps),
@@ -142159,6 +149155,13 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      }
 
 	      return this;
+	    },
+	    _destructor: function _destructor() {
+	      this.pauseAnimation();
+	      this.graphData({
+	        nodes: [],
+	        links: []
+	      });
 	    }
 	  }, linkedMethods),
 	  stateInit: function stateInit() {
@@ -142250,6 +149253,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    state.zoom = d3Zoom.zoom();
 	    state.zoom(state.zoom.__baseElem = d3Selection.select(state.canvas)); // Attach controlling elem for easy access
 
+	    state.zoom.__baseElem.on('dblclick.zoom', null); // Disable double-click to zoom
+
+
 	    state.zoom.filter(function () {
 	      return state.enableZoomPanInteraction ? !d3Selection.event.button : false;
 	    }) // disable zoom interaction
@@ -142261,11 +149267,12 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        c.translate(t.x, t.y);
 	        c.scale(t.k, t.k);
 	      });
+	      state.onZoom(_objectSpread({}, t));
 	    });
 	    adjustCanvasSize(state);
 	    state.forceGraph.onFinishLoading(function () {
 	      // re-zoom, if still in default position (not user modified)
-	      if (d3Zoom.zoomTransform(state.canvas).k === state.lastSetZoom) {
+	      if (d3Zoom.zoomTransform(state.canvas).k === state.lastSetZoom && state.graphData.nodes.length) {
 	        state.zoom.scaleTo(state.zoom.__baseElem, state.lastSetZoom = ZOOM2NODES_FACTOR / Math.cbrt(state.graphData.nodes.length));
 	      }
 	    }); // Setup tooltip
@@ -142337,7 +149344,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        // Update tooltip and trigger onHover events
 	        // Lookup object per pixel color
 	        var pxScale = window.devicePixelRatio;
-	        var px = shadowCtx.getImageData(mousePos.x * pxScale, mousePos.y * pxScale, 1, 1);
+	        var px = mousePos.x > 0 && mousePos.y > 0 ? shadowCtx.getImageData(mousePos.x * pxScale, mousePos.y * pxScale, 1, 1) : null;
 	        var obj = px ? state.colorTracker.lookup(px.data) : null;
 
 	        if (obj !== state.hoverObj) {
@@ -142380,9 +149387,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	module.exports = forceGraph;
 
 
-/***/ },
-/* 175 */
-/***/ function(module, exports) {
+/***/ }),
+/* 193 */
+/***/ (function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
 	 * lodash (Custom Build) <https://lodash.com/>
@@ -142826,23 +149833,23 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
-/***/ },
-/* 176 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 194 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	// Version 1.0.1 canvas-color-tracker - https://github.com/vasturiano/canvas-color-tracker
 	!function(t,r){ true?module.exports=r():"function"==typeof define&&define.amd?define(r):t.ColorTracker=r()}(this,function(){"use strict";var a=function(t,r){if(Array.isArray(t))return t;if(Symbol.iterator in Object(t))return function(t,r){var e=[],n=!0,i=!1,o=void 0;try{for(var s,u=t[Symbol.iterator]();!(n=(s=u.next()).done)&&(e.push(s.value),!r||e.length!==r);n=!0);}catch(t){i=!0,o=t}finally{try{!n&&u.return&&u.return()}finally{if(i)throw o}}return e}(t,r);throw new TypeError("Invalid attempt to destructure non-iterable instance")},t=function(){function n(t,r){for(var e=0;e<r.length;e++){var n=r[e];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(t,r,e){return r&&n(t.prototype,r),e&&n(t,e),t}}();var c=function(t,r){return 123*t%Math.pow(2,r)};return function(){function r(){var t=0<arguments.length&&void 0!==arguments[0]?arguments[0]:6;!function(t,r){if(!(t instanceof r))throw new TypeError("Cannot call a class as a function")}(this,r),this.csBits=t,this.registry=["__reserved for background__"]}return t(r,[{key:"register",value:function(t){if(this.registry.length>=Math.pow(2,24-this.csBits))return null;var r,e=this.registry.length,n=c(e,this.csBits),i=(r=e+(n<<24-this.csBits),"#"+Math.min(r,Math.pow(2,24)).toString(16).padStart(6,"0"));return this.registry.push(t),i}},{key:"lookup",value:function(t){var r=a(t,3),e=r[0],n=r[1],i=r[2],o=(e<<16)+(n<<8)+i;if(!o)return null;var s=o&Math.pow(2,24-this.csBits)-1,u=o>>24-this.csBits&Math.pow(2,this.csBits)-1;return c(s,this.csBits)!==u||s>=this.registry.length?null:this.registry[s]}}]),r}()});
 
-/***/ },
-/* 177 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 195 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(178);
+	module.exports = __webpack_require__(196);
 
 
-/***/ },
-/* 178 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 196 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	  A javascript Bezier curve library by Pomax.
@@ -142867,10 +149874,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    ZERO = { x: 0, y: 0, z: 0 };
 
 	  // quite needed
-	  var utils = __webpack_require__(179);
+	  var utils = __webpack_require__(197);
 
 	  // only used for outlines atm.
-	  var PolyBezier = __webpack_require__(180);
+	  var PolyBezier = __webpack_require__(198);
 
 	  /**
 	   * Bezier curve constructor. The constructor argument can be one of three things:
@@ -142955,7 +149962,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    this.update();
 	  };
 
-	  var svgToBeziers = __webpack_require__(181);
+	  var svgToBeziers = __webpack_require__(199);
 
 	  /**
 	   * turn an svg <path> d attribute into a sequence of Bezier segments.
@@ -143793,9 +150800,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})();
 
 
-/***/ },
-/* 179 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 197 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	(function() {
 	  "use strict";
@@ -143897,7 +150904,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	        return points[0];
 	      }
 
-	      let order = points.length-1;
+	      var order = points.length-1;
 
 	      if (t === 1) {
 	        return points[order];
@@ -144144,7 +151151,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	    },
 
 	    makeline: function(p1, p2) {
-	      var Bezier = __webpack_require__(178);
+	      var Bezier = __webpack_require__(196);
 	      var x1 = p1.x,
 	        y1 = p1.y,
 	        x2 = p2.x,
@@ -144406,7 +151413,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      //
 	      //              x'y" - y'x"
 	      //   k(t) = ------------------
-	      //           (x'² + y'²)^(2/3)
+	      //           (x'² + y'²)^(3/2)
 	      //
 	      // from https://en.wikipedia.org/wiki/Radius_of_curvature#Definition
 	      //
@@ -144414,7 +151421,7 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	      //
 	      //          sqrt( (y'z" - y"z')² + (z'x" - z"x')² + (x'y" - x"y')²)
 	      //   k(t) = -------------------------------------------------------
-	      //                     (x'² + y'² + z'²)^(2/3)
+	      //                     (x'² + y'² + z'²)^(3/2)
 	      //
 	      var d = utils.compute(t, d1);
 	      var dd = utils.compute(t, d2);
@@ -144425,10 +151432,10 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	          pow(d.z*dd.x - dd.z*d.x, 2) +
 	          pow(d.x*dd.y - dd.x*d.y, 2)
 	        );
-	        dnm = pow(d.x*d.x + d.y*d.y + d.z*d.z, 2/3);
+	        dnm = pow(d.x*d.x + d.y*d.y + d.z*d.z, 3/2);
 	      } else {
 	        num = d.x*dd.y - d.y*dd.x;
-	        dnm = pow(d.x*d.x + d.y*d.y, 2/3);
+	        dnm = pow(d.x*d.x + d.y*d.y, 3/2);
 	      }
 
 	      if (num === 0 || dnm === 0) {
@@ -144627,14 +151634,14 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})();
 
 
-/***/ },
-/* 180 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 198 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	(function() {
 	  "use strict";
 
-	  var utils = __webpack_require__(179);
+	  var utils = __webpack_require__(197);
 
 	  /**
 	   * Poly Bezier
@@ -144701,11 +151708,11 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	})();
 
 
-/***/ },
-/* 181 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 199 */
+/***/ (function(module, exports, __webpack_require__) {
 
-	var normalise = __webpack_require__(182);
+	var normalise = __webpack_require__(200);
 
 	var M = { x: false, y: false };
 
@@ -144748,9 +151755,9 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	module.exports = convertPath;
 
 
-/***/ },
-/* 182 */
-/***/ function(module, exports) {
+/***/ }),
+/* 200 */
+/***/ (function(module, exports) {
 
 	/**
 	 * Normalise an SVG path to absolute coordinates
@@ -144951,11 +151958,225 @@ define(["vizapi/SplunkVisualizationBase","vizapi/SplunkVisualizationUtils"], fun
 	module.exports = normalizePath;
 
 
-/***/ },
-/* 183 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 201 */
+/***/ (function(module, exports) {
 
-	!function(r,e){ true?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports.indexBy=e():r.indexBy=e()}("undefined"!=typeof self?self:this,function(){return function(t){var n={};function o(r){if(n[r])return n[r].exports;var e=n[r]={i:r,l:!1,exports:{}};return t[r].call(e.exports,e,e.exports,o),e.l=!0,e.exports}return o.m=t,o.c=n,o.d=function(r,e,t){o.o(r,e)||Object.defineProperty(r,e,{configurable:!1,enumerable:!0,get:t})},o.n=function(r){var e=r&&r.__esModule?function(){return r.default}:function(){return r};return o.d(e,"a",e),e},o.o=function(r,e){return Object.prototype.hasOwnProperty.call(r,e)},o.p="",o(o.s=0)}([function(r,e,t){var n,o,i;o=[r,e],void 0===(i="function"==typeof(n=function(r,e){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var f=function(r,e){if(Array.isArray(r))return r;if(Symbol.iterator in Object(r))return function(r,e){var t=[],n=!0,o=!1,i=void 0;try{for(var u,f=r[Symbol.iterator]();!(n=(u=f.next()).done)&&(t.push(u.value),!e||t.length!==e);n=!0);}catch(r){o=!0,i=r}finally{try{!n&&f.return&&f.return()}finally{if(o)throw i}}return t}(r,e);throw new TypeError("Invalid attempt to destructure non-iterable instance")};e.default=function(r,e){var a=!(2<arguments.length&&void 0!==arguments[2])||arguments[2],t=3<arguments.length&&void 0!==arguments[3]&&arguments[3],s=(e instanceof Array?e:[e]).map(function(r){return{keyAccessor:r,isProp:!(r instanceof Function)}}),n=r.reduce(function(r,e){var f=r,c=e;return s.forEach(function(r,e){var t=r.keyAccessor,n=void 0;if(r.isProp){var o=c,i=o[t],u=function(r,e){var t={};for(var n in r)0<=e.indexOf(n)||Object.prototype.hasOwnProperty.call(r,n)&&(t[n]=r[n]);return t}(o,[t]);n=i,c=u}else n=t(c);e+1<s.length?(f.hasOwnProperty(n)||(f[n]={}),f=f[n]):a?(f.hasOwnProperty(n)||(f[n]=[]),f[n].push(c)):f[n]=c}),r},{});a instanceof Function&&function e(t){var n=1<arguments.length&&void 0!==arguments[1]?arguments[1]:1;n===s.length?Object.keys(t).forEach(function(r){return t[r]=a(t[r])}):Object.values(t).forEach(function(r){return e(r,n+1)})}(n);var u=n;return t&&(u=[],function o(r){var i=1<arguments.length&&void 0!==arguments[1]?arguments[1]:[];i.length===s.length?u.push({keys:i,vals:r}):Object.entries(r).forEach(function(r){var e=f(r,2),t=e[0],n=e[1];return o(n,[].concat(function(r){if(Array.isArray(r)){for(var e=0,t=Array(r.length);e<r.length;e++)t[e]=r[e];return t}return Array.from(r)}(i),[t]))})}(n)),u},r.exports=e.default})?n.apply(e,o):n)||(r.exports=i)}])});
+	'use strict';
 
-/***/ }
+	function _objectWithoutPropertiesLoose(source, excluded) {
+	  if (source == null) return {};
+	  var target = {};
+	  var sourceKeys = Object.keys(source);
+	  var key, i;
+
+	  for (i = 0; i < sourceKeys.length; i++) {
+	    key = sourceKeys[i];
+	    if (excluded.indexOf(key) >= 0) continue;
+	    target[key] = source[key];
+	  }
+
+	  return target;
+	}
+
+	function _objectWithoutProperties(source, excluded) {
+	  if (source == null) return {};
+
+	  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+	  var key, i;
+
+	  if (Object.getOwnPropertySymbols) {
+	    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+	    for (i = 0; i < sourceSymbolKeys.length; i++) {
+	      key = sourceSymbolKeys[i];
+	      if (excluded.indexOf(key) >= 0) continue;
+	      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+	      target[key] = source[key];
+	    }
+	  }
+
+	  return target;
+	}
+
+	function _slicedToArray(arr, i) {
+	  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
+	}
+
+	function _toConsumableArray(arr) {
+	  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+	}
+
+	function _arrayWithoutHoles(arr) {
+	  if (Array.isArray(arr)) {
+	    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+	    return arr2;
+	  }
+	}
+
+	function _arrayWithHoles(arr) {
+	  if (Array.isArray(arr)) return arr;
+	}
+
+	function _iterableToArray(iter) {
+	  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+	}
+
+	function _iterableToArrayLimit(arr, i) {
+	  var _arr = [];
+	  var _n = true;
+	  var _d = false;
+	  var _e = undefined;
+
+	  try {
+	    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+	      _arr.push(_s.value);
+
+	      if (i && _arr.length === i) break;
+	    }
+	  } catch (err) {
+	    _d = true;
+	    _e = err;
+	  } finally {
+	    try {
+	      if (!_n && _i["return"] != null) _i["return"]();
+	    } finally {
+	      if (_d) throw _e;
+	    }
+	  }
+
+	  return _arr;
+	}
+
+	function _nonIterableSpread() {
+	  throw new TypeError("Invalid attempt to spread non-iterable instance");
+	}
+
+	function _nonIterableRest() {
+	  throw new TypeError("Invalid attempt to destructure non-iterable instance");
+	}
+
+	function _toPrimitive(input, hint) {
+	  if (typeof input !== "object" || input === null) return input;
+	  var prim = input[Symbol.toPrimitive];
+
+	  if (prim !== undefined) {
+	    var res = prim.call(input, hint || "default");
+	    if (typeof res !== "object") return res;
+	    throw new TypeError("@@toPrimitive must return a primitive value.");
+	  }
+
+	  return (hint === "string" ? String : Number)(input);
+	}
+
+	function _toPropertyKey(arg) {
+	  var key = _toPrimitive(arg, "string");
+
+	  return typeof key === "symbol" ? key : String(key);
+	}
+
+	var index = (function (list, keyAccessors) {
+	  var multiItem = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+	  var flattenKeys = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+	  var keys = (keyAccessors instanceof Array ? keyAccessors : [keyAccessors]).map(function (key) {
+	    return {
+	      keyAccessor: key,
+	      isProp: !(key instanceof Function)
+	    };
+	  });
+	  var indexedResult = list.reduce(function (res, item) {
+	    var iterObj = res;
+	    var itemVal = item;
+	    keys.forEach(function (_ref, idx) {
+	      var keyAccessor = _ref.keyAccessor,
+	          isProp = _ref.isProp;
+	      var key;
+
+	      if (isProp) {
+	        var _itemVal = itemVal,
+	            propVal = _itemVal[keyAccessor],
+	            rest = _objectWithoutProperties(_itemVal, [keyAccessor].map(_toPropertyKey));
+
+	        key = propVal;
+	        itemVal = rest;
+	      } else {
+	        key = keyAccessor(itemVal, idx);
+	      }
+
+	      if (idx + 1 < keys.length) {
+	        if (!iterObj.hasOwnProperty(key)) {
+	          iterObj[key] = {};
+	        }
+
+	        iterObj = iterObj[key];
+	      } else {
+	        // Leaf key
+	        if (multiItem) {
+	          if (!iterObj.hasOwnProperty(key)) {
+	            iterObj[key] = [];
+	          }
+
+	          iterObj[key].push(itemVal);
+	        } else {
+	          iterObj[key] = itemVal;
+	        }
+	      }
+	    });
+	    return res;
+	  }, {});
+
+	  if (multiItem instanceof Function) {
+	    // Reduce leaf multiple values
+	    (function reduce(node) {
+	      var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+
+	      if (level === keys.length) {
+	        Object.keys(node).forEach(function (k) {
+	          return node[k] = multiItem(node[k]);
+	        });
+	      } else {
+	        Object.values(node).forEach(function (child) {
+	          return reduce(child, level + 1);
+	        });
+	      }
+	    })(indexedResult); // IIFE
+
+	  }
+
+	  var result = indexedResult;
+
+	  if (flattenKeys) {
+	    // flatten into array
+	    result = [];
+
+	    (function flatten(node) {
+	      var accKeys = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+
+	      if (accKeys.length === keys.length) {
+	        result.push({
+	          keys: accKeys,
+	          vals: node
+	        });
+	      } else {
+	        Object.entries(node).forEach(function (_ref2) {
+	          var _ref3 = _slicedToArray(_ref2, 2),
+	              key = _ref3[0],
+	              val = _ref3[1];
+
+	          return flatten(val, [].concat(_toConsumableArray(accKeys), [key]));
+	        });
+	      }
+	    })(indexedResult); //IIFE
+
+	  }
+
+	  return result;
+	});
+
+	module.exports = index;
+
+
+/***/ })
 /******/ ])});;
