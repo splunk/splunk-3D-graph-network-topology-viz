@@ -1,12 +1,12 @@
 {
   "name": "3d_graph_network_topology_viz",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Plot relationships between objects with force directed graph based on ThreeJS/WebGL.",
   "main": "visualization.js",
   "scripts": {
-    "build": "node ./node_modules/webpack/bin/webpack.js",
-    "devbuild": "node ./node_modules/webpack/bin/webpack.js --progress",
-    "watch": "node ./node_modules/webpack/bin/webpack.js -d --watch --progress"
+    "build": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js",
+    "devbuild": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js --progress",
+    "watch": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js -d --watch --progress"
   },
   "author": "Splunk",
   "license": "Apache-2.0",
