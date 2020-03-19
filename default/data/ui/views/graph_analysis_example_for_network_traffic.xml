@@ -1,0 +1,51 @@
+<dashboard theme="dark">
+  <label>Graph Analysis Example for Network Traffic</label>
+  <row>
+    <panel>
+      <viz type="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz">
+        <search base="base">
+          <query>| eval col0 = "#00AA00"
+| eval col1 = "#FF00FF"
+`interpolateColor(col0,col1,eigenvector_centrality,"color_src")`
+| eval weight_src=1+10*eigenvector_centrality
+| eval edge_weight=sqrt(count+1)
+| eval color_dest=color_src
+| table src dest color_src color_dest weight_src edge_weight
+        </query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">704</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.bgColor">#222527</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.cameraController">trackball</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.dagMode">null</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.enable3D">0</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.lkColor">#777777</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.ndColor">#999999</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.showAnimationBar">1</option>
+      </viz>
+    </panel>
+    <panel>
+      <table>
+        <search id="base">
+          <query>| inputlookup firewall_traffic.csv 
+| head 1000
+| rename src_ip as src dst_ip as dest
+| stats count by src dest
+| fit GraphCentrality src dest compute="eigenvector_centrality"
+          </query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
