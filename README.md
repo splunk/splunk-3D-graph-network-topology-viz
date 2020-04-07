@@ -71,3 +71,9 @@ Make sure you have the following Splunk apps installed in your instance to corre
 ![alt text](splunk-3D-graph-network-topology-viz-screen-1.png "Graph Analysis Example of Bitcoin Transactions")
 
 ![alt text](splunk-3D-graph-network-topology-viz-screen-2.png "Graph Analysis Example for Label Propagation Algorithm")
+
+## Contributing
+If you would like to contribute to the visualization, please have a look at our [Contribution Guide](CONTRIBUTING.md)
+
+## LICENSE
+Splunk 3D Graph Network Topology Visualization is licensed under the Apache License 2.0. Details can be found in the file [LICENSE](LICENSE).
