@@ -17,7 +17,6 @@ require([
 
 
     var tokens = mvc.Components.get("default");
-    console.log(tokens);
 
     // Create the search manager
     var mysearch = new SearchManager({
@@ -49,12 +48,6 @@ require([
         el: $("#mysearchcontrols1")
     }).render();
 
-    //var mytable = new TableView ({
-    //    id: "table1",
-    //    managerid: "base",
-    //    el: $("#mytable1")
-    //}).render();
-
     // When the timeline changes, update the search manager
     mytimeline.on("change", function() {
         mysearch.settings.set(mytimeline.val());
@@ -64,11 +57,9 @@ require([
     mysearchbar.on("change", function() {
         mysearch.settings.unset("search");
         mysearch.settings.set("search", mysearchbar.val());
+
         // set token value with search string
-        //console.log(mysearch.attributes.search);
-        var searchString = mysearch.attributes.search;
-        //console.log(searchString);
-        //tokens.set("searchString",searchstring);
+        var searchString = mysearchbar.val();
 
         //Collect tokens from the dashboard
         function setToken(name, value) {
