@@ -1,0 +1,70 @@
+<form theme="dark">
+  <label>Identifying the Spine of the Network</label>
+  <fieldset submitButton="false"></fieldset>
+  <row>
+    <panel depends="$alwaysHidePanel$">
+      <input type="text" token="search">
+        <label>search</label>
+      </input>
+      <input type="text" token="source">
+        <label>source</label>
+      </input>
+      <input type="text" token="destination">
+        <label>destination</label>
+      </input>
+      <input type="text" token="weight">
+        <label>weight</label>
+      </input>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <viz type="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz">
+        <title>Minimum Spanning Tree - Network Spine Visualisation</title>
+        <search base="base">
+          <query>| fit GraphCentrality "$source$" "$destination$" compute="eigenvector_centrality,betweenness_centrality"
+| eval col00 = "#00AA00"
+| eval colX0 = "#FF0000"
+| eval col0Y = "#FFFF00"
+| eval colXY = "#FFA500"
+`bilinearInterpolateColorGradient(betweenness_centrality, eigenvector_centrality, col00, colX0, col0Y, colXY, "color_src")`
+| eval weight_dest=0.5, edge_weight=1
+| fields - col00 colX0 col0Y colXY
+| eventstats max($weight$) as max_count
+| eval weight=(1-($weight$/max_count))*(1-eigenvector_centrality)*(1-betweenness_centrality)
+| fit MinimumSpanningTree $source$ $destination$ weight='weight'
+| sort - "$source$"</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">659</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.bgColor">#222527</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.cameraController">trackball</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.dagMode">null</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.enable3D">0</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.lkColor">#777777</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.ndColor">#999999</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.showAnimationBar">1</option>
+      </viz>
+    </panel>
+    <panel>
+      <table>
+        <title>Raw Input Data</title>
+        <search id="base">
+          <query>$search$ | table $source$ $destination$ $weight$</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>

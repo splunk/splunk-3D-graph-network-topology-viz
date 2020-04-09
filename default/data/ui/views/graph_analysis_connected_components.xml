@@ -1,0 +1,120 @@
+<form theme="dark">
+  <label>Identifying Connected Components in the Network</label>
+  <fieldset submitButton="false"></fieldset>
+  <row>
+    <panel depends="$alwaysHideThisPanel$">
+      <input type="text" token="search">
+        <label>field1</label>
+      </input>
+      <input type="text" token="source">
+        <label>field2</label>
+      </input>
+      <input type="text" token="destination">
+        <label>field3</label>
+      </input>
+      <input type="text" token="weight">
+        <label>field4</label>
+      </input>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+      <p>In graph theory, a component, sometimes called a connected component, of an undirected graph is a subgraph in which any two vertices are connected to each other by paths, and which is connected to no additional vertices in the supergraph. For example, the graph shown in the illustration has three components. A vertex with no incident edges is itself a component. A graph that is itself connected has exactly one component, consisting of the whole graph.</p>
+      <p>Source: <a href="https://en.wikipedia.org/wiki/Component_(graph_theory)">Wikipedia</a>
+        </p>
+    </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Graph Visualization with Nodes coloured by Connected Components</title>
+      <viz type="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz">
+        <search base="base">
+          <query>
+| eval color_src="#".upper(substr(md5(connected_component),0,6))
+| eval color_dest=color_src 
+| table src dest color_src color_dest</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">512</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.bgColor">#222527</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.cameraController">trackball</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.dagMode">null</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.enable3D">0</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.lkColor">#777777</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.ndColor">#999999</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.showAnimationBar">1</option>
+      </viz>
+    </panel>
+    <panel>
+      <title>Connections by Connected Component</title>
+      <chart>
+        <search base="base">
+          <query>
+| stats sum(count) as connections by connected_component</query>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">512</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <search id="base">
+          <query>$search$
+| rename $source$ as src $destination$ as dest
+| stats count by src dest
+| fit GraphConnectedComponents src dest</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="connected_component">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+</form>
