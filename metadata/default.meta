@@ -39,3 +39,12 @@ export = system
 # Un-comment the stanza below to make the visualization available to all apps.
 [visualizations/3d_graph_network_topology_viz]
 export = system
+
+### Algos
+[algos/GraphCentrality]
+access = read : [*]
+export = system
+
+[algos/MinimumSpanningTree]
+access = read : [*]
+export = system
