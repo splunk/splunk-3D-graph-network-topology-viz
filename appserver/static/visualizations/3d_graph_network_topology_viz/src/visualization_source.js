@@ -147,8 +147,8 @@ define([
             }
 
             // Avoid duplicates!
-            let node_ids = new Set();
-            var default_colors = {
+            let nodeIds = new Set();
+            var defaultColors = {
                 "node": this._getEscapedProperty('ndColor', config) || '#EDCBB1',
                 "link": this._getEscapedProperty('lkColor', config) || '#ffffff'
             };
@@ -160,57 +160,57 @@ define([
                       name = id;
                       // name = fields[ix].name + ": " + id;
 
-                  if (!node_ids.has(id)){
-                    var new_node = {
+                  if (!nodeIds.has(id)){
+                    var newNode = {
                         "id": id,
                         "name": name,
                         "val": 1,
                         "has_custom_color": 0,
-                        "color": default_colors['node']
+                        "color": defaultColors['node']
                     };
                     // Setting custom weigth and colors
                     if (ix < 1) {
                         if (idxNdColor > 0) {
-                          new_node['color'] = row[idxNdColor];
-                          new_node['has_custom_color'] = 1;
+                          newNode['color'] = row[idxNdColor];
+                          newNode['has_custom_color'] = 1;
                         }
-                        if (idxNdSize > 0) new_node['val'] = row[idxNdSize];
+                        if (idxNdSize > 0) newNode['val'] = row[idxNdSize];
                     } else {
                         if (idxNdColorDst > 0) {
-                          new_node['color'] = row[idxNdColorDst];
-                          new_node['has_custom_color'] = 1;
+                          newNode['color'] = row[idxNdColorDst];
+                          newNode['has_custom_color'] = 1;
                         }
-                        if (idxNdSizeDst > 0) new_node['val'] = row[idxNdSizeDst];
+                        if (idxNdSizeDst > 0) newNode['val'] = row[idxNdSizeDst];
                     }
 
                     // Sanity checks
-                    if (new_node.hasOwnProperty('color')) {
-                        if (new_node['color'] && !new_node['color'].match("^#")) {
+                    if (newNode.hasOwnProperty('color')) {
+                        if (newNode['color'] && !newNode['color'].match("^#")) {
                           throw new SplunkVisualizationBase.VisualizationError(
                               'Check the Statistics tab. To assign custom colors to nodes, valid hex codes shall be returned.'
                           );
                         }
                     }
-                    if (new_node['val'] && new_node['val'] != parseFloat(new_node['val'])) {
+                    if (newNode['val'] && newNode['val'] != parseFloat(newNode['val'])) {
                         throw new SplunkVisualizationBase.VisualizationError(
                             'Check the Statistics tab. To assign custom weights to nodes, valid numbers shall be returned.'
                         );
                     }
 
-                    nodes.push(new_node);
-                    node_ids.add(id);
+                    nodes.push(newNode);
+                    nodeIds.add(id);
                   }
                 });
 
                 // Check for loops in data > DAG mode limited
                 if (row[0] === row[1]) that.disableDagMode = true;
 
-                var new_link = {
+                var newLink = {
                     "source": row[0],
                     "target": row[1],
                     "width": idxLkWidth > 0 ? row[idxLkWidth] : 0,
                     "has_custom_color": 0,
-                    "color": default_colors['link']
+                    "color": defaultColors['link']
                 };
 
                 // Setting custom color to link
@@ -221,11 +221,11 @@ define([
                             'Check the Statistics tab. To assign custom colors to edges, valid hex codes shall be returned.'
                         );
                     }
-                    new_link["color"] = row[idxLkColor];
-                    new_link["has_custom_color"] = 1;
+                    newLink["color"] = row[idxLkColor];
+                    newLink["has_custom_color"] = 1;
                 }
 
-                links.push(new_link);
+                links.push(newLink);
             });
 
             return {
