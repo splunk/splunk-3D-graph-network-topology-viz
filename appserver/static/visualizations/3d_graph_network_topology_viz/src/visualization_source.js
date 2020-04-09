@@ -40,7 +40,7 @@ define([
             SplunkVisualizationBase.prototype.initialize.apply(this, arguments);
             this.graph = null;
             this.graph3d = null;
-            this.hasCanvasChanged = false;
+            this.initialized = false;
             this.disableDagMode = false;
 
             this.$el = $(this.el);
@@ -78,8 +78,6 @@ define([
 
             var key_tokens = Object.keys(config)[0].split(/[\s.]+/);
 
-            this.hasCanvasChanged = ('enable3D') === key_tokens[key_tokens.length-1];
-
             if (this.disableDagMode && ('dagMode') === key_tokens[key_tokens.length-1]) {
                 var dagMode = this._normalizeNull(this._getEscapedProperty('dagMode', config) || 'null');
 
@@ -109,7 +107,7 @@ define([
 
             } else {
               // Re-rendering the viz to apply config changes
-              this.invalidateReflow();
+              this.invalidateUpdateView();
             }
         },
 
@@ -260,26 +258,42 @@ define([
             var params = {
               "bgColor": this._getEscapedProperty('bgColor', config) || '#000011',
               "dagMode": this._normalizeNull(this._getEscapedProperty('dagMode', config) || 'null'),
+              "lkColor": this._getEscapedProperty('lkColor', config) || '#ffffff',
+              "ndColor": this._getEscapedProperty('ndColor', config) || '#EDCBB1',
               "cameraController": this._getEscapedProperty('cameraController', config) || 'trackball'
             };
             this.useDrilldown = this._isEnabledDrilldown(config);
 
             // Show/Hide Animation Bar
             this._toggleAnimationBar(showAnimationBar);
+            
+            if (!this.initialized) {
+                if (this.logging) console.log("updateView() - Initializing graphs");
+                // Load graphs
+                this._load3DGraph($elem3d.get(0), params);
+                this._load2DGraph($elem.get(0), params);
+                // Render graphs
+                this.graph3d($elem3d.get(0)).graphData(data.content);
+                this.graph($elem.get(0)).graphData(data.content);
 
-            // Load graphs
-            this._load3DGraph($elem3d.get(0), params);
-            this._load2DGraph($elem.get(0), params);
-
-            // Render graphs
-            this.graph3d($elem3d.get(0)).graphData(data.content);
-            this.graph($elem.get(0)).graphData(data.content);
+                this.initialized = true;
+            } else {
+                if (this.logging) console.log("updateView() - Refreshing graphs");
+                var graph = (enable3D) ? this.graph3d : this.graph;
+                graph.linkColor(link => link.color = link.has_custom_color < 1 ? params['lkColor'] : link.color)
+                    .nodeColor(node => node.color =
+                        node.has_custom_color < 1 ? params['ndColor'] : node.color)
+                    .backgroundColor(params["bgColor"])
+                    .dagMode(params["dagMode"]);
+            }
 
             // Display only one graph
             if (enable3D) {
               $elem.addClass("hide");
+              $elem3d.removeClass("hide");
             } else {
               $elem3d.addClass("hide");
+              $elem.removeClass("hide");
             }
         },
 
@@ -411,67 +425,7 @@ define([
 
         _normalizeNull: function(value) {
             return value === "null" ? null : value;
-        },
-
-        // Override to respond to re-sizing events
-        reflow: function() {
-            if(this.logging) console.log('reflow() - size this.el ('+this.$el.width()+','+this.$el.height()+')');
-
-            if (null == this.graph && null == this.graph3d) {
-              if(this.logging) console.log('reflow() - Not initialised yet. Skipping.');
-              return;
-            }
-
-            var config = this.getCurrentConfig();
-
-            var width = this.$el.width(),
-                height = this.$el.height();
-
-            var $elem = $('div.graphviz-container[name=' + this.uuid + ']'),
-                $elem3d = $('div.graphviz-container[name=3d' + this.uuid + ']');
-
-            var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
-            var params = {
-              "bgColor": this._getEscapedProperty('bgColor', config) || '#000011',
-              "lkColor": this._getEscapedProperty('lkColor', config) || '#ffffff',
-              "ndColor": this._getEscapedProperty('ndColor', config) || '#EDCBB1',
-              "dagMode": this._normalizeNull(this._getEscapedProperty('dagMode', config) || 'null'),
-              "cameraController": this._getEscapedProperty('cameraController', config) || 'trackball'
-            }
-
-            if (enable3D){
-                if(this.logging) console.log("reflow() - updating 3D graph");
-
-                this._load3DGraph($elem3d.get(0), params);
-                this.graph3d.width(width)
-                    .height(height)
-                    .linkColor(link => link.color =
-                        link.has_custom_color < 1 ? params['lkColor'] : link.color)
-                    .nodeColor(node => node.color =
-                        node.has_custom_color < 1 ? params['ndColor'] : node.color)
-                    .graphData(this.getCurrentData().content);
-
-            } else {
-                if(this.logging) console.log("reflow() - updating 2D graph");
-
-                // No need to re-load the graph w/ 2D Canvas
-                this.graph.width(width)
-                    .height(height)
-                    .linkColor(link => link.color =
-                        link.has_custom_color < 1 ? params['lkColor'] : link.color)
-                    .nodeColor(node => node.color =
-                        node.has_custom_color < 1 ? params['ndColor'] : node.color)
-                    .backgroundColor(params["bgColor"])
-                    .dagMode(params["dagMode"]);
-            }
-
-            // Swap canvas display if changed
-            if (this.hasCanvasChanged) {
-                $elem.toggleClass("hide");
-                $elem3d.toggleClass("hide");
-                // Resetting flag to prevent errors
-                this.hasCanvasChanged = false;
-            }
         }
+
     });
 });
