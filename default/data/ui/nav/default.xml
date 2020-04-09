@@ -3,7 +3,8 @@
   <collection label="Graph Example Dashboards">
     <view name="graph_analysis_example_for_bitcoin_transactions"/>
     <view name="graph_analysis_example_for_network_traffic"/>
-    <view name="graph_analysis_example_connected_components"/>    
-    <view name="graph_analysis_example_label_propagation"/>    
+    <view name="graph_analysis_example_connected_components"/>
+    <view name="graph_analysis_example_label_propagation"/>
   </collection>
+  <view name="graph_analysis" />
 </nav>
