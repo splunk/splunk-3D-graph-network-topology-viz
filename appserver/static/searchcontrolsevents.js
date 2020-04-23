@@ -66,11 +66,16 @@ require([
           defaultTokenModelun.set(name, value);
           submittedTokenModelun.set(name, value);
         }
+        function unsetToken(name) {
+          defaultTokenModelun.unset(name);
+          submittedTokenModelun.unset(name);
+        }
         var defaultTokenModelun = mvc.Components.getInstance('default', { create: true });
         var submittedTokenModelun = mvc.Components.getInstance('submitted', { create: true });
 
         //Show the edit panel
         setToken("searchString",searchString);
+        unsetToken("beforeSearch");
         console.log(defaultTokenModelun.get("searchString"));
     });
 
