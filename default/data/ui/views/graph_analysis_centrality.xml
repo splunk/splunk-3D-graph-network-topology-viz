@@ -1,5 +1,5 @@
 <form theme="dark">
-  <label>Identifying the Most Connected Nodes in the Network</label>
+  <label>Centrality Measures</label>
   <fieldset submitButton="false"></fieldset>
   <row>
     <panel depends="$alwaysHideThisPanel$">
@@ -15,6 +15,13 @@
       <input type="text" token="weight">
         <label>field4</label>
       </input>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+        <a href="https://www.geeksforgeeks.org/network-centrality-measures-in-a-graph-using-networkx-python/">Centrality measures</a> can be used to identify key nodes on a network. That is to say these measures are used to find nodes that have a high degree of influence or connectivity across the overall network.
+      </html>
     </panel>
   </row>
   <row>

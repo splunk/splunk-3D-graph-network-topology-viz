@@ -1,5 +1,5 @@
 <form theme="dark">
-  <label>Identifying Connected Components in the Network</label>
+  <label>Connected Components</label>
   <fieldset submitButton="false"></fieldset>
   <row>
     <panel depends="$alwaysHideThisPanel$">
