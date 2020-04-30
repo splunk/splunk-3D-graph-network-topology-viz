@@ -1,3 +1,4 @@
 node-modules/
 .vscode
 *.pyc
+local.meta
