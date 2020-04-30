@@ -132,7 +132,7 @@
         <option name="drilldown">all</option>
         <option name="height">50</option>
         <drilldown>
-          <link target="_blank">/app/splunk-3D-graph-network-topology-viz/graph_analysis_centrality?form.search=$searchString$&amp;form.source=$source$&amp;form.destination=$destination$&amp;form.weight=$weight$</link>
+          <link>/app/splunk-3D-graph-network-topology-viz/graph_analysis_centrality?form.search=$searchString$&amp;form.source=$source$&amp;form.destination=$destination$&amp;form.weight=$weight$</link>
         </drilldown>
       </single>
       <html>
@@ -154,7 +154,7 @@
         <option name="drilldown">all</option>
         <option name="height">50</option>
         <drilldown>
-          <link target="_blank">/app/splunk-3D-graph-network-topology-viz/graph_analysis_minimum_spanning_tree?form.search=$searchString$&amp;form.source=$source$&amp;form.destination=$destination$&amp;form.weight=$weight$</link>
+          <link>/app/splunk-3D-graph-network-topology-viz/graph_analysis_minimum_spanning_tree?form.search=$searchString$&amp;form.source=$source$&amp;form.destination=$destination$&amp;form.weight=$weight$</link>
         </drilldown>
       </single>
       <html>
@@ -176,7 +176,7 @@
         <option name="drilldown">all</option>
         <option name="height">50</option>
         <drilldown>
-          <link target="_blank">/app/splunk-3D-graph-network-topology-viz/graph_analysis_connected_components?form.search=$searchString$&amp;form.source=$source$&amp;form.destination=$destination$&amp;form.weight=$weight$</link>
+          <link>/app/splunk-3D-graph-network-topology-viz/graph_analysis_connected_components?form.search=$searchString$&amp;form.source=$source$&amp;form.destination=$destination$&amp;form.weight=$weight$</link>
         </drilldown>
       </single>
       <html>
@@ -198,7 +198,7 @@
         <option name="drilldown">all</option>
         <option name="height">50</option>
         <drilldown>
-          <link target="_blank">/app/splunk-3D-graph-network-topology-viz/graph_analysis_label_propagation?form.search=$searchString$&amp;form.source=$source$&amp;form.destination=$destination$&amp;form.weight=$weight$</link>
+          <link>/app/splunk-3D-graph-network-topology-viz/graph_analysis_label_propagation?form.search=$searchString$&amp;form.source=$source$&amp;form.destination=$destination$&amp;form.weight=$weight$</link>
         </drilldown>
       </single>
       <html>
