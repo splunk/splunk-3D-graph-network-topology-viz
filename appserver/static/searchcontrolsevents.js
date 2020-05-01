@@ -15,7 +15,6 @@ require([
     //TableView
 ) {
 
-
     var tokens = mvc.Components.get("default");
 
     // Create the search manager
@@ -75,8 +74,13 @@ require([
 
         //Show the edit panel
         setToken("searchString",searchString);
+
+        setToken("earliest",mysearch.settings.attributes.earliest_time);
+        setToken("latest",mysearch.settings.attributes.latest_time);
+
+        console.log("Eariest time: " + defaultTokenModelun.get("earliest"));
+        console.log("Latest time: " + defaultTokenModelun.get("latest"));
         unsetToken("beforeSearch");
-        console.log(defaultTokenModelun.get("searchString"));
     });
 
     // When the timerange in the searchbar changes, update the search manager
