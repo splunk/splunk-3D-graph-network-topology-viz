@@ -15,6 +15,13 @@
       <input type="text" token="weight">
         <label>field4</label>
       </input>
+      <input type="time" token="time">
+        <label></label>
+        <default>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </default>
+      </input>
     </panel>
   </row>
   <row>
@@ -98,8 +105,8 @@
 | rename $source$ as src $destination$ as dest
 | stats count by src dest
 | fit GraphConnectedComponents src dest</query>
-          <earliest>-24h@h</earliest>
-          <latest>now</latest>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="count">20</option>

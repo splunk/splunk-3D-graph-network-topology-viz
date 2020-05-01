@@ -15,6 +15,13 @@
       <input type="text" token="weight">
         <label>field4</label>
       </input>
+      <input type="time" token="time">
+        <label></label>
+        <default>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </default>
+      </input>
     </panel>
   </row>
   <row>
@@ -192,8 +199,8 @@
 | rename $source$ as src $destination$ as dest
 | fit GraphCentrality src dest compute="betweenness_centrality,eigenvector_centrality,cluster_coefficient"
 | rename eigenvector_centrality as graph_eigenvector_centrality betweenness_centrality as graph_betweenness_centrality cluster_coefficient as graph_cluster_coefficient</query>
-          <earliest>-24h@h</earliest>
-          <latest>now</latest>
+          <earliest>$time.earliest$</earliest>
+          <latest>$time.latest$</latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="count">20</option>
