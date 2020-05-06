@@ -12,7 +12,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "webpack": "^1.12.6",
-    "three": "^0.115.0"
+    "braces": ">=2.3.1"
   },
   "dependencies": {
     "d3": "^5.7.0",
