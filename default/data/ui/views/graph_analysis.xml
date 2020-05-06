@@ -3,7 +3,7 @@
     <set token="show_results">true</set>
     <set token="beforeSearch">true</set>
   </init>
-  <label>Graph Experiment Framework</label>
+  <label>Graph Analysis Framework</label>
   <fieldset submitButton="false"></fieldset>
   <row>
     <panel depends="$alwaysHideThisPanel$">
