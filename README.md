@@ -72,6 +72,29 @@ Make sure you have the following Splunk apps installed in your instance to corre
 
 ![alt text](splunk-3D-graph-network-topology-viz-screen-2.png "Graph Analysis Example for Label Propagation Algorithm")
 
+## Hardware Acceleration in Browsers
+All modern browsers shall have hardware acceleration turned on by default in order to increase your browser performance and free up CPU by leaving the GPU (Graphics Processing Unit) handling graphical intensive operations.
+
+### Chrome
+The best way to check whether hardware acceleration is turned on is to type `chrome://gpu` into the address bar at the top of the browser.
+
+A whole bunch of results will be returned but we're interested on the section titled _Graphics Feature Status_. Please make sure "Hardware accelerated" is turned on entry WebGL (among multiple others).
+
+To enable hardware acceleration:
+* type `chrome://settings` in the address bar,
+* scroll to the very bottom of that page and expand the _Advanced_ link
+* scroll down till reaching the section _System_ and enable the option "Use hardware acceleration when available"
+* restart the browser if requested
+
+### Firefox
+To enable hardware acceleration:
+* type `about:config` in the address bar
+* search for `layers.acceleration.force-enabled` and double click on it to turn the value to `true`
+* restart the browser
+
+### Other browsers
+For other browsers, please refer to their specific documentation on the matter.
+
 ## Contributing
 If you would like to contribute to the visualization, please have a look at our [Contribution Guide](CONTRIBUTING.md)
 
