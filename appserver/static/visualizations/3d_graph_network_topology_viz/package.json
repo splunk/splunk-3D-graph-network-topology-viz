@@ -1,6 +1,6 @@
 {
   "name": "3d_graph_network_topology_viz",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Plot relationships between objects with force directed graph based on ThreeJS/WebGL.",
   "main": "visualization.js",
   "scripts": {
@@ -12,13 +12,13 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "webpack": "^1.12.6",
-    "three": "^0.86.0"
+    "three": "^0.115.0"
   },
   "dependencies": {
     "d3": "^5.7.0",
-    "jquery": "^2.2.0",
+    "jquery": ">=3.5.0",
     "underscore": "^1.8.3",
-    "3d-force-graph": "^1.45.0",
-    "force-graph": "^1.14.0"
+    "3d-force-graph": "^1.60.11",
+    "force-graph": "^1.27.1"
   }
 }

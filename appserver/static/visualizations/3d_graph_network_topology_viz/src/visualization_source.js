@@ -40,7 +40,7 @@ define([
             SplunkVisualizationBase.prototype.initialize.apply(this, arguments);
             this.graph = null;
             this.graph3d = null;
-            this.hasCanvasChanged = false;
+            this.initialized = false;
             this.disableDagMode = false;
 
             this.$el = $(this.el);
@@ -78,8 +78,6 @@ define([
 
             var key_tokens = Object.keys(config)[0].split(/[\s.]+/);
 
-            this.hasCanvasChanged = ('enable3D') === key_tokens[key_tokens.length-1];
-
             if (this.disableDagMode && ('dagMode') === key_tokens[key_tokens.length-1]) {
                 var dagMode = this._normalizeNull(this._getEscapedProperty('dagMode', config) || 'null');
 
@@ -109,7 +107,7 @@ define([
 
             } else {
               // Re-rendering the viz to apply config changes
-              this.invalidateReflow();
+              this.invalidateUpdateView();
             }
         },
 
@@ -149,8 +147,8 @@ define([
             }
 
             // Avoid duplicates!
-            let node_ids = new Set();
-            var default_colors = {
+            let nodeIds = new Set();
+            var defaultColors = {
                 "node": this._getEscapedProperty('ndColor', config) || '#EDCBB1',
                 "link": this._getEscapedProperty('lkColor', config) || '#ffffff'
             };
@@ -162,57 +160,57 @@ define([
                       name = id;
                       // name = fields[ix].name + ": " + id;
 
-                  if (!node_ids.has(id)){
-                    var new_node = {
+                  if (!nodeIds.has(id)){
+                    var newNode = {
                         "id": id,
                         "name": name,
                         "val": 1,
                         "has_custom_color": 0,
-                        "color": default_colors['node']
+                        "color": defaultColors['node']
                     };
                     // Setting custom weigth and colors
                     if (ix < 1) {
                         if (idxNdColor > 0) {
-                          new_node['color'] = row[idxNdColor];
-                          new_node['has_custom_color'] = 1;
+                          newNode['color'] = row[idxNdColor];
+                          newNode['has_custom_color'] = 1;
                         }
-                        if (idxNdSize > 0) new_node['val'] = row[idxNdSize];
+                        if (idxNdSize > 0) newNode['val'] = row[idxNdSize];
                     } else {
                         if (idxNdColorDst > 0) {
-                          new_node['color'] = row[idxNdColorDst];
-                          new_node['has_custom_color'] = 1;
+                          newNode['color'] = row[idxNdColorDst];
+                          newNode['has_custom_color'] = 1;
                         }
-                        if (idxNdSizeDst > 0) new_node['val'] = row[idxNdSizeDst];
+                        if (idxNdSizeDst > 0) newNode['val'] = row[idxNdSizeDst];
                     }
 
                     // Sanity checks
-                    if (new_node.hasOwnProperty('color')) {
-                        if (new_node['color'] && !new_node['color'].match("^#")) {
+                    if (newNode.hasOwnProperty('color')) {
+                        if (newNode['color'] && !newNode['color'].match("^#")) {
                           throw new SplunkVisualizationBase.VisualizationError(
                               'Check the Statistics tab. To assign custom colors to nodes, valid hex codes shall be returned.'
                           );
                         }
                     }
-                    if (new_node['val'] && new_node['val'] != parseFloat(new_node['val'])) {
+                    if (newNode['val'] && newNode['val'] != parseFloat(newNode['val'])) {
                         throw new SplunkVisualizationBase.VisualizationError(
                             'Check the Statistics tab. To assign custom weights to nodes, valid numbers shall be returned.'
                         );
                     }
 
-                    nodes.push(new_node);
-                    node_ids.add(id);
+                    nodes.push(newNode);
+                    nodeIds.add(id);
                   }
                 });
 
                 // Check for loops in data > DAG mode limited
                 if (row[0] === row[1]) that.disableDagMode = true;
 
-                var new_link = {
+                var newLink = {
                     "source": row[0],
                     "target": row[1],
                     "width": idxLkWidth > 0 ? row[idxLkWidth] : 0,
                     "has_custom_color": 0,
-                    "color": default_colors['link']
+                    "color": defaultColors['link']
                 };
 
                 // Setting custom color to link
@@ -223,11 +221,11 @@ define([
                             'Check the Statistics tab. To assign custom colors to edges, valid hex codes shall be returned.'
                         );
                     }
-                    new_link["color"] = row[idxLkColor];
-                    new_link["has_custom_color"] = 1;
+                    newLink["color"] = row[idxLkColor];
+                    newLink["has_custom_color"] = 1;
                 }
 
-                links.push(new_link);
+                links.push(newLink);
             });
 
             return {
@@ -260,26 +258,42 @@ define([
             var params = {
               "bgColor": this._getEscapedProperty('bgColor', config) || '#000011',
               "dagMode": this._normalizeNull(this._getEscapedProperty('dagMode', config) || 'null'),
+              "lkColor": this._getEscapedProperty('lkColor', config) || '#ffffff',
+              "ndColor": this._getEscapedProperty('ndColor', config) || '#EDCBB1',
               "cameraController": this._getEscapedProperty('cameraController', config) || 'trackball'
             };
             this.useDrilldown = this._isEnabledDrilldown(config);
 
             // Show/Hide Animation Bar
             this._toggleAnimationBar(showAnimationBar);
+            
+            if (!this.initialized) {
+                if (this.logging) console.log("updateView() - Initializing graphs");
+                // Load graphs
+                this._load3DGraph($elem3d.get(0), params);
+                this._load2DGraph($elem.get(0), params);
+                // Render graphs
+                this.graph3d($elem3d.get(0)).graphData(data.content);
+                this.graph($elem.get(0)).graphData(data.content);
 
-            // Load graphs
-            this._load3DGraph($elem3d.get(0), params);
-            this._load2DGraph($elem.get(0), params);
-
-            // Render graphs
-            this.graph3d($elem3d.get(0)).graphData(data.content);
-            this.graph($elem.get(0)).graphData(data.content);
+                this.initialized = true;
+            } else {
+                if (this.logging) console.log("updateView() - Refreshing graphs");
+                var graph = (enable3D) ? this.graph3d : this.graph;
+                graph.linkColor(link => link.color = link.has_custom_color < 1 ? params['lkColor'] : link.color)
+                    .nodeColor(node => node.color =
+                        node.has_custom_color < 1 ? params['ndColor'] : node.color)
+                    .backgroundColor(params["bgColor"])
+                    .dagMode(params["dagMode"]);
+            }
 
             // Display only one graph
             if (enable3D) {
               $elem.addClass("hide");
+              $elem3d.removeClass("hide");
             } else {
               $elem3d.addClass("hide");
+              $elem.removeClass("hide");
             }
         },
 
@@ -411,67 +425,7 @@ define([
 
         _normalizeNull: function(value) {
             return value === "null" ? null : value;
-        },
-
-        // Override to respond to re-sizing events
-        reflow: function() {
-            if(this.logging) console.log('reflow() - size this.el ('+this.$el.width()+','+this.$el.height()+')');
-
-            if (null == this.graph && null == this.graph3d) {
-              if(this.logging) console.log('reflow() - Not initialised yet. Skipping.');
-              return;
-            }
-
-            var config = this.getCurrentConfig();
-
-            var width = this.$el.width(),
-                height = this.$el.height();
-
-            var $elem = $('div.graphviz-container[name=' + this.uuid + ']'),
-                $elem3d = $('div.graphviz-container[name=3d' + this.uuid + ']');
-
-            var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
-            var params = {
-              "bgColor": this._getEscapedProperty('bgColor', config) || '#000011',
-              "lkColor": this._getEscapedProperty('lkColor', config) || '#ffffff',
-              "ndColor": this._getEscapedProperty('ndColor', config) || '#EDCBB1',
-              "dagMode": this._normalizeNull(this._getEscapedProperty('dagMode', config) || 'null'),
-              "cameraController": this._getEscapedProperty('cameraController', config) || 'trackball'
-            }
-
-            if (enable3D){
-                if(this.logging) console.log("reflow() - updating 3D graph");
-
-                this._load3DGraph($elem3d.get(0), params);
-                this.graph3d.width(width)
-                    .height(height)
-                    .linkColor(link => link.color =
-                        link.has_custom_color < 1 ? params['lkColor'] : link.color)
-                    .nodeColor(node => node.color =
-                        node.has_custom_color < 1 ? params['ndColor'] : node.color)
-                    .graphData(this.getCurrentData().content);
-
-            } else {
-                if(this.logging) console.log("reflow() - updating 2D graph");
-
-                // No need to re-load the graph w/ 2D Canvas
-                this.graph.width(width)
-                    .height(height)
-                    .linkColor(link => link.color =
-                        link.has_custom_color < 1 ? params['lkColor'] : link.color)
-                    .nodeColor(node => node.color =
-                        node.has_custom_color < 1 ? params['ndColor'] : node.color)
-                    .backgroundColor(params["bgColor"])
-                    .dagMode(params["dagMode"]);
-            }
-
-            // Swap canvas display if changed
-            if (this.hasCanvasChanged) {
-                $elem.toggleClass("hide");
-                $elem3d.toggleClass("hide");
-                // Resetting flag to prevent errors
-                this.hasCanvasChanged = false;
-            }
         }
+
     });
 });
