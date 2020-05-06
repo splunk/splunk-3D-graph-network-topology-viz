@@ -1,4 +1,5 @@
 require([
+    "jquery",
     "splunkjs/mvc",
     "splunkjs/mvc/searchmanager",
     "splunkjs/mvc/searchbarview",
@@ -7,6 +8,7 @@ require([
     //"splunkjs/mvc/tableview",
     "splunkjs/mvc/simplexml/ready!"
 ], function(
+    $,
     mvc,
     SearchManager,
     SearchbarView,
@@ -20,12 +22,13 @@ require([
     // Create the search manager
     var mysearch = new SearchManager({
         id: "base",
+        autostart: "false",
         app: "search",
         preview: true,
         cache: true,
         status_buckets: 300,
         required_field_list: "*",
-        search: '| inputlookup cidds_ip_connections.csv | search src_ip=192.168.* dest_ip=192.168.*'
+        search: ""
     });
 
     // Create the views
@@ -86,5 +89,18 @@ require([
     // When the timerange in the searchbar changes, update the search manager
     mysearchbar.timerange.on("change", function() {
         mysearch.settings.set(mysearchbar.timerange.val());
+    });
+
+    // actions for the populate search Buttons
+    $('#cidds').on("click", function (e){
+      mysearchbar.val("| inputlookup cidds_ip_connections.csv | search src_ip=192.168.* dest_ip=192.168.*");
+    });
+
+    $('#bitcoin').on("click", function (e){
+      mysearchbar.val("| inputlookup bitcoin_transactions.csv | head 1000 | rename user_id_from as src user_id_to as dest");
+    });
+
+    $('#internal').on("click", function (e){
+      mysearchbar.val("index=_internal | stats count by source sourcetype");
     });
 });
