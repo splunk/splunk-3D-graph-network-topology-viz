@@ -3,6 +3,7 @@
   "version": "1.2.0",
   "description": "Plot relationships between objects with force directed graph based on ThreeJS/WebGL.",
   "main": "visualization.js",
+  "type": "module",
   "scripts": {
     "build": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js",
     "devbuild": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js --progress",
@@ -11,14 +12,14 @@
   "author": "Splunk",
   "license": "Apache-2.0",
   "devDependencies": {
-    "webpack": "^1.12.6",
-    "braces": ">=2.3.1"
+    "webpack": "^4.0.0",
+    "webpack-cli": "^4.5.0"
   },
   "dependencies": {
     "d3": "^5.7.0",
     "jquery": ">=3.5.0",
     "underscore": "^1.8.3",
-    "3d-force-graph": "^1.60.11",
-    "force-graph": "^1.27.1"
+    "3d-force-graph": "^1.68.0",
+    "force-graph": "^1.36.2"
   }
 }

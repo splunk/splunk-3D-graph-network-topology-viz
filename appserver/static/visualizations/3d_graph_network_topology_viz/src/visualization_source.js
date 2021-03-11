@@ -308,7 +308,7 @@ define([
         _load2DGraph: function(elem, params){
           var that = this;
 
-          this.graph = ForceGraph()(elem)
+          this.graph = ForceGraph.default()(elem)
               .backgroundColor(params['bgColor'])
               .linkWidth(link => link.width > MAX_EDGE_SZ ? MAX_EDGE_SZ : link.width)
               .dagMode(params['dagMode'])
@@ -323,7 +323,7 @@ define([
             const distance = 1000;
             var that = this;
 
-            this.graph3d = ForceGraph3D({ controlType: params['cameraController'] })(elem)
+            this.graph3d = ForceGraph3D.default({ controlType: params['cameraController'] })(elem)
               .cameraPosition({ z: distance })
               .onNodeHover(node => {
                 // Change cursor when hovering on nodes (if drilldown enabled)
