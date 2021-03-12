@@ -316,6 +316,8 @@ define([
                 // Change cursor when hovering on nodes (if drilldown enabled)
                 elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
               })
+              .linkDirectionalArrowLength(3.5)
+              .linkDirectionalArrowRelPos(1)
               .onNodeClick(that._drilldown.bind(that));
         },
 
@@ -332,6 +334,8 @@ define([
               .onNodeClick(that._drilldown.bind(that))
               .backgroundColor(params['bgColor'])
               .linkWidth(link => link.width > MAX_EDGE_SZ ? MAX_EDGE_SZ : link.width)
+              .linkDirectionalArrowLength(3.5)
+              .linkDirectionalArrowRelPos(1)
               .dagMode(params['dagMode']);
         },
 
