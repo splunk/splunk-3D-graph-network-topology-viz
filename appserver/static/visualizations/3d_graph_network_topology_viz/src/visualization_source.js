@@ -45,7 +45,6 @@ define([
             this.$el = $(this.el);
             this.uuid = this._getUUID();
             // this.$el.css('id','viz_base')
-            this.$el.append('<div class="graphviz-container" name="3d' + this.uuid + '"></div>');
             this.$el.append('<div class="graphviz-container" name="' + this.uuid + '"></div>');
             var controllerbar = '<div class="graphviz-controllers" name="cntl' + this.uuid + '">' +
                                     '<a id="btnPlayAnimation" style="margin: 8px;" href="#" class="btn btn-primary">' +
@@ -248,8 +247,7 @@ define([
                 return;
             }
 
-            var $elem = $('div.graphviz-container[name=' + this.uuid + ']'),
-                $elem3d = $('div.graphviz-container[name=3d' + this.uuid + ']');
+            var $elem = $('div.graphviz-container[name=' + this.uuid + ']');
 
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
             var showAnimationBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showAnimationBar', config));
@@ -267,7 +265,7 @@ define([
             
             // Dispose all graphs
             if (this.graph != null) {
-                console.log("updateView() - Disposing graph 2D")
+                console.log("updateView() - Disposing [2D] graph")
                 // Stop frame animation engine + Clean data structure
                 this.graph._destructor();
                 // Remove all child nodes from DOM
@@ -277,12 +275,12 @@ define([
             } 
             
             if (this.graph3d != null) {
-                console.log("updateView() - Disposing graph 3D")
+                console.log("updateView() - Disposing [3D] graph")
                 // Stop frame animation engine + Clean data structure
                 this.graph3d._destructor();
                 this.graph3d.renderer().dispose();
                 // Remove all child nodes from DOM
-                $elem3d.empty();
+                $elem.empty();
 
                 this.graph3d = null;
             }
@@ -290,10 +288,10 @@ define([
             // Create the required graph 
             if (enable3D) {
                 console.log("updateView() - Loading [3D] graph");
-                this._load3DGraph($elem3d.get(0), params);
+                this._load3DGraph($elem.get(0), params);
                 
                 console.log("updateView() - Rendering [3D] graph");
-                this.graph3d($elem3d.get(0)).graphData(data.content)
+                this.graph3d($elem.get(0)).graphData(data.content)
                     .linkColor(link => link.color = link.has_custom_color < 1 ? params['lkColor'] : link.color)
                     .nodeColor(node => node.color =
                         node.has_custom_color < 1 ? params['ndColor'] : node.color)
