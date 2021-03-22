@@ -39,6 +39,7 @@ define([
 
             SplunkVisualizationBase.prototype.initialize.apply(this, arguments);
             this.graph = null;
+            this.hasToggledGraph = false;
             this.disableDagMode = false;
 
             this.$el = $(this.el);
@@ -103,8 +104,11 @@ define([
                 this._toggleAnimationBar(showAnimationBar);
 
             } else {
-              // Re-rendering the viz to apply config changes
-              this.invalidateUpdateView();
+                // Keep track of 2D-3D graph toggle
+                this.hasToggledGraph = ('enable3D' === key_tokens[key_tokens.length - 1]);
+                
+                // Re-rendering the viz to apply config changes
+                this.invalidateUpdateView();
             }
         },
 
@@ -263,14 +267,16 @@ define([
             this._toggleAnimationBar(showAnimationBar);
             
             // Dispose current graph 
-            if (this.graph != null) {
+            if (this.hasToggledGraph) {
                 console.log("updateView() - Disposing currently rendered graph");
                 // Stop frame animation engine + Clean data structure
                 this.graph._destructor();
-                if (!enable3D) {
-                    // Dispose the WebGL renderer (3D graph only)
+
+                // Dispose the WebGL renderer (3D graph only)
+                if (typeof this.graph.renderer == 'function') {
                     this.graph.renderer().dispose();
                 }
+
                 // Remove all child nodes from DOM
                 $elem.empty();
                 
@@ -279,30 +285,28 @@ define([
             
             // Create the required graph 
             if (enable3D) {
-                console.log("updateView() - Loading [3D] graph");
-                this._load3DGraph($elem.get(0), params);
+                if (this.graph == null){
+                    console.log("updateView() - Loading [3D] graph");
+                    this._load3DGraph($elem.get(0), params);
+                }
                 
                 console.log("updateView() - Rendering [3D] graph");
-                this.graph($elem.get(0)).graphData(data.content)
-                    .linkColor(link => link.color = link.has_custom_color < 1 ? params['lkColor'] : link.color)
-                    .nodeColor(node => node.color =
-                        node.has_custom_color < 1 ? params['ndColor'] : node.color)
-                    .backgroundColor(params["bgColor"])
-                    .dagMode(params["dagMode"]);
             } else {
-                console.log("updateView() - Loading [2D] graph");
-                this._load2DGraph($elem.get(0), params);
+                if (this.graph == null){
+                    console.log("updateView() - Loading [2D] graph");
+                    this._load2DGraph($elem.get(0), params);
+                }
                 
                 console.log("updateView() - Rendering [2D] graph");
-                this.graph($elem.get(0)).graphData(data.content)
-                    .linkColor(link => link.color = link.has_custom_color < 1 ? params['lkColor'] : link.color)
-                    .nodeColor(node => node.color =
-                        node.has_custom_color < 1 ? params['ndColor'] : node.color)
-                    .backgroundColor(params["bgColor"])
-                    .dagMode(params["dagMode"]);
             }
 
-                
+            this.graph.linkColor(link => link.color = 
+                    link.has_custom_color < 1 ? params['lkColor'] : link.color)
+                .nodeColor(node => node.color =
+                    node.has_custom_color < 1 ? params['ndColor'] : node.color)
+                .backgroundColor(params["bgColor"])
+                .dagMode(params["dagMode"])
+                .graphData(data.content);
         },
 
         // Search data params
