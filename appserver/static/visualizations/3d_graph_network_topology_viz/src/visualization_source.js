@@ -40,7 +40,6 @@ define([
             SplunkVisualizationBase.prototype.initialize.apply(this, arguments);
             this.graph = null;
             this.graph3d = null;
-            this.initialized = false;
             this.disableDagMode = false;
 
             this.$el = $(this.el);
@@ -252,7 +251,6 @@ define([
             var $elem = $('div.graphviz-container[name=' + this.uuid + ']'),
                 $elem3d = $('div.graphviz-container[name=3d' + this.uuid + ']');
 
-            var that = this;
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
             var showAnimationBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showAnimationBar', config));
             var params = {
@@ -267,34 +265,54 @@ define([
             // Show/Hide Animation Bar
             this._toggleAnimationBar(showAnimationBar);
             
-            if (!this.initialized) {
-                if (this.logging) console.log("updateView() - Initializing graphs");
-                // Load graphs
-                this._load3DGraph($elem3d.get(0), params);
-                this._load2DGraph($elem.get(0), params);
-                // Render graphs
-                this.graph3d($elem3d.get(0)).graphData(data.content);
-                this.graph($elem.get(0)).graphData(data.content);
+            // Dispose all graphs
+            if (this.graph != null) {
+                console.log("updateView() - Disposing graph 2D")
+                // Stop frame animation engine + Clean data structure
+                this.graph._destructor();
+                // Remove all child nodes from DOM
+                $elem.empty();
+                
+                this.graph = null;
+            } 
+            
+            if (this.graph3d != null) {
+                console.log("updateView() - Disposing graph 3D")
+                // Stop frame animation engine + Clean data structure
+                this.graph3d._destructor();
+                this.graph3d.renderer().dispose();
+                // Remove all child nodes from DOM
+                $elem3d.empty();
 
-                this.initialized = true;
+                this.graph3d = null;
+            }
+            
+            // Create the required graph 
+            if (enable3D) {
+                console.log("updateView() - Loading [3D] graph");
+                this._load3DGraph($elem3d.get(0), params);
+                
+                console.log("updateView() - Rendering [3D] graph");
+                this.graph3d($elem3d.get(0)).graphData(data.content)
+                    .linkColor(link => link.color = link.has_custom_color < 1 ? params['lkColor'] : link.color)
+                    .nodeColor(node => node.color =
+                        node.has_custom_color < 1 ? params['ndColor'] : node.color)
+                    .backgroundColor(params["bgColor"])
+                    .dagMode(params["dagMode"]);
             } else {
-                if (this.logging) console.log("updateView() - Refreshing graphs");
-                var graph = (enable3D) ? this.graph3d : this.graph;
-                graph.linkColor(link => link.color = link.has_custom_color < 1 ? params['lkColor'] : link.color)
+                console.log("updateView() - Loading [2D] graph");
+                this._load2DGraph($elem.get(0), params);
+                
+                console.log("updateView() - Rendering [2D] graph");
+                this.graph($elem.get(0)).graphData(data.content)
+                    .linkColor(link => link.color = link.has_custom_color < 1 ? params['lkColor'] : link.color)
                     .nodeColor(node => node.color =
                         node.has_custom_color < 1 ? params['ndColor'] : node.color)
                     .backgroundColor(params["bgColor"])
                     .dagMode(params["dagMode"]);
             }
 
-            // Display only one graph
-            if (enable3D) {
-              $elem.addClass("hide");
-              $elem3d.removeClass("hide");
-            } else {
-              $elem3d.addClass("hide");
-              $elem.removeClass("hide");
-            }
+                
         },
 
         // Search data params
@@ -325,7 +343,9 @@ define([
             const distance = 1000;
             var that = this;
 
-            this.graph3d = ForceGraph3D.default({ controlType: params['cameraController'] })(elem)
+            this.graph3d = ForceGraph3D.default({ 
+                    controlType: params['cameraController']
+                })(elem)
               .cameraPosition({ z: distance })
               .onNodeHover(node => {
                 // Change cursor when hovering on nodes (if drilldown enabled)
