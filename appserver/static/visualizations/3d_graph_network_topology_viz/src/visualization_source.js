@@ -39,7 +39,6 @@ define([
 
             SplunkVisualizationBase.prototype.initialize.apply(this, arguments);
             this.graph = null;
-            this.graph3d = null;
             this.disableDagMode = false;
 
             this.$el = $(this.el);
@@ -263,27 +262,20 @@ define([
             // Show/Hide Animation Bar
             this._toggleAnimationBar(showAnimationBar);
             
-            // Dispose all graphs
+            // Dispose current graph 
             if (this.graph != null) {
-                console.log("updateView() - Disposing [2D] graph")
+                console.log("updateView() - Disposing currently rendered graph");
                 // Stop frame animation engine + Clean data structure
                 this.graph._destructor();
+                if (!enable3D) {
+                    // Dispose the WebGL renderer (3D graph only)
+                    this.graph.renderer().dispose();
+                }
                 // Remove all child nodes from DOM
                 $elem.empty();
                 
                 this.graph = null;
             } 
-            
-            if (this.graph3d != null) {
-                console.log("updateView() - Disposing [3D] graph")
-                // Stop frame animation engine + Clean data structure
-                this.graph3d._destructor();
-                this.graph3d.renderer().dispose();
-                // Remove all child nodes from DOM
-                $elem.empty();
-
-                this.graph3d = null;
-            }
             
             // Create the required graph 
             if (enable3D) {
@@ -291,7 +283,7 @@ define([
                 this._load3DGraph($elem.get(0), params);
                 
                 console.log("updateView() - Rendering [3D] graph");
-                this.graph3d($elem.get(0)).graphData(data.content)
+                this.graph($elem.get(0)).graphData(data.content)
                     .linkColor(link => link.color = link.has_custom_color < 1 ? params['lkColor'] : link.color)
                     .nodeColor(node => node.color =
                         node.has_custom_color < 1 ? params['ndColor'] : node.color)
@@ -341,7 +333,7 @@ define([
             const distance = 1000;
             var that = this;
 
-            this.graph3d = ForceGraph3D.default({ 
+            this.graph = ForceGraph3D.default({ 
                     controlType: params['cameraController']
                 })(elem)
               .cameraPosition({ z: distance })
