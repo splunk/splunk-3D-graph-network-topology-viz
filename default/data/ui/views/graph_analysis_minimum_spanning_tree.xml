@@ -1,4 +1,4 @@
-<form theme="dark">
+<form stylesheet="searchcontrolsevents.css" theme="dark">
   <label>Minimum Spanning Tree</label>
   <fieldset submitButton="false"></fieldset>
   <row>
@@ -26,13 +26,22 @@
   </row>
   <row>
     <panel>
-      <html>A <a href="https://en.wikipedia.org/wiki/Minimum_spanning_tree">Minimum Spanning Tree</a> is an algorithm that aims to determine the nodes and connections that form the shortest path across the network - or the 'spine' of the network. It analyses the nodes and connections across a given network and includes each connection in turn starting with the connection with the lowest weighting until all the nodes are connected, ignoring any connections that create a cycle in the network. Combined with some centrality measures it can help identify the most important path across a network.</html>
+      <html>
+        <div class="ga_general_info">
+          <div class="pull-left">
+            <i class="icon-info large"/>
+          </div>
+          <div class="pull-right">
+            <p>A <a class="external" href="https://en.wikipedia.org/wiki/Minimum_spanning_tree">Minimum Spanning Tree</a>  is an algorithm that aims to determine the nodes and connections that form the shortest path across the network - or the 'spine' of the network. It analyses the nodes and connections across a given network and includes each connection in turn starting with the connection with the lowest weighting until all the nodes are connected, ignoring any connections that create a cycle in the network. Combined with some centrality measures it can help identify the most important path across a network.</p>
+          </div>
+        </div>
+      </html>
     </panel>
   </row>
   <row>
     <panel>
       <viz type="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz">
-        <title>Minimum Spanning Tree - Network Spine Visualisation</title>
+        <title>Network Spine Visualisation</title>
         <search base="base">
           <query>| table $source$ $destination$ *
 | sort - "$source$"</query>

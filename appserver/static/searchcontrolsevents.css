@@ -1,0 +1,52 @@
+div.ga_framework_intro {
+    padding-left: 10px;
+    padding-top: 30px;
+    padding-right: 200px;
+}
+
+div.ga_framework_info {
+    padding-left: 10px;
+}
+
+div.ga_framework_inputdata {
+    padding-left: 10px;
+    padding-bottom: 10px;
+}
+
+div.ga_general_info {
+    margin-top: 10px;
+    display: inline-flex;
+    padding-left: 50px;
+}
+
+div.ga_general_info .pull-left {
+    padding-top: 10px;
+}
+
+div.ga_general_info .pull-right {
+    padding-left: 50px;
+}
+
+i.large {
+    font-size: -webkit-xxx-large;
+}
+
+#bitcoin {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#tb_centralitymeasures tr:first-of-type a:hover,
+#tb_minspanningtree tr:first-of-type a:hover,
+#tb_conncomponents tr:first-of-type a:hover,
+#tb_communitydetection tr:first-of-type a:hover {
+    cursor: default;
+    color: #fff;
+}
+
+#tb_centralitymeasures tr:first-of-type i,
+#tb_minspanningtree tr:first-of-type i,
+#tb_conncomponents tr:first-of-type i,
+#tb_communitydetection tr:first-of-type i {
+    display: none;
+} 
