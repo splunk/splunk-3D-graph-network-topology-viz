@@ -1,11 +1,18 @@
-<dashboard theme="dark">
+<dashboard stylesheet="searchcontrolsevents.css" theme="dark">
   <label>Graph Analysis Example: Connected Components</label>
   <row>
     <panel>
       <html>
-      <p>In graph theory, a component, sometimes called a connected component, of an undirected graph is a subgraph in which any two vertices are connected to each other by paths, and which is connected to no additional vertices in the supergraph. For example, the graph shown in the illustration has three components. A vertex with no incident edges is itself a component. A graph that is itself connected has exactly one component, consisting of the whole graph.</p>
-      <p>Source: <a href="https://en.wikipedia.org/wiki/Component_(graph_theory)">Wikipedia</a></p>
-    </html>
+        <div class="ga_general_info">
+          <div class="pull-left">
+            <i class="icon-info large"/>
+          </div>
+          <div class="pull-right">
+            <p>In graph theory, a component, sometimes called a connected component, of an undirected graph is a subgraph in which any two vertices are connected to each other by paths, and which is connected to no additional vertices in the supergraph. For example, the graph shown in the illustration has three components. A vertex with no incident edges is itself a component. A graph that is itself connected has exactly one component, consisting of the whole graph.</p>
+            <p>Source: <a class="external" href="https://en.wikipedia.org/wiki/Component_(graph_theory)">Wikipedia</a></p>
+          </div>
+        </div>
+      </html>
     </panel>
   </row>
   <row>
