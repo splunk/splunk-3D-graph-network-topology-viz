@@ -1,4 +1,4 @@
-<form theme="dark">
+<form stylesheet="searchcontrolsevents.css" theme="dark">
   <label>Community Detection</label>
   <fieldset submitButton="false"></fieldset>
   <row>
@@ -27,10 +27,16 @@
   <row>
     <panel>
       <html>
-      <p>An example of community detection is label propagation, a semi-supervised machine learning algorithm that assigns labels to previously unlabeled data points. At the start of the algorithm, a (generally small) subset of the data points have labels (or classifications). These labels are propagated to the unlabeled points throughout the course of the algorithm.</p>
-      <p>Within complex networks, real networks tend to have community structure. Label propagation is an algorithm for finding communities. In comparison with other algorithm label propagation has advantages in its running time and amount of a priori information needed about the network structure (no parameter is required to be known beforehand). The disadvantage is that it produces no unique solution, but an aggregate of many solutions.</p>
-      <p>Source: <a href="https://en.wikipedia.org/wiki/Label_propagation_algorithm">Wikipedia</a>
-        </p>
+        <div class="ga_general_info">
+          <div class="pull-left">
+            <i class="icon-info large"/>
+          </div>
+          <div class="pull-right">
+            <p>An example of community detection is label propagation, a semi-supervised machine learning algorithm that assigns labels to previously unlabeled data points. At the start of the algorithm, a (generally small) subset of the data points have labels (or classifications). These labels are propagated to the unlabeled points throughout the course of the algorithm.</p>
+            <p>Within complex networks, real networks tend to have community structure. Label propagation is an algorithm for finding communities. In comparison with other algorithm label propagation has advantages in its running time and amount of a priori information needed about the network structure (no parameter is required to be known beforehand). The disadvantage is that it produces no unique solution, but an aggregate of many solutions.</p>
+            <p>Source: <a class="external" href="https://en.wikipedia.org/wiki/Label_propagation_algorithm">Wikipedia</a></p>
+          </div>
+        </div>
     </html>
     </panel>
   </row>

@@ -22,6 +22,7 @@ define([
         ) {
 
     var MAX_EDGE_SZ = 18; // 18px
+    var MIN_LARGE_GRAPH = 500;
 
     var COLOR_SRC_NODE_FIELDNAME = "color_src";
     var COLOR_DEST_NODE_FIELDNAME = "color_dest";
@@ -39,14 +40,12 @@ define([
 
             SplunkVisualizationBase.prototype.initialize.apply(this, arguments);
             this.graph = null;
-            this.graph3d = null;
-            this.initialized = false;
+            this.hasToggledGraph = false;
             this.disableDagMode = false;
 
             this.$el = $(this.el);
             this.uuid = this._getUUID();
             // this.$el.css('id','viz_base')
-            this.$el.append('<div class="graphviz-container" name="3d' + this.uuid + '"></div>');
             this.$el.append('<div class="graphviz-container" name="' + this.uuid + '"></div>');
             var controllerbar = '<div class="graphviz-controllers" name="cntl' + this.uuid + '">' +
                                     '<a id="btnPlayAnimation" style="margin: 8px;" href="#" class="btn btn-primary">' +
@@ -101,14 +100,23 @@ define([
             }
 
             if ('showAnimationBar' === key_tokens[key_tokens.length-1]){
+                // Show / Hide Animation bar 
                 var showAnimationBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showAnimationBar', config));
-
+                
                 this._toggleAnimationBar(showAnimationBar);
+                return;
+            } 
 
-            } else {
-              // Re-rendering the viz to apply config changes
-              this.invalidateUpdateView();
+            // Keep track of 2D-3D graph toggle
+            this.hasToggledGraph = ('enable3D' === key_tokens[key_tokens.length - 1]);
+            
+            if (this.hasToggledGraph || key_tokens[key_tokens.length - 1].endsWith("Color")) {
+                // 3D / 2D Graph toggled | Color changed. Force viz re-render.
+                this.invalidateUpdateView();
+                return;
             }
+
+            this.invalidateFormatData();
         },
 
         // Optionally implement to format data returned from search.
@@ -233,7 +241,8 @@ define([
               "content": {
                 "nodes": nodes,
                 "links": links
-              }
+              },
+              "status": data.meta.done
             };
         },
 
@@ -243,58 +252,69 @@ define([
         updateView: function(data, config) {
             if (this.logging) console.log("updateView() - Entering");
 
+            var $elem = $('div.graphviz-container[name=' + this.uuid + ']');
+
             // check for data
             if (!data || data.content.nodes.length < 1) {
-                if(this.logging) console.log('updateView() - Error: no data');
+                if (this.logging) console.log('updateView() - Error: no data');
                 return;
             }
-
-            var $elem = $('div.graphviz-container[name=' + this.uuid + ']'),
-                $elem3d = $('div.graphviz-container[name=3d' + this.uuid + ']');
-
-            var that = this;
+            
+            // check for data readiness
+            if (!data.status) {
+                if (this.logging) console.log("Search job is still running. Please wait.");
+                // Trying to dispose here
+                this._disposeGraph($elem);
+                return;
+            }
+            
+            const isLarge = data.content.nodes.length > MIN_LARGE_GRAPH;
+            
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
             var showAnimationBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showAnimationBar', config));
             var params = {
-              "bgColor": this._getEscapedProperty('bgColor', config) || '#000011',
-              "dagMode": this._normalizeNull(this._getEscapedProperty('dagMode', config) || 'null'),
-              "lkColor": this._getEscapedProperty('lkColor', config) || '#ffffff',
-              "ndColor": this._getEscapedProperty('ndColor', config) || '#EDCBB1',
-              "cameraController": this._getEscapedProperty('cameraController', config) || 'trackball'
+                "bgColor": this._getEscapedProperty('bgColor', config) || '#000011',
+                "dagMode": this._normalizeNull(this._getEscapedProperty('dagMode', config) || 'null'),
+                "lkColor": this._getEscapedProperty('lkColor', config) || '#ffffff',
+                "ndColor": this._getEscapedProperty('ndColor', config) || '#EDCBB1',
+                "cameraController": this._getEscapedProperty('cameraController', config) || 'trackball',
+                "isLarge": isLarge,
+                "warmupTicks": isLarge ? Math.pow(data.content.nodes.length, 0.7) * 4 : 0
             };
             this.useDrilldown = this._isEnabledDrilldown(config);
-
+            
             // Show/Hide Animation Bar
             this._toggleAnimationBar(showAnimationBar);
             
-            if (!this.initialized) {
-                if (this.logging) console.log("updateView() - Initializing graphs");
-                // Load graphs
-                this._load3DGraph($elem3d.get(0), params);
-                this._load2DGraph($elem.get(0), params);
-                // Render graphs
-                this.graph3d($elem3d.get(0)).graphData(data.content);
-                this.graph($elem.get(0)).graphData(data.content);
-
-                this.initialized = true;
-            } else {
-                if (this.logging) console.log("updateView() - Refreshing graphs");
-                var graph = (enable3D) ? this.graph3d : this.graph;
-                graph.linkColor(link => link.color = link.has_custom_color < 1 ? params['lkColor'] : link.color)
-                    .nodeColor(node => node.color =
-                        node.has_custom_color < 1 ? params['ndColor'] : node.color)
-                    .backgroundColor(params["bgColor"])
-                    .dagMode(params["dagMode"]);
+            // Dispose current graph 
+            if (this.hasToggledGraph) {
+                this._disposeGraph($elem);
             }
-
-            // Display only one graph
+            
+            // Create the required graph 
             if (enable3D) {
-              $elem.addClass("hide");
-              $elem3d.removeClass("hide");
+                if (this.graph == null){
+                    if (this.logging) console.log("updateView() - Loading [3D] graph");
+                    this._load3DGraph($elem.get(0), params);
+                }
+                
+                if (this.logging) console.log("updateView() - Rendering [3D] graph");
             } else {
-              $elem3d.addClass("hide");
-              $elem.removeClass("hide");
+                if (this.graph == null){
+                    if (this.logging) console.log("updateView() - Loading [2D] graph");
+                    this._load2DGraph($elem.get(0), params);
+                }
+                
+                if (this.logging) console.log("updateView() - Rendering [2D] graph");
             }
+    
+            this.graph.linkColor(link => link.color = 
+                    link.has_custom_color < 1 ? params['lkColor'] : link.color)
+                .nodeColor(node => node.color =
+                    node.has_custom_color < 1 ? params['ndColor'] : node.color)
+                .backgroundColor(params["bgColor"])
+                .dagMode(params["dagMode"])
+                .graphData(data.content);
         },
 
         // Search data params
@@ -305,27 +325,52 @@ define([
             });
         },
 
-        _load2DGraph: function(elem, params){
-          var that = this;
+        _disposeGraph: function($elem) {
+            if (this.graph != null) {
+                if (this.logging) console.log("_disposeGraph() - Disposing currently rendered graph");
+                // Stop frame animation engine + Clean data structure
+                this.graph._destructor();
 
-          this.graph = ForceGraph.default()(elem)
-              .backgroundColor(params['bgColor'])
-              .linkWidth(link => link.width > MAX_EDGE_SZ ? MAX_EDGE_SZ : link.width)
-              .dagMode(params['dagMode'])
-              .onNodeHover(node => {
-                // Change cursor when hovering on nodes (if drilldown enabled)
-                elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
-              })
-              .linkDirectionalArrowLength(3.5)
-              .linkDirectionalArrowRelPos(1)
-              .onNodeClick(that._drilldown.bind(that));
+                // Dispose the WebGL renderer (3D graph only)
+                if (typeof this.graph.renderer == 'function') {
+                    this.graph.renderer().dispose();
+                }
+
+                // Remove all child nodes from DOM
+                $elem.empty();
+
+                this.graph = null;
+            }
+        },
+
+        _load2DGraph: function(elem, params){
+            var that = this;
+
+            this.graph = ForceGraph.default()(elem)
+                .backgroundColor(params['bgColor'])
+                .warmupTicks(params["warmupTicks"])
+                .cooldownTime(5000)
+                .linkWidth(link => link.width > MAX_EDGE_SZ ? MAX_EDGE_SZ : link.width)
+                .dagMode(params['dagMode'])
+                .onNodeHover(node => {
+                    // Change cursor when hovering on nodes (if drilldown enabled)
+                    elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
+                })
+                .linkDirectionalArrowLength(3.5)
+                .linkDirectionalArrowRelPos(1)
+                .onNodeClick(that._drilldown.bind(that));
         },
 
         _load3DGraph: function(elem, params){
             const distance = 1000;
             var that = this;
 
-            this.graph3d = ForceGraph3D.default({ controlType: params['cameraController'] })(elem)
+            this.graph = ForceGraph3D.default({ controlType: params['cameraController'] })(elem)
+              .nodeResolution(params["isLarge"] ? 4 : 8)
+              .linkDirectionalArrowResolution(params["isLarge"] ? 4 : 8)
+              .linkResolution(params["isLarge"] ? 3 : 6)
+              .cooldownTime(5000) // freeze layout engine after 5s
+              .warmupTicks(params["warmupTicks"]) // set no of layout engine cycles to dry-run before start rendering
               .cameraPosition({ z: distance })
               .onNodeHover(node => {
                 // Change cursor when hovering on nodes (if drilldown enabled)
@@ -375,25 +420,24 @@ define([
 
             var config = this.getCurrentConfig();
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
-            var graph = (enable3D) ? this.graph3d : this.graph;
 
             if (enable3D) {
-                resumeAnimation ? graph.resumeAnimation() : graph.pauseAnimation();
+                resumeAnimation ? this.graph.resumeAnimation() : this.graph.pauseAnimation();
                 return;
             }
 
             // Handle Animation for 2D Graph
             if (!resumeAnimation) {
-                graph.pauseAnimation();
-                graph.enableZoomPanInteraction(false);
+                this.graph.pauseAnimation();
+                this.graph.enableZoomPanInteraction(false);
 
                 // Work-around a library misbehaviour
                 var max = 2,
                     cnt = 0,
                     id = setInterval(() => {
                       while(cnt < max) {
-                        graph.resumeAnimation();
-                        graph.pauseAnimation();
+                        this.graph.resumeAnimation();
+                        this.graph.pauseAnimation();
                         cnt = cnt + 1;
                       }
                       clearInterval(id);
@@ -402,9 +446,9 @@ define([
             }
 
             // Work-around a library misbehaviour
-            graph.pauseAnimation();
-            graph.resumeAnimation();
-            graph.enableZoomPanInteraction(true);
+            this.graph.pauseAnimation();
+            this.graph.resumeAnimation();
+            this.graph.enableZoomPanInteraction(true);
         },
 
         _toggleAnimationBar: function(value) {

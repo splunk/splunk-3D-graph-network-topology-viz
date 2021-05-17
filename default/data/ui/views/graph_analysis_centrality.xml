@@ -1,4 +1,4 @@
-<form theme="dark">
+<form stylesheet="searchcontrolsevents.css" theme="dark">
   <label>Centrality Measures</label>
   <fieldset submitButton="false"></fieldset>
   <row>
@@ -27,7 +27,14 @@
   <row>
     <panel>
       <html>
-        <a href="https://www.geeksforgeeks.org/network-centrality-measures-in-a-graph-using-networkx-python/">Centrality measures</a> can be used to identify key nodes on a network. That is to say these measures are used to find nodes that have a high degree of influence or connectivity across the overall network.
+        <div class="ga_general_info">
+          <div class="pull-left">
+            <i class="icon-info large"/>
+          </div>
+          <div class="pull-right">
+            <p><a class="external" href="https://www.geeksforgeeks.org/network-centrality-measures-in-a-graph-using-networkx-python/">Centrality measures</a> can be used to identify key nodes on a network. That is to say these measures are used to find nodes that have a high degree of influence or connectivity across the overall network.</p>
+          </div>
+        </div>
       </html>
     </panel>
   </row>
