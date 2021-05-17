@@ -420,25 +420,24 @@ define([
 
             var config = this.getCurrentConfig();
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
-            var graph = this.graph;
 
             if (enable3D) {
-                resumeAnimation ? graph.resumeAnimation() : graph.pauseAnimation();
+                resumeAnimation ? this.graph.resumeAnimation() : this.graph.pauseAnimation();
                 return;
             }
 
             // Handle Animation for 2D Graph
             if (!resumeAnimation) {
-                graph.pauseAnimation();
-                graph.enableZoomPanInteraction(false);
+                this.graph.pauseAnimation();
+                this.graph.enableZoomPanInteraction(false);
 
                 // Work-around a library misbehaviour
                 var max = 2,
                     cnt = 0,
                     id = setInterval(() => {
                       while(cnt < max) {
-                        graph.resumeAnimation();
-                        graph.pauseAnimation();
+                        this.graph.resumeAnimation();
+                        this.graph.pauseAnimation();
                         cnt = cnt + 1;
                       }
                       clearInterval(id);
@@ -447,9 +446,9 @@ define([
             }
 
             // Work-around a library misbehaviour
-            graph.pauseAnimation();
-            graph.resumeAnimation();
-            graph.enableZoomPanInteraction(true);
+            this.graph.pauseAnimation();
+            this.graph.resumeAnimation();
+            this.graph.enableZoomPanInteraction(true);
         },
 
         _toggleAnimationBar: function(value) {
