@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "2.0.0",
+  "info": {
+    "title": "3D Graph Network Topology Viz",
+    "id": {
+      "group": null,
+      "name": "splunk-3D-graph-network-topology-viz",
+      "version": "1.2.0"
+    },
+    "author": [
+      {
+        "name": "Erica Pescio, Philipp Drieger, Greg Ainslie-Malik",
+        "email": null,
+        "company": null
+      }
+    ],
+    "releaseDate": null,
+    "description": "Graph Algorithms examples and Custom Visualization to plot relationships between objects with force directed graph based on ThreeJS/WebGL.",
+    "classification": {
+      "intendedAudience": null,
+      "categories": [],
+      "developmentStatus": null
+    },
+    "commonInformationModels": null,
+    "license": {
+      "name": null,
+      "text": null,
+      "uri": null
+    },
+    "privacyPolicy": {
+      "name": null,
+      "text": null,
+      "uri": null
+    },
+    "releaseNotes": {
+      "name": null,
+      "text": "./README.md",
+      "uri": null
+    }
+  },
+  "dependencies": {
+      "Splunk_ML_Toolkit": {
+          "version": "*",
+          "optional": true
+      }
+  },
+  "tasks": null,
+  "inputGroups": null,
+  "incompatibleApps": null,
+  "platformRequirements": null,
+  "supportedDeployments": [
+    "*"
+  ],
+  "targetWorkloads": [
+      "_search_heads"
+  ]
+}
