@@ -5,7 +5,7 @@
   "main": "visualization.js",
   "type": "module",
   "scripts": {
-    "build": "node ./node_modules/webpack/bin/webpack.js",
+    "build": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js",
     "devbuild": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js --progress",
     "watch": "$SPLUNK_HOME/bin/splunk cmd node ./node_modules/webpack/bin/webpack.js -d --watch --progress"
   },
@@ -18,7 +18,7 @@
   "dependencies": {
     "d3": "^5.7.0",
     "jquery": ">=3.5.0",
-    "underscore": "^1.8.3",
+    "underscore": "^1.12.1",
     "3d-force-graph": "^1.68.0",
     "force-graph": "^1.36.2"
   }
