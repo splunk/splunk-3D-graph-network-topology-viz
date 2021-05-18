@@ -272,6 +272,7 @@ define([
             
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
             var showAnimationBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showAnimationBar', config));
+            var showLinkArrows = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showLinkArrows', config));
             var params = {
                 "bgColor": this._getEscapedProperty('bgColor', config) || '#000011',
                 "dagMode": this._normalizeNull(this._getEscapedProperty('dagMode', config) || 'null'),
@@ -314,6 +315,8 @@ define([
                     node.has_custom_color < 1 ? params['ndColor'] : node.color)
                 .backgroundColor(params["bgColor"])
                 .dagMode(params["dagMode"])
+                .linkDirectionalArrowLength(showLinkArrows ? 3.5 : 0)
+                .linkDirectionalArrowRelPos(1)
                 .graphData(data.content);
         },
 
@@ -356,8 +359,6 @@ define([
                     // Change cursor when hovering on nodes (if drilldown enabled)
                     elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
                 })
-                .linkDirectionalArrowLength(3.5)
-                .linkDirectionalArrowRelPos(1)
                 .onNodeClick(that._drilldown.bind(that));
         },
 
@@ -379,8 +380,6 @@ define([
               .onNodeClick(that._drilldown.bind(that))
               .backgroundColor(params['bgColor'])
               .linkWidth(link => link.width > MAX_EDGE_SZ ? MAX_EDGE_SZ : link.width)
-              .linkDirectionalArrowLength(3.5)
-              .linkDirectionalArrowRelPos(1)
               .dagMode(params['dagMode']);
         },
 
