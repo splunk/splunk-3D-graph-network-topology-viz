@@ -110,10 +110,11 @@ define([
             // Keep track of 2D-3D graph toggle
             this.hasToggledGraph = ('enable3D' === key_tokens[key_tokens.length - 1]);
             
-            if (this.hasToggledGraph || key_tokens[key_tokens.length - 1].endsWith("Color")) {
-                // 3D / 2D Graph toggled | Color changed. Force viz re-render.
-                this.invalidateUpdateView();
-                return;
+            if (this.hasToggledGraph || key_tokens[key_tokens.length - 1].endsWith("Color")
+                || key_tokens[key_tokens.length - 1].endsWith('LinkArrows')) {
+                    // 3D / 2D Graph toggled | Color changed | Arrows state changed --> Force viz re-render.
+                    this.invalidateUpdateView();
+                    return;
             }
 
             this.invalidateFormatData();
