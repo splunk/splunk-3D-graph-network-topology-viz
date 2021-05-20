@@ -1,32 +1,37 @@
 <form class="splunk-formatter-section" section-label="General">
-    <!-- Add html here to create formatter options -->
-    <splunk-control-group label="Show Animation Controls">
+    <splunk-control-group label="Show Animation Controls" help=" ">
       <splunk-radio-input name="{{VIZ_NAMESPACE}}.showAnimationBar" value="0">
           <option value="1">Yes</option>
           <option value="0">No</option>
       </splunk-radio-input>
     </splunk-control-group>
-    <splunk-control-group label="Background Color">
+    <splunk-control-group label="Background Color" help=" ">
       <splunk-color-picker name="{{VIZ_NAMESPACE}}.bgColor" value="#000011">
       </splunk-color-picker>
     </splunk-control-group>
-    <splunk-control-group label="Nodes Color">
+    <splunk-control-group label="Nodes Color" help=" ">
       <splunk-color-picker name="{{VIZ_NAMESPACE}}.ndColor" value="#EDCBB1">
       </splunk-color-picker>
     </splunk-control-group>
-    <splunk-control-group label="Links Color">
+    <splunk-control-group label="Links Color" help=" ">
       <splunk-color-picker name="{{VIZ_NAMESPACE}}.lkColor" value="#ffffff">
       </splunk-color-picker>
     </splunk-control-group>
 </form>
 <form class="splunk-formatter-section" section-label="Canvas Format">
-  <splunk-control-group label="Use 3D">
+  <splunk-control-group label="Use 3D" help=" ">
       <splunk-radio-input name="{{VIZ_NAMESPACE}}.enable3D" value="1">
           <option value="1">Yes</option>
           <option value="0">No</option>
       </splunk-radio-input>
   </splunk-control-group>
-  <splunk-control-group label="DAG Orientation">
+  <splunk-control-group label="Show Directional Arrows" help=" ">
+    <splunk-radio-input name="{{VIZ_NAMESPACE}}.showLinkArrows" value="0">
+      <option value="1">Yes</option>
+      <option value="0">No</option>
+    </splunk-radio-input>
+  </splunk-control-group>
+  <splunk-control-group label="DAG Orientation" help=" ">
     <splunk-select name="{{VIZ_NAMESPACE}}.dagMode" value="null">
       <option value="null">disabled</option>
       <option value="td">top-down</option>
@@ -44,7 +49,7 @@
       3D Settings
     </span>
   </div>
-  <splunk-control-group label="Camera Controller">
+  <splunk-control-group label="Camera Controller" help=" ">
       <splunk-select name="{{VIZ_NAMESPACE}}.cameraController" value="trackball">
           <option value="trackball">trackball</option>
           <option value="orbit">orbit</option>

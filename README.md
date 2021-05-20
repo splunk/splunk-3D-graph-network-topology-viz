@@ -2,6 +2,10 @@
 
 Plot relationships between objects with force directed graph based on ThreeJS/WebGL.
 
+More information around use cases on the following Splunk blogs:
+- [Chasing a Hidden Gem: Graph Analytics with Splunk’s Machine Learning Toolkit](https://www.splunk.com/en_us/blog/machine-learning/chasing-a-hidden-gem-graph-analytics-with-splunk-s-machine-learning-toolkit.html)
+- Understanding and baselining network behaviour [[part 1](https://www.splunk.com/en_us/blog/machine-learning/understanding-and-baselining-network-behaviour-using-machine-learning-part-i.html) /  [part 2](https://www.splunk.com/en_us/blog/machine-learning/understanding-and-baselining-network-behaviour-using-machine-learning-part-ii.html)]
+
 ## Installation
 
 - [Download Splunk for your platform](http://www.splunk.com/download?r=productOverview).
