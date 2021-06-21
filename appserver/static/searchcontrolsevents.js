@@ -4,17 +4,13 @@ require([
     "splunkjs/mvc/searchmanager",
     "splunkjs/mvc/searchbarview",
     "splunkjs/mvc/searchcontrolsview",
-    "splunkjs/mvc/timelineview",
-    //"splunkjs/mvc/tableview",
     "splunkjs/mvc/simplexml/ready!"
 ], function(
     $,
     mvc,
     SearchManager,
     SearchbarView,
-    SearchControlsView,
-    TimelineView
-    //TableView
+    SearchControlsView
 ) {
 
     var tokens = mvc.Components.get("default");
@@ -32,12 +28,6 @@ require([
     });
 
     // Create the views
-    var mytimeline = new TimelineView ({
-        id: "timeline1",
-        managerid: "base",
-        el: $("#mytimeline1")
-    }).render();
-
     var mysearchbar = new SearchbarView ({
         id: "searchbar1",
         managerid: "base",
@@ -49,11 +39,6 @@ require([
         managerid: "base",
         el: $("#mysearchcontrols1")
     }).render();
-
-    // When the timeline changes, update the search manager
-    mytimeline.on("change", function() {
-        mysearch.settings.set(mytimeline.val());
-    });
 
     // When the query in the searchbar changes, update the search manager
     mysearchbar.on("change", function() {
