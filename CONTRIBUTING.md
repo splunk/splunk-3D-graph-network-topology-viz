@@ -1,11 +1,13 @@
 # Contributing Guidelines
-Thank you for considering spending your time contributing to the Splunk 3D Graph Network Topology Visualization. Whether you're interested in bug-hunting, documentation, or creating entirely new features, this document will help and guide you through the process.
+Thank you for considering spending your time contributing to the Splunk 3D Graph Network Topology Visualization. :rocket:
+
+Whether you're interested in bug-hunting, documentation, or creating entirely new features, this document will help and guide you through the process.
 
 ## Issues & Bug Reports
 If you're seeing some unexpected behavior with this project, please create an [issue](https://github.com/splunk/splunk-3D-graph-network-topology-viz/issues) on GitHub selecting the opportune template and providing requested information.
 
 ## Pull Requests
-We love to see your fixes via pull requests!
+We :heart: to see your fixes via pull requests!
 
 To create a pull request:
 * [Fork](https://guides.github.com/activities/forking/) the project
@@ -17,3 +19,14 @@ To create a pull request:
 Remember:
 * **Any pull request to `Master` will not be accepted**
 * **Address an issue per branch**
+
+## Semi-Automated Release
+A [GitHub Action](https://github.com/splunk/splunk-3D-graph-network-topology-viz/actions/workflows/manual-release.yml) is provided to:
+* Bump the app version
+* Create a release
+
+This action can be **manually triggered** by clicking on _Actions / Manual Release / Run Workflow_ and by providing:
+* **Bump part** - Either major, minor or patch
+* (Optional) **Changelog notes** - By default all commit messages beginning from the last release are included
+
+> **NOTE** Action available to all users with `Write` role at least
