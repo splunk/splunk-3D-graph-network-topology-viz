@@ -4,8 +4,8 @@
 define([
             'jquery',
             'underscore',
-            'vizapi/SplunkVisualizationBase',
-            'vizapi/SplunkVisualizationUtils',
+            'api/SplunkVisualizationBase',
+            'api/SplunkVisualizationUtils',
             'd3',
             '3d-force-graph',
             'force-graph'

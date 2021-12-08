@@ -16,7 +16,7 @@ export default {
         libraryTarget: 'amd'
     },
     externals: [
-        'vizapi/SplunkVisualizationBase',
-        'vizapi/SplunkVisualizationUtils'
+        'api/SplunkVisualizationBase',
+        'api/SplunkVisualizationUtils'
     ]
 };
