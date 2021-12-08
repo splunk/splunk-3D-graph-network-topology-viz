@@ -1,0 +1,143 @@
+# This is a basic workflow that is manually triggered
+
+name: Manual Release
+
+on: 
+  workflow_dispatch:
+    inputs:
+      bumpPart:
+        description: 'Bump part (major, minor or patch)'
+        required: true
+        default: "minor"
+      notes:
+        description: 'Changelog notes'
+        required: false
+
+jobs:
+  tag-version:
+    name: Tag Version
+    runs-on: ubuntu-latest
+    outputs:
+      old_version: ${{ steps.bumpversion.outputs.old_ver }}
+      version: ${{ steps.bumpversion.outputs.new_ver }}
+      new_sha: ${{ steps.sha.outputs.sha }}
+    # Validate bump part before moving forward 
+    if: contains(['major', 'minor', 'patch'], ${{ github.event.inputs.bumpPart }})
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+
+      - name: Bump version and push tag
+        id: bumpversion
+        uses: jaumann/github-bumpversion-action@v0.0.7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: ${{ github.event.inputs.bumpPart }}
+      - name: Push tags
+        run: |
+          remote_repo="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          git push "${remote_repo}" HEAD:${GITHUB_REF} --follow-tags --tags
+  
+      - name: Get SHA
+        id: sha
+        run: |
+          sha_new=$(git rev-parse HEAD)
+          echo "::set-output name=sha::$sha_new"
+
+  build:
+    name: Generate App Bundle
+    needs: tag-version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.tag-version.outputs.new_sha }}
+          fetch-depth: 0
+
+      - name: Fetch and set app info
+        id: appinfo
+        run: |
+          APP_NAME=$(echo "$APP_ID" | tr _ - )
+          echo "::set-output name=app_name::${APP_NAME}"
+
+      - name: Excluding images from README
+        run: |
+          sed -i '/^!/d' README.md
+
+      - name: Bundle app source
+        run: |
+          mkdir dist
+          tar -zcvf dist/${{ steps.appinfo.outputs.app_name }}_v${{ needs.tag-version.outputs.version }}.tgz --exclude='.[^/]*' --exclude=./dist .
+  
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: app_tgz
+          path: dist/${{ steps.appinfo.outputs.app_name }}_v${{ needs.tag-version.outputs.version }}.tgz
+
+  release:
+    name: Create Release
+    needs: 
+      - tag-version
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Fetch all tags
+        run: |
+          git fetch --unshallow --tags
+
+      - name: Build changelog message
+        id: changelog
+        run: |
+          tags_no=$(git tag -l | wc -l)
+          if [[ "${tags_no}" > 1 ]]; then 
+            content=$(git log v${{ needs.tag-version.outputs.old_version }}..v${{ needs.tag-version.outputs.version }} --oneline --decorate --pretty=format:"%s" | tail -n 1)
+            content="${content//'%'/%25}"
+            content="${content//$'\n'/%0A}"
+            content="${content//$'\r'/%0D}"
+          else
+            content="Initial release"
+          fi
+          echo "::set-output name=message::${content}" 
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.tag-version.outputs.version }}
+          release_name: v${{ needs.tag-version.outputs.version }}
+          body: |
+            ## Changelog
+            ${{ github.event.inputs.notes }}
+
+            ${{ steps.changelog.outputs.message }}
+          draft: false
+          prerelease: false
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: app_tgz
+      
+      - name: Get artifact name
+        id: app-name
+        run: |
+          app_package=$(ls -1 *gz | xargs basename)
+          echo "::set-output name=package::${app_package}"
+      
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.app-name.outputs.package }}
+          asset_name: ${{ steps.app-name.outputs.package }}
+          asset_content_type: application/tgz
