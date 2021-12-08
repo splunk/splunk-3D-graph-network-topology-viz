@@ -12,15 +12,9 @@ More information around use cases on the following Splunk blogs:
 - Understanding and baselining network behaviour [[part 1](https://www.splunk.com/en_us/blog/machine-learning/understanding-and-baselining-network-behaviour-using-machine-learning-part-i.html) /  [part 2](https://www.splunk.com/en_us/blog/machine-learning/understanding-and-baselining-network-behaviour-using-machine-learning-part-ii.html)]
 
 ## Installation
+Please refer to [Splunk Documentation](https://docs.splunk.com/Documentation/AddOns/released/Overview/Installingadd-ons) for guidance on installing this visualization in your environment. The app needs to be installed on the SH tier.
 
-- [Download Splunk for your platform](http://www.splunk.com/download?r=productOverview).
-- Unpack/Install Splunk by running the downloaded files.
-- Follow the instruction on the screen.
-
-Splunk-3d-graph-network-topology-viz can be downloaded from either **github** or [splunkbase](https://splunkbase.splunk.com/app/4611/) and installed in your Splunk platform. Access your Splunk instance via terminal and:
-- browse to your apps directory `$SPLUNK_HOME/etc/apps/`
-- download the app from github `git clone  https://github.com/splunk/splunk-3d-graph-network-topology-viz.git`
-- Restart splunk to apply changes `$SPLUNK_HOME/bin/splunk restart`
+Download is available from either [GitHub](https://github.com/splunk/splunk-3D-graph-network-topology-viz/releases) or [Splunkbase](https://splunkbase.splunk.com/app/4611/).
 
 ## Usage
 `<search> | stats count by src dest [color_src] [color_dest] [edge_color] [weight_src] [weight_dest] [edge_weigth]`
