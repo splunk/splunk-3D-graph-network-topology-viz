@@ -36,7 +36,7 @@ jobs:
 
       - name: Bump version and push tag
         id: bumpversion
-        uses: jaumann/github-bumpversion-action@v0.0.7
+        uses: jasonamyers/github-bumpversion-action@v1.0.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: ${{ github.event.inputs.bumpPart }}
