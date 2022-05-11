@@ -20,6 +20,7 @@ jobs:
     outputs:
       old_version: ${{ steps.bumpversion.outputs.old_ver }}
       version: ${{ steps.bumpversion.outputs.new_ver }}
+      app_name: ${{ steps.appinfo.outputs.app_name }}
       new_sha: ${{ steps.sha.outputs.sha }}
     # Validate bump part before moving forward 
     if: contains(['major', 'minor', 'patch'], ${{ github.event.inputs.bumpPart }})
@@ -27,12 +28,19 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v2
 
+      - name: Get app info
+        id: appinfo
+        run: |
+          APP_NAME=$(cat app.manifest | jq -r '.info.id.name' | tr _ - )
+          echo "::set-output name=app_name::${APP_NAME}"
+
       - name: Bump version and push tag
         id: bumpversion
         uses: jaumann/github-bumpversion-action@v0.0.7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: ${{ github.event.inputs.bumpPart }}
+
       - name: Push tags
         run: |
           remote_repo="https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
@@ -55,12 +63,6 @@ jobs:
           ref: ${{ needs.tag-version.outputs.new_sha }}
           fetch-depth: 0
 
-      - name: Fetch and set app info
-        id: appinfo
-        run: |
-          APP_NAME=$(echo "$APP_ID" | tr _ - )
-          echo "::set-output name=app_name::${APP_NAME}"
-
       - name: Excluding images from README
         run: |
           sed -i '/^!/d' README.md
@@ -68,13 +70,13 @@ jobs:
       - name: Bundle app source
         run: |
           mkdir dist
-          tar -zcvf dist/${{ steps.appinfo.outputs.app_name }}_v${{ needs.tag-version.outputs.version }}.tgz --exclude='.[^/]*' --exclude=./dist .
+          tar -zcvf dist/${{ needs.tag-version.outputs.app_name }}_v${{ needs.tag-version.outputs.version }}.tgz --exclude='.[^/]*' --exclude=./dist .
   
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: app_tgz
-          path: dist/${{ steps.appinfo.outputs.app_name }}_v${{ needs.tag-version.outputs.version }}.tgz
+          path: dist/${{ needs.tag-version.outputs.app_name }}_v${{ needs.tag-version.outputs.version }}.tgz
 
   release:
     name: Create Release
