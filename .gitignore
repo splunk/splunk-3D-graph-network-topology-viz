@@ -1,4 +1,4 @@
-node-modules/
+**/node_modules/
 .vscode
 *.pyc
 local.meta
