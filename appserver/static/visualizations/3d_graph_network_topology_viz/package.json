@@ -12,7 +12,7 @@
   "author": "Splunk",
   "license": "Apache-2.0",
   "devDependencies": {
-    "webpack": "^4.0.0",
+    "webpack": "^4.46.0",
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
