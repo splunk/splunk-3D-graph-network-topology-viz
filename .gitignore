@@ -2,3 +2,4 @@
 .vscode
 *.pyc
 local.meta
+fiddle/
