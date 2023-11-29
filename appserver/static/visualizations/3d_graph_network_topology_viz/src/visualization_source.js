@@ -7,6 +7,7 @@ define([
             'api/SplunkVisualizationBase',
             'api/SplunkVisualizationUtils',
             'd3',
+            'three',
             '3d-force-graph',
             'force-graph'
             // Add required assets to this list
@@ -17,12 +18,14 @@ define([
             SplunkVisualizationBase,
             SplunkVisualizationUtils,
             d3,
+            THREE,
             ForceGraph3D,
             ForceGraph
         ) {
 
     var MAX_EDGE_SZ = 18; // 18px
     var MIN_LARGE_GRAPH = 500;
+    const NODE_R = 4;
 
     var COLOR_SRC_NODE_FIELDNAME = "color_src";
     var COLOR_DEST_NODE_FIELDNAME = "color_dest";
@@ -165,16 +168,18 @@ define([
             _.each(rows, function(row) {
                 // Iterating over 0-1 to get row columns
                 _.each([...Array(2).keys()], function(ix) {
+                    // ix = {0 src : 1 dest}
                   var id = row[ix],
                       name = id;
                       // name = fields[ix].name + ": " + id;
 
-                  if (!nodeIds.has(id)){
+                  if (!nodeIds.has(id)) {
                     var newNode = {
                         "id": id,
                         "name": name,
                         "val": 1,
                         "has_custom_color": 0,
+                        "type": ix,
                         "color": defaultColors['node']
                     };
                     // Setting custom weigth and colors
@@ -208,6 +213,18 @@ define([
 
                     nodes.push(newNode);
                     nodeIds.add(id);
+
+                  } else {
+                    // console.log("Checking node type (src or dest?)");
+                    let nodeIdx = _.findIndex(nodes, function (nodeItem) { return nodeItem.id == id });
+
+                    // TODO test
+                    if (nodes[nodeIdx].type != ix) {
+                        // console.log("Node is both source and destination!");
+                        let colorSrc = that._hexToRgb(row[idxNdColor]),
+                            colorDest = that._hexToRgb(row[idxNdColorDst]);
+                        nodes[nodeIdx].color = [colorSrc, colorDest];
+                    }
                   }
                 });
 
@@ -312,8 +329,6 @@ define([
     
             this.graph.linkColor(link => link.color = 
                     link.has_custom_color < 1 ? params['lkColor'] : link.color)
-                .nodeColor(node => node.color =
-                    node.has_custom_color < 1 ? params['ndColor'] : node.color)
                 .backgroundColor(params["bgColor"])
                 .dagMode(params["dagMode"])
                 .linkDirectionalArrowLength(showLinkArrows ? 3.5 : 0)
@@ -360,7 +375,27 @@ define([
                     // Change cursor when hovering on nodes (if drilldown enabled)
                     elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
                 })
-                .onNodeClick(that._drilldown.bind(that));
+                .onNodeClick(that._drilldown.bind(that))
+                .nodeCanvasObject((node, ctx) => {
+                    // Drawing nodes
+                    if (node.color instanceof Array) {
+                        // Gradient
+                        if (node.x !== undefined && node.y !== undefined) {
+                            var gradient = ctx.createLinearGradient(node.x - NODE_R, node.y, node.x + NODE_R, node.y);
+                            gradient.addColorStop(0, node.color[0]);
+                            gradient.addColorStop(1, node.color[1]);
+                            ctx.beginPath();
+                            ctx.arc(node.x, node.y, NODE_R * 1.4, 0, 2 * Math.PI, false);
+                            ctx.fillStyle = gradient;
+                            ctx.fill();
+                        }
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(node.x, node.y, NODE_R * 1.4, 0, 2 * Math.PI, false);
+                        ctx.fillStyle = node.color;
+                        ctx.fill();
+                    }
+                });
         },
 
         _load3DGraph: function(elem, params){
@@ -381,7 +416,51 @@ define([
               .onNodeClick(that._drilldown.bind(that))
               .backgroundColor(params['bgColor'])
               .linkWidth(link => link.width > MAX_EDGE_SZ ? MAX_EDGE_SZ : link.width)
-              .dagMode(params['dagMode']);
+              .dagMode(params['dagMode'])
+              .nodeThreeObject(node => {
+                // Drawing nodes
+                const useDefaultColor = node.has_custom_color < 1;
+                if (!useDefaultColor) {
+                    if (node.color instanceof Array) {
+                        // Gradient
+                        const geometry = new THREE.SphereGeometry();
+                        var material = new THREE.ShaderMaterial({
+                            uniforms: {
+                                color1: {
+                                    value: new THREE.Color(node.color[0])
+                                },
+                                color2: {
+                                    value: new THREE.Color(node.color[1])
+                                }
+                            },
+                            vertexShader: `
+                                varying vec2 vUv;
+
+                                void main() {
+                                    vUv = uv;
+                                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+                                }
+                            `,
+                            fragmentShader: `
+                                uniform vec3 color1;
+                                uniform vec3 color2;
+
+                                varying vec2 vUv;
+
+                                void main() {
+                                    gl_FragColor = vec4(mix(color1, color2, vUv.y), 1.0);
+                                }
+                            `
+                        });
+                        return new THREE.Mesh(geometry, material);
+                    }
+                }
+
+                // No gradient
+                geometry = new THREE.SphereGeometry();
+                material = new THREE.MeshBasicMaterial({ color: useDefaultColor ? params['ndColor'] : node.color });
+                return new THREE.Mesh(geometry, material);
+              });
         },
 
         _getUUID: function () {
