@@ -112,10 +112,10 @@ define([
 
             // Keep track of 2D-3D graph toggle
             this.hasToggledGraph = ('enable3D' === key_tokens[key_tokens.length - 1]);
-            
+
             if (this.hasToggledGraph || key_tokens[key_tokens.length - 1].endsWith("Color")
                 || key_tokens[key_tokens.length - 1].endsWith('LinkArrows')) {
-                    // 3D / 2D Graph toggled | Color changed | Arrows state changed --> Force viz re-render.
+                    // 3D / 2D Graph toggled | Color changed | Arrows state changed | Labels toggled --> Force viz re-render.
                     this.invalidateUpdateView();
                     return;
             }
@@ -218,7 +218,6 @@ define([
                     // console.log("Checking node type (src or dest?)");
                     let nodeIdx = _.findIndex(nodes, function (nodeItem) { return nodeItem.id == id });
 
-                    // TODO test
                     if (nodes[nodeIdx].type != ix) {
                         // console.log("Node is both source and destination!");
                         let colorSrc = that._hexToRgb(row[idxNdColor]),
@@ -301,7 +300,7 @@ define([
                 "warmupTicks": isLarge ? Math.pow(data.content.nodes.length, 0.7) * 4 : 0
             };
             this.useDrilldown = this._isEnabledDrilldown(config);
-            
+
             // Show/Hide Animation Bar
             this._toggleAnimationBar(showAnimationBar);
             
@@ -317,6 +316,56 @@ define([
                     this._load3DGraph($elem.get(0), params);
                 }
                 
+                // Add node customisations to the 3D Graph
+                this.graph.nodeThreeObject(node => {
+                    const obj = new THREE.Mesh();
+
+                    // Drawing nodes
+                    const useDefaultColor = node.has_custom_color < 1;
+                    if (!useDefaultColor) {
+                        if (node.color instanceof Array) {
+                            // Gradient
+                            const geometry = new THREE.SphereGeometry();
+                            var material = new THREE.ShaderMaterial({
+                                uniforms: {
+                                    color1: {
+                                        value: new THREE.Color(node.color[0])
+                                    },
+                                    color2: {
+                                        value: new THREE.Color(node.color[1])
+                                    }
+                                },
+                                vertexShader: `
+                                varying vec2 vUv;
+
+                                void main() {
+                                    vUv = uv;
+                                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+                                }
+                            `,
+                                fragmentShader: `
+                                uniform vec3 color1;
+                                uniform vec3 color2;
+
+                                varying vec2 vUv;
+
+                                void main() {
+                                    gl_FragColor = vec4(mix(color1, color2, vUv.y), 1.0);
+                                }
+                            `
+                            });
+                            obj.add(new THREE.Mesh(geometry, material));
+                        }
+                    }
+
+                    // No gradient
+                    geometry = new THREE.SphereGeometry();
+                    material = new THREE.MeshBasicMaterial({ color: useDefaultColor ? params['ndColor'] : node.color });
+                    obj.add(new THREE.Mesh(geometry, material));
+
+                    return obj;
+                });
+
                 if (this.logging) console.log("updateView() - Rendering [3D] graph");
             } else {
                 if (this.graph == null){
@@ -324,6 +373,28 @@ define([
                     this._load2DGraph($elem.get(0), params);
                 }
                 
+                // Add node customisations to the 2D Graph
+                this.graph.nodeCanvasObject((node, ctx, globalScale) => {
+                    // Drawing nodes
+                    if (node.color instanceof Array) {
+                        // Gradient
+                        if (node.x !== undefined && node.y !== undefined) {
+                            var gradient = ctx.createLinearGradient(node.x - NODE_R, node.y, node.x + NODE_R, node.y);
+                            gradient.addColorStop(0, node.color[0]);
+                            gradient.addColorStop(1, node.color[1]);
+                            ctx.beginPath();
+                            ctx.arc(node.x, node.y, NODE_R * 1.4, 0, 2 * Math.PI, false);
+                            ctx.fillStyle = gradient;
+                            ctx.fill();
+                        }
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(node.x, node.y, NODE_R * 1.4, 0, 2 * Math.PI, false);
+                        ctx.fillStyle = node.color;
+                        ctx.fill();
+                    }
+                });
+
                 if (this.logging) console.log("updateView() - Rendering [2D] graph");
             }
     
@@ -375,27 +446,7 @@ define([
                     // Change cursor when hovering on nodes (if drilldown enabled)
                     elem.style.cursor = node && that.useDrilldown ? 'pointer' : null;
                 })
-                .onNodeClick(that._drilldown.bind(that))
-                .nodeCanvasObject((node, ctx) => {
-                    // Drawing nodes
-                    if (node.color instanceof Array) {
-                        // Gradient
-                        if (node.x !== undefined && node.y !== undefined) {
-                            var gradient = ctx.createLinearGradient(node.x - NODE_R, node.y, node.x + NODE_R, node.y);
-                            gradient.addColorStop(0, node.color[0]);
-                            gradient.addColorStop(1, node.color[1]);
-                            ctx.beginPath();
-                            ctx.arc(node.x, node.y, NODE_R * 1.4, 0, 2 * Math.PI, false);
-                            ctx.fillStyle = gradient;
-                            ctx.fill();
-                        }
-                    } else {
-                        ctx.beginPath();
-                        ctx.arc(node.x, node.y, NODE_R * 1.4, 0, 2 * Math.PI, false);
-                        ctx.fillStyle = node.color;
-                        ctx.fill();
-                    }
-                });
+                .onNodeClick(that._drilldown.bind(that));
         },
 
         _load3DGraph: function(elem, params){
@@ -416,51 +467,7 @@ define([
               .onNodeClick(that._drilldown.bind(that))
               .backgroundColor(params['bgColor'])
               .linkWidth(link => link.width > MAX_EDGE_SZ ? MAX_EDGE_SZ : link.width)
-              .dagMode(params['dagMode'])
-              .nodeThreeObject(node => {
-                // Drawing nodes
-                const useDefaultColor = node.has_custom_color < 1;
-                if (!useDefaultColor) {
-                    if (node.color instanceof Array) {
-                        // Gradient
-                        const geometry = new THREE.SphereGeometry();
-                        var material = new THREE.ShaderMaterial({
-                            uniforms: {
-                                color1: {
-                                    value: new THREE.Color(node.color[0])
-                                },
-                                color2: {
-                                    value: new THREE.Color(node.color[1])
-                                }
-                            },
-                            vertexShader: `
-                                varying vec2 vUv;
-
-                                void main() {
-                                    vUv = uv;
-                                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
-                                }
-                            `,
-                            fragmentShader: `
-                                uniform vec3 color1;
-                                uniform vec3 color2;
-
-                                varying vec2 vUv;
-
-                                void main() {
-                                    gl_FragColor = vec4(mix(color1, color2, vUv.y), 1.0);
-                                }
-                            `
-                        });
-                        return new THREE.Mesh(geometry, material);
-                    }
-                }
-
-                // No gradient
-                geometry = new THREE.SphereGeometry();
-                material = new THREE.MeshBasicMaterial({ color: useDefaultColor ? params['ndColor'] : node.color });
-                return new THREE.Mesh(geometry, material);
-              });
+              .dagMode(params['dagMode']);
         },
 
         _getUUID: function () {
