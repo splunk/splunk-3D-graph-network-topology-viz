@@ -8,8 +8,10 @@ define([
             'api/SplunkVisualizationUtils',
             'd3',
             'three',
+            'three-spritetext',
             '3d-force-graph',
-            'force-graph'
+            'force-graph',
+            'tinycolor2'
             // Add required assets to this list
         ],
         function(
@@ -19,8 +21,10 @@ define([
             SplunkVisualizationUtils,
             d3,
             THREE,
+            SpriteText,
             ForceGraph3D,
-            ForceGraph
+            ForceGraph,
+            tinycolor
         ) {
 
     var MAX_EDGE_SZ = 18; // 18px
@@ -114,7 +118,8 @@ define([
             this.hasToggledGraph = ('enable3D' === key_tokens[key_tokens.length - 1]);
 
             if (this.hasToggledGraph || key_tokens[key_tokens.length - 1].endsWith("Color")
-                || key_tokens[key_tokens.length - 1].endsWith('LinkArrows')) {
+                || key_tokens[key_tokens.length - 1].endsWith('LinkArrows')
+                || key_tokens[key_tokens.length - 1].endsWith('Labels') ) {
                     // 3D / 2D Graph toggled | Color changed | Arrows state changed | Labels toggled --> Force viz re-render.
                     this.invalidateUpdateView();
                     return;
@@ -292,6 +297,7 @@ define([
             var showLinkArrows = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showLinkArrows', config));
             var params = {
                 "bgColor": this._getEscapedProperty('bgColor', config) || '#000011',
+                "showLabels": SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showNodeLabels', config)),
                 "dagMode": this._normalizeNull(this._getEscapedProperty('dagMode', config) || 'null'),
                 "lkColor": this._getEscapedProperty('lkColor', config) || '#ffffff',
                 "ndColor": this._getEscapedProperty('ndColor', config) || '#EDCBB1',
@@ -363,6 +369,18 @@ define([
                     material = new THREE.MeshBasicMaterial({ color: useDefaultColor ? params['ndColor'] : node.color });
                     obj.add(new THREE.Mesh(geometry, material));
 
+                    // Show labels if needed
+                    if (params["showLabels"]) {
+                        // !! Added .default to avoid error "SpriteText is not a constructor"
+                        const sprite = new SpriteText.default(node.name);
+                        sprite.material.depthWrite = false; // make sprite background transparent
+                        sprite.color = tinycolor(params['bgColor']).isLight() ?
+                            "rgba(0,0,0,.8)" : "rgba(255,255,255,.8)";
+                        sprite.textHeight = 2;
+                        sprite.position.y = 2 * NODE_R;
+                        obj.add(sprite);
+                    }
+
                     return obj;
                 });
 
@@ -392,6 +410,17 @@ define([
                         ctx.arc(node.x, node.y, NODE_R * 1.4, 0, 2 * Math.PI, false);
                         ctx.fillStyle = node.color;
                         ctx.fill();
+                    }
+
+                    // Show labels if needed
+                    if (params["showLabels"]) {
+                        const fontSize = 12 / globalScale;
+                        ctx.font = `${fontSize}px Sans-Serif`;
+                        ctx.fillStyle = tinycolor(params['bgColor']).isLight() ?
+                            "rgba(0,0,0,.8)" : "rgba(255,255,255,.8)";
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(node.name, node.x, node.y - (2 * NODE_R));
                     }
                 });
 

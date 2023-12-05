@@ -35,6 +35,7 @@
         <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.lkColor">#777777</option>
         <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.ndColor">#999999</option>
         <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.showAnimationBar">1</option>
+        <option name="splunk-3D-graph-network-topology-viz.3d_graph_network_topology_viz.showNodeLabels">0</option>
       </viz>
     </panel>
     <panel>
