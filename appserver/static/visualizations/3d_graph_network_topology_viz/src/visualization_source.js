@@ -225,9 +225,9 @@ define([
 
                     if (nodes[nodeIdx].type != ix) {
                         // console.log("Node is both source and destination!");
-                        let colorSrc = that._hexToRgb(row[idxNdColor]),
-                            colorDest = that._hexToRgb(row[idxNdColorDst]);
-                        nodes[nodeIdx].color = [colorSrc, colorDest];
+                        let colorSrc = idxNdColor !== -1 ? row[idxNdColor] : defaultColors["node"],
+                            colorDest = idxNdColorDst !== -1 ? row[idxNdColorDst] : defaultColors["node"];
+                        nodes[nodeIdx].color = [that._hexToRgb(colorSrc), that._hexToRgb(colorDest)];
                     }
                   }
                 });
