@@ -7,8 +7,11 @@ define([
             'api/SplunkVisualizationBase',
             'api/SplunkVisualizationUtils',
             'd3',
+            'three',
+            'three-spritetext',
             '3d-force-graph',
-            'force-graph'
+            'force-graph',
+            'tinycolor2'
             // Add required assets to this list
         ],
         function(
@@ -17,12 +20,16 @@ define([
             SplunkVisualizationBase,
             SplunkVisualizationUtils,
             d3,
+            THREE,
+            SpriteText,
             ForceGraph3D,
-            ForceGraph
+            ForceGraph,
+            tinycolor
         ) {
 
     var MAX_EDGE_SZ = 18; // 18px
     var MIN_LARGE_GRAPH = 500;
+    const NODE_R = 4;
 
     var COLOR_SRC_NODE_FIELDNAME = "color_src";
     var COLOR_DEST_NODE_FIELDNAME = "color_dest";
@@ -109,10 +116,11 @@ define([
 
             // Keep track of 2D-3D graph toggle
             this.hasToggledGraph = ('enable3D' === key_tokens[key_tokens.length - 1]);
-            
+
             if (this.hasToggledGraph || key_tokens[key_tokens.length - 1].endsWith("Color")
-                || key_tokens[key_tokens.length - 1].endsWith('LinkArrows')) {
-                    // 3D / 2D Graph toggled | Color changed | Arrows state changed --> Force viz re-render.
+                || key_tokens[key_tokens.length - 1].endsWith('LinkArrows')
+                || key_tokens[key_tokens.length - 1].endsWith('Labels') ) {
+                    // 3D / 2D Graph toggled | Color changed | Arrows state changed | Labels toggled --> Force viz re-render.
                     this.invalidateUpdateView();
                     return;
             }
@@ -165,16 +173,18 @@ define([
             _.each(rows, function(row) {
                 // Iterating over 0-1 to get row columns
                 _.each([...Array(2).keys()], function(ix) {
+                    // ix = {0 src : 1 dest}
                   var id = row[ix],
                       name = id;
                       // name = fields[ix].name + ": " + id;
 
-                  if (!nodeIds.has(id)){
+                  if (!nodeIds.has(id)) {
                     var newNode = {
                         "id": id,
                         "name": name,
                         "val": 1,
                         "has_custom_color": 0,
+                        "type": ix,
                         "color": defaultColors['node']
                     };
                     // Setting custom weigth and colors
@@ -208,6 +218,17 @@ define([
 
                     nodes.push(newNode);
                     nodeIds.add(id);
+
+                  } else {
+                    // console.log("Checking node type (src or dest?)");
+                    let nodeIdx = _.findIndex(nodes, function (nodeItem) { return nodeItem.id == id });
+
+                    if (nodes[nodeIdx].type != ix) {
+                        // console.log("Node is both source and destination!");
+                        let colorSrc = idxNdColor !== -1 ? row[idxNdColor] : defaultColors["node"],
+                            colorDest = idxNdColorDst !== -1 ? row[idxNdColorDst] : defaultColors["node"];
+                        nodes[nodeIdx].color = [that._hexToRgb(colorSrc), that._hexToRgb(colorDest)];
+                    }
                   }
                 });
 
@@ -276,6 +297,7 @@ define([
             var showLinkArrows = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showLinkArrows', config));
             var params = {
                 "bgColor": this._getEscapedProperty('bgColor', config) || '#000011',
+                "showLabels": SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showNodeLabels', config)),
                 "dagMode": this._normalizeNull(this._getEscapedProperty('dagMode', config) || 'null'),
                 "lkColor": this._getEscapedProperty('lkColor', config) || '#ffffff',
                 "ndColor": this._getEscapedProperty('ndColor', config) || '#EDCBB1',
@@ -284,7 +306,7 @@ define([
                 "warmupTicks": isLarge ? Math.pow(data.content.nodes.length, 0.7) * 4 : 0
             };
             this.useDrilldown = this._isEnabledDrilldown(config);
-            
+
             // Show/Hide Animation Bar
             this._toggleAnimationBar(showAnimationBar);
             
@@ -300,6 +322,68 @@ define([
                     this._load3DGraph($elem.get(0), params);
                 }
                 
+                // Add node customisations to the 3D Graph
+                this.graph.nodeThreeObject(node => {
+                    const obj = new THREE.Mesh();
+
+                    // Drawing nodes
+                    const useDefaultColor = node.has_custom_color < 1;
+                    if (!useDefaultColor) {
+                        if (node.color instanceof Array) {
+                            // Gradient
+                            const geometry = new THREE.SphereGeometry();
+                            var material = new THREE.ShaderMaterial({
+                                uniforms: {
+                                    color1: {
+                                        value: new THREE.Color(node.color[0])
+                                    },
+                                    color2: {
+                                        value: new THREE.Color(node.color[1])
+                                    }
+                                },
+                                vertexShader: `
+                                varying vec2 vUv;
+
+                                void main() {
+                                    vUv = uv;
+                                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+                                }
+                            `,
+                                fragmentShader: `
+                                uniform vec3 color1;
+                                uniform vec3 color2;
+
+                                varying vec2 vUv;
+
+                                void main() {
+                                    gl_FragColor = vec4(mix(color1, color2, vUv.y), 1.0);
+                                }
+                            `
+                            });
+                            obj.add(new THREE.Mesh(geometry, material));
+                        }
+                    }
+
+                    // No gradient
+                    geometry = new THREE.SphereGeometry();
+                    material = new THREE.MeshBasicMaterial({ color: useDefaultColor ? params['ndColor'] : node.color });
+                    obj.add(new THREE.Mesh(geometry, material));
+
+                    // Show labels if needed
+                    if (params["showLabels"]) {
+                        // !! Added .default to avoid error "SpriteText is not a constructor"
+                        const sprite = new SpriteText.default(node.name);
+                        sprite.material.depthWrite = false; // make sprite background transparent
+                        sprite.color = tinycolor(params['bgColor']).isLight() ?
+                            "rgba(0,0,0,.8)" : "rgba(255,255,255,.8)";
+                        sprite.textHeight = 2;
+                        sprite.position.y = 2 * NODE_R;
+                        obj.add(sprite);
+                    }
+
+                    return obj;
+                });
+
                 if (this.logging) console.log("updateView() - Rendering [3D] graph");
             } else {
                 if (this.graph == null){
@@ -307,13 +391,44 @@ define([
                     this._load2DGraph($elem.get(0), params);
                 }
                 
+                // Add node customisations to the 2D Graph
+                this.graph.nodeCanvasObject((node, ctx, globalScale) => {
+                    // Drawing nodes
+                    if (node.color instanceof Array) {
+                        // Gradient
+                        if (node.x !== undefined && node.y !== undefined) {
+                            var gradient = ctx.createLinearGradient(node.x - NODE_R, node.y, node.x + NODE_R, node.y);
+                            gradient.addColorStop(0, node.color[0]);
+                            gradient.addColorStop(1, node.color[1]);
+                            ctx.beginPath();
+                            ctx.arc(node.x, node.y, NODE_R * 1.4, 0, 2 * Math.PI, false);
+                            ctx.fillStyle = gradient;
+                            ctx.fill();
+                        }
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(node.x, node.y, NODE_R * 1.4, 0, 2 * Math.PI, false);
+                        ctx.fillStyle = node.color;
+                        ctx.fill();
+                    }
+
+                    // Show labels if needed
+                    if (params["showLabels"]) {
+                        const fontSize = 12 / globalScale;
+                        ctx.font = `${fontSize}px Sans-Serif`;
+                        ctx.fillStyle = tinycolor(params['bgColor']).isLight() ?
+                            "rgba(0,0,0,.8)" : "rgba(255,255,255,.8)";
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(node.name, node.x, node.y - (2 * NODE_R));
+                    }
+                });
+
                 if (this.logging) console.log("updateView() - Rendering [2D] graph");
             }
     
             this.graph.linkColor(link => link.color = 
                     link.has_custom_color < 1 ? params['lkColor'] : link.color)
-                .nodeColor(node => node.color =
-                    node.has_custom_color < 1 ? params['ndColor'] : node.color)
                 .backgroundColor(params["bgColor"])
                 .dagMode(params["dagMode"])
                 .linkDirectionalArrowLength(showLinkArrows ? 3.5 : 0)

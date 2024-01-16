@@ -1,17 +1,24 @@
-import webpack from 'webpack';
-import path from 'path';
-import { fileURLToPath } from 'url';
+var webpack = require('webpack');
+var path = require('path');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-export default {
-    mode: "development",
+module.exports = {
+    // devtool: "eval-cheap-source-map",
+    // mode: "development",
+    mode: "production",
     entry: {
         filename: path.join(__dirname, 'src') + '/visualization_source.js'
     },
+    resolve: {
+        // To avoid [WARNING: Multiple instances of Three.js being imported.]
+        alias: {
+            three: path.resolve(__dirname, 'node_modules/three')
+        },
+    },
+    performance: {
+        hints: false
+    },
     output: {
-        path: __dirname,
+        path: path.resolve(__dirname),
         filename: 'visualization.js',
         libraryTarget: 'amd'
     },

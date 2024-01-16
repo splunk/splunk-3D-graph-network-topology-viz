@@ -37,6 +37,16 @@ Besides:
 * Field names **must** correspond to the ones specified above to be properly handled by the visualization
 * Any `edge_weight` value higher than `18` will be normalised to `18`
 
+### Drilldown
+To enrich your dashboards with some interactivity, [enable drilldown in your dashboard panel](https://docs.splunk.com/Documentation/Splunk/latest/Viz/DrilldownIntro#Access_the_drilldown_editor). For example, assuming the configuration below, by clicking on a node in your graph it should populate a token with the value from a field named `src`.
+
+        <option name="drilldown">all</option>
+        <drilldown>
+          <set token="tok">$row.src$</set>
+        </drilldown>
+
+This token can then be used within your dashboard in another panel or visualisation. 
+
 ## Examples
 ![alt text](.images/splunk-3D-graph-network-topology-viz-screen-3.png "Screenshot")
 

@@ -26,13 +26,13 @@ jobs:
     if: contains(['major', 'minor', 'patch'], ${{ github.event.inputs.bumpPart }})
     steps:
       - name: Checkout source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Get app info
         id: appinfo
         run: |
           APP_NAME=$(cat app.manifest | jq -r '.info.id.name' | tr _ - )
-          echo "::set-output name=app_name::${APP_NAME}"
+          echo "app_name=${APP_NAME}" >> $GITHUB_OUTPUT
 
       - name: Bump version and push tag
         id: bumpversion
@@ -50,7 +50,7 @@ jobs:
         id: sha
         run: |
           sha_new=$(git rev-parse HEAD)
-          echo "::set-output name=sha::$sha_new"
+          echo "sha=${sha_new}" >> $GITHUB_OUTPUT
 
   build:
     name: Generate App Bundle
@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ needs.tag-version.outputs.new_sha }}
           fetch-depth: 0
@@ -73,7 +73,7 @@ jobs:
           tar -zcvf dist/${{ needs.tag-version.outputs.app_name }}_v${{ needs.tag-version.outputs.version }}.tgz --exclude='.[^/]*' --exclude=./dist .
   
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: app_tgz
           path: dist/${{ needs.tag-version.outputs.app_name }}_v${{ needs.tag-version.outputs.version }}.tgz
@@ -86,7 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       
       - name: Fetch all tags
         run: |
@@ -104,7 +104,7 @@ jobs:
           else
             content="Initial release"
           fi
-          echo "::set-output name=message::${content}" 
+          echo "message=${content}" >> $GITHUB_OUTPUT
 
       - name: Create Release
         id: create_release
@@ -123,7 +123,7 @@ jobs:
           prerelease: false
 
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: app_tgz
       
@@ -131,7 +131,7 @@ jobs:
         id: app-name
         run: |
           app_package=$(ls -1 *gz | xargs basename)
-          echo "::set-output name=package::${app_package}"
+          echo "package=${app_package}" >> $GITHUB_OUTPUT
       
       - name: Upload Release Asset
         id: upload-release-asset 
