@@ -13,6 +13,10 @@ on:
         description: 'Changelog notes'
         required: false
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   tag-version:
     name: Tag Version
