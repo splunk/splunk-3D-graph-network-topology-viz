@@ -1,0 +1,152 @@
+name: tests
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  # bundle-app:
+  #   name: Bundle App
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     app_name: ${{ steps.appinfo.outputs.app_name }}
+  #     app_id: ${{ steps.appinfo.outputs.app_id }}
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+      
+  #     - name: Fetch and set app info
+  #       id: appinfo
+  #       run: |
+  #         APP_ID=$(cat packages/splunk-*/app.manifest | jq -r '.info.id.name')
+  #         echo "app_id=${APP_ID}" >> $GITHUB_OUTPUT
+  #         APP_NAME=$(echo "$APP_ID" | tr _ - )
+  #         echo "app_name=${APP_NAME}" >> $GITHUB_OUTPUT
+
+  #     - name: Excluding images from README
+  #       run: |
+  #         sed -i '/^!/d' README.md
+
+  #     - name: Bundle app source
+  #       run: |
+  #         mkdir dist
+  #         cp README.md packages/splunk-*/
+  #         cp AUTHORS.md packages/splunk-*/
+  #         tar -zcvf dist/${{ steps.appinfo.outputs.app_name }}.tgz packages/
+  
+  #     - name: Upload artifact
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: app_tgz
+  #         path: dist/${{ steps.appinfo.outputs.app_name }}.tgz
+  
+  slim-validate:
+    name: SLIM Validation
+    runs-on: ubuntu-latest
+    outputs:
+      app_name: ${{ steps.appinfo.outputs.app_name }}
+      app_id: ${{ steps.appinfo.outputs.app_id }}
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Fetch and set app info
+        id: appinfo
+        run: |
+          APP_ID=$(cat packages/splunk-*/app.manifest | jq -r '.info.id.name')
+          echo "app_id=${APP_ID}" >> $GITHUB_OUTPUT
+          APP_NAME=$(echo "$APP_ID" | tr _ - )
+          echo "app_name=${APP_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install splunk-packaging-toolkit
+
+      - name: Slim Validate
+        run: slim validate packages/${{ steps.appinfo.outputs.app_id }}
+
+  splunk-test:
+    name: Deploy and test the Viz
+    runs-on: ubuntu-latest
+    needs: slim-validate
+    strategy:
+      matrix:
+        version: [9.1]
+        # version: [9.1, 9.0, 8.2.0]
+    services:
+      splunk:
+        image: splunk/splunk:${{ matrix.version }}
+        env:
+          SPLUNK_START_ARGS: --accept-license
+          SPLUNK_PASSWORD: password
+          SPLUNK_APPS_URL: https://splunkbase.splunk.com/app/2890/release/5.4.1/download,https://splunkbase.splunk.com/app/2882/release/4.2.0/download
+          SPLUNKBASE_USERNAME: ${{ secrets.SPLUNKBASE_USERNAME }}
+          SPLUNKBASE_PASSWORD: ${{ secrets.SPLUNKBASE_PASSWORD }}
+        options: >-
+          --health-interval 30s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 8000:8000
+          - 8089:8089
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Copy app to service container
+        run: docker cp packages/${{ needs.slim-validate.outputs.app_id }} ${{ job.services.splunk.id }}:/opt/splunk/etc/apps/${{ needs.slim-validate.outputs.app_id }}
+
+      - run: docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/apps/${{ needs.slim-validate.outputs.app_id }}
+      - run: docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/apps
+
+      - name: Disable SPL safeguard
+        run: |
+          echo -e "[settings]\nenable_risky_command_check = false/nenable_risky_command_check_dashboard = false" >> /opt/splunk/etc/system/local/web.conf
+
+      - name: Restart instance
+        run: |
+          curl -k -u admin:password https://localhost:8089/services/server/control/restart -X POST
+          sleep 30
+      
+      - name: Configure MLTK permissions
+        run: |
+          curl -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl -d sharing=global -d owner=nobody -X POST
+          echo "Check MLTK permissions"
+          curl -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
+
+      - name: Print App Configuration
+        run: |
+          curl -k -u admin:password https://localhost:8089/services/apps/local/${{ needs.slim-validate.outputs.app_id }}
+
+      - name: Run Tests
+        run: |
+          make test
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: splunk${{ matrix.versions }}-results
+          path: |
+            test/cypress/videos
+
+      - name: JUnit Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Cypress Tests
+          path: cypress/results/results.xml
+          reporter: java-junit
+          fail-on-error: true
