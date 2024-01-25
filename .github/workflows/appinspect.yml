@@ -9,7 +9,6 @@ on:
 jobs:
   appinspect-cli:
     name: AppInspect CLI Validation
-    needs: bundle-app
     runs-on: ubuntu-latest
     steps:
 
