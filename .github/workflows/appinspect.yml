@@ -26,7 +26,9 @@ jobs:
       
       - name: Run AppInspect
         run: |
+          ls .
           app_id=$(cat splunk-*/app.manifest | jq -r '.info.id.name')
+          cp ../README.md ${app_id}
           splunk-appinspect inspect ${app_id} --output-file appinspect.json
           exit `cat appinspect.json | jq '.summary.failure'`
         working-directory: ./packages
