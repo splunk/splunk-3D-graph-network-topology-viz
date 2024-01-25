@@ -1,5 +1,11 @@
 **/node_modules/
 .vscode
+.env
 *.pyc
-local.meta
+**/local.meta
 fiddle/
+assets/apps/*.tgz
+test/cypress/videos/
+test/cypress/screenshots/
+test/cypress/downloads/
+test/cypress/results/
