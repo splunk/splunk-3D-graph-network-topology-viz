@@ -7,41 +7,6 @@ on:
       - develop
 
 jobs:
-  # bundle-app:
-  #   name: Bundle App
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     app_name: ${{ steps.appinfo.outputs.app_name }}
-  #     app_id: ${{ steps.appinfo.outputs.app_id }}
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
-      
-  #     - name: Fetch and set app info
-  #       id: appinfo
-  #       run: |
-  #         APP_ID=$(cat packages/splunk-*/app.manifest | jq -r '.info.id.name')
-  #         echo "app_id=${APP_ID}" >> $GITHUB_OUTPUT
-  #         APP_NAME=$(echo "$APP_ID" | tr _ - )
-  #         echo "app_name=${APP_NAME}" >> $GITHUB_OUTPUT
-
-  #     - name: Excluding images from README
-  #       run: |
-  #         sed -i '/^!/d' README.md
-
-  #     - name: Bundle app source
-  #       run: |
-  #         mkdir dist
-  #         cp README.md packages/splunk-*/
-  #         cp AUTHORS.md packages/splunk-*/
-  #         tar -zcvf dist/${{ steps.appinfo.outputs.app_name }}.tgz packages/
-  
-  #     - name: Upload artifact
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: app_tgz
-  #         path: dist/${{ steps.appinfo.outputs.app_name }}.tgz
-  
   slim-validate:
     name: SLIM Validation
     runs-on: ubuntu-latest
@@ -56,7 +21,7 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v3
-      
+
       - name: Fetch and set app info
         id: appinfo
         run: |
@@ -71,7 +36,10 @@ jobs:
           pip install splunk-packaging-toolkit
 
       - name: Slim Validate
-        run: slim validate packages/${{ steps.appinfo.outputs.app_id }}
+        run: |
+          cp README.md packages/${{ steps.appinfo.outputs.app_id }}
+          slim validate packages/${{ steps.appinfo.outputs.app_id }}
+
 
   splunk-test:
     name: Deploy and test the Viz
