@@ -1,0 +1,52 @@
+name: AppInspect
+
+on: 
+  push:
+    paths-ignore:
+      - '.github/workflows/manual-release.yml'
+      - '.github/workflows/tests.yml'
+
+jobs:
+  appinspect-cli:
+    name: AppInspect CLI Validation
+    needs: bundle-app
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install splunk-appinspect
+      
+      - name: Run AppInspect
+        run: |
+          app_id=$(cat splunk-*/app.manifest | jq -r '.info.id.name')
+          splunk-appinspect inspect ${app_id} --output-file appinspect.json
+          exit `cat appinspect.json | jq '.summary.failure'`
+        working-directory: ./packages
+
+  appinspect-api:
+    name: AppInspect API Validation
+    needs: 
+      - appinspect-cli
+    runs-on: ubuntu-latest
+    # Job not executed if branch is not master
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run AppInspect
+        uses: splunk/appinspect-api-action@v3.0
+        with:
+          username: ${{ secrets.SPLUNKBASE_USERNAME }}
+          password: ${{ secrets.SPLUNKBASE_PASSWORD }}
+          app_path: packages/
+          includedTags: cloud
