@@ -80,6 +80,10 @@ jobs:
         with:
           node-version: 18
 
+      - name: Install curl
+        run: |
+          apt-get install -y curl
+
       - name: Copy app to service container and validate
         # NOTE using volume mapping to add the app to the container will NOT work since checkout hasn't happened yet
         run: |
