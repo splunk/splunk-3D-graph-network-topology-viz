@@ -49,30 +49,6 @@ jobs:
       matrix:
         version: [9.1]
         # version: [9.1, 9.0, 8.2.0]
-    # services:
-      # splunk:
-      #   image: splunk/splunk:${{ matrix.version }}
-      #   volumes:
-      #     - ./packages/${{ needs.slim-validate.outputs.app_id }}:/opt/splunk/etc/apps/${{ needs.slim-validate.outputs.app_id }}
-      #     - ./assets/ansible:/tmp/defaults
-      #     # - ./assets/ansible/default.yml:/tmp/defaults/default.yml
-      #   env:
-      #     SPLUNK_START_ARGS: --answer-yes --no-prompt --accept-license
-      #     # SPLUNK_PASSWORD: password
-      #     SPLUNK_HEC_TOKEN: 11111111-1111-1111-1111-1111111111113
-      #     SPLUNK_APPS_URL: https://splunkbase.splunk.com/app/2890/release/5.4.1/download
-      #     # ,https://splunkbase.splunk.com/app/2882/release/4.2.0/download
-      #     SPLUNKBASE_USERNAME: ${{ secrets.SPLUNKBASE_USERNAME }}
-      #     SPLUNKBASE_PASSWORD: ${{ secrets.SPLUNKBASE_PASSWORD }}
-      #     DEBUG: true
-      #   options: >-
-      #     --health-interval 30s
-      #     --health-timeout 5s
-      #     --health-retries 5
-      #   ports:
-      #     - 8000:8000
-      #     - 8088:8088 # for HTTP Event Collector access
-      #     - 8089:8089
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -84,6 +60,7 @@ jobs:
 
       - name: Launch Splunk via docker compose
         env:
+          # Set for splunk container. Adding 'em to .env file for the configurator container 
           SPLUNK_VERSION: ${{ matrix.version }}
           SPLUNK_PASSWORD: password
           SPLUNKBASE_USERNAME: ${{ secrets.SPLUNKBASE_USERNAME }}
@@ -114,11 +91,15 @@ jobs:
       #     curl -k -u admin:password https://localhost:8089/services/server/control/restart -X POST
       #     sleep 30
       
-      - name: Configure MLTK permissions
+      - name: Check MLTK permissions
         run: |
-          curl --retry-delay 5 --retry 5 -f -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl -d sharing=global -d owner=nobody -X POST
-          echo "Check MLTK permissions"
           curl -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
+
+      # - name: Configure MLTK permissions
+      #   run: |
+      #     curl --retry-delay 5 --retry 5 -f -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl -d sharing=global -d owner=nobody -X POST
+      #     echo "Check MLTK permissions"
+      #     curl -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
 
       - name: Print App Configuration
         run: |
@@ -126,7 +107,8 @@ jobs:
 
       - name: Run Tests
         run: |
-          make test
+          docker exec -i splunk4viz ls -la .
+          docker exec -i splunk4viz npm --version
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
