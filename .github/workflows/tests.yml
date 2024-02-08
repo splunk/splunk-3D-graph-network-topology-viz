@@ -30,7 +30,7 @@ jobs:
           APP_NAME=$(echo "$APP_ID" | tr _ - )
           echo "app_name=${APP_NAME}" >> $GITHUB_OUTPUT
           echo "Printing out permissions on volume to troubleshoot errors in the next job"
-          ls -ld /tmp/defaults/
+          ls -ld /tmp
 
       - name: Install dependencies
         run: |
@@ -82,6 +82,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
+      
+      - name: Troubleshooting
+        run: |
+          echo "Is this executed? What are permissions?"
+          ls -ld /tmp/defaults/
 
       # - name: Copy app to service container and validate
       #   run: |
