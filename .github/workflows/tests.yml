@@ -49,66 +49,67 @@ jobs:
       matrix:
         version: [9.1]
         # version: [9.1, 9.0, 8.2.0]
+    services:
+      splunk:
+        image: splunk/splunk:${{ matrix.version }}
+        env:
+          SPLUNK_START_ARGS: --answer-yes --no-prompt --accept-license
+          SPLUNK_PASSWORD: password
+          SPLUNK_APPS_URL: https://splunkbase.splunk.com/app/2890/release/5.4.1/download
+          # ,https://splunkbase.splunk.com/app/2882/release/4.2.0/download
+          SPLUNKBASE_USERNAME: ${{ secrets.SPLUNKBASE_USERNAME }}
+          SPLUNKBASE_PASSWORD: ${{ secrets.SPLUNKBASE_PASSWORD }}
+          DEBUG: true
+        options: >-
+          --health-interval 30s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 8000:8000
+          - 8089:8089
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Install docker compose
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/v2.2.2/docker-compose-linux-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-
-      - name: Launch Splunk via docker compose
-        env:
-          # Set for splunk container. Adding 'em to .env file for the configurator container 
-          SPLUNK_VERSION: ${{ matrix.version }}
-          SPLUNK_PASSWORD: password
-          SPLUNKBASE_USERNAME: ${{ secrets.SPLUNKBASE_USERNAME }}
-          SPLUNKBASE_PASSWORD: ${{ secrets.SPLUNKBASE_PASSWORD }} 
-        run: |
-          cat >> .env << 'END'
-          SPLUNK_PASSWORD=password
-          SPLUNKBASE_USERNAME="${{ secrets.SPLUNKBASE_USERNAME }}"
-          SPLUNKBASE_PASSWORD="${{ secrets.SPLUNKBASE_PASSWORD }}" 
-          END
-          ls -la .
-          echo "Launching Splunk"
-          make setup
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # - name: Copy app to service container and validate
-      #   run: |
-      #     docker cp packages/${{ needs.slim-validate.outputs.app_id }} ${{ job.services.splunk.id }}:/opt/splunk/etc/apps/${{ needs.slim-validate.outputs.app_id }}
-      #     docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/apps
-      #     docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/apps/${{ needs.slim-validate.outputs.app_id }}
-
-      # - name: Restart instance
-      #   run: |
-      #     curl -k -u admin:password https://localhost:8089/services/server/control/restart -X POST
-      #     sleep 30
-      
-      - name: Check MLTK permissions
+      - name: Copy app to service container and validate
         run: |
-          curl -k -u admin:password https://splunk4viz:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
+          docker cp packages/${{ needs.slim-validate.outputs.app_id }} ${{ job.services.splunk.id }}:/opt/splunk/etc/apps/${{ needs.slim-validate.outputs.app_id }}
+          docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/apps
+          docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/apps/${{ needs.slim-validate.outputs.app_id }}
+      
+      - name: Disable SPL safeguards for all commands
+        run: |
+          cat >> /opt/splunk/etc/system/local/web.conf << 'END'
+          [settings]
+          enable_risky_command_check = 0
+          enable_risky_command_check_dashboard = 0
+          END
+          echo "Validating change"
+          ls -la /opt/splunk/etc/system/local
 
-      # - name: Configure MLTK permissions
-      #   run: |
-      #     curl --retry-delay 5 --retry 5 -f -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl -d sharing=global -d owner=nobody -X POST
-      #     echo "Check MLTK permissions"
-      #     curl -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
+      - name: Restart instance
+        run: |
+          curl -k -u admin:password https://localhost:8089/services/server/control/restart -X POST
+          sleep 30
+      
+      - name: Configure MLTK permissions
+        run: |
+          curl --retry-delay 5 --retry 5 -f -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl -d sharing=global -d owner=nobody -X POST
+          echo "Check MLTK permissions"
+          curl -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
 
       - name: Print App Configuration
         run: |
-          curl -k -u admin:password https://splunk4viz:8089/services/apps/local/${{ needs.slim-validate.outputs.app_id }}
+          curl -k -u admin:password https://localhost:8089/services/apps/local/${{ needs.slim-validate.outputs.app_id }}
 
       - name: Run Tests
         run: |
-          docker exec -i splunk4viz ls -la .
-          docker exec -i splunk4viz npm --version
+          make test
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
