@@ -45,9 +45,6 @@ jobs:
     name: Deploy and test the Viz
     runs-on: ubuntu-latest
     needs: slim-validate
-    # Set container to have service and steps sharing same network and avoid issues w/ unknown IPs
-    # container:
-    #   image: docker:25.0.3-dind-alpine3.19
     strategy:
       matrix:
         version: [9.1]
@@ -79,11 +76,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-
-      # - name: Install curl
-      #   run: |
-      #     apt-get not existing
-      #     apt-get install -y curl
 
       - name: Copy app to service container and validate
         # NOTE using volume mapping to add the app to the container will NOT work since checkout hasn't happened yet
@@ -124,7 +116,9 @@ jobs:
 
       - name: Run Tests
         run: |
-          make test
+          docker exec -i ${{ job.services.splunk.id }} npm --version
+          docker exec -i ${{ job.services.splunk.id }} cd /opt/splunk/etc/apps/${{ needs.slim-validate.outputs.app_id }}/test && npm install && npm run debug
+        # make test
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
