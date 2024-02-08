@@ -45,7 +45,9 @@ jobs:
     name: Deploy and test the Viz
     runs-on: ubuntu-latest
     needs: slim-validate
-    container: ubuntu
+    # Set container to have service and steps sharing same network and avoid issues w/ unknown IPs
+    container:
+      image: docker:25.0.3-dind-alpine3.19
     strategy:
       matrix:
         version: [9.1]
