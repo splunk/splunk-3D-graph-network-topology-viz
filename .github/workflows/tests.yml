@@ -115,10 +115,10 @@ jobs:
         run: |
           curl -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/${{ needs.slim-validate.outputs.app_id }}
 
-      - name: Run Tests
-        run: |
-          echo "Removing package-lock to avoid issues with splunk artifactory"
-          rm -rf test/package-lock.json
+      # - name: Run Tests
+      #   run: |
+      #     echo "Removing package-lock to avoid issues with splunk artifactory"
+      #     rm -rf test/package-lock.json
         # echo "Running tests"
         # make tests
       
