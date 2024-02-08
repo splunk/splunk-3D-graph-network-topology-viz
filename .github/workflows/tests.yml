@@ -52,6 +52,8 @@ jobs:
     services:
       splunk:
         image: splunk/splunk:${{ matrix.version }}
+        options:
+          name: splunk
         env:
           SPLUNK_START_ARGS: --answer-yes --no-prompt --accept-license
           SPLUNK_PASSWORD: password
@@ -84,28 +86,29 @@ jobs:
       
       - name: Disable SPL safeguards for all commands
         run: |
-          cat >> /opt/splunk/etc/system/local/web.conf << 'END'
+          cat >> web.conf << 'END'
           [settings]
           enable_risky_command_check = 0
           enable_risky_command_check_dashboard = 0
           END
-          echo "Validating change"
-          ls -la /opt/splunk/etc/system/local
+          docker cp web.conf ${{ job.services.splunk.id }}:/opt/splunk/etc/system/local/web.conf
+          echo "Validating 'web.conf' file creation"
+          docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/system/local/
 
       - name: Restart instance
         run: |
-          curl -k -u admin:password https://localhost:8089/services/server/control/restart -X POST
+          curl -k -u admin:password https://splunk:8089/services/server/control/restart -X POST
           sleep 30
       
       - name: Configure MLTK permissions
         run: |
-          curl --retry-delay 5 --retry 5 -f -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl -d sharing=global -d owner=nobody -X POST
+          curl --retry-delay 5 --retry 5 -f -k -u admin:password https://splunk:8089/services/apps/local/Splunk_ML_Toolkit/acl -d sharing=global -d owner=nobody -X POST
           echo "Check MLTK permissions"
-          curl -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
+          curl -k -u admin:password https://splunk:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
 
       - name: Print App Configuration
         run: |
-          curl -k -u admin:password https://localhost:8089/services/apps/local/${{ needs.slim-validate.outputs.app_id }}
+          curl -k -u admin:password https://splunk:8089/services/apps/local/${{ needs.slim-validate.outputs.app_id }}
 
       - name: Run Tests
         run: |
