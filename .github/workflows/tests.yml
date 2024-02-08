@@ -89,6 +89,13 @@ jobs:
           SPLUNKBASE_USERNAME: ${{ secrets.SPLUNKBASE_USERNAME }}
           SPLUNKBASE_PASSWORD: ${{ secrets.SPLUNKBASE_PASSWORD }} 
         run: |
+          cat >> .env << 'END'
+          SPLUNK_PASSWORD=password
+          SPLUNKBASE_USERNAME="${{ secrets.SPLUNKBASE_USERNAME }}"
+          SPLUNKBASE_PASSWORD="${{ secrets.SPLUNKBASE_PASSWORD }}" 
+          END
+          ls -la .
+          echo "Launching Splunk"
           make setup
 
       - name: Setup Node
