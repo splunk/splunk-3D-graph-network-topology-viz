@@ -76,7 +76,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 14
 
       - name: Copy app to service container and validate
         # NOTE using volume mapping to add the app to the container will NOT work since checkout hasn't happened yet
@@ -129,7 +129,8 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
-          start: npx npm@14 start
+          # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
+          start: npm start
           working-directory: test
 
       - name: Upload Test Results
