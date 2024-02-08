@@ -124,6 +124,9 @@ jobs:
       
       - name: Cypress run
         uses: cypress-io/github-action@v6
+        with:
+          start: npm start
+          working-directory: test
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
