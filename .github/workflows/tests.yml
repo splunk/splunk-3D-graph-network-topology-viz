@@ -117,8 +117,8 @@ jobs:
 
       - name: Run Tests
         run: |
-          npm --version
-          make test
+          echo "Running tests"
+          make tests
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
