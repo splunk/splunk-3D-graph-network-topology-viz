@@ -90,16 +90,7 @@ jobs:
           docker cp assets/cicd/config/web.conf ${{ job.services.splunk.id }}:/opt/splunk/etc/system/local/web.conf
           echo "Validating 'web.conf' file creation"
           docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/system/local/
-        # run: |
-        #   cat >> web.conf << 'END'
-        #   [settings]
-        #   enable_risky_command_check = 0
-        #   enable_risky_command_check_dashboard = 0
-        #   END
-        #   docker cp web.conf ${{ job.services.splunk.id }}:/opt/splunk/etc/system/local/web.conf
-        #   echo "Validating 'web.conf' file creation"
-        #   docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/system/local/
-      
+
       - name: Set container IP as env variable
         run: |
           echo "SPLUNK_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${{ job.services.splunk.id }})" >> $GITHUB_ENV
@@ -130,7 +121,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
-          start: npm start
+          start: npm run test
           working-directory: test
 
       - name: Upload Test Results
