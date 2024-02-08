@@ -82,6 +82,7 @@ jobs:
 
       # - name: Install curl
       #   run: |
+      #     apt-get not existing
       #     apt-get install -y curl
 
       - name: Copy app to service container and validate
@@ -104,9 +105,10 @@ jobs:
       
       - name: Set container IP as env variable
         run: |
-          docker ps
           docker inspect --format='{{ .NetworkSettings.IPAddress }}' ${{ job.services.splunk.id }}
-          echo "SPLUNK_IP=$(docker inspect --format='{{ .NetworkSettings.IPAddress }}' ${{ job.services.splunk.id }})" >> $GITHUB_ENV
+          splunk_ip=$(docker inspect --format='{{ .NetworkSettings.IPAddress }}' ${{ job.services.splunk.id }})
+          echo ${splunk_ip}
+          echo "SPLUNK_IP=${splunk_ip}" >> $GITHUB_ENV
 
       - name: Restart instance
         run: |
