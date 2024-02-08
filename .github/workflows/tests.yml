@@ -56,6 +56,7 @@ jobs:
           SPLUNK_START_ARGS: --answer-yes --no-prompt --accept-license
           SPLUNK_PASSWORD: password
           SPLUNK_APPS_URL: https://splunkbase.splunk.com/app/2890/release/5.4.1/download
+          # TODO add the installation of the other dependency
           # ,https://splunkbase.splunk.com/app/2882/release/4.2.0/download
           SPLUNKBASE_USERNAME: ${{ secrets.SPLUNKBASE_USERNAME }}
           SPLUNKBASE_PASSWORD: ${{ secrets.SPLUNKBASE_PASSWORD }}
@@ -116,9 +117,8 @@ jobs:
 
       - name: Run Tests
         run: |
-          docker exec -i ${{ job.services.splunk.id }} npm --version
-          docker exec -i ${{ job.services.splunk.id }} cd /opt/splunk/etc/apps/${{ needs.slim-validate.outputs.app_id }}/test && npm install && npm run debug
-        # make test
+          npm --version
+          make test
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
