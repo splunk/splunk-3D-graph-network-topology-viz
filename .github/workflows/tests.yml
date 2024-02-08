@@ -105,10 +105,7 @@ jobs:
       
       - name: Set container IP as env variable
         run: |
-          docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${{ job.services.splunk.id }}
-          splunk_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${{ job.services.splunk.id }})
-          echo ${splunk_ip}
-          echo "SPLUNK_IP=${splunk_ip}" >> $GITHUB_ENV
+          echo "SPLUNK_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${{ job.services.splunk.id }})" >> $GITHUB_ENV
 
       - name: Restart instance
         run: |
