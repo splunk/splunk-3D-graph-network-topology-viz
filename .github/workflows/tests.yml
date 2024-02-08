@@ -129,7 +129,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
-          start: npm start
+          start: npx npm@14 start
           working-directory: test
 
       - name: Upload Test Results
