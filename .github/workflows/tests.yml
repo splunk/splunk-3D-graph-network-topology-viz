@@ -46,8 +46,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: slim-validate
     # Set container to have service and steps sharing same network and avoid issues w/ unknown IPs
-    container:
-      image: docker:25.0.3-dind-alpine3.19
+    # container:
+    #   image: docker:25.0.3-dind-alpine3.19
     strategy:
       matrix:
         version: [9.1]
@@ -80,9 +80,9 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install curl
-        run: |
-          apt-get install -y curl
+      # - name: Install curl
+      #   run: |
+      #     apt-get install -y curl
 
       - name: Copy app to service container and validate
         # NOTE using volume mapping to add the app to the container will NOT work since checkout hasn't happened yet
@@ -102,26 +102,26 @@ jobs:
           echo "Validating 'web.conf' file creation"
           docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/system/local/
       
-      # - name: Set container IP as env variable
-      #   run: |
-      #     docker ps
-      #     docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${{ job.services.splunk.id }}
-      #     echo "SPLUNK_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${{ job.services.splunk.id }})" >> $GITHUB_ENV
+      - name: Set container IP as env variable
+        run: |
+          docker ps
+          docker inspect --format='{{ .NetworkSettings.IPAddress }}' ${{ job.services.splunk.id }}
+          echo "SPLUNK_IP=$(docker inspect --format='{{ .NetworkSettings.IPAddress }}' ${{ job.services.splunk.id }})" >> $GITHUB_ENV
 
       - name: Restart instance
         run: |
-          curl -k -u admin:password https://splunk:8089/services/server/control/restart -X POST
+          curl -k -u admin:password https://$SPLUNK_IP:8089/services/server/control/restart -X POST
           sleep 30
       
       - name: Configure MLTK permissions
         run: |
-          curl --retry-delay 5 --retry 5 -f -k -u admin:password https://splunk:8089/services/apps/local/Splunk_ML_Toolkit/acl -d sharing=global -d owner=nobody -X POST
+          curl --retry-delay 5 --retry 5 -f -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/Splunk_ML_Toolkit/acl -d sharing=global -d owner=nobody -X POST
           echo "Check MLTK permissions"
-          curl -k -u admin:password https://splunk:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
+          curl -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
 
       - name: Print App Configuration
         run: |
-          curl -k -u admin:password https://splunk:8089/services/apps/local/${{ needs.slim-validate.outputs.app_id }}
+          curl -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/${{ needs.slim-validate.outputs.app_id }}
 
       - name: Run Tests
         run: |
