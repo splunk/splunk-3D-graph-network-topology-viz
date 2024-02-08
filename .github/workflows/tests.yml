@@ -98,8 +98,7 @@ jobs:
         run: |
           docker ps
           docker inspect --format '{{ .NetworkSettings.IPAddress }}' splunk
-          export SPLUNK_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' splunk)
-          echo $SPLUNK_IP
+          echo "SPLUNK_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' splunk)" >> $GITHUB_ENV
 
       - name: Restart instance
         run: |
