@@ -102,13 +102,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-      
-      - name: Troubleshooting
-        if: always()
-        run: |
-          echo "Is this executed? What are permissions?"
-          ls -ld /tmp/
-          ls -ld /tmp/defaults/
 
       # - name: Copy app to service container and validate
       #   run: |
