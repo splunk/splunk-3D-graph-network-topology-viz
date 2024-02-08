@@ -119,8 +119,11 @@ jobs:
         run: |
           echo "Removing package-lock to avoid issues with splunk artifactory"
           rm -rf test/package-lock.json
-          echo "Running tests"
-          make tests
+        # echo "Running tests"
+        # make tests
+      
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
