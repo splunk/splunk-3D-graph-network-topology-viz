@@ -93,7 +93,7 @@ jobs:
       
       - name: Check MLTK permissions
         run: |
-          curl -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
+          curl -k -u admin:password https://splunk4viz:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
 
       # - name: Configure MLTK permissions
       #   run: |
@@ -103,7 +103,7 @@ jobs:
 
       - name: Print App Configuration
         run: |
-          curl -k -u admin:password https://localhost:8089/services/apps/local/${{ needs.slim-validate.outputs.app_id }}
+          curl -k -u admin:password https://splunk4viz:8089/services/apps/local/${{ needs.slim-validate.outputs.app_id }}
 
       - name: Run Tests
         run: |
