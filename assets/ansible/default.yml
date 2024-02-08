@@ -1,4 +1,5 @@
 splunk:
+  password: password
   # apps_location:
     # - https://splunkbase.splunk.com/app/2882/release/4.2.0/download
     # - https://splunkbase.splunk.com/app/2890/release/5.4.1/download
