@@ -52,8 +52,6 @@ jobs:
     services:
       splunk:
         image: splunk/splunk:${{ matrix.version }}
-        options:
-          name: splunk
         env:
           SPLUNK_START_ARGS: --answer-yes --no-prompt --accept-license
           SPLUNK_PASSWORD: password
@@ -66,6 +64,7 @@ jobs:
           --health-interval 30s
           --health-timeout 5s
           --health-retries 5
+          --name splunk
         ports:
           - 8000:8000
           - 8089:8089
