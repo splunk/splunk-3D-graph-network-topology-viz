@@ -78,6 +78,7 @@ jobs:
           node-version: 18
 
       - name: Copy app to service container and validate
+        # NOTE using volume mapping to add the app to the container will NOT work since checkout hasn't happened yet
         run: |
           docker cp packages/${{ needs.slim-validate.outputs.app_id }} ${{ job.services.splunk.id }}:/opt/splunk/etc/apps/${{ needs.slim-validate.outputs.app_id }}
           docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/apps
@@ -94,11 +95,11 @@ jobs:
           echo "Validating 'web.conf' file creation"
           docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/system/local/
       
-      - name: Testing container naming
+      - name: Set container IP as env variable
         run: |
           docker ps
-          docker inspect --format '{{ .NetworkSettings.IPAddress }}' splunk
-          echo "SPLUNK_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' splunk)" >> $GITHUB_ENV
+          docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${{ job.services.splunk.id }}
+          echo "SPLUNK_IP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${{ job.services.splunk.id }})" >> $GITHUB_ENV
 
       - name: Restart instance
         run: |
