@@ -29,8 +29,6 @@ jobs:
           echo "app_id=${APP_ID}" >> $GITHUB_OUTPUT
           APP_NAME=$(echo "$APP_ID" | tr _ - )
           echo "app_name=${APP_NAME}" >> $GITHUB_OUTPUT
-          echo "Printing out permissions on volume to troubleshoot errors in the next job"
-          ls -ld /tmp
 
       - name: Install dependencies
         run: |
@@ -51,32 +49,47 @@ jobs:
       matrix:
         version: [9.1]
         # version: [9.1, 9.0, 8.2.0]
-    services:
-      splunk:
-        image: splunk/splunk:${{ matrix.version }}
-        volumes:
-          - ./packages/${{ needs.slim-validate.outputs.app_id }}:/opt/splunk/etc/apps/${{ needs.slim-validate.outputs.app_id }}
-          - ./assets/ansible/default.yml:/tmp/defaults/default.yml
-        env:
-          SPLUNK_START_ARGS: --answer-yes --no-prompt --accept-license
-          # SPLUNK_PASSWORD: password
-          SPLUNK_HEC_TOKEN: 11111111-1111-1111-1111-1111111111113
-          SPLUNK_APPS_URL: https://splunkbase.splunk.com/app/2890/release/5.4.1/download
-          # ,https://splunkbase.splunk.com/app/2882/release/4.2.0/download
-          SPLUNKBASE_USERNAME: ${{ secrets.SPLUNKBASE_USERNAME }}
-          SPLUNKBASE_PASSWORD: ${{ secrets.SPLUNKBASE_PASSWORD }}
-          DEBUG: true
-        options: >-
-          --health-interval 30s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 8000:8000
-          - 8088:8088 # for HTTP Event Collector access
-          - 8089:8089
+    # services:
+      # splunk:
+      #   image: splunk/splunk:${{ matrix.version }}
+      #   volumes:
+      #     - ./packages/${{ needs.slim-validate.outputs.app_id }}:/opt/splunk/etc/apps/${{ needs.slim-validate.outputs.app_id }}
+      #     - ./assets/ansible:/tmp/defaults
+      #     # - ./assets/ansible/default.yml:/tmp/defaults/default.yml
+      #   env:
+      #     SPLUNK_START_ARGS: --answer-yes --no-prompt --accept-license
+      #     # SPLUNK_PASSWORD: password
+      #     SPLUNK_HEC_TOKEN: 11111111-1111-1111-1111-1111111111113
+      #     SPLUNK_APPS_URL: https://splunkbase.splunk.com/app/2890/release/5.4.1/download
+      #     # ,https://splunkbase.splunk.com/app/2882/release/4.2.0/download
+      #     SPLUNKBASE_USERNAME: ${{ secrets.SPLUNKBASE_USERNAME }}
+      #     SPLUNKBASE_PASSWORD: ${{ secrets.SPLUNKBASE_PASSWORD }}
+      #     DEBUG: true
+      #   options: >-
+      #     --health-interval 30s
+      #     --health-timeout 5s
+      #     --health-retries 5
+      #   ports:
+      #     - 8000:8000
+      #     - 8088:8088 # for HTTP Event Collector access
+      #     - 8089:8089
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Install docker compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.2.2/docker-compose-linux-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+
+      - name: Launch Splunk via docker compose
+        env:
+          SPLUNK_VERSION: ${{ matrix.version }}
+          SPLUNK_PASSWORD: password
+          SPLUNKBASE_USERNAME: ${{ secrets.SPLUNKBASE_USERNAME }}
+          SPLUNKBASE_PASSWORD: ${{ secrets.SPLUNKBASE_PASSWORD }} 
+        run: |
+          make setup
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -84,8 +97,10 @@ jobs:
           node-version: 18
       
       - name: Troubleshooting
+        if: always()
         run: |
           echo "Is this executed? What are permissions?"
+          ls -ld /tmp/
           ls -ld /tmp/defaults/
 
       # - name: Copy app to service container and validate
