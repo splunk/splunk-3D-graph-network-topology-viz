@@ -87,14 +87,18 @@ jobs:
       
       - name: Disable SPL safeguards for all commands
         run: |
-          cat >> web.conf << 'END'
-          [settings]
-          enable_risky_command_check = 0
-          enable_risky_command_check_dashboard = 0
-          END
-          docker cp web.conf ${{ job.services.splunk.id }}:/opt/splunk/etc/system/local/web.conf
+          docker cp assets/cicd/config/web.conf ${{ job.services.splunk.id }}:/opt/splunk/etc/system/local/web.conf
           echo "Validating 'web.conf' file creation"
           docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/system/local/
+        # run: |
+        #   cat >> web.conf << 'END'
+        #   [settings]
+        #   enable_risky_command_check = 0
+        #   enable_risky_command_check_dashboard = 0
+        #   END
+        #   docker cp web.conf ${{ job.services.splunk.id }}:/opt/splunk/etc/system/local/web.conf
+        #   echo "Validating 'web.conf' file creation"
+        #   docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/system/local/
       
       - name: Set container IP as env variable
         run: |
@@ -111,9 +115,9 @@ jobs:
           echo "Check MLTK permissions"
           curl -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
 
-      - name: Print App Configuration
-        run: |
-          curl -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/${{ needs.slim-validate.outputs.app_id }}
+      # - name: Print App Configuration
+      #   run: |
+      #     curl -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/${{ needs.slim-validate.outputs.app_id }}
 
       # - name: Run Tests
       #   run: |
