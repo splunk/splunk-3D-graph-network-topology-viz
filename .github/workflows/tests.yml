@@ -123,7 +123,7 @@ jobs:
           ELECTRON_EXTRA_LAUNCH_ARGS: '--disable-gpu'
         with:
           # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
-          start: npm run cicd-test
+          start: npm run test
           working-directory: test
 
       - name: Upload Test Results

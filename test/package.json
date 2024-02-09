@@ -5,7 +5,7 @@
   "scripts": {
     "debug": "cypress open",
     "test": "cypress run",
-    "cicd-test": "cypress run --browser electron"
+    "cicd-test": "cypress run --browser chrome"
   },
   "author": "Splunk",
   "license": "ISC",
