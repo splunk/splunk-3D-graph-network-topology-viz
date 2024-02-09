@@ -119,6 +119,8 @@ jobs:
       
       - name: Cypress run
         uses: cypress-io/github-action@v6
+        env:
+          ELECTRON_EXTRA_LAUNCH_ARGS: '--disable-gpu'
         with:
           # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
           start: npm run cicd-test
