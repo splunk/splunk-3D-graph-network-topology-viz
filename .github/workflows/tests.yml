@@ -121,7 +121,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
-          start: npm run test
+          start: npm run cicd-test
           working-directory: test
 
       - name: Upload Test Results

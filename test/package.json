@@ -4,7 +4,8 @@
   "description": "Test Suite for Splunk 3D Graph Network Topology Viz",
   "scripts": {
     "debug": "cypress open",
-    "test": "cypress run"
+    "test": "cypress run",
+    "cicd-test": "cypress run --browser electron"
   },
   "author": "Splunk",
   "license": "ISC",
