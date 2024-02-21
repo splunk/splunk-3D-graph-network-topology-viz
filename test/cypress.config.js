@@ -1,5 +1,6 @@
 const { defineConfig } = require('cypress')
 
+// Ref. https://docs.cypress.io/guides/references/configuration
 module.exports = defineConfig({
   env: {
     cmc_uri: '/en-US/app/splunk-3D-graph-network-topology-viz',
@@ -29,7 +30,7 @@ module.exports = defineConfig({
   // Write test results to stdout and to xml reports
   reporter: 'junit',
   reporterOptions: {
-    "mochaFile": "cypress/results/results.xml",
+    "mochaFile": "cypress/results/results-[hash].xml",
     "toConsole": true
   }
 })
