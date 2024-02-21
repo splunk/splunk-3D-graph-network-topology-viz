@@ -35,6 +35,8 @@ Cypress.Commands.add('splunkLogin', () => {
   cy.get('input[name=password]').type(Cypress.env('splunk_password'));
 
   cy.get("input[type=submit][value='Sign In']").click();
+
+  cy.url().should('include', '/home');
 })
 
 Cypress.Commands.add('splunkLogout', () => {
