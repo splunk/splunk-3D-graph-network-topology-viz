@@ -3,8 +3,6 @@ const { defineConfig } = require('cypress')
 // Ref. https://docs.cypress.io/guides/references/configuration
 module.exports = defineConfig({
   //defaultCommandTimeout: 40000,
-  //viewportWidth: 1000,
-  //viewportHeight: 1200,
   //chromeWebSecurity: false,
   //screenShotOnFailure: false,
   e2e: {
@@ -20,6 +18,8 @@ module.exports = defineConfig({
     },
     baseUrl: 'http://localhost:8000',
     pageLoadTimeout: 600000,
+    viewportWidth: 1000,
+    viewportHeight: 1200,
     videoCompression: false,
     // Reference on skipping tests: 
     // https://www.browserstack.com/guide/cypress-skip-test

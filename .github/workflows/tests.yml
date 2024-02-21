@@ -119,8 +119,6 @@ jobs:
       
       - name: Cypress run
         uses: cypress-io/github-action@v6
-        # env:
-        #   ELECTRON_EXTRA_LAUNCH_ARGS: '--disable-gpu'
         with:
           # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
           start: npm run test
@@ -138,9 +136,9 @@ jobs:
 
       - name: JUnit Report
         uses: dorny/test-reporter@v1
-        # if: always()
+        if: always()
         with:
           name: Cypress Tests
-          path: cypress/results/results.xml
+          path: cypress/results/results-*.xml
           reporter: java-junit
           fail-on-error: true
