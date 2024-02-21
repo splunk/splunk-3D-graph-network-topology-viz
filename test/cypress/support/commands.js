@@ -76,11 +76,3 @@ Cypress.Commands.add('visitWithLogin', (destination) => {
       })
   cy.visit(destination);
 })
-
-Cypress.Commands.add("formatUrl", (url, params) =>
-  `${url}?${Object.entries(params)
-    .reduce((urlParams, entry) => {
-      urlParams.set(...entry)
-      return urlParams
-    }, new URLSearchParams())
-    .toString()}`);

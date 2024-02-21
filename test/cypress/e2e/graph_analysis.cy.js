@@ -13,16 +13,10 @@ describe('Graph Analysis', {
         });
 
         it("components render properly", () => {
-            cy.log(Cypress.env("cmc_uri"));
             // Check the URL is correct
             cy.location().should((loc) => {
                 expect(loc.pathname).to.eq('/en-US/app/splunk-3D-graph-network-topology-viz/graph_analysis');
             });
-            // cy.formatUrl(Cypress.env("cmc_uri") + "/graph_analysis", {}).then(
-            //     (url) => {
-            //         cy.visitWithLogin(url);
-            //     }
-            // );
 
             // Buttons
             cy.get('#cidds', { timeout: 10000 }).should('exist').and('be.visible').and('not.be.disabled');
@@ -34,11 +28,6 @@ describe('Graph Analysis', {
         });
 
         it("internal log data sources render properly", () => {
-            // cy.formatUrl(Cypress.env("cmc_uri") + "/graph_analysis", {}).then(
-            //     (url) => {
-            //         cy.visitWithLogin(url);
-            //     }
-            // );
             cy.location().should((loc) => {
                 expect(loc.pathname).to.eq('/en-US/app/splunk-3D-graph-network-topology-viz/graph_analysis');
             });

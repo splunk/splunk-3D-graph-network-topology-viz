@@ -131,7 +131,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: splunk${{ matrix.versions }}-results
+          name: splunk${{ matrix.version }}-results
           path: |
             test/cypress/videos
             test/cypress/screenshots
