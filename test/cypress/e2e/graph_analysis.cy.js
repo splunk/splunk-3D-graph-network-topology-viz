@@ -16,9 +16,9 @@ describe('Graph Analysis', {
             );
 
             // Buttons
-            cy.wait(5000).get('#cidds').should('exist').and('be.visible').and('not.be.disabled');
-            cy.wait(5000).get('#bitcoin').should('exist').and('be.visible').and('not.be.disabled');
-            cy.wait(5000).get('#internal').should('exist').and('be.visible').and('not.be.disabled');
+            cy.get('#cidds', { timeout: 10000 }).should('exist').and('be.visible').and('not.be.disabled');
+            cy.get('#bitcoin', { timeout: 10000 }).should('exist').and('be.visible').and('not.be.disabled');
+            cy.get('#internal', { timeout: 10000 }).should('exist').and('be.visible').and('not.be.disabled');
 
             // Search bar
             cy.wait(5000).get('#mysearchbar1').should('exist').and('be.visible');
@@ -31,7 +31,7 @@ describe('Graph Analysis', {
                 }
             );
 
-            cy.wait(5000).get('#internal').click();
+            cy.get('#internal', { timeout: 10000 }).click();
             // Table with search results shown
             cy.get('.splunk-table').should('exist');
             // Dropdown buttons to select fields shown
