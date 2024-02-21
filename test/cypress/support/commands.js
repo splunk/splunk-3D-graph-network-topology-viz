@@ -25,11 +25,11 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('splunkLogin', () => {
-  const logoutPath = '/en-US/account/logout';
+  const loginPath = '/en-US/account/login';
 
     cy.clearCookies()
 
-    cy.visit(logoutPath);
+    cy.visit(loginPath);
 
     cy.get('#username')
         .type(Cypress.env('splunk_user'));
