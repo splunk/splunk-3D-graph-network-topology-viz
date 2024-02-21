@@ -21,6 +21,7 @@ module.exports = defineConfig({
     viewportWidth: 1000,
     viewportHeight: 1200,
     videoCompression: false,
+    experimentalMemoryManagement: true,
     // Reference on skipping tests: 
     // https://www.browserstack.com/guide/cypress-skip-test
     // excludeSpecPattern: [
