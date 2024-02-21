@@ -2,17 +2,17 @@ const { defineConfig } = require('cypress')
 
 // Ref. https://docs.cypress.io/guides/references/configuration
 module.exports = defineConfig({
-  env: {
-    cmc_uri: '/en-US/app/splunk-3D-graph-network-topology-viz',
-    splunk_user: 'admin',
-    splunk_password: 'changed!',
-  },
   //defaultCommandTimeout: 40000,
   //viewportWidth: 1000,
   //viewportHeight: 1200,
   //chromeWebSecurity: false,
   //screenShotOnFailure: false,
   e2e: {
+    env: {
+      cmc_uri: '/en-US/app/splunk-3D-graph-network-topology-viz',
+      splunk_user: 'admin',
+      splunk_password: 'changed!',
+    },
     // We've imported your old cypress plugins here.
     // You may want to clean this up later by importing these.
     setupNodeEvents(on, config) {
@@ -20,6 +20,7 @@ module.exports = defineConfig({
     },
     baseUrl: 'http://localhost:8000',
     pageLoadTimeout: 600000,
+    videoCompression: false,
     // Reference on skipping tests: 
     // https://www.browserstack.com/guide/cypress-skip-test
     // excludeSpecPattern: [

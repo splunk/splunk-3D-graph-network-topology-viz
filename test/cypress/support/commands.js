@@ -26,19 +26,15 @@
 
 Cypress.Commands.add('splunkLogin', () => {
   const loginPath = '/en-US/account/login';
+  cy.clearCookies();
 
-    cy.clearCookies()
+  cy.visit(loginPath);
 
-    cy.visit(loginPath);
+  cy.get('input[name=username]').type(Cypress.env('splunk_user'));
 
-    cy.get('#username')
-        .type(Cypress.env('splunk_user'));
+  cy.get('input[name=password]').type(Cypress.env('splunk_password'));
 
-    cy.get('#password')
-        .type(Cypress.env('splunk_password'));
-
-    cy.get('input').contains('Sign')
-        .click();
+  cy.get("input[type=submit][value='Sign In']").click();
 })
 
 Cypress.Commands.add('splunkLogout', () => {
