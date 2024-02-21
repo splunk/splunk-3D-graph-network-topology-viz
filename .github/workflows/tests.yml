@@ -119,8 +119,8 @@ jobs:
       
       - name: Cypress run
         uses: cypress-io/github-action@v6
-        env:
-          ELECTRON_EXTRA_LAUNCH_ARGS: '--disable-gpu'
+        # env:
+        #   ELECTRON_EXTRA_LAUNCH_ARGS: '--disable-gpu'
         with:
           # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
           start: npm run cicd-test
@@ -128,10 +128,12 @@ jobs:
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
+        if: always()
         with:
-          name: splunk${{ matrix.versions }}-results
+          # name: splunk${{ matrix.versions }}-results
           path: |
             test/cypress/videos
+            test/cypress/screenshots
 
       - name: JUnit Report
         uses: dorny/test-reporter@v1
