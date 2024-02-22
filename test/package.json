@@ -5,7 +5,8 @@
   "scripts": {
     "debug": "cypress open",
     "test": "cypress run",
-    "cicd-test": "cypress run --browser chrome"
+    "cicd-test": "cypress run --disable-gpu"
+    // "cicd-test": "cypress run --headless --disable-gpu --browser chrome "
   },
   "author": "Splunk",
   "license": "ISC",
