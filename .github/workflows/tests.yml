@@ -143,4 +143,5 @@ jobs:
           name: Cypress Tests
           path: cypress/results/results-*.xml
           reporter: java-junit
+          working-directory: test
           fail-on-error: true

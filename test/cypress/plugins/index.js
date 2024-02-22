@@ -23,7 +23,8 @@ module.exports = (on, config) => {
     // be passed to browsers when it launches
     // console.log(launchOptions.args) // print all current args
     if (browser.name == 'chrome') {
-      launchOptions.args.push('--disable-gpu')
+      launchOptions.args.push('--disable-gpu');
     }
+    return launchOptions;
   })
 }

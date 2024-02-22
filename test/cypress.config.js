@@ -18,8 +18,8 @@ module.exports = defineConfig({
     },
     baseUrl: 'http://localhost:8000',
     pageLoadTimeout: 600000,
-    viewportWidth: 1000,
-    viewportHeight: 1200,
+    // viewportWidth: 1000,
+    // viewportHeight: 1200,
     videoCompression: false,
     experimentalMemoryManagement: true,
     // Reference on skipping tests: 
