@@ -124,7 +124,7 @@ jobs:
         with:
           # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
           start: npm run test
-          # browser: chrome
+          browser: chrome
           working-directory: test
 
       - name: Upload Test Results
