@@ -4,6 +4,7 @@
   "description": "Test Suite for Splunk 3D Graph Network Topology Viz",
   "scripts": {
     "debug": "cypress open",
+    "info": "cypress info",
     "test": "cypress run",
     "cicd-test": "cypress run --browser chrome"
   },
@@ -13,6 +14,6 @@
     "eslint-plugin-cypress": "^2.12.1"
   },
   "devDependencies": {
-    "cypress": "^10.3.1"
+    "cypress": "^13.6.5"
   }
 }

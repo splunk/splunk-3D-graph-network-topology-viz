@@ -1,4 +1,7 @@
 describe('Login and Cookie Preservation', () => {
+  afterEach(() => {
+    cy.splunkLogout();
+  });
 
   it('checks that we can successfully login to Splunk', () => {
     Cypress.Cookies.defaults({
