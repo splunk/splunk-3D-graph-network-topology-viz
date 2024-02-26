@@ -81,7 +81,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 14
+          node-version: 20
 
       - name: Copy app to service container and validate
         # NOTE using volume mapping to add the app to the container will NOT work since checkout hasn't happened yet
@@ -115,15 +115,17 @@ jobs:
       #   run: |
       #     curl -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/${{ needs.slim-validate.outputs.app_id }}
 
-      # - name: Run Tests
-      #   run: |
-      #     echo "Removing package-lock to avoid issues with splunk artifactory"
-      #     rm -rf test/package-lock.json
-        # echo "Running tests"
-        # make tests
-      
+      - name: Run Tests
+        run: |
+          echo "Removing package-lock to avoid issues with splunk artifactory"
+          cd test
+          rm -rf package-lock.json
+          npm install
+          echo "Checking installation"
+          cat package-lock.json
+
       - name: Cypress run
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v6
         # env:
         #   ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
         #   DEBUG: '@cypress/github-action'
