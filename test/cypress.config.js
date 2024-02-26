@@ -2,8 +2,6 @@ const { defineConfig } = require('cypress')
 
 // Ref. https://docs.cypress.io/guides/references/configuration
 module.exports = defineConfig({
-  //defaultCommandTimeout: 40000,
-  //chromeWebSecurity: false,
   //screenShotOnFailure: false,
   e2e: {
     env: {
@@ -17,7 +15,9 @@ module.exports = defineConfig({
       return require('./cypress/plugins/index.js')(on, config)
     },
     baseUrl: 'http://localhost:8000',
-    pageLoadTimeout: 600000,
+    defaultCommandTimeout: 40000,
+    chromeWebSecurity: false,
+    // pageLoadTimeout: 600000,
     // viewportWidth: 1000,
     // viewportHeight: 1200,
     videoCompression: false,
