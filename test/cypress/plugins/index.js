@@ -22,9 +22,19 @@ module.exports = (on, config) => {
     // `args` is an array of all the arguments that will
     // be passed to browsers when it launches
     console.log(launchOptions.args); // print all current args
-    if (browser.name == 'chrome') {
+    if (browser.name == 'chrome' || browser.name == 'firefox') {
       launchOptions.args.push('--disable-gpu');
     }
     return launchOptions;
+  })
+
+  on('uncaught:exception', (err, runnable) => {
+    // we expect a 3rd party library error with message 'window.locale_name is not a function'
+    // and don't want to fail the test so we return false
+    if (err.message.includes('window.locale_name is not a function')) {
+      return false;
+    }
+    // we still want to ensure there are no other unexpected
+    // errors, so we let them fail the test
   })
 }
