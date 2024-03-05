@@ -126,15 +126,16 @@ jobs:
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
+        timeout-minutes: 5
         env:
           ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
           DEBUG: '@cypress/github-action'
         with:
           # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
           start: npm run test
+          wait-on: 'http://localhost:8000'
           # browser: chrome
           working-directory: test
-          timeout-minutes: 5
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
