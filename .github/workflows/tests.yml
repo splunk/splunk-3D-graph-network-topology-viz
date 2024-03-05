@@ -126,6 +126,7 @@ jobs:
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
+        # Set timeout to prevent hanging tasks
         timeout-minutes: 5
         # env:
         #   ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
@@ -133,7 +134,7 @@ jobs:
         with:
           # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
           start: npm run test
-          wait-on: 'http://$SPLUNK_IP:8000'
+          wait-on: 'http://localhost:8000'
           # browser: chrome
           browser: firefox
           working-directory: test
