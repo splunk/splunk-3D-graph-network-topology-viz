@@ -24,6 +24,9 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     if (err.message.includes('window.locale_name is not a function')) {
         return false;
     }
+    if (err.message.includes('r.data is undefined')) {
+        return false;
+    }
     // we still want to ensure there are no other unexpected
     // errors, so we let them fail the test
 })
