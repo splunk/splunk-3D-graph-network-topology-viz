@@ -81,7 +81,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 20.11.1
 
       - name: Copy app to service container and validate
         # NOTE using volume mapping to add the app to the container will NOT work since checkout hasn't happened yet
@@ -115,7 +115,7 @@ jobs:
       #   run: |
       #     curl -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/${{ needs.slim-validate.outputs.app_id }}
 
-      - name: Run Tests
+      - name: Tests execution prep
         run: |
           echo "Removing package-lock to avoid issues with splunk artifactory"
           cd test
