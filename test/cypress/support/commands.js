@@ -40,10 +40,11 @@ Cypress.Commands.add('splunkLogin', () => {
 })
 
 Cypress.Commands.add('splunkLogout', () => {
-  const logoutPath = '/en-US/account/logout';
+  cy.window().then((win) => {
+    win.sessionStorage.removeItem('userToken');
+  });
 
-  cy.clearCookies();
-  cy.visit(logoutPath);
+  cy.request('/en-US/account/logout');
 })
 
 Cypress.Commands.add('visitWithLogin', (destination) => {
