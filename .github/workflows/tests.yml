@@ -135,9 +135,14 @@ jobs:
           # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
           start: npm run test
           wait-on: 'http://localhost:8000'
+          record: true
           # browser: chrome
           browser: firefox
           working-directory: test
+      
+      - name: Verify results availability
+        run: |
+          ls -la test/cypress/results
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
