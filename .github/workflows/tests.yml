@@ -135,8 +135,8 @@ jobs:
           # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
           start: npm run test
           wait-on: 'http://localhost:8000'
-          record: true
           # browser: chrome
+          # No videos can be recorded w/ ff as per https://github.com/cypress-io/cypress/issues/18415
           # browser: firefox
           working-directory: test
       
