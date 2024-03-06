@@ -12,11 +12,9 @@ describe('Graph Analysis', {
     });
 
     describe("Validates data on dashboard", () => {
-        beforeEach(() => {
-            cy.visit(Cypress.env("cmc_uri") + "/graph_analysis");
-        });
-
         it("navigation works", () => {
+            cy.visit(Cypress.env("cmc_uri") + "/graph_analysis");
+
             // Check the URL is correct
             cy.location().should((loc) => {
                 expect(loc.pathname).to.eq('/en-US/app/splunk-3D-graph-network-topology-viz/graph_analysis');
