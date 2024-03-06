@@ -20,6 +20,7 @@ module.exports = defineConfig({
     pageLoadTimeout: 600000,
     // viewportWidth: 1000,
     // viewportHeight: 1200,
+    video: true,
     videoCompression: false,
     experimentalMemoryManagement: true,
     // Reference on skipping tests: 

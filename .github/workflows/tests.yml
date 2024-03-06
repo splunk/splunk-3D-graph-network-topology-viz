@@ -128,8 +128,8 @@ jobs:
         uses: cypress-io/github-action@v6
         # Set timeout to prevent hanging tasks
         timeout-minutes: 5
-        # env:
-        #   ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
+        env:
+          ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
         #   DEBUG: '@cypress/github-action'
         with:
           # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
@@ -137,7 +137,7 @@ jobs:
           wait-on: 'http://localhost:8000'
           record: true
           # browser: chrome
-          browser: firefox
+          # browser: firefox
           working-directory: test
       
       - name: Verify results availability
