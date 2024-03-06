@@ -121,8 +121,6 @@ jobs:
           cd test
           rm -rf package-lock.json
           npm install
-          echo "Checking installation"
-          cat package-lock.json
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
@@ -130,19 +128,17 @@ jobs:
         timeout-minutes: 5
         env:
           ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
-        #   DEBUG: '@cypress/github-action'
         with:
           # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
           start: npm run test
           wait-on: 'http://localhost:8000'
-          # browser: chrome
           # No videos can be recorded w/ ff as per https://github.com/cypress-io/cypress/issues/18415
           # browser: firefox
           working-directory: test
       
-      - name: Verify results availability
-        run: |
-          ls -la test/cypress/results
+      # - name: Verify results availability
+      #   run: |
+      #     ls -la test/cypress/results
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
@@ -153,6 +149,7 @@ jobs:
             test/cypress/videos
             test/cypress/screenshots
 
+      # Add a job in the page to visualize test result reports
       - name: JUnit Report
         uses: dorny/test-reporter@v1
         if: always()

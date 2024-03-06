@@ -14,7 +14,8 @@ describe('Graph Examples', {
 
         it("renders without errors", () => {
             cy.get('.dashboard-header-title', { timeout: 10000 }).should('have.text', 'Graph Analysis Example for Bitcoin Transactions');
-            cy.get('div.alert.alert-error').should('not.exist');
+            // FIXME Checked too soon. Page has not been loaded yet, so it will always succeds
+            cy.get('div.alert.alert-error', { timeout: 10000 }).should('not.exist');
         });
     });
 
@@ -29,7 +30,8 @@ describe('Graph Examples', {
 
         it("renders without errors", () => {
             cy.get('.dashboard-header-title', { timeout: 10000 }).should('have.text', 'Graph Analysis Example for Network Traffic');
-            cy.get('div.alert.alert-error').should('not.exist');
+            // FIXME Checked too soon. Page has not been loaded yet, so it will always succeds
+            cy.get('div.alert.alert-error', { timeout: 10000 }).should('not.exist');
         });
     });
 
@@ -44,7 +46,8 @@ describe('Graph Examples', {
 
         it("renders without errors", () => {
             cy.get('.dashboard-header-title', { timeout: 10000 }).should('have.text', 'Graph Analysis Example: Connected Components');
-            cy.get('div.alert.alert-error').should('not.exist');
+            // FIXME Checked too soon. Page has not been loaded yet, so it will always succeds
+            cy.get('div.alert.alert-error', { timeout: 10000 }).should('not.exist');
         });
     });
 
@@ -59,7 +62,8 @@ describe('Graph Examples', {
 
         it("renders without errors", () => {
             cy.get('.dashboard-header-title', { timeout: 10000 }).should('have.text', 'Graph Analysis Example: Label Propagation');
-            cy.get('div.alert.alert-error').should('not.exist');
+            // FIXME Checked too soon. Page has not been loaded yet, so it will always succeds
+            cy.get('div.alert.alert-error', { timeout: 10000 }).should('not.exist');
         });
     });
 });
