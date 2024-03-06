@@ -42,34 +42,3 @@ Cypress.Commands.add('splunkLogout', () => {
     // });
   cy.request('/en-US/account/logout');
 })
-
-// Cypress.Commands.add('visitWithLogin', (destination) => {
-//   const timeout = Cypress.env('cookie_timeout');
-//   cy.log('timeout: ' + timeout)
-
-//     Cypress.Cookies.defaults({
-//       preserve: ['session_id',
-//         'splunkweb_csrf_token_9000',
-//         'splunkd_8000',
-//         'splunkweb_csrf_token_8000',
-//         'session_id_8000',
-//         'cypress-login'
-//       ]
-//     })
-
-//     cy.getCookie('cypress-login')
-//       .then((val) => {
-//         if (val == null || val.value != 'true' || val.expiry < Date.now()) {
-//           if (val == null) {
-//             cy.log('Cookie is null')
-//           } else {
-//             cy.log('value: ' + val.value)
-//             cy.log('expiry: ' + val.expiry)
-//             cy.log('now: ' + Date.now())
-//           }
-//           cy.splunkLogin()
-//           cy.setCookie('cypress-login', 'true', {expiry: Date.now()+timeout})
-//         }
-//       })
-//   cy.visit(destination);
-// })
