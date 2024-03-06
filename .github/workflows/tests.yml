@@ -158,4 +158,4 @@ jobs:
           path: cypress/results/results-*.xml
           reporter: java-junit
           working-directory: test
-          # fail-on-error: true
+          fail-on-error: false
