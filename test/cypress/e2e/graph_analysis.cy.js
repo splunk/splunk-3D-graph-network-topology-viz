@@ -5,7 +5,6 @@ describe('Graph Analysis', {
 }, () => {
     beforeEach(() => {
         cy.splunkLogin();
-        cy.visit(Cypress.env("cmc_uri") + "/graph_analysis");
     });
 
     afterEach(() => {
@@ -13,6 +12,10 @@ describe('Graph Analysis', {
     });
 
     describe("Validates data on dashboard", () => {
+        beforeEach(() => {
+            cy.visit(Cypress.env("cmc_uri") + "/graph_analysis");
+        });
+
         it("navigation works", () => {
             // Check the URL is correct
             cy.location().should((loc) => {
@@ -33,9 +36,9 @@ describe('Graph Analysis', {
         it("internal log data sources render properly", () => {
             cy.get('#internal', { timeout: 10000 }).click();
             // Table with search results shown
-            cy.get('.splunk-table').should('exist');
+            cy.get('.splunk-table', { timeout: 10000 }).should('exist');
             // Dropdown buttons to select fields shown
-            cy.get('.splunk-dropdown').should('have.length', 3);
+            cy.get('.splunk-dropdown', { timeout: 10000 }).should('have.length', 3);
         });
         // TODO extend tests
     });
