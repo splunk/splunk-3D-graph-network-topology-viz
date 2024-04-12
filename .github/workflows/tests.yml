@@ -49,7 +49,7 @@ jobs:
   splunk-test:
     name: Deploy and test the Viz
     # runs-on: ubuntu-latest
-    runs-on: self-hosted
+    runs-on: [self-hosted, test/gh-action]
     needs: slim-validate
     strategy:
       matrix:
