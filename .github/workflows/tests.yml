@@ -53,7 +53,7 @@ jobs:
     needs: slim-validate
     strategy:
       matrix:
-        version: [9.1]
+        version: [9.1.3]
         # version: [9.1, 9.0, 8.2.0]
     services:
       splunk:
