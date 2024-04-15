@@ -59,7 +59,9 @@ describe('Graph Analysis', {
             cy.get('.splunk-dropdown', { timeout: 10000 }).should('have.length', 3);
             // Waiting for search to be done and dropdowns under "Select Fields" section to be shown
             // Otherwise logout will be triggered and pending searches will throw errors
-            cy.get("button[data-test='select']", { timeout: 10000 }).should('have.length', 3);
+            // cy.get("button[data-test='select']", { timeout: 10000 }).should('have.length', 3);
+            cy.get("div#statistics.viz-controller table", { timeout: 10000 }).eq(0).find('thead').should('be.visible');
+            cy.get("div#statistics.viz-controller table", { timeout: 10000 }).eq(0).find('thead').should('exist');
         });
         // TODO extend tests
     });
