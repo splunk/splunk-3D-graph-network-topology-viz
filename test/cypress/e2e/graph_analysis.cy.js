@@ -34,7 +34,7 @@ describe('Graph Analysis', {
         it("components render properly", () => {
             cy.wait('@hasPageLoaded').then((interception) => {
                 /* eslint-disable no-unused-expressions */
-                expect(interception.response.body).not.to.be.empty; // FIXME
+                expect(interception.response.body).not.to.be.empty;
             });
 
             // Buttons
@@ -49,7 +49,7 @@ describe('Graph Analysis', {
         it("internal log data sources render properly", () => {
             cy.wait('@hasPageLoaded').then((interception) => {
                 /* eslint-disable no-unused-expressions */
-                expect(interception.response.body).not.to.be.empty; // FIXME
+                expect(interception.response.body).not.to.be.empty;
             });
 
             cy.get('#internal', { timeout: 10000 }).click();
@@ -57,6 +57,9 @@ describe('Graph Analysis', {
             cy.get('.splunk-table', { timeout: 10000 }).should('exist');
             // Dropdown buttons to select fields shown
             cy.get('.splunk-dropdown', { timeout: 10000 }).should('have.length', 3);
+            // Waiting for search to be done and dropdowns under "Select Fields" section to be shown
+            // Otherwise logout will be triggered and pending searches will throw errors
+            cy.get("button[data-test='select']", { timeout: 10000 }).should('have.length', 3);
         });
         // TODO extend tests
     });
