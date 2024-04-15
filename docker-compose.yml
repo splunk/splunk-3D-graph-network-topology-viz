@@ -15,7 +15,7 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
 
     splunk:
-        image: "splunk/splunk:9.1"
+        image: "splunk/splunk:9.1.3"
         container_name: splunk4viz
         volumes:
             # Mount a volume from your local app to the remote /etc/apps
@@ -26,10 +26,10 @@ services:
             - ./packages/${APP_NAME}:/opt/splunk/etc/apps/${APP_NAME}
             # Mount a volume to provide custom configurations to splunk-ansible
             - ./assets/ansible/default.yml:/tmp/defaults/default.yml
-            # Mount the dependency app to be installed via REST by splunk-ansible (it fails w/ the needed app)
+            # Mount the dependency app to be installed via REST by splunk-ansible (alternative to SPLUNK_APPS_URL usage)
             # - './assets/apps/python-for-scientific-computing-for-linux-64-bit_420.tgz:/tmp/apps/python-for-scientific-computing-for-linux-64-bit_420.tgz'
-            # Mount a volume to make sure this dependency app can be installed by the configurator via CLI
-            - './assets/apps/python-for-scientific-computing-for-linux-64-bit_420.tgz:/tmp/ansible/python-for-scientific-computing-for-linux-64-bit_420.tgz'
+            # Mount a volume to make sure this dependency app can be installed by the configurator via CLI (for v4.2.0+)
+            # - './assets/apps/python-for-scientific-computing-for-linux-64-bit_420.tgz:/tmp/ansible/python-for-scientific-computing-for-linux-64-bit_420.tgz'
         environment:
             # This skips the license acceptance step
             - SPLUNK_START_ARGS=--answer-yes --no-prompt --accept-license
@@ -37,7 +37,7 @@ services:
             - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
             # This defines a tarball of apps to be pre-installed, you can
             # also include multiple tarballs with comma-separated URLs
-            - SPLUNK_APPS_URL=https://splunkbase.splunk.com/app/2890/release/5.4.1/download
+            - SPLUNK_APPS_URL=https://splunkbase.splunk.com/app/2890/release/5.4.1/download,https://splunkbase.splunk.com/app/2882/release/4.1.2/download
             # - SPLUNK_APPS_URL=/tmp/ansible/python-for-scientific-computing-for-linux-64-bit_420.tgz
             - SPLUNKBASE_USERNAME=${SPLUNKBASE_USERNAME}
             - SPLUNKBASE_PASSWORD=${SPLUNKBASE_PASSWORD}
