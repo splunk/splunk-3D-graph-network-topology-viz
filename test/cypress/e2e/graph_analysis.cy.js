@@ -5,6 +5,16 @@ describe('Graph Analysis', {
 }, () => {
     beforeEach(() => {
         cy.splunkLogin();
+        cy.intercept(
+            {
+                method: 'GET',
+                pathname:
+                    '/en-GB/splunkd/__raw/servicesNS/admin/splunk-3D-graph-network-topology-viz/scheduled/views/graph_analysis',
+                query: {
+                    output_mode: 'json',
+                },
+            }
+        ).as('hasPageLoaded');
     });
 
     afterEach(() => {
@@ -22,6 +32,11 @@ describe('Graph Analysis', {
         })
 
         it("components render properly", () => {
+            cy.wait('@hasPageLoaded').then((interception) => {
+                /* eslint-disable no-unused-expressions */
+                expect(interception.response.body).not.to.be.empty; // FIXME
+            });
+
             // Buttons
             cy.get('#cidds', { timeout: 10000 }).should('exist').and('be.visible').and('not.be.disabled');
             cy.get('#bitcoin', { timeout: 10000 }).should('exist').and('be.visible').and('not.be.disabled');
@@ -32,6 +47,11 @@ describe('Graph Analysis', {
         });
 
         it("internal log data sources render properly", () => {
+            cy.wait('@hasPageLoaded').then((interception) => {
+                /* eslint-disable no-unused-expressions */
+                expect(interception.response.body).not.to.be.empty; // FIXME
+            });
+
             cy.get('#internal', { timeout: 10000 }).click();
             // Table with search results shown
             cy.get('.splunk-table', { timeout: 10000 }).should('exist');
