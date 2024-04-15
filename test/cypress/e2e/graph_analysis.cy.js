@@ -9,7 +9,7 @@ describe('Graph Analysis', {
             {
                 method: 'GET',
                 pathname:
-                    '/en-GB/splunkd/__raw/servicesNS/admin/splunk-3D-graph-network-topology-viz/scheduled/views/graph_analysis',
+                    '/en-US/splunkd/__raw/servicesNS/admin/splunk-3D-graph-network-topology-viz/scheduled/views/graph_analysis',
                 query: {
                     output_mode: 'json',
                 },
