@@ -1,3 +1,5 @@
+const max_waiting = 25000;
+
 describe('Graph Examples', {
     // retries: {
     //     runMode: 2, // might fail headlessly due to slow page load
@@ -13,9 +15,10 @@ describe('Graph Examples', {
         });
 
         it("renders without errors", () => {
-            cy.get('.dashboard-header-title', { timeout: 10000 }).should('have.text', 'Graph Analysis Example for Bitcoin Transactions');
-            // FIXME Checked too soon. Page has not been loaded yet, so it will always succeds
-            cy.get('div.alert.alert-error', { timeout: 10000 }).should('not.exist');
+            cy.get('.dashboard-header-title', { timeout: max_waiting }).should('have.text', 'Graph Analysis Example for Bitcoin Transactions');
+            cy.get('.force-graph-container canvas', { timeout: max_waiting }).should('exist');
+            cy.get('.force-graph-container canvas', { timeout: max_waiting }).should('be.visible');
+            // cy.get('div.alert.alert-error', {timeout: max_waiting}).should('not.exist');
         });
     });
 
@@ -29,13 +32,14 @@ describe('Graph Examples', {
         });
 
         it("renders without errors", () => {
-            cy.get('.dashboard-header-title', { timeout: 10000 }).should('have.text', 'Graph Analysis Example for Network Traffic');
-            // FIXME Checked too soon. Page has not been loaded yet, so it will always succeds
-            cy.get('div.alert.alert-error', { timeout: 10000 }).should('not.exist');
+            cy.get('.dashboard-header-title', { timeout: max_waiting }).should('have.text', 'Graph Analysis Example for Network Traffic');
+            cy.get('.force-graph-container canvas', { timeout: max_waiting }).should('exist');
+            cy.get('.force-graph-container canvas', { timeout: max_waiting }).should('be.visible');
+            // cy.get('div.alert.alert-error', { timeout: max_waiting }).should('not.exist');
         });
     });
 
-    describe("Validates data on the [Connected Compoenents] dashboard", () => {
+    describe("Validates data on the [Connected Components] dashboard", () => {
         beforeEach(() => {
             cy.splunkLogin();
             cy.visit(Cypress.env("cmc_uri") + "/graph_analysis_example_connected_components");
@@ -45,9 +49,10 @@ describe('Graph Examples', {
         });
 
         it("renders without errors", () => {
-            cy.get('.dashboard-header-title', { timeout: 10000 }).should('have.text', 'Graph Analysis Example: Connected Components');
-            // FIXME Checked too soon. Page has not been loaded yet, so it will always succeds
-            cy.get('div.alert.alert-error', { timeout: 10000 }).should('not.exist');
+            cy.get('.dashboard-header-title', { timeout: max_waiting }).should('have.text', 'Graph Analysis Example: Connected Components');
+            cy.get('.force-graph-container canvas', { timeout: max_waiting }).should('exist');
+            cy.get('.force-graph-container canvas', { timeout: max_waiting }).should('be.visible');
+            // cy.get('div.alert.alert-error', { timeout: max_waiting }).should('not.exist');
         });
     });
 
@@ -61,9 +66,10 @@ describe('Graph Examples', {
         });
 
         it("renders without errors", () => {
-            cy.get('.dashboard-header-title', { timeout: 10000 }).should('have.text', 'Graph Analysis Example: Label Propagation');
-            // FIXME Checked too soon. Page has not been loaded yet, so it will always succeds
-            cy.get('div.alert.alert-error', { timeout: 10000 }).should('not.exist');
+            cy.get('.dashboard-header-title', { timeout: max_waiting }).should('have.text', 'Graph Analysis Example: Label Propagation');
+            cy.get('.force-graph-container canvas', { timeout: max_waiting }).should('exist');
+            cy.get('.force-graph-container canvas', { timeout: max_waiting }).should('be.visible');
+            // cy.get('div.alert.alert-error', { timeout: max_waiting }).should('not.exist');
         });
     });
 });
