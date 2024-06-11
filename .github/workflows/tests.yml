@@ -49,7 +49,8 @@ jobs:
   splunk-test:
     name: Deploy and test the Viz
     # runs-on: ubuntu-latest
-    runs-on: [self-hosted, primary]
+    # runs-on: [self-hosted, primary]
+    runs-on: codebuild-runner-gha-splunk-3D-graph-network-topology-viz-${{ github.run_id }}-${{ github.run_attempt }}
     needs: slim-validate
     strategy:
       matrix:
@@ -63,7 +64,7 @@ jobs:
           SPLUNK_PASSWORD: password
           SPLUNK_APPS_URL: https://splunkbase.splunk.com/app/2890/release/5.4.1/download
           # TODO add the installation of the other dependency
-          # ,https://splunkbase.splunk.com/app/2882/release/4.2.0/download
+          # ,https://splunkbase.splunk.com/app/2882/release/4.1.2/download
           SPLUNKBASE_USERNAME: ${{ secrets.SPLUNKBASE_USERNAME }}
           SPLUNKBASE_PASSWORD: ${{ secrets.SPLUNKBASE_PASSWORD }}
           DEBUG: true
