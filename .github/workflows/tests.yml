@@ -106,8 +106,9 @@ jobs:
         run: |
           docker ps
           docker network list
-          docker inspect ${{ job.services.splunk.id }}
-          curl -v -k -u admin:password https://localhost:8089/
+          export SPLUNK_PORT=${{ job.services.splunk.ports[8089] }}
+          curl -v -k -u admin:password https://localhost:$SPLUNK_PORT/
+          curl -v -k -u admin:password https://$SPLUNK_IP:$SPLUNK_PORT/
           curl -v -k -u admin:password https://$SPLUNK_IP:8089/services/server/control/restart -X POST
           sleep 30
       
