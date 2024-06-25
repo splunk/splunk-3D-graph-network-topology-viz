@@ -104,7 +104,7 @@ jobs:
 
       - name: Restart instance
         run: |
-          curl -k -u admin:password https://$SPLUNK_IP:8089/services/server/control/restart -X POST
+          curl -v -k -u admin:password https://$SPLUNK_IP:8089/services/server/control/restart -X POST
           sleep 30
       
       - name: Configure MLTK permissions
