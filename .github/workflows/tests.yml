@@ -107,6 +107,7 @@ jobs:
           docker ps
           docker network list
           docker inspect ${{ job.services.splunk.id }}
+          curl -v -k -u admin:password https://localhost:8089/
           curl -v -k -u admin:password https://$SPLUNK_IP:8089/services/server/control/restart -X POST
           sleep 30
       
