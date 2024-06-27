@@ -106,13 +106,13 @@ jobs:
 
       - name: Restart instance
         run: |
-          docker ps
-          docker network list
-          curl -v -k -u admin:password https://localhost:8089
-          curl -v -k -u admin:password https://splunk:8089 > curl_result_docker
-          cat curl_result_docker
           curl -k -u admin:password https://$SPLUNK_IP:8089/services/server/control/restart -X POST
           sleep 30
+# docker ps
+# docker network list
+# curl -v -k -u admin:password https://localhost:8089
+# curl -v -k -u admin:password https://splunk:8089 > curl_result_docker
+# cat curl_result_docker
 # export SPLUNK_PORT=${{ job.services.splunk.ports[8089] }}
 # curl -v -k -u admin:password https://$SPLUNK_IP:$SPLUNK_PORT/
       
