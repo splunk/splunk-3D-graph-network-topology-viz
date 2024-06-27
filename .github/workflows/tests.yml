@@ -51,7 +51,8 @@ jobs:
     # runs-on: ubuntu-latest
     # runs-on: [self-hosted, primary]
     runs-on: codebuild-runner-gha-splunk-3D-graph-network-topology-viz-${{ github.run_id }}-${{ github.run_attempt }}
-    container: ubuntu
+    container: 
+      image: ghcr.io/cicd-toolkit/base-image:1.0.3
     needs: slim-validate
     strategy:
       matrix:
