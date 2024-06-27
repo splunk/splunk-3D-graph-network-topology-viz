@@ -106,13 +106,14 @@ jobs:
 
       - name: Restart instance
         run: |
-          curl -v -k -u admin:password https://$SPLUNK_IP:8089/services/server/control/restart -X POST
+          docker ps
+          docker network list
+          curl -v -k -u admin:password https://localhost:8089
+          curl -v -k -u admin:password https://splunk:8089 > curl_result_docker
+          cat curl_result_docker
+          curl -k -u admin:password https://$SPLUNK_IP:8089/services/server/control/restart -X POST
           sleep 30
-# docker ps
-# docker network list
 # export SPLUNK_PORT=${{ job.services.splunk.ports[8089] }}
-# curl -v -k -u admin:password https://splunk:8089 > curl_result_docker
-# cat curl_result_docker
 # curl -v -k -u admin:password https://$SPLUNK_IP:$SPLUNK_PORT/
       
       - name: Configure MLTK permissions
@@ -142,8 +143,7 @@ jobs:
         with:
           # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
           start: npm run test
-          # wait-on: 'http://localhost:8000'
-          wait-on: 'http://$SPLUNK_IP:8000'
+          wait-on: 'http://localhost:8000'
           # No videos can be recorded w/ ff as per https://github.com/cypress-io/cypress/issues/18415
           # browser: firefox
           working-directory: test
