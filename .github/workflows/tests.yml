@@ -51,6 +51,7 @@ jobs:
     # runs-on: ubuntu-latest
     # runs-on: [self-hosted, primary]
     runs-on: codebuild-runner-gha-splunk-3D-graph-network-topology-viz-${{ github.run_id }}-${{ github.run_attempt }}
+    container: ubuntu
     needs: slim-validate
     strategy:
       matrix:
