@@ -48,11 +48,11 @@ jobs:
 
   splunk-test:
     name: Deploy and test the Viz
-    # runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     # runs-on: [self-hosted, primary]
-    runs-on: codebuild-runner-gha-splunk-3D-graph-network-topology-viz-${{ github.run_id }}-${{ github.run_attempt }}
-    container: 
-      image: ghcr.io/cicd-toolkit/base-image:1.0.3
+    # runs-on: codebuild-runner-gha-splunk-3D-graph-network-topology-viz-${{ github.run_id }}-${{ github.run_attempt }}
+    # container: 
+    #   image: ghcr.io/cicd-toolkit/base-image:1.0.3
     needs: slim-validate
     strategy:
       matrix:
@@ -106,14 +106,14 @@ jobs:
 
       - name: Restart instance
         run: |
-          docker ps
-          docker network list
-          export SPLUNK_PORT=${{ job.services.splunk.ports[8089] }}
-          curl -v -k -u admin:password https://splunk:8089 > curl_result_docker
-          cat curl_result_docker
-          curl -v -k -u admin:password https://$SPLUNK_IP:$SPLUNK_PORT/
           curl -v -k -u admin:password https://$SPLUNK_IP:8089/services/server/control/restart -X POST
           sleep 30
+# docker ps
+# docker network list
+# export SPLUNK_PORT=${{ job.services.splunk.ports[8089] }}
+# curl -v -k -u admin:password https://splunk:8089 > curl_result_docker
+# cat curl_result_docker
+# curl -v -k -u admin:password https://$SPLUNK_IP:$SPLUNK_PORT/
       
       - name: Configure MLTK permissions
         run: |
@@ -142,7 +142,8 @@ jobs:
         with:
           # Run 'npm start' using npm 14 instead of 18 since package-lock generated with npm 14 (see @types/node)
           start: npm run test
-          wait-on: 'http://localhost:8000'
+          # wait-on: 'http://localhost:8000'
+          wait-on: 'http://$SPLUNK_IP:8000'
           # No videos can be recorded w/ ff as per https://github.com/cypress-io/cypress/issues/18415
           # browser: firefox
           working-directory: test
