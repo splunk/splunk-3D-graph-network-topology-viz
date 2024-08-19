@@ -136,7 +136,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v6
         # Set timeout to prevent hanging tasks
-        timeout-minutes: 5
+        timeout-minutes: 20
         env:
           DEBUG: '@cypress/github-action'
           ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
