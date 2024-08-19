@@ -16,7 +16,7 @@ module.exports = defineConfig({
     },
     baseUrl: 'http://localhost:8000',
     defaultCommandTimeout: 40000,
-    retries: 3,
+    // retries: 3,
     // chromeWebSecurity: false,
     pageLoadTimeout: 600000,
     // viewportWidth: 1000,
