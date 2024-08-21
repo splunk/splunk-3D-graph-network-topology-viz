@@ -9,8 +9,9 @@ describe('Graph Analysis', {
             {
                 method: 'GET',
                 pathname:
-                    // '/en-US/splunkd/__raw/servicesNS/admin/splunk-3D-graph-network-topology-viz/scheduled/views/graph_analysis',
-                    '/en-US/splunkd/__raw/servicesNS/admin/splunk-3D-graph-network-topology-viz/search/jobs/admin**',
+                    // From Splunk 9.2 following API has changed to **/search/v2/jobs/admin** - Replaced!
+                    // '/en-US/splunkd/__raw/servicesNS/admin/splunk-3D-graph-network-topology-viz/search/jobs/admin**',
+                    '/en-US/splunkd/__raw/services/search/timeparser',
                 query: {
                     output_mode: 'json',
                 },

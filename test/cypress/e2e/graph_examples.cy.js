@@ -1,9 +1,6 @@
 const max_waiting = 25000;
 
 describe('Graph Examples', {
-    // retries: {
-    //     runMode: 2, // might fail headlessly due to slow page load
-    // }
 }, () => {
     describe("Validates data on the [Bitcoin Transactions] dashboard", () => {
         beforeEach(() => {
