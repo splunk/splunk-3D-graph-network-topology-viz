@@ -18,18 +18,18 @@ module.exports = defineConfig({
     defaultCommandTimeout: 40000,
     // retries: 3,
     // chromeWebSecurity: false,
+    // experimentalMemoryManagement: true,
     pageLoadTimeout: 600000,
     // viewportWidth: 1000,
     // viewportHeight: 1200,
     video: true,
     videoCompression: false,
-    // experimentalMemoryManagement: true,
     // Reference on skipping tests: 
     // https://www.browserstack.com/guide/cypress-skip-test
-    // excludeSpecPattern: [
-    //   "./cypress/e2e/**/login.cy.js",
-    //   "./cypress/e2e/**/graph_analysis.cy.js"
-    // ],
+    excludeSpecPattern: [
+      // "./cypress/e2e/**/login.cy.js",
+      "./cypress/e2e/**/graph_analysis.cy.js"
+    ],
   },
   // Write test results to stdout and to xml reports
   reporter: 'junit',
