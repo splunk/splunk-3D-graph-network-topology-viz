@@ -1,5 +1,3 @@
-const max_waiting = 25000;
-
 describe('Graph Analysis', {
     // retries: {
     //     runMode: 2, // might fail headlessly due to slow page load
@@ -11,11 +9,10 @@ describe('Graph Analysis', {
             {
                 method: 'GET',
                 pathname:
-                    // From Splunk 9.2 following API has changed to **/search/v2/jobs/admin** - Replaced!
-                    // '/en-US/splunkd/__raw/servicesNS/admin/splunk-3D-graph-network-topology-viz/search/jobs/admin**',
-                    '/en-US/splunkd/__raw/servicesNS/admin/splunk-3D-graph-network-topology-viz/search/v2/jobs/admin**',
-                    // '/en-US/splunkd/__raw/services/search/timeparser',
-                    // '/en-US/splunkd/__raw/services/server/health/splunkd',
+                    // CAREFUL!! For Splunk 9.2+ API has changed to **/search/v2/jobs/admin**
+                    // --> This intercept does not work for 9.2+
+                    // --> already tried '/en-US/splunkd/__raw/servicesNS/admin/splunk-3D-graph-network-topology-viz/search/*/jobs/admin**'
+                    '/en-US/splunkd/__raw/servicesNS/admin/splunk-3D-graph-network-topology-viz/search/jobs/admin**',
                 query: {
                     output_mode: 'json',
                 }
@@ -42,12 +39,12 @@ describe('Graph Analysis', {
                 expect(interception.response.body).not.to.be.empty;
 
                 // Buttons
-                cy.get('#cidds', { timeout: max_waiting }).should('exist').and('be.visible').and('not.be.disabled');
-                cy.get('#bitcoin', { timeout: max_waiting }).should('exist').and('be.visible').and('not.be.disabled');
-                cy.get('#internal', { timeout: max_waiting }).should('exist').and('be.visible').and('not.be.disabled');
+                cy.get('#cidds').should('exist').and('be.visible').and('not.be.disabled');
+                cy.get('#bitcoin').should('exist').and('be.visible').and('not.be.disabled');
+                cy.get('#internal').should('exist').and('be.visible').and('not.be.disabled');
 
                 // Search bar
-                cy.get('#mysearchbar1', { timeout: max_waiting }).should('exist').and('be.visible');
+                cy.get('#mysearchbar1').should('exist').and('be.visible');
             });
         });
 
