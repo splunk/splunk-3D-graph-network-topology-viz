@@ -13,7 +13,7 @@ describe('Graph Analysis', {
                 pathname:
                     // From Splunk 9.2 following API has changed to **/search/v2/jobs/admin** - Replaced!
                     // '/en-US/splunkd/__raw/servicesNS/admin/splunk-3D-graph-network-topology-viz/search/jobs/admin**',
-                    '/en-US/splunkd/__raw/servicesNS/admin/splunk-3D-graph-network-topology-viz/search/*/jobs/admin**',
+                    '/en-US/splunkd/__raw/servicesNS/admin/splunk-3D-graph-network-topology-viz/search/v2/jobs/admin**',
                     // '/en-US/splunkd/__raw/services/search/timeparser',
                     // '/en-US/splunkd/__raw/services/server/health/splunkd',
                 query: {
