@@ -1,0 +1,18 @@
+{
+  "name": "app-test-pkg",
+  "version": "1.0.0",
+  "description": "Test Suite for Splunk 3D Graph Network Topology Viz",
+  "scripts": {
+    "debug": "cypress open",
+    "info": "cypress info",
+    "test": "cypress run"
+  },
+  "author": "Splunk",
+  "license": "ISC",
+  "dependencies": {
+    "eslint-plugin-cypress": "^2.12.1"
+  },
+  "devDependencies": {
+    "cypress": "^13.6.5"
+  }
+}
