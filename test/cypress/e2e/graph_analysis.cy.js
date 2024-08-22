@@ -1,3 +1,5 @@
+const max_waiting = 25000;
+
 describe('Graph Analysis', {
     // retries: {
     //     runMode: 2, // might fail headlessly due to slow page load
@@ -11,12 +13,12 @@ describe('Graph Analysis', {
                 pathname:
                     // From Splunk 9.2 following API has changed to **/search/v2/jobs/admin** - Replaced!
                     // '/en-US/splunkd/__raw/servicesNS/admin/splunk-3D-graph-network-topology-viz/search/jobs/admin**',
-                    // '/en-US/splunkd/__raw/services/search/timeparser',
-                    '/en-US/splunkd/__raw/services/server/health/splunkd',
+                    '/en-US/splunkd/__raw/services/search/timeparser',
+                    // '/en-US/splunkd/__raw/services/server/health/splunkd',
                 query: {
                     output_mode: 'json',
-                },
-                times: 4
+                }
+                // times: 1
             }
         ).as('hasPageLoaded');
         cy.visit(Cypress.env("cmc_uri") + "/graph_analysis");
@@ -39,12 +41,12 @@ describe('Graph Analysis', {
                 expect(interception.response.body).not.to.be.empty;
 
                 // Buttons
-                cy.get('#cidds').should('exist').and('be.visible').and('not.be.disabled');
-                cy.get('#bitcoin').should('exist').and('be.visible').and('not.be.disabled');
-                cy.get('#internal').should('exist').and('be.visible').and('not.be.disabled');
+                cy.get('#cidds', { timeout: max_waiting }).should('exist').and('be.visible').and('not.be.disabled');
+                cy.get('#bitcoin', { timeout: max_waiting }).should('exist').and('be.visible').and('not.be.disabled');
+                cy.get('#internal', { timeout: max_waiting }).should('exist').and('be.visible').and('not.be.disabled');
 
                 // Search bar
-                cy.get('#mysearchbar1').should('exist').and('be.visible');
+                cy.get('#mysearchbar1', { timeout: max_waiting }).should('exist').and('be.visible');
             });
         });
 
