@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - 'packages/**'
-      - '.github/workflows/*'
 
 jobs:
   build:
@@ -65,4 +64,4 @@ jobs:
           username: ${{ secrets.SPLUNKBASE_USERNAME }}
           password: ${{ secrets.SPLUNKBASE_PASSWORD }}
           app_path: build/
-          includedTags: "cloud"
+          included_tags: "cloud"
