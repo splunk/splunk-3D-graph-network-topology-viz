@@ -43,9 +43,6 @@ Create a `.env` file in the root of the repository. Don't worry, it is part of `
 
 Enter your Splunkbase Username and Password there to install dependencies such as the Splunk MLTK via URL.
 
-Manually download the Python for Scientific Computing for Linux from [Splunkbase](https://splunkbase.splunk.com/app/2882/release/4.2.0/download) and save the `.tgz` in `assets/apps`.
-> Note that this should be done automatically but the app is too big for installation via REST by splunk-ansible.
-
 To setup your development environment, run
 
 `make setup`
