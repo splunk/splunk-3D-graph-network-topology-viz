@@ -30,13 +30,14 @@ jobs:
     if: contains(['major', 'minor', 'patch'], ${{ github.event.inputs.bumpPart }})
     steps:
       - name: Checkout source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get app info
         id: appinfo
         run: |
-          APP_NAME=$(cat app.manifest | jq -r '.info.id.name' | tr _ - )
+          APP_NAME=$(cat splunk-*/app.manifest | jq -r '.info.id.name' | tr _ - )
           echo "app_name=${APP_NAME}" >> $GITHUB_OUTPUT
+        working-directory: packages/
 
       - name: Bump version and push tag
         id: bumpversion
@@ -62,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ needs.tag-version.outputs.new_sha }}
           fetch-depth: 0
@@ -70,17 +71,18 @@ jobs:
       - name: Excluding images from README
         run: |
           sed -i '/^!/d' README.md
+          cp README.md packages/splunk-*/
 
       - name: Bundle app source
         run: |
           mkdir dist
-          tar -zcvf dist/${{ needs.tag-version.outputs.app_name }}_v${{ needs.tag-version.outputs.version }}.tgz --exclude='.[^/]*' --exclude=./dist .
+          tar -C packages -zcvf dist/${{ needs.tag-version.outputs.app_name }}_v${{ needs.tag-version.outputs.version }}.tgz ${{ needs.tag-version.outputs.app_name }}/
   
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app_tgz
-          path: dist/${{ needs.tag-version.outputs.app_name }}_v${{ needs.tag-version.outputs.version }}.tgz
+          path: dist/*
 
   release:
     name: Create Release
@@ -90,7 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Fetch all tags
         run: |
@@ -127,7 +129,7 @@ jobs:
           prerelease: false
 
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: app_tgz
       

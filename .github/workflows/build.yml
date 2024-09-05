@@ -22,6 +22,8 @@ jobs:
 
       - name: Bundle App Source
         run: |
+          sed -i '/^!/d' README.md
+          cp README.md packages/splunk-*/
           mkdir -p build
           tar -C packages -zcvf build/${{ steps.app.outputs.name }}-${{ steps.app.outputs.version }}.tgz ${{ steps.app.outputs.name }}/
   

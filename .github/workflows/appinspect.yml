@@ -58,7 +58,6 @@ jobs:
           mkdir -p build
           app_package=$(ls -1 *gz | xargs basename)
           mv ${app_package} build/
-          ls -la build/
 
       - name: Run AppInspect
         uses: splunk/appinspect-api-action@v3.0
@@ -66,4 +65,4 @@ jobs:
           username: ${{ secrets.SPLUNKBASE_USERNAME }}
           password: ${{ secrets.SPLUNKBASE_PASSWORD }}
           app_path: build/
-          includedTags: "cloud,self-service"
+          includedTags: "cloud"
