@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'packages/**'
+      - '.github/workflows/*'
 
 jobs:
   build:
