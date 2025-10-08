@@ -7,7 +7,7 @@ module.exports = defineConfig({
     env: {
       cmc_uri: '/en-US/app/splunk-3D-graph-network-topology-viz',
       splunk_user: 'admin',
-      splunk_password: 'changed!',
+      splunk_password: 'password',
     },
     // We've imported your old cypress plugins here.
     // You may want to clean this up later by importing these.
