@@ -9,3 +9,4 @@ test/cypress/videos/
 test/cypress/screenshots/
 test/cypress/downloads/
 test/cypress/results/
+**/visualization.js.LICENSE.txt
