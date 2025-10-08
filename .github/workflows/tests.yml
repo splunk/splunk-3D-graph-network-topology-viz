@@ -61,7 +61,11 @@ jobs:
         run: |
           docker cp packages/${{ steps.app.outputs.app_id }} ${{ job.services.splunk.id }}:/opt/splunk/etc/apps/${{ steps.app.outputs.app_id }}
           docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/apps
+<<<<<<< HEAD
           docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/apps/${{ steps.app.outputs.app_id }}
+=======
+          docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/apps/${{ needs.slim-validate.outputs.app_id }}
+>>>>>>> fdca259 (ci(tests):removed slim validation)
 
       - name: Disable SPL safeguards for all commands
         run: |
