@@ -38,7 +38,7 @@ services:
             - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
             # This defines a tarball of apps to be pre-installed, you can
             # also include multiple tarballs with comma-separated URLs
-            - SPLUNK_APPS_URL=https://splunkbase.splunk.com/app/2890/release/5.4.1/download,https://splunkbase.splunk.com/app/2882/release/3.2.1/download
+            - SPLUNK_APPS_URL=https://splunkbase.splunk.com/app/2890/release/5.4.2/download,https://splunkbase.splunk.com/app/2882/release/3.2.1/download
             # - SPLUNK_APPS_URL=/tmp/ansible/python-for-scientific-computing-for-linux-64-bit_420.tgz
             - SPLUNKBASE_USERNAME=${SPLUNKBASE_USERNAME}
             - SPLUNKBASE_PASSWORD=${SPLUNKBASE_PASSWORD}
