@@ -76,12 +76,12 @@ jobs:
           echo "Check MLTK permissions"
           curl -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
 
-      - name: Tests execution prep
-        run: |
-          echo "Removing package-lock to avoid issues with splunk artifactory"
-          cd test
-          rm -rf package-lock.json
-          npm install
+      # - name: Tests execution prep
+      #   run: |
+      #     echo "Removing package-lock to avoid issues with splunk artifactory"
+      #     cd test
+      #     rm -rf package-lock.json
+      #     npm install
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
