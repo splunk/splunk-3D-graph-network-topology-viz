@@ -24,10 +24,8 @@ module.exports = defineConfig({
     // viewportHeight: 1200,
     video: true,
     videoCompression: false,
-    // Reference on skipping tests: 
-    // https://www.browserstack.com/guide/cypress-skip-test
+    // About skipping tests: https://www.browserstack.com/guide/cypress-skip-test
     excludeSpecPattern: [
-      // "./cypress/e2e/**/login.cy.js",
       "./cypress/e2e/**/graph_analysis.cy.js"
     ],
   },
