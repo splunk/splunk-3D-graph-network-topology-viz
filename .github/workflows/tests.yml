@@ -48,12 +48,19 @@ jobs:
         with:
           node-version: 20.11.1
 
+      - name: Read App Info
+        id: app
+        run: |
+          app_id=$(cat splunk-*/app.manifest | jq -r '.info.id.name')
+          echo "app_id=${app_id}" >> $GITHUB_OUTPUT
+        working-directory: ./packages
+
       - name: Copy app to service container and validate
         # NOTE using volume mapping to add the app to the container will NOT work since checkout hasn't happened yet
         run: |
-          docker cp packages/${{ needs.slim-validate.outputs.app_id }} ${{ job.services.splunk.id }}:/opt/splunk/etc/apps/${{ needs.slim-validate.outputs.app_id }}
+          docker cp packages/${{ steps.app.outputs.app_id }} ${{ job.services.splunk.id }}:/opt/splunk/etc/apps/${{ steps.app.outputs.app_id }}
           docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/apps
-          docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/apps/${{ needs.slim-validate.outputs.app_id }}
+          docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/apps/${{ steps.app.outputs.app_id }}
 
       - name: Disable SPL safeguards for all commands
         run: |
@@ -68,23 +75,13 @@ jobs:
       - name: Restart instance
         run: |
           curl -k -u admin:password https://localhost:8089/services/server/control/restart -X POST
-          # curl -k -u admin:password https://$SPLUNK_IP:8089/services/server/control/restart -X POST
           sleep 30
 
       - name: Configure MLTK permissions
         run: |
           curl --retry-delay 5 --retry 5 -f -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl -d sharing=global -d owner=nobody -X POST
-          # curl --retry-delay 5 --retry 5 -f -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/Splunk_ML_Toolkit/acl -d sharing=global -d owner=nobody -X POST
           echo "Check MLTK permissions"
           curl -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
-          # curl -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
-
-      # - name: Tests execution prep
-      #   run: |
-      #     echo "Removing package-lock to avoid issues with splunk artifactory"
-      #     cd test
-      #     rm -rf package-lock.json
-      #     npm install
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
