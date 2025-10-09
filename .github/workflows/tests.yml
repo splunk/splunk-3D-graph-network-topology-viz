@@ -82,20 +82,20 @@ jobs:
       #     cd test
       #     rm -rf package-lock.json
       #     npm install
-      - name: Wait for Splunk Web UI to be fully ready
-        run: |
-          echo "Waiting for Splunk Web UI at http://$SPLUNK_IP:8000/en-US/account/login"
-          # Try for up to 60 * 5 = 300 seconds (5 minutes)
-          for i in $(seq 1 60); do
-            if curl -s -f http://$SPLUNK_IP:8000/en-US/account/login; then
-              echo "Splunk Web UI is ready!"
-              exit 0
-            fi
-            echo "Splunk Web UI not ready yet, waiting 5 seconds... (Attempt $i/60)"
-            sleep 5
-          done
-          echo "Error: Splunk Web UI did not become ready within 5 minutes."
-          exit 1
+      # - name: Wait for Splunk Web UI to be fully ready
+      #   run: |
+      #     echo "Waiting for Splunk Web UI at http://$SPLUNK_IP:8000/en-US/account/login"
+      #     # Try for up to 60 * 5 = 300 seconds (5 minutes)
+      #     for i in $(seq 1 60); do
+      #       if curl -s -f http://$SPLUNK_IP:8000/en-US/account/login; then
+      #         echo "Splunk Web UI is ready!"
+      #         exit 0
+      #       fi
+      #       echo "Splunk Web UI not ready yet, waiting 5 seconds... (Attempt $i/60)"
+      #       sleep 5
+      #     done
+      #     echo "Error: Splunk Web UI did not become ready within 5 minutes."
+      #     exit 1
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
@@ -107,9 +107,10 @@ jobs:
           ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
         with:
           # start: npm run test
-          wait-on: 'http://localhost:8000'
+          wait-on: 'http://$SPLUNK_IP:8000'
           # No videos can be recorded w/ ff as per https://github.com/cypress-io/cypress/issues/18415
           # browser: firefox
+          config: baseUrl=http://$SPLUNK_IP:8000
           working-directory: test
 
       # - name: Verify results availability
