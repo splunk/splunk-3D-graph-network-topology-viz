@@ -97,7 +97,6 @@ jobs:
           wait-on: 'http://localhost:8000'
           # No videos can be recorded w/ ff as per https://github.com/cypress-io/cypress/issues/18415
           # browser: firefox
-          # config: baseUrl=http://$SPLUNK_IP:8000
           working-directory: test
 
       # - name: Verify results availability
