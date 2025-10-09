@@ -1,7 +1,7 @@
 # Splunk 3D Graph Network Topology Visualization
 
 ![Custom badge](https://img.shields.io/endpoint?label=SplunkBase%20Downloads&url=https%3A%2F%2Fsplunkbasebadge.livehybrid.com%2Fv1%2Fdownloads%2F4611%2F)
-[![Actions Status: appinspect](https://github.com/splunk/splunk-3D-graph-network-topology-viz/actions/workflows/appinspect.yml/badge.svg)](https://github.com/splunk/splunk-3D-graph-network-topology-viz/actions?query=workflow%3A"AppInspect")
+[![Actions Status: appinspect](https://github.com/splunk/splunk-3D-graph-network-topology-viz/actions/workflows/build-appinspect.yml/badge.svg)](https://github.com/splunk/splunk-3D-graph-network-topology-viz/actions?query=workflow%3A"Run+AppInspect")
 [![Latest release (latest by date)](https://img.shields.io/github/v/release/splunk/splunk-3D-graph-network-topology-viz?label=Latest%20Release)](https://github.com/splunk/splunk-3D-graph-network-topology-viz/releases)
 [![License](https://img.shields.io/badge/License-Apache_2.0-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
 
