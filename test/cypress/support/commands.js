@@ -28,11 +28,11 @@ Cypress.Commands.add('splunkLogin', () => {
   const loginPath = '/en-US/account/login';
 
   cy.visit(loginPath);
-  
-  cy.get('input[name=username]').type(Cypress.env('splunk_user'));  
+
+  cy.get('input[name=username]').type(Cypress.env('splunk_user')); 
   cy.get('input[name=password]').type(Cypress.env('splunk_password'));
   cy.get("input[type=submit][value='Sign In']").click();
-  
+
   cy.url().should('include', '/home');
 })
 
