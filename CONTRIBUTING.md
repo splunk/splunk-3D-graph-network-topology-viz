@@ -11,24 +11,31 @@ We :heart:  to see your fixes via pull requests!
 
 To create a pull request:
 * [Fork](https://guides.github.com/activities/forking/) the project
-* Create a branch for the issue
-* Make your changes on your branch
+* Create a branch per issue / new feature
+* Add your changes to the branch
 * Thoroughly test your changes
 * Open a [pull request](https://github.com/splunk/splunk-3D-graph-network-topology-viz/pulls)
 
-Remember:
-* **Address an issue per branch**
+:point_right: **Address an issue per branch** :point_left:
 
-## Semi-Automated Release
-A [GitHub Action](https://github.com/splunk/splunk-3D-graph-network-topology-viz/actions/workflows/manual-release.yml) is provided to:
-* Bump the app version
-* Create a release
+## Release the App
 
-This action can be **manually triggered** by clicking on _Actions / Manual Release / Run Workflow_ and by providing:
-* **Bump part** - Either major, minor or patch
-* (Optional) **Changelog notes** - By default all commit messages beginning from the last release are included
+1. **Manually** trigger the GitHub action [Bumpversion](https://github.com/splunk/splunk-3D-graph-network-topology-viz/actions/workflows/bumpversion.yml) to bump the app version according to [Semantic Versioning](http://semver.org/):
+    * Browse to _Actions / Bump Version / Run Workflow_ and type either `major`, `minor` or `patch` in the **Bump part** field.
 
-> **NOTE** Action available to all users with `Write` role at least
+    > **NOTE** This action is available to all users with `Write` role at least.
+
+2. Update the `CHANGELOG` file following [guidelines](https://github.com/splunk/splunk-3D-graph-network-topology-viz/blob/main/CONTRIBUTING.md#changelog).
+
+3. Push to `master`.
+
+A CI/CD workflow will perform the following checks before automatically creating a new release.
+
+* **Build**: Creates app package
+* **Sanity Check**: Validates version consistency between the `CHANGELOG` file and the app. They must match.
+
+### Changelog
+A `CHANGELOG.md` file is used to document changes between versions. The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Development Environment
 The recommended local development environment is based on Docker. After the setup, the local Splunk Web will be available on http://localhost:8000 with Splunk Machine Learning Toolkit (MLTK) and the Python for Scientific Computing for Linux installed.

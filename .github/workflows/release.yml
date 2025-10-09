@@ -1,0 +1,94 @@
+name: Release from Changelog
+
+on:
+  push:
+    paths:
+      - "CHANGELOG.md"
+    branches:
+      - master
+
+# Grants permission to create releases
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Bundle the App
+    runs-on: ubuntu-latest
+    outputs:
+      app_version: ${{ steps.app.outputs.version }}
+      artifact_name: ${{ steps.app.outputs.artifact_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get App Info
+        id: app
+        run: |
+          MANIFEST="splunk-3D-graph-network-topology-viz/app.manifest"
+          if [ -f "$MANIFEST" ]; then
+            app_id=$(cat "$MANIFEST" | jq -r '.info.id.name')
+            app_version=$(cat "$MANIFEST" | jq -r '.info.id.version')
+            echo "name=${app_id}" >> $GITHUB_OUTPUT
+            echo "version=${app_version}" >> $GITHUB_OUTPUT
+            echo "artifact_name=${app_id}-${app_version}" >> $GITHUB_OUTPUT
+          else
+            echo "Files Not Found ❌ Please add 'packages/$MANIFEST'"
+            exit 1
+          fi
+        working-directory: ./packages
+
+      - name: Bundle app source
+        env:
+          APP_NAME: ${{ steps.app.outputs.name }}
+          APP_VERSION: ${{ steps.app.outputs.version }}
+        run: |
+          # Exclude images from README file
+          sed -i '/^!/d' README.md
+          cp README.md packages/$APP_NAME
+          tar -C packages -zcvf $APP_NAME-$APP_VERSION.tar.gz $APP_NAME/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.app.outputs.artifact_name }}
+          path: ${{ steps.app.outputs.name }}*.tar.gz
+
+  release:
+    name: Upload Release
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.artifact_name }}
+          path: dist
+      - name: Fetch latest release info from CHANGELOG
+        id: changelog
+        uses: release-flow/keep-a-changelog-action@v3
+        with:
+          command: query
+          version: latest
+      - name: Validate version consistency
+        env:
+          VERSION: ${{ steps.changelog.outputs.version }}
+          TA_VERSION: ${{ needs.build.outputs.app_version }}
+        run: |
+          if [ "$VERSION" != "$TA_VERSION" ]; then
+            echo "❌ Add-On and Changelog version mismatch. Did you forget to bump the Add-On version?"
+            exit 1
+          fi
+      - name: Create GitHub release
+        env:
+          VERSION: v${{ steps.changelog.outputs.version }}
+          RELEASE_NOTES: ${{ steps.changelog.outputs.release-notes }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LATEST_RELEASE=$(gh release view --json tagName --jq '.tagName')
+          if [ "$VERSION" == "$LATEST_RELEASE" ]; then
+            echo "Versions match nothing to do!"
+          else
+            echo "Releasing $VERSION"
+            gh release create $VERSION \
+              --title "$VERSION" \
+              --notes "$RELEASE_NOTES" \
+              dist/*.tar.gz
+          fi
