@@ -5,7 +5,7 @@ module.exports = defineConfig({
   //screenShotOnFailure: false,
   e2e: {
     env: {
-      cmc_uri: '/en-US/app/splunk-3D-graph-network-topology-viz',
+      cmc_uri: 'app/splunk-3D-graph-network-topology-viz',
       splunk_user: 'admin',
       splunk_password: 'password',
     },
@@ -14,7 +14,7 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       return require('./cypress/plugins/index.js')(on, config)
     },
-    baseUrl: 'http://localhost:8000',
+    baseUrl: 'http://localhost:8000/en-US/',
     defaultCommandTimeout: 40000,
     // retries: 3,
     // chromeWebSecurity: false,

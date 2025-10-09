@@ -25,11 +25,11 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('splunkLogin', () => {
-  const loginPath = '/en-US/account/login';
+  const loginPath = 'account/login';
 
   cy.visit(loginPath);
 
-  cy.get('input[name=username]').type(Cypress.env('splunk_user')); 
+  cy.get('input[name=username]').type(Cypress.env('splunk_user'));
   cy.get('input[name=password]').type(Cypress.env('splunk_password'));
   cy.get("input[type=submit][value='Sign In']").click();
 
@@ -40,5 +40,5 @@ Cypress.Commands.add('splunkLogout', () => {
   // cy.window().then((win) => {
     //   win.sessionStorage.removeItem('userToken');
     // });
-  cy.request('/en-US/account/logout');
+  cy.request('account/logout');
 })
