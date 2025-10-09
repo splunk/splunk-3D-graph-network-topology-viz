@@ -12,6 +12,6 @@ describe('Login and Cookie Preservation', () => {
     //     'session_id_8000']
     // })
     cy.splunkLogin();
-    cy.visit('/en-US/app/splunk-3D-graph-network-topology-viz/graph_analysis');
+    cy.visit(Cypress.env("cmc_uri") + "/graph_analysis");
   })
 })

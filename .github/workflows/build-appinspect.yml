@@ -1,0 +1,93 @@
+name: Build the App and Run AppInspect
+
+on:
+  pull_request:
+    paths:
+      - 'packages/**'
+    types: [opened, reopened, synchronize]
+
+# Allow only 1 concurrent execution
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Generate App Bundle
+    runs-on: ubuntu-latest
+    outputs:
+      artifact_name: ${{ steps.app.outputs.artifact_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read App Info
+        id: app
+        run: |
+          app_id=$(cat splunk-*/app.manifest | jq -r '.info.id.name')
+          app_version=$(cat splunk-*/app.manifest | jq -r '.info.id.version')
+          echo "name=${app_id}" >> $GITHUB_OUTPUT
+          echo "version=${app_version}" >> $GITHUB_OUTPUT
+          echo "artifact_name=${app_id}-${app_version}" >> $GITHUB_OUTPUT
+        working-directory: ./packages
+
+      - name: Bundle App Source
+        env:
+          APP_NAME: ${{ steps.app.outputs.name }}
+          APP_VERSION: ${{ steps.app.outputs.version }}
+        run: |
+          # Exclude images from README file
+          sed -i '/^!/d' README.md
+          cp README.md packages/$APP_NAME
+          tar -C packages -zcvf $APP_NAME-$APP_VERSION.tar.gz $APP_NAME/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.app.outputs.artifact_name }}
+          path: ${{ steps.app.outputs.name }}*.tar.gz
+
+  slim-validate:
+    name: SLIM Validation
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ 3.9 ]
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.artifact_name }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install splunk-packaging-toolkit
+
+      - name: Slim Validate
+        run: slim validate *.tar.gz
+
+  appinspect-cli:
+    name: AppInspect CLI ${{ matrix.tags }}
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tags:
+          - "cloud"
+          - "private_app"
+          - "private_classic"
+          - "private_victoria"
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.artifact_name }}
+          path: dist
+      - uses: splunk/appinspect-cli-action@v2.10
+        with:
+          app_path: dist
+          included_tags: ${{ matrix.tags }}
