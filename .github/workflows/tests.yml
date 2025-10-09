@@ -29,6 +29,7 @@ jobs:
         image: splunk/splunk:${{ matrix.version }}
         env:
           SPLUNK_START_ARGS: --answer-yes --no-prompt --accept-license
+          SPLUNK_GENERAL_TERMS: --accept-sgt-current-at-splunk-com
           SPLUNK_PASSWORD: password
           SPLUNK_APPS_URL: https://splunkbase.splunk.com/app/2890/release/5.4.2/download,https://splunkbase.splunk.com/app/2882/release/3.2.1/download
           SPLUNKBASE_USERNAME: ${{ secrets.SPLUNKBASE_USERNAME }}
