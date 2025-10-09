@@ -61,20 +61,23 @@ jobs:
           echo "Validating 'web.conf' file creation"
           docker exec -i ${{ job.services.splunk.id }} ls -a /opt/splunk/etc/system/local/
 
-      - name: Set container IP as env variable
-        run: |
-          echo "SPLUNK_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${{ job.services.splunk.id }})" >> $GITHUB_ENV
+      # - name: Set container IP as env variable
+      #   run: |
+      #     echo "SPLUNK_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${{ job.services.splunk.id }})" >> $GITHUB_ENV
 
       - name: Restart instance
         run: |
-          curl -k -u admin:password https://$SPLUNK_IP:8089/services/server/control/restart -X POST
+          curl -k -u admin:password https://localhost:8089/services/server/control/restart -X POST
+          # curl -k -u admin:password https://$SPLUNK_IP:8089/services/server/control/restart -X POST
           sleep 30
 
       - name: Configure MLTK permissions
         run: |
-          curl --retry-delay 5 --retry 5 -f -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/Splunk_ML_Toolkit/acl -d sharing=global -d owner=nobody -X POST
+          curl --retry-delay 5 --retry 5 -f -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl -d sharing=global -d owner=nobody -X POST
+          # curl --retry-delay 5 --retry 5 -f -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/Splunk_ML_Toolkit/acl -d sharing=global -d owner=nobody -X POST
           echo "Check MLTK permissions"
-          curl -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
+          curl -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
+          # curl -k -u admin:password https://$SPLUNK_IP:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
 
       # - name: Tests execution prep
       #   run: |
@@ -82,20 +85,6 @@ jobs:
       #     cd test
       #     rm -rf package-lock.json
       #     npm install
-      # - name: Wait for Splunk Web UI to be fully ready
-      #   run: |
-      #     echo "Waiting for Splunk Web UI at http://$SPLUNK_IP:8000/en-US/account/login"
-      #     # Try for up to 60 * 5 = 300 seconds (5 minutes)
-      #     for i in $(seq 1 60); do
-      #       if curl -s -f http://$SPLUNK_IP:8000/en-US/account/login; then
-      #         echo "Splunk Web UI is ready!"
-      #         exit 0
-      #       fi
-      #       echo "Splunk Web UI not ready yet, waiting 5 seconds... (Attempt $i/60)"
-      #       sleep 5
-      #     done
-      #     echo "Error: Splunk Web UI did not become ready within 5 minutes."
-      #     exit 1
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
@@ -107,10 +96,10 @@ jobs:
           ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
         with:
           # start: npm run test
-          wait-on: 'http://$SPLUNK_IP:8000'
+          wait-on: 'http://localhost:8000'
           # No videos can be recorded w/ ff as per https://github.com/cypress-io/cypress/issues/18415
           # browser: firefox
-          config: baseUrl=http://$SPLUNK_IP:8000
+          # config: baseUrl=http://$SPLUNK_IP:8000
           working-directory: test
 
       # - name: Verify results availability
