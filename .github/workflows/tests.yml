@@ -39,6 +39,7 @@ jobs:
           --health-interval 30s
           --health-timeout 5s
           --health-retries 5
+          --health-cmd "curl -f http://localhost:8000/en-US/account/login || exit 1"
           --name splunk
         ports:
           - 8000:8000
