@@ -109,10 +109,10 @@ define([
             if ('showAnimationBar' === key_tokens[key_tokens.length-1]){
                 // Show / Hide Animation bar 
                 var showAnimationBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showAnimationBar', config));
-                
+
                 this._toggleAnimationBar(showAnimationBar);
                 return;
-            } 
+            }
 
             // Keep track of 2D-3D graph toggle
             this.hasToggledGraph = ('enable3D' === key_tokens[key_tokens.length - 1]);
@@ -281,7 +281,7 @@ define([
                 if (this.logging) console.log('updateView() - Error: no data');
                 return;
             }
-            
+
             // check for data readiness
             if (!data.status) {
                 if (this.logging) console.log("Search job is still running. Please wait.");
@@ -289,9 +289,9 @@ define([
                 this._disposeGraph($elem);
                 return;
             }
-            
+
             const isLarge = data.content.nodes.length > MIN_LARGE_GRAPH;
-            
+
             var enable3D = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('enable3D', config));
             var showAnimationBar = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showAnimationBar', config));
             var showLinkArrows = SplunkVisualizationUtils.normalizeBoolean(this._getEscapedProperty('showLinkArrows', config));
@@ -309,65 +309,60 @@ define([
 
             // Show/Hide Animation Bar
             this._toggleAnimationBar(showAnimationBar);
-            
-            // Dispose current graph 
+
+            // Dispose current graph
             if (this.hasToggledGraph) {
                 this._disposeGraph($elem);
             }
-            
-            // Create the required graph 
+
+            // Create the required graph
             if (enable3D) {
                 if (this.graph == null){
                     if (this.logging) console.log("updateView() - Loading [3D] graph");
                     this._load3DGraph($elem.get(0), params);
                 }
-                
+
                 // Add node customisations to the 3D Graph
                 this.graph.nodeThreeObject(node => {
-                    const obj = new THREE.Mesh();
+                    const group = new THREE.Group();
 
                     // Drawing nodes
                     const useDefaultColor = node.has_custom_color < 1;
-                    if (!useDefaultColor) {
-                        if (node.color instanceof Array) {
-                            // Gradient
-                            const geometry = new THREE.SphereGeometry();
-                            var material = new THREE.ShaderMaterial({
-                                uniforms: {
-                                    color1: {
-                                        value: new THREE.Color(node.color[0])
-                                    },
-                                    color2: {
-                                        value: new THREE.Color(node.color[1])
-                                    }
-                                },
-                                vertexShader: `
-                                varying vec2 vUv;
+                    if ((!useDefaultColor) && (node.color instanceof Array)) {
+                        // Gradient
+                        const geometry = new THREE.SphereGeometry();
+                        const color1 = new THREE.Color(node.color[0]);
+                        const color2 = new THREE.Color(node.color[1]);
+                        const position = geometry.attributes.position;
+                        const colors = [];
 
-                                void main() {
-                                    vUv = uv;
-                                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
-                                }
-                            `,
-                                fragmentShader: `
-                                uniform vec3 color1;
-                                uniform vec3 color2;
+                        geometry.computeBoundingSphere();
+                        const radius = geometry.boundingSphere.radius;
 
-                                varying vec2 vUv;
-
-                                void main() {
-                                    gl_FragColor = vec4(mix(color1, color2, vUv.y), 1.0);
-                                }
-                            `
-                            });
-                            obj.add(new THREE.Mesh(geometry, material));
+                        // Apply vertex colors for the gradient
+                        for (let i = 0; i < position.count; i++) {
+                            // Normalize vertex.y to [0, 1]
+                            const y = (position.getY(i) / radius + 1) / 2;
+                            // Interpolate between color1 and color2 based on normalized y
+                            const vertexColor = color2.clone().lerp(color1, y);
+                            colors.push(vertexColor.r, vertexColor.g, vertexColor.b);
                         }
-                    }
 
-                    // No gradient
-                    geometry = new THREE.SphereGeometry();
-                    material = new THREE.MeshBasicMaterial({ color: useDefaultColor ? params['ndColor'] : node.color });
-                    obj.add(new THREE.Mesh(geometry, material));
+                        geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+                        // Standard material using vertex colors instead of gradient shader
+                        const material = new THREE.MeshBasicMaterial({
+                            vertexColors: true
+                        });
+                        group.add(new THREE.Mesh(geometry, material));
+                    } else {
+                        // No gradient
+                        geometry = new THREE.SphereGeometry();
+                        material = new THREE.MeshBasicMaterial({
+                            color: useDefaultColor ? params['ndColor'] : node.color
+                        });
+                        group.add(new THREE.Mesh(geometry, material));
+                    }
 
                     // Show labels if needed
                     if (params["showLabels"]) {
@@ -377,11 +372,11 @@ define([
                         sprite.color = tinycolor(params['bgColor']).isLight() ?
                             "rgba(0,0,0,.8)" : "rgba(255,255,255,.8)";
                         sprite.textHeight = 2;
-                        sprite.position.y = 2 * NODE_R;
-                        obj.add(sprite);
+                        sprite.offsetY = NODE_R * 1.5;
+                        group.add(sprite);
                     }
 
-                    return obj;
+                    return group;
                 });
 
                 if (this.logging) console.log("updateView() - Rendering [3D] graph");
@@ -390,7 +385,7 @@ define([
                     if (this.logging) console.log("updateView() - Loading [2D] graph");
                     this._load2DGraph($elem.get(0), params);
                 }
-                
+
                 // Add node customisations to the 2D Graph
                 this.graph.nodeCanvasObject((node, ctx, globalScale) => {
                     // Drawing nodes
@@ -415,24 +410,26 @@ define([
                     // Show labels if needed
                     if (params["showLabels"]) {
                         const fontSize = 12 / globalScale;
+                        const paddingScreenPx = 5;
+                        const verticalOffsetScreenUnits = (2 * NODE_R) + paddingScreenPx / globalScale;
                         ctx.font = `${fontSize}px Sans-Serif`;
                         ctx.fillStyle = tinycolor(params['bgColor']).isLight() ?
                             "rgba(0,0,0,.8)" : "rgba(255,255,255,.8)";
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
-                        ctx.fillText(node.name, node.x, node.y - (2 * NODE_R));
+                        ctx.fillText(node.name, node.x, node.y - verticalOffsetScreenUnits);
                     }
                 });
 
                 if (this.logging) console.log("updateView() - Rendering [2D] graph");
             }
-    
-            this.graph.linkColor(link => link.color = 
+
+            this.graph.linkColor(link => link.color =
                     link.has_custom_color < 1 ? params['lkColor'] : link.color)
                 .backgroundColor(params["bgColor"])
                 .dagMode(params["dagMode"])
-                .linkDirectionalArrowLength(showLinkArrows ? 3.5 : 0)
-                .linkDirectionalArrowRelPos(1)
+                .linkDirectionalArrowLength(showLinkArrows ? 4.5 : 0)
+                .linkDirectionalArrowRelPos(0.5)
                 .graphData(data.content);
         },
 
@@ -570,7 +567,7 @@ define([
             if (this.logging) console.log("_toggleAnimationBar() - Entered {"+value+"}");
 
             var $elem = $('div.graphviz-controllers[name=cntl'+this.uuid+']');
-            
+
             if (value && !$elem.hasClass("show")) {
                 $elem.toggleClass("show");
             } else if (!value && $elem.hasClass("show")) {
