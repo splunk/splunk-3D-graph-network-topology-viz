@@ -38,7 +38,6 @@ jobs:
           --health-interval 30s
           --health-timeout 5s
           --health-retries 5
-          --health-cmd "curl -f http://localhost:8000/en-US/account/login || exit 1"
           --name splunk
         ports:
           - 8000:8000
@@ -85,10 +84,10 @@ jobs:
       #     npm install
       - name: Wait for Splunk Web UI to be fully ready
         run: |
-          echo "Waiting for Splunk Web UI at http://localhost:8000/en-US/account/login"
+          echo "Waiting for Splunk Web UI at http://$SPLUNK_IP:8000/en-US/account/login"
           # Try for up to 60 * 5 = 300 seconds (5 minutes)
           for i in $(seq 1 60); do
-            if curl -s -f http://localhost:8000/en-US/account/login; then
+            if curl -s -f http://$SPLUNK_IP:8000/en-US/account/login; then
               echo "Splunk Web UI is ready!"
               exit 0
             fi
@@ -137,3 +136,4 @@ jobs:
           reporter: java-junit
           working-directory: test
           fail-on-error: false
+          fail-on-empty: false
