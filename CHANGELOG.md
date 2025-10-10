@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [v1.4.1] - 2025-10-10
+
+### Fixed
+
+- Security vulnerability on dependencies ([#45](https://github.com/splunk/splunk-3D-graph-network-topology-viz/pull/45)) ([#46](https://github.com/splunk/splunk-3D-graph-network-topology-viz/pull/46)).
+- 2D Graph: label text positioning when zooming in / out ([#45](https://github.com/splunk/splunk-3D-graph-network-topology-viz/pull/45)).
+
+### Changed
+
+- 3D Graph: replaced gradient shader material with vertex colors one ([#45](https://github.com/splunk/splunk-3D-graph-network-topology-viz/pull/45)).
+- 2D Graph: moved link arrow position to the middle and increased size ([#45](https://github.com/splunk/splunk-3D-graph-network-topology-viz/pull/45)).
+
+### Removed
+
+- Dependency on Splunk node.js to support Splunk 10.0 ([#45](https://github.com/splunk/splunk-3D-graph-network-topology-viz/pull/45)).
+
 ## [v1.4.0] - 2025-01-16
 
 ### Added
