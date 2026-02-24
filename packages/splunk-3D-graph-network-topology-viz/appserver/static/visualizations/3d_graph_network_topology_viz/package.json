@@ -20,7 +20,15 @@
     "underscore": "^1.13.7",
     "tinycolor2": "^1.6.0",
     "three-spritetext": "^1.10.0",
-    "3d-force-graph": "^1.79.0",
-    "force-graph": "^1.51.0"
+    "3d-force-graph": "^1.79.1",
+    "force-graph": "^1.51.1"
+  },
+  "overrides": {
+    "3d-force-graph": {
+      "lodash-es": "^4.17.23"
+    },
+    "force-graph": {
+      "lodash-es": "^4.17.23"
+    }
   }
 }
