@@ -10,9 +10,18 @@
   "author": "Splunk",
   "license": "ISC",
   "dependencies": {
-    "eslint-plugin-cypress": "^5.1.0"
+    "eslint-plugin-cypress": "^5.3.0"
   },
   "devDependencies": {
-    "cypress": "^15.4.0"
+    "cypress": "^15.10.0"
+  },
+  "overrides": {
+    "cypress": {
+      "systeminformation": ">=5.31.0",
+      "qs": ">=6.14.2"
+    },
+    "eslint": {
+      "minimatch": ">=10.2.1"
+    }
   }
 }
