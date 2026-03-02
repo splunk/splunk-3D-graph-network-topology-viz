@@ -28,7 +28,8 @@
       "lodash-es": "^4.17.23"
     },
     "force-graph": {
-      "lodash-es": "^4.17.23"
+      "lodash-es": "^4.17.23",
+      "preact": ">=10.27.3"
     }
   }
 }
