@@ -25,10 +25,10 @@
   },
   "overrides": {
     "3d-force-graph": {
-      "lodash-es": "^4.17.23"
+      "lodash-es": ">=4.18.0"
     },
     "force-graph": {
-      "lodash-es": "^4.17.23",
+      "lodash-es": ">=4.18.0",
       "preact": ">=10.27.3"
     }
   }
