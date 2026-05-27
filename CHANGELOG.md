@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [v1.4.3] - 2026-05-27
+
+### Fixed
+
+- Security vulnerabilities on dependencies ([#50](https://github.com/splunk/splunk-3D-graph-network-topology-viz/pull/50)).
+
 ## [v1.4.2] - 2026-02-24
 
 ### Fixed
