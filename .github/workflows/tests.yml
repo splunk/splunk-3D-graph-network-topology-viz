@@ -44,10 +44,10 @@ jobs:
           - 8000:8000
           - 8089:8089
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: 20.11.1
+          node-version: 24.22.1
 
       - name: Read App Info
         id: app
@@ -85,7 +85,7 @@ jobs:
           curl -k -u admin:password https://localhost:8089/services/apps/local/Splunk_ML_Toolkit/acl?output_mode=json | jq -r '.entry | .[].acl.sharing'
 
       - name: Cypress run
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         # Set timeout to prevent hanging tasks
         # NOTE: Careful! Tests timeouts can be impacted
         timeout-minutes: 20
@@ -104,7 +104,7 @@ jobs:
       #     ls -la test/cypress/results
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: splunk${{ matrix.version }}-results
