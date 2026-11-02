@@ -24,7 +24,7 @@ jobs:
     # Sanity check on the input
     if: contains(['major', 'minor', 'patch'], ${{ github.event.inputs.bumpPart }})
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Bump version
         id: bumpversion
         uses: jasonamyers/github-bumpversion-action@v1.0.5
