@@ -18,7 +18,7 @@ jobs:
     outputs:
       artifact_name: ${{ steps.app.outputs.artifact_name }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Read App Info
         id: app
         run: |
@@ -40,7 +40,7 @@ jobs:
           tar -C packages -zcvf $APP_NAME-$APP_VERSION.tar.gz $APP_NAME/
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.app.outputs.artifact_name }}
           path: ${{ steps.app.outputs.name }}*.tar.gz
@@ -51,15 +51,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ 3.9 ]
+        python-version: [ "3.13" ]
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: ${{ needs.build.outputs.artifact_name }}
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -83,7 +83,7 @@ jobs:
           - "private_classic"
           - "private_victoria"
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: ${{ needs.build.outputs.artifact_name }}
           path: dist
